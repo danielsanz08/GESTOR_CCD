@@ -1,0 +1,169 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Editar usuario{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/editar_usuario.css' %}?v={% now 'U' %}">
+
+{% if request.user.role == 'Administrador' %}
+<div class="formulario">
+    <h2>Editar usuario</h2>
+    <form method="POST" id="editar-form">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="username">Nombre de usuario</label>
+            <br>{{ form.username }}
+            <div class="error-msg username-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="email">Correo Electrónico</label>
+            <br>{{ form.email }}
+            <div class="error-msg email-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="role">Rol</label>
+            <br>{{ form.role }}
+        </div>
+        <div class="mb-3">
+            <label for="cargo">Cargo</label>
+            <br>{{ form.cargo }}
+            <div class="error-msg cargo-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="module">Módulo:</label>
+            <br>{{ form.module }}
+        </div>
+
+        <button type="submit" class="btn">Editar</button>
+    </form>
+</div>
+{% endif %}
+{% if request.user.role == 'Empleado' %}
+<div class="formulario">
+    <h2>Editar usuario</h2>
+    <form method="POST" id="editar-form">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="username">Nombre de usuario</label>
+            <br>{{ form.username }}
+            <div class="error-msg username-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="email">Correo Electrónico</label>
+            <br>{{ form.email }}
+            <div class="error-msg email-error"></div>
+        </div>
+       
+        <div class="mb-3">
+            <label for="cargo">Cargo</label>
+            <br>{{ form.cargo }}
+            <div class="error-msg cargo-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="module">Módulo:</label>
+            <br>{{ form.module }}
+        </div>
+
+        <button type="submit" class="btn">Editar</button>
+    </form>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('editar-form');
+        const usernameInput = document.getElementById('id_username');
+        const emailInput = document.getElementById('id_email');
+        const cargoInput = document.getElementById('id_cargo');
+
+        const usernameError = document.querySelector('.username-error');
+        const emailError = document.querySelector('.email-error');
+        const cargoError = document.querySelector('.cargo-error');
+
+        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        function tieneCaracteresRepetidos(str) {
+            return /(.)\1\1/.test(str);
+        }
+
+        usernameInput.addEventListener('input', () => {
+            let value = usernameInput.value;
+            usernameInput.value = value.replace(/\d/g, ''); // quitar números
+
+            usernameError.textContent = '';
+            if (value.length < 3) {
+                usernameError.textContent = 'Debe tener al menos 3 caracteres.';
+                usernameError.style.position = 'absolute';
+                usernameError.style.fontWeight = 'bold'; // <- Corregido aquí
+                usernameError.style.top ='21vh';
+                usernameError.style,left = '9vh';
+                usernameError.style.color = 'red'
+            } else if (tieneCaracteresRepetidos(value)) {
+                usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            }
+        });
+
+        cargoInput.addEventListener('input', () => {
+            let value = cargoInput.value;
+            cargoInput.value = value.replace(/\d/g, '');
+
+            cargoError.textContent = '';
+            if (tieneCaracteresRepetidos(value)) {
+                cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+                cargoError.style.position = 'absolute';
+                cargoError.style.fontWeight = 'bold'; 
+                cargoError.style.top ='43vh';
+                cargoError.style,left = '9vh';
+                cargoError.style.color = 'red'
+               
+            }
+        });
+
+        emailInput.addEventListener('input', () => {
+            const email = emailInput.value;
+            emailError.textContent = '';
+
+            if (!regexCorreo.test(email)) {
+                emailError.textContent = 'Formato de correo no válido.';
+                emailError.style.position = 'absolute';
+                emailError.style.fontWeight = 'bold'; 
+                emailError.style.top ='21vh';
+                emailError.style,left = '9vh';
+                emailError.style.color = 'red'
+                return;
+            }
+
+            if (tieneCaracteresRepetidos(email)) {
+                emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+                emailError.style.position = 'absolute';
+                emailError.style.fontWeight = 'bold'; 
+                emailError.style.top ='21vh';
+                emailError.style,left = '9vh';
+                emailError.style.color = 'red'
+                return;
+            }
+
+            // Validar si el email ya existe
+            fetch(`/validar_datos?email=${email}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.email) {
+                        emailError.textContent = data.email;
+                    }
+                });
+        });
+
+        form.addEventListener('submit', (e) => {
+            if (
+                usernameError.textContent ||
+                emailError.textContent ||
+                cargoError.textContent
+            ) {
+                e.preventDefault(); // Detener envío si hay errores
+            }
+        });
+    });
+</script>
+{% endblock %}

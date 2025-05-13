@@ -1,0 +1,46 @@
+.pedido{
+    background: rgba(19, 104, 161, 0.411);
+    position: relative;
+    top: 27vh;
+    left: 9vh;
+    text-align: center;
+    padding: 10px 20px 20px 20px;
+    width: 190vh;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    
+}
+table{
+    width: 180vh;
+    border-spacing: 10px;
+    
+}
+.id, .usuario, .fecha, .estado, .detalle, .acciones{
+    left: 20vh;
+    background-color: rgba(61, 43, 226, 0.411);
+    border-radius: 10px;
+}
+td{
+    background-color: rgba(46, 151, 151, 0.384);
+    margin: 20vh 0 20vh 0;
+    border-radius: 10px;
+    height: 5vh;
+    align-items: center;
+    
+}
+button{
+    background-color: rgb(233, 200, 12);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    cursor: pointer;
+  }
+button:hover{
+    background-color: rgba(233, 200, 12, 0.699);
+    
+  }
+  .icono{
+    height: 3vh;
+    padding: 2px 2px 2px 2px;
+  }
+  

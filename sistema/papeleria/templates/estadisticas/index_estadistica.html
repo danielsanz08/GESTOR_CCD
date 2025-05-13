@@ -1,0 +1,33 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Estadisticas Gestor CCD {% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+<section>
+   <div class="container">
+     <div class="card">
+        <p>Usuarios activos</p>
+    </div>
+    <div class="card">
+        <p>Usuarios inactivos</p>
+    </div>
+    <a href="{% url 'papeleria:graficas_articulos'  %}">
+        <div class="card">
+        <p>Cantidad de articulos</p>
+    </div>
+    </a>
+    <div class="card">
+        <p>Bajo stock </p>
+    </div>
+    <div class="card">
+        <p>Pedidos Pendientes</p>
+    </div>
+    <div class="card">
+        <p>Pedidos Confirmados</p>
+    </div>
+    <div class="card">
+        <p>Usuarios Cancelados</p>
+    </div>
+   </div>
+</section>
+{% endblock %}

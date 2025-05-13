@@ -1,0 +1,83 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Realizar Pedido{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
+</style>
+<div id="container">
+    <h1>Realizar Pedido</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div id="articulos-container">
+        <!-- Formulario de artículo por defecto -->
+        <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px;">
+            <select name="articulo" required>
+                <option value="">-- Seleccionar Artículo --</option>
+                {% for articulo in articulos %}
+                    <option value="{{ articulo.id }}">{{ articulo.nombre }} ({{ articulo.cantidad }})</option>
+                {% endfor %}
+            </select>
+
+            <div>
+                <select name="tipo" required>
+                    <option value="">-- Seleccionar Tipo --</option>
+                    {% for articulo in articulos %}
+                        <option value="{{ articulo.tipo }}">{{ articulo.tipo }}({{ articulo.nombre }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
+        </div>
+    </div>
+
+    <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
+    <button type="submit">Realizar Pedido</button>
+</form>
+</div>
+
+<script>
+    // Función para añadir un nuevo formulario de artículo
+    function agregarArticulo() {
+        var container = document.getElementById('articulos-container');
+        var nuevoFormulario = document.querySelector('.articulo-form.default-form').cloneNode(true);
+        
+        // Hacer visible el formulario duplicado
+        nuevoFormulario.style.display = 'flex';
+        nuevoFormulario.classList.remove('default-form');  // Eliminar la clase 'default-form' para diferenciarlos
+
+        // Agregar un botón de eliminar solo en formularios añadidos
+        var eliminarBtn = document.createElement('button');
+        eliminarBtn.type = 'button';
+        eliminarBtn.textContent = 'Eliminar';
+        eliminarBtn.onclick = function() {
+            eliminarArticulo(nuevoFormulario); // Pasar el formulario a eliminar
+        };
+
+        // Añadir el botón de eliminar al nuevo formulario
+        nuevoFormulario.appendChild(eliminarBtn);
+
+        // Limpiar los valores por defecto de los campos (opcional)
+        var selects = nuevoFormulario.getElementsByTagName('select');
+        for (var select of selects) {
+            select.selectedIndex = 0;
+        }
+
+        var input = nuevoFormulario.getElementsByTagName('input')[0];
+        input.value = 1;
+
+        // Añadir el nuevo formulario al contenedor
+        container.appendChild(nuevoFormulario);
+    }
+
+    // Función para eliminar un formulario de artículo
+    function eliminarArticulo(form) {
+        if (!form.classList.contains('default-form')) { // Solo eliminar si no es el formulario por defecto
+            form.remove();
+        }
+    }
+</script>
+{% endblock %}

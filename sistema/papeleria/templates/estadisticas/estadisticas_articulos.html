@@ -1,0 +1,48 @@
+{% extends 'navbar.html' %}
+
+{% block contenido %}
+<style>
+    body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container mt-4">
+    <h2>Estadísticas de Artículos</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for articulo in articulos %}
+                <tr>
+                    <td>{{ articulo.nombre }}</td>
+                    <td>{{ articulo.cantidad }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No hay artículos registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Total</th>
+                <th>{{ total_cantidad }}</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

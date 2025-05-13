@@ -1,0 +1,46 @@
+.formulario{
+    background: rgba(19, 104, 161, 0.411);
+    position: absolute;
+    top: 29vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    width: 146vh;
+    height: 48vh;
+    left: 30vh;
+}
+form{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    grid-template-rows: repeat(2, auto);
+}
+input, .form-select{
+    margin-bottom: 15vh;
+    margin-right: 10vh;
+    border: none;
+    border-radius: 20px;
+    height: 4vh;
+    width: 35vh;
+    
+}
+.btn{
+    background-color: rgb(0, 58, 218);
+    color: white;
+    font-weight: bold;
+    border: none;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 20px;
+    position: relative;
+    left: 3vh;
+    bottom: -1vh;
+    cursor: pointer;
+}
+.btn:hover{
+    background-color: rgb(33, 74, 187);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+h2{
+    text-align: center;
+}

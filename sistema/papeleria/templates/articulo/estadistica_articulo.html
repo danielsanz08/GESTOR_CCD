@@ -1,0 +1,39 @@
+{% load static %}
+{% load json_script %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráfico de Estadísticas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <canvas id="grafico"></canvas>
+
+    {% comment "Cargar los datos en formato JSON" %}
+    {{ labels|json_script:"labels-data" }}
+    {{ valores|json_script:"valores-data" }}
+
+    <script>
+        const labels = JSON.parse(document.getElementById('labels-data').textContent);
+        const valores = JSON.parse(document.getElementById('valores-data').textContent);
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Cantidad por tipo',
+                data: valores,
+                backgroundColor: ['#36a2eb', '#ff6384', '#ffcd56', '#4bc0c0']
+            }]
+        };
+
+        new Chart(document.getElementById('grafico'), {
+            type: 'bar',
+            data: data
+        });
+    </script>
+
+</body>
+</html>

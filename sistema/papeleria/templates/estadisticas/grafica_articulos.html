@@ -1,0 +1,70 @@
+{% block content %}
+<div class="estadisticas-container">
+    <div style="width: 80%; max-width: 800px;">
+        <h2 class="text-center">Gráfica de Artículos por Porcentaje</h2>
+        <canvas id="graficaArticulos"></canvas>
+    </div>
+</div>
+
+<!-- JSON oculto -->
+{{ nombres|json_script:"labels-data" }}
+{{ cantidades|json_script:"cantidades-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Obtener datos desde JSON
+    const nombres = JSON.parse(document.getElementById('labels-data').textContent);
+    const cantidadesAbsolutas = JSON.parse(document.getElementById('cantidades-data').textContent);
+
+    // Calcular porcentajes
+    const total = cantidadesAbsolutas.reduce((a, b) => a + b, 0);
+    const cantidadesPorcentaje = cantidadesAbsolutas.map(c => ((c / total) * 100).toFixed(2));
+
+    // Configuración de la gráfica
+    const ctx = document.getElementById('graficaArticulos').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Porcentaje',
+                data: cantidadesPorcentaje,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                barThickness: 'flex',
+                maxBarThickness: 30,
+                categoryPercentage: 0.4,
+                barPercentage: 1.0
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Porcentaje (%)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%'; // Agrega el símbolo de porcentaje en los ticks
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y + '%'; // Muestra porcentaje en el tooltip
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

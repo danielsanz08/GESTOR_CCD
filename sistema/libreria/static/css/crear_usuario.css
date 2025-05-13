@@ -1,0 +1,60 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+  }
+  .formulario{
+    background: rgba(19, 104, 161, 0.411);
+    position: absolute;
+    top: 28vh;
+    left: 32vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    height: 50vh;
+}
+#userForm{
+    background-color: rgba(255, 255, 255, 0);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    padding: 30px 30px 30px 30px;
+    height: 30vh;
+    margin-top: -5vh;
+  
+}
+input, .form-select{
+    margin-bottom: 15vh;
+    margin-right: 5px;
+    border: none;
+    border-radius: 20px;
+    height: 4vh;
+    width: 35vh;
+    margin: 10px 30px 30px 30px;
+}
+label{
+    display: block;
+    margin: 10px 30px 0px 30px;
+}
+btn{
+    background-color: rgb(255, 30, 0);
+    color: white;
+    font-weight: bold;
+    border: none;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 13vh;
+    top: 47vh;
+    cursor: pointer;
+}
+h2{
+    text-align: center;
+}

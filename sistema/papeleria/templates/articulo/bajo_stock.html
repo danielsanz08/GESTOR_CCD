@@ -1,0 +1,42 @@
+{% extends 'navbar.html' %}
+{% load static%}
+{% block titulo %}Stock bajo {% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/stock_bajo.css' %}?v={% now 'U' %}">
+<section>
+    <table>
+        <h2>Articulos con stock bajo</h2>
+        <thead>
+            <tr>
+                <th class="id">ID</th>
+                <th class="nombre">Nombre</th>
+                <th class="marca">Marca</th>
+                <th class="cantidad">cantidad</th>
+                <th class="precio">Precio</th>
+                <th class="estado">Registrado por</th>
+                <th class="actividad">Fecha de registro</th>
+                <th class="observacion">Observacion</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for articulo in articulos %}
+        <tr>
+            <td>{{ articulo.id }}</td>
+        <td>{{ articulo.nombre }}</td>
+        <td>{{ articulo.marca }}</td>
+        <td>{{ articulo.cantidad }}</td>
+        <td>${{ articulo.precio }}</td>
+        <td>{{ articulo.registrado_por }}</td>
+        <td>{{ articulo.fecha_registro }}</td>
+        <td>{{ articulo.observacion }}</td>
+        
+    </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No se encontraron resultados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</section>
+{% endblock %}

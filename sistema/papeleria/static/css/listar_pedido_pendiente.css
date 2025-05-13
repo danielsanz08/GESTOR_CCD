@@ -1,0 +1,95 @@
+section {
+  background: rgba(19, 104, 161, 0.411);
+  position: relative;
+  top: 23vh;
+  left: 9vh;
+  text-align: center;
+  padding: 10px 20px 20px 20px;
+  width: 190vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+
+
+}
+
+table {
+  width: 180vh;
+  border-spacing: 10px;
+
+}
+
+.id,
+.nombre,
+.pedido,
+.estado,
+.accion {
+  left: 20vh;
+  background-color: #3d2be269;
+  border-radius: 10px;
+}
+
+td {
+  background-color: rgba(46, 151, 151, 0.384);
+  margin: 20vh 0 20vh 0;
+  border-radius: 10px;
+  height: 5vh;
+  align-items: center;
+
+}
+
+.btn-confirmar {
+  background-color: rgb(12, 233, 23);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  cursor: pointer;
+  height: 5vh; padding: 5px;
+}
+.btn-confirmar:hover {
+   background-color: rgb(6, 148, 13);
+   color: black;
+}
+.btn-cancelar {
+  background-color: rgb(233, 12, 12);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  cursor: pointer;
+  height: 5vh; padding: 5px;
+}
+.btn-cancelar:hover {
+   background-color: rgb(148, 6, 6);
+   color: black;
+}
+.icono {
+  height: 3vh;
+ 
+}
+.buscador {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  height: 5vh;
+  width: 50vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.btn-search {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  cursor: pointer;
+  height: 5vh; 
+  padding: 5px;
+  position: absolute;
+  top: 12.5vh;
+  right: 61vh;
+}
+
+.btn-search:hover {
+  background-color: #044080;
+
+}

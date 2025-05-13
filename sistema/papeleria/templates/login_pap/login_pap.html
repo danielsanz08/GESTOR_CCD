@@ -1,0 +1,28 @@
+{% extends 'navbar.html' %}
+{% load static%}
+{% block contenido %}
+<style>
+ 
+</style>
+<link rel="stylesheet" href="{% static 'css/login_pap.css' %}?v={% now 'U' %}">
+<form method="POST" action="{% url 'papeleria:login_papeleria' %}" class="login">
+    <h3><i data-feather="user"></i>
+        Iniciar sesión - Módulo papeleria</h3>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="email" class="email-label">Correo Electrónico</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required>
+    </div>
+    <div class="form-group">
+        <label for="password" class="password-label">Contraseña</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" id="btn">Iniciar sesión</button>
+    <div class="op">
+        <a href="{% url 'libreria:crear_usuario' %}">Registrarse</a>
+        <a href="{% url 'libreria:password_reset' %}">¿Olvidaste la contraseña?</a>
+    </div>
+</form>
+
+
+{% endblock %}

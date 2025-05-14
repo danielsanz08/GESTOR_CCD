@@ -113,9 +113,11 @@
         <td>{{ articulo.fecha_formateada }}</td>
         <td>{{ articulo.observacion_formateada }}</td>
         <td class="td_acciones">
-            <a href="{% url 'papeleria:editar_articulo' articulo.id %}"><button class="editar-btn"><i data-feather="edit" class="icono"></i></button></a>
+            <a href="{% url 'papeleria:editar_articulo' articulo.id %}"><button class="editar-btn"><i class="bi bi-pencil-square" aria-hidden="true"></i>
+</button></a>
             <button class="eliminar-btn" onclick="mostrarModal('{{ articulo.id }}')">
-                <i data-feather="trash-2" class="icono"></i>
+                <i class="bi bi-trash" aria-hidden="true"></i>
+
             </button>
             
         </td>
@@ -127,8 +129,7 @@
         {% endfor %}
     </tbody>
 </table>
-<div class="paginacion" style="text-align: center;
-  margin-top: 20px;">
+<div class="paginacion" id="pag">
     {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}" id="prev" >Anterior</a>
     {% endif %}

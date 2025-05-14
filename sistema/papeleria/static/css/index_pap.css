@@ -58,7 +58,7 @@ body {
 .opcion:hover {
     transform: translateY(-10px);
     box-shadow: 0 12px 40px rgba(17, 0, 255, 0.2);
-    border-color: #0400ff;
+    border: 2px solid rgb(14, 79, 133);
     background: linear-gradient(to bottom,#1cabd6, #1791b68e);
 }
 

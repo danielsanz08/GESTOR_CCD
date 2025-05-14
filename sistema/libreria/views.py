@@ -316,8 +316,8 @@ def reporte_usuario_pdf(request):
     # Encabezado empresa
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
     encabezado_data = [
-        ["GESTOR CCD", "Lista de artículos", "Correo:", f"Fecha: {fecha_actual}"],
-        ["Cámara de comercio de Duitama", "Nit: 123456789", "contacto@gestorccd.com", "Teléfono: (123) 456-7890"],
+        ["GESTOR CCD", "Lista de usuarios", "Correo: gestorccd@gmail.com", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "(Correo de la camara)", "Teléfono: (tel. camara)"],
     ]
     tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
     estilo_encabezado = TableStyle([
@@ -336,7 +336,7 @@ def reporte_usuario_pdf(request):
 
     # Tabla usuario
     usuario = request.user
-    data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
+    data_usuario = [["Usuario:", "Email:", "Rol:", "Cargo:"]]
     data_usuario.append([
         usuario.username,
         usuario.email,
@@ -380,7 +380,7 @@ def reporte_usuario_pdf(request):
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('GRID', (0, 0), (-1, -1), 1, colors.black)
     ])
     tabla_articulos.setStyle(style_articulos)
@@ -391,7 +391,7 @@ def reporte_usuario_pdf(request):
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="articulos.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Lista de usuarios Gestor CCD.pdf"'
     return response
 
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -399,26 +399,39 @@ from openpyxl import Workbook
 from openpyxl.drawing.image import Image
 
 def reporte_usuario_excel(request):
+    # Crear un nuevo libro de trabajo de Excel
     wb = Workbook()
     ws = wb.active
     ws.title = "Artículos"
 
-    # Ajustar el ancho de columnas A y B para que quepa el logo
+    # Ajustar el ancho de las columnas A y B para que quepa el logo
     ws.column_dimensions['A'].width = 25
     ws.column_dimensions['B'].width = 25
 
     # Ajustar la altura de la fila 1 para el logo
     ws.row_dimensions[1].height = 90
 
-    # Agregar el logo
-    logo_path = finders.find('imagen/logo.png')
-    img = Image(logo_path)
-    img.height = 80
-    img.width = 200
-    ws.add_image(img, 'A1')
+    # Estilo de borde delgado
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+# Agregar el logo
+    logo_path = finders.find('imagen/logo.png')  # Ajustar ruta según ubicación real
+    if logo_path:
+        img = Image(logo_path)
+        img.height = 80
+        img.width = 200
+        ws.add_image(img, 'A1')
+        ws.merge_cells('A1:B1')
 
-    # Fusionar celdas A1 y B1 para que el logo ocupe espacio visualmente
-    ws.merge_cells('A1:B1')
+    # Aplicar bordes a las celdas del logo (A1 y B1)
+    for col in ['A', 'B']:
+        cell = ws[f'{col}1']
+        cell.border = border
+
 
     # Título principal
     ws.merge_cells('C1:F1')
@@ -426,69 +439,70 @@ def reporte_usuario_excel(request):
     ws['C1'].font = Font(size=24, bold=True)
     ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Subtítulo
-    ws.merge_cells('A2:G2')
-    ws['A2'] = "Listado de Artículos"
+    # Aplicar borde a las celdas del título
+    for col in ['C', 'D', 'E', 'F']:
+        cell = ws[f'{col}1']
+        cell.border = border
+
+   # Subtítulo
+    ws.merge_cells('A2:F2')
+    ws['A2'] = "Listado de usuarios Gestor CCD"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
+# Aplicar borde a las celdas del subtítulo
+    for col in ['A', 'B', 'C', 'D', 'E', 'F']:
+        cell = ws[f'{col}2']
+        cell.border = border
+
     # Encabezados de la tabla
-    headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
+    headers = ["ID", "Usuario", "Rol", "Correo", "Cargo", "Estado"]
     ws.append(headers)
 
     # Estilo para los encabezados
-    header_fill = PatternFill(start_color="01AB7B", end_color="01AB7B", fill_type="solid")
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
     for cell in ws[3]:
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
 
-    # Bordes
-    border = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
-    )
-
-    # Agregar datos
-    usuario = CustomUser.objects.all()
-    estado = "Activo" if usuario.is_active else "Inactivo"
+    # Agregar datos de los usuarios
     for usuario in CustomUser.objects.all():
+        estado = "Activo" if usuario.is_active else "Inactivo"
         ws.append([
             usuario.id,
             usuario.username,
             usuario.role,
             usuario.email,
-            usuario.cargo,
-             "Activo" if usuario.is_active else "Inactivo"
+            usuario.cargo,  # Asegúrate de que este campo exista en tu modelo
+            estado
         ])
 
-    # Ajustar ancho de columnas
+    # Ajustar el ancho de las columnas
     ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 20
+    ws.column_dimensions['B'].width = 40
     ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 15
-    ws.column_dimensions['E'].width = 15
+    ws.column_dimensions['D'].width = 40
+    ws.column_dimensions['E'].width = 50
     ws.column_dimensions['F'].width = 15
-    ws.column_dimensions['G'].width = 30
 
-    # Aplicar estilo a celdas de datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
+    # Aplicar estilo a las filas de datos
+    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=6):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center')
             cell.border = border
 
-    # Altura de filas para los títulos
+    # Ajustar la altura de las filas del encabezado y subtítulo
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Preparar la respuesta
+    # Preparar la respuesta para descargar el archivo
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte_articulos.xlsx"'
-    return response
+    response['Content-Disposition'] = 'attachment; filename="Lista de usuarios Gestor CCD.xlsx"'
 
+    # Guardar el archivo en la respuesta
     wb.save(response)
     return response

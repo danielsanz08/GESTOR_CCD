@@ -47,6 +47,7 @@
 
 
 <section>
+    <h1>Usuarios de Papelería</h1>
     <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
         <input type="text" name="q" id="buscador" placeholder="Buscar ..." class = "buscador "value="{{ request.GET.q }}">
         <button type="submit" class="btn-search"><i data-feather="search" class="icono"></i></button>
@@ -54,11 +55,10 @@
     
     <div class="Botones">
         <button class="print"><i class="bi bi-printer" id="icono"></i></button>
-        <a href="{% url 'papeleria:reporte_usuario_pdf' %}"><button class="pdf"><i class="fas fa-file-pdf text-white"></i></button></a>
+        <a href="{% url 'libreria:reporte_usuario_pdf' %}"><button class="pdf"><i class="fas fa-file-pdf text-white"></i></button></a>
         <a href="{% url 'libreria:reporte_usuario_excel' %}"><button class="excel"><i class="fas fa-file-excel text-white"></i></button></a>
     </div>
     
-    <h1>Usuarios de Papelería</h1>
     <table>
         <thead>
             <tr>
@@ -105,7 +105,7 @@
         </tbody>
         
     </table>
-    <div class="paginacion">
+    <div class="paginacion" id="pag">
         {% if usuarios.has_previous %}
             <a href="?page=={{ usuarios.previous_page_number }}">Anterior</a>
         {% endif %}

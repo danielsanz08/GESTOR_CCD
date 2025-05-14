@@ -109,17 +109,18 @@
                     </ul>
                 </div>
             </td>
-            <td>
+            
                 {% if user.perfil.rol == 'Administrador' and pedido.estado == 'pendiente' %}
-                <form method="POST" action="{% url 'cambiar_estado_pedido' pedido.id %}">
+                <td><form method="POST" action="{% url 'cambiar_estado_pedido' pedido.id %}">
                     {% csrf_token %}
                     <button type="submit" name="estado" value="confirmado" class="btn-accion">Confirmar</button>
                     <button type="submit" name="estado" value="cancelado" class="btn-accion cancelar">Cancelar</button>
                 </form>
                 {% else %}
                     
-                {% endif %}
-            </td>
+                {% endif %}</td>
+                
+            
         </tr>
         {% empty %}
         <tr>

@@ -331,7 +331,8 @@ def reporte_articulo_excel(request):
     ws.append(headers)
 
     # Estilo para los encabezados
-    header_fill = PatternFill(start_color="01AB7B", end_color="01AB7B", fill_type="solid")
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+
     for cell in ws[3]:
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
@@ -568,6 +569,7 @@ def estadisticas_articulos(request):
 def graficas_articulos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
         {'name': 'Grafico de articulos', 'url': reverse('papeleria:graficas_articulos')}, 
     ]
     articulos = Articulo.objects.all()

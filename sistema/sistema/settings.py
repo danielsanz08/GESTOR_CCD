@@ -24,15 +24,15 @@ SESSION_COOKIE_AGE = 600  # La sesión expira después de 10 minutos
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "gestorccd@gmail.com"
-EMAIL_HOST_PASSWORD = "utdf dxyn btiz dgjv" 
+EMAIL_HOST_PASSWORD = "utdf dxyn btiz dgjv"  # tu contraseña de aplicación
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-PASSWORD_RESET_TIMEOUT = 300  # 1 hour in seconds
+PASSWORD_RESET_TIMEOUT = 300  # 5 minutos
 
 
 # Application definition

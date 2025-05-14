@@ -55,23 +55,49 @@ def crear_usuario(request):
 
                     limits = {'Papeleria': 3, 'Cafeteria': 2, 'Centro de eventos': 1}
                     if module in limits and admin_count >= limits[module]:
-                        messages.error(request, f"Ya existen {limits[module]} administradores en el módulo {module}.")
+                        messages.error(
+                            request,
+                            f"Ya existen {limits[module]} administradores en el módulo {module}."
+                        )
                         return redirect('crear_usuario')
 
                 # Guardar el usuario
                 user.save()
 
-           
                 # Enviar correo a los administradores del mismo módulo
                 admin_emails = CustomUser.objects.filter(
                     role='Administrador', module=module, is_active=True
                 ).values_list('email', flat=True)
+
                 cargo = request.POST.get("cargo", "").strip()
-                email = request.POST.get("email", "").strip()
+                email = user.email  # Se obtiene directamente del objeto user
+
                 if admin_emails:
                     subject = f"Nuevo usuario creado en {module}"
-                    message = f"Hola querido usuario,\n\nPor parte de Gestor CCD, te informamos que se ha creado un nuevo usuario. \n\n Información:\n\n Nombre: {user.username} \n Rol: {role} Módulo: {module}\n Cargo: {cargo}\n Email: {email}\n\nEn caso de ser infiltrado, por favor te invitamos a desactivarlo.\n\nMuchas gracias por su atención. El director de Gestor CCD te desea un feliz día."
-                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, list(admin_emails))
+                    message = (
+                        f"Hola querido usuario,\n\n"
+                        f"Por parte de Gestor CCD, te informamos que se ha creado un nuevo usuario.\n\n"
+                        f"Información:\n\n"
+                        f"Nombre: {user.username}\n"
+                        f"Rol: {role}\n"
+                        f"Módulo: {module}\n"
+                        f"Cargo: {cargo}\n"
+                        f"Email: {email}\n\n"
+                        f"En caso de ser infiltrado, por favor te invitamos a desactivarlo.\n\n"
+                        f"Muchas gracias por su atención.\n"
+                        f"El director de Gestor CCD te desea un feliz día."
+                    )
+                    try:
+                        send_mail(
+                            subject,
+                            message,
+                            settings.DEFAULT_FROM_EMAIL,
+                            list(admin_emails),
+                            fail_silently=False,
+                        )
+                        print("Correo enviado correctamente.")
+                    except Exception as e:
+                        messages.error(request, f"No se pudo enviar el correo: {e}")
 
                 messages.success(request, f"Usuario '{user.username}' creado exitosamente.")
                 return redirect('libreria:inicio')
@@ -82,12 +108,14 @@ def crear_usuario(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-
     else:
         form = CustomUserForm()
 
-    return render(request, 'usuario/crear_usuario.html', {'form': form, 'admin_exists': admin_exists, 'breadcrumbs': breadcrumbs})
-
+    return render(request, 'usuario/crear_usuario.html', {
+        'form': form,
+        'admin_exists': admin_exists,
+        'breadcrumbs': breadcrumbs
+    })
 
 def ver_usuario(request, user_id):
     breadcrumbs = [
@@ -168,8 +196,6 @@ def cambiar_contraseña(request):
         form = CustomPasswordChangeForm(user=request.user)
 
     return render(request, 'usuario/cambiar_contraseña.html', {'form': form, 'breadcrumbs': breadcrumbs})
-import socket  # 👈 Para capturar errores de red
-from smtplib import SMTPException
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -181,15 +207,11 @@ def password_reset_request(request):
                 reverse("libreria:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
             )
 
-            # Enviar correo con el enlace de restablecimiento
             subject = "Restablecer tu contraseña"
             message = render_to_string("password_reset_email.html", {"reset_link": reset_link})
 
-            try:
-                send_mail(subject, message, "noreply@tuweb.com", [user.email])
-            except (socket.gaierror, socket.timeout, TimeoutError, SMTPException) as e:
-                print(f"Error al enviar el correo: {e}")  # Solo para depuración
-                return render(request, "lan_error.html")  # 👈 Tu plantilla personalizada
+            # Aquí NO capturamos errores de red
+            send_mail(subject, message, "noreply@tuweb.com", [user.email])
 
             return redirect(reverse("libreria:password_reset_done") + "?sent=true")
 
@@ -279,16 +301,16 @@ def reporte_usuario_pdf(request):
                             leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
 
     # Metadatos
-    doc.title = "Listado de Artículos CCD"
+    doc.title = "Listado de usuarios CCD"
     doc.author = "CCD"
-    doc.subject = "Listado de artículos"
+    doc.subject = "Listado de usuarios"
     doc.creator = "Sistema de Gestión CCD"
 
     elements = []
     styles = getSampleStyleSheet()
 
     # Título
-    titulo = Paragraph("REPORTE DE ARTÍCULOS", styles["Title"])
+    titulo = Paragraph("REPORTE DE USUARIOS", styles["Title"])
     elements.append(titulo)
 
     # Encabezado empresa

@@ -25,7 +25,7 @@ urlpatterns = [
 
     path('validar_datos/', views.validar_datos, name='validar_datos'),
     path('api/validate-password/', views.validate_password, name='validate_password'),
-    path('reporte_articulo_pdf/', views.reporte_usuario_pdf, name='reporte_articulo_pdf'),
+    path('reporte_usuario_pdf/', views.reporte_usuario_pdf, name='reporte_usuario_pdf'),
     path('reporte_usuario_excel/', views.reporte_usuario_excel, name='reporte_usuario_excel'),
 ]
 

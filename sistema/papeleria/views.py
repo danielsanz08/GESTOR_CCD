@@ -422,8 +422,8 @@ def crear_pedido(request):
 
                 # Si el pedido está confirmado, verificar el stock de los artículos
                 if estado == 'confirmado':
-                    if articulo.stock >= cantidad:
-                        articulo.stock -= cantidad
+                    if articulo.cantidad >= cantidad:
+                        articulo.cantidad -= cantidad
                         articulo.save()
                     else:
                         pedido.delete()
@@ -566,6 +566,10 @@ def estadisticas_articulos(request):
         'total_cantidad': total_cantidad,
     })
 def graficas_articulos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Grafico de articulos', 'url': reverse('papeleria:graficas_articulos')}, 
+    ]
     articulos = Articulo.objects.all()
     nombres = [art.nombre for art in articulos]
     cantidades = [art.cantidad for art in articulos]
@@ -573,4 +577,5 @@ def graficas_articulos(request):
     return render(request, 'estadisticas/grafica_articulos.html', {
         'nombres': nombres,
         'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
     })

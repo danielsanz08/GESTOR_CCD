@@ -8,6 +8,7 @@ class Articulo(models.Model):
     tipo = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
     precio = models.PositiveBigIntegerField(null=False, blank=False)
     cantidad = models.PositiveIntegerField()
+    proveedor = models.CharField(max_length=100, null=False, blank=False)
     registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,blank=True)
     fecha_registro = models.DateField(auto_now=True)
 

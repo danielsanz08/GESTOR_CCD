@@ -6,6 +6,7 @@ body {
   margin: 0;
   padding: 0;
   position: fixed;
+  background-color: #1c96bb2a;
 }
 /* NAVBAR */
 .navbar {
@@ -34,6 +35,7 @@ body {
     width: 100%;
     height: 70%;
     z-index: -1;
+    
 }
 
 /* BOTÓN DE ACCESIBILIDAD */

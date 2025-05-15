@@ -12,7 +12,7 @@ class LoginForm(forms.Form):
 class ArticuloForm(forms.ModelForm):
     class Meta:
         model = Articulo
-        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo']
+        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo', 'proveedor']
 
     def clean_precio(self):
         # Limpiar las comas solo si 'precio' es una cadena
@@ -27,7 +27,7 @@ class ArticuloForm(forms.ModelForm):
 class ArticuloEditForm(forms.ModelForm):    
     class Meta:
         model = Articulo
-        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo']
+        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo', 'proveedor']
     def __init__(self, *args,**kwargs):
         super(ArticuloEditForm, self).__init__(*args, **kwargs)
         # Hace que los campos sean opcionales
@@ -37,6 +37,7 @@ class ArticuloEditForm(forms.ModelForm):
         self.fields['precio'].widget.attrs.update({'class':'form-control', 'placeholder': 'Precio del  articulo'})
         self.fields['cantidad'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cantidad de articulo'})
         self.fields['tipo'].widget.attrs.update({'class':'form-control', 'placeholder': 'Tipo de articulo'})
+        self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
 
     def clean(self):
         cleaned_data = super().clean()

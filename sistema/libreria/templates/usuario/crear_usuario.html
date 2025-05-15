@@ -17,22 +17,22 @@ Crear usuario papelería
     .error-password{
         white-space: pre-line;
     }
-    .error-nombre { top: 24vh; left: 13vh; }
-    .error-cargo { top: 39vh; left: 13vh; }
-    .error-email { top: 39vh; left: 61vh; }
-    .error-password { top: 39vh; right: 8vh; }
+    .error-nombre { top: 27vh; left: 13vh; }
+    .error-cargo { top: 43vh; left: 13vh; }
+    .error-email { top: 43vh; left: 111vh; }
+    .error-password { top: 59vh; left: 11vh; }
 
     button[type="submit"] {
-        background-color: rgb(0, 58, 218);
-        color: white;
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
         font-weight: bold;
-        border: none;
+        border: 2px solid black;
         height: 6vh;
         width: 35vh;
         border-radius: 20px;
         position: absolute;
         left: 57vh;
-        top: 47vh;
+        top: 52vh;
         cursor: pointer;
     }
 
@@ -132,7 +132,19 @@ Crear usuario papelería
                    placeholder="Ingrese su cargo">
             <div id="error_cargo" class="error-cargo"></div>
         </div>
-
+        <div class="mb-3">
+            <label for="id_area" class="form-label">Área:</label>
+            <select id="id_area" name="area" class="form-select" required>
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="Administrativa">Administrativa</option>
+                <option value="Comunicaciones">Comunicaciones</option>
+                <option value="Registros públicos">Registros públicos</option>
+                <option value="Gestión empresarial">Gestión empresarial</option>
+                <option value="Competitividad">Competitividad</option>
+                <option value="Presidencia">Presidencia</option>
+                <option value="Financiera">Financiera</option>
+            </select>
+        </div>
         <div class="mb-3">
             <label for="id_email" class="form-label">Correo:</label>
             <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
@@ -147,7 +159,7 @@ Crear usuario papelería
             <div id="error_password" class="error-password"></div>
         </div>
 
-        <button type="submit" id="btn" class="btn">Guardar Usuario</button>
+        <button type="submit" id="btn" class="btn">Registrar</button>
     </form>
 </div>
 
@@ -244,7 +256,7 @@ Crear usuario papelería
             const value = password.value;
 
             if (value.length < 6) {
-                errorPassword.textContent = 'La contraseña debe tener al menos 6 caracteres,\n 1 mayúscula, 1 minúscula, signos de puntuación\n y números';
+                errorPassword.textContent = 'Debe tener al menos 6 caracteres, 1 mayúscula,\n 1 minúscula, signos de puntuación y números';
             } else if (repeatedCharRegex.test(value)) {
                 errorPassword.textContent = 'No se permiten 3 caracteres iguales seguidos';
             } else {

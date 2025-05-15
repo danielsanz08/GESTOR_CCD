@@ -4,7 +4,8 @@
     top: 10.5vh;
     border: none;
     border-radius: 15px;
-    background: rgba(19, 104, 161, 0.411);
+    background: rgba(255, 255, 255, 0.822);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
     display: flex;

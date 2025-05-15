@@ -9,7 +9,7 @@ class CustomUserForm(forms.ModelForm):
     
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'role', 'cargo', 'module', 'password']
+        fields = ['username', 'email', 'role', 'cargo', 'module', 'password', 'area']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserForm, self).__init__(*args, **kwargs)
@@ -20,6 +20,7 @@ class CustomUserForm(forms.ModelForm):
         self.fields['role'].widget.attrs.update({'class': 'form-select'})
         self.fields['cargo'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cargo'})
         self.fields['module'].widget.attrs.update({'class': 'form-select'})
+        self.fields['area'].widget.attrs.update({'class': 'form-select'})
 
         # Si el usuario ya existe, deshabilitar el campo 'module' (no puede cambiar su módulo)
         if self.instance.pk:
@@ -48,7 +49,7 @@ class CustomUserForm(forms.ModelForm):
 class CustomUserEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'role', 'cargo', 'module']
+        fields = ['username', 'email', 'role', 'cargo', 'module', 'area']
 
     def __init__(self, *args, **kwargs):
         super(CustomUserEditForm, self).__init__(*args, **kwargs)
@@ -63,6 +64,7 @@ class CustomUserEditForm(forms.ModelForm):
         self.fields['role'].widget.attrs.update({'class': 'form-select'})
         self.fields['module'].widget.attrs.update({'class': 'form-select'})
         self.fields['cargo'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cargo'})
+        self.fields['area'].widget.attrs.update({'class': 'form-select'})
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

@@ -9,15 +9,19 @@ body, html {
     align-items: center;
     background-color: #80808000; /* Gris de fondo si la imagen no carga */
   }
+   html, body{
+      background-color: #86cfe61c;
+    }
   .formulario{
-    background: rgba(19, 104, 161, 0.411);
+    background: rgba(255, 255, 255, 0.822);
+ 
     position: absolute;
-    top: 28vh;
+    top: 20vh;
     left: 32vh;
     padding: 20px 20px 20px 20px;
     border-radius: 20px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    height: 50vh;
+    height: 60vh;
 }
 #userForm{
     background-color: rgba(255, 255, 255, 0);
@@ -26,7 +30,7 @@ body, html {
     grid-template-rows: repeat(2, auto);
     padding: 30px 30px 30px 30px;
     height: 30vh;
-    margin-top: -5vh;
+    margin-top: -2vh;
   
 }
 input, .form-select{
@@ -37,13 +41,15 @@ input, .form-select{
     height: 4vh;
     width: 35vh;
     margin: 10px 30px 30px 30px;
+    border: 1px solid black;
 }
+
 label{
     display: block;
     margin: 10px 30px 0px 30px;
 }
 btn{
-    background-color: rgb(255, 30, 0);
+    
     color: white;
     font-weight: bold;
     border: none;
@@ -52,7 +58,7 @@ btn{
     border-radius: 20px;
     position: absolute;
     left: 13vh;
-    top: 47vh;
+    top: -2vh;
     cursor: pointer;
 }
 h2{

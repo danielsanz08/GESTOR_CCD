@@ -34,9 +34,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('Cafeteria', 'Cafetería'),
         ('Centro de eventos', 'Centro de eventos')
     ]
+    AREA = [
+        ('Administrativa', 'Administrativa' ),
+        ('Comunicaciones', 'Comunicaciones' ),
+        ('Registros públicos', 'Registros públicos' ),
+        ('Gestión empresarial', 'Gestión empresarial' ),
+        ('Competitividad', 'Competitividad' ),
+        ('Presidencia', 'Presidencia' ),
+        ('Financiera', 'Financiera' ),
+    ]
     username = models.CharField(max_length=100, unique=False)
     email = models.EmailField(unique=True, blank=False, null=False)
     role = models.CharField(max_length=13, choices=ROLES, default='Empleado')
+    area = models.CharField(max_length=30, choices=AREA,default='Administrativa' )
     cargo = models.CharField(max_length=50, default='No establecido')
     module = models.CharField(max_length=30, choices=MODULES, default='papeleria')
     is_active = models.BooleanField(default=True)

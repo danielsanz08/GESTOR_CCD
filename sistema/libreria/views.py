@@ -359,7 +359,7 @@ def reporte_usuario_pdf(request):
     elements.append(table_usuario)
 
     # Tabla artículos
-    data_usuarios = [["ID", "Usuario", "Rol", "correo", "Cargo", "Estado"]]
+    data_usuarios = [["ID", "Usuario", "Rol", "correo", "Cargo", "Área", "Estado"]]
     estado = "Activo" if usuario.is_active else "Inactivo"
     for usuario in CustomUser.objects.all():
         data_usuarios.append([
@@ -368,9 +368,10 @@ def reporte_usuario_pdf(request):
             usuario.role,
             usuario.email,
             usuario.cargo,
+            usuario.area,
              "Activo" if usuario.is_active else "Inactivo"
         ])
-    tabla_articulos = Table(data_usuarios, colWidths=[30, 100, 100, 190, 220, 80])
+    tabla_articulos = Table(data_usuarios, colWidths=[20, 100, 80, 180, 220, 80, 40])
     style_articulos = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
@@ -434,29 +435,29 @@ def reporte_usuario_excel(request):
 
 
     # Título principal
-    ws.merge_cells('C1:F1')
+    ws.merge_cells('C1:G1')
     ws['C1'] = "GESTOR CCD"
     ws['C1'].font = Font(size=24, bold=True)
     ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
 
     # Aplicar borde a las celdas del título
-    for col in ['C', 'D', 'E', 'F']:
+    for col in ['C', 'D', 'E', 'F', 'G']:
         cell = ws[f'{col}1']
         cell.border = border
 
    # Subtítulo
-    ws.merge_cells('A2:F2')
+    ws.merge_cells('A2:G2')
     ws['A2'] = "Listado de usuarios Gestor CCD"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
 # Aplicar borde a las celdas del subtítulo
-    for col in ['A', 'B', 'C', 'D', 'E', 'F']:
+    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
         cell = ws[f'{col}2']
         cell.border = border
 
     # Encabezados de la tabla
-    headers = ["ID", "Usuario", "Rol", "Correo", "Cargo", "Estado"]
+    headers = ["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]
     ws.append(headers)
 
     # Estilo para los encabezados
@@ -475,7 +476,8 @@ def reporte_usuario_excel(request):
             usuario.username,
             usuario.role,
             usuario.email,
-            usuario.cargo,  # Asegúrate de que este campo exista en tu modelo
+            usuario.cargo,
+            usuario.area,
             estado
         ])
 
@@ -485,10 +487,12 @@ def reporte_usuario_excel(request):
     ws.column_dimensions['C'].width = 20
     ws.column_dimensions['D'].width = 40
     ws.column_dimensions['E'].width = 50
-    ws.column_dimensions['F'].width = 15
+    ws.column_dimensions['F'].width = 20
+    ws.column_dimensions['G'].width = 15
+
 
     # Aplicar estilo a las filas de datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=6):
+    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center')
             cell.border = border

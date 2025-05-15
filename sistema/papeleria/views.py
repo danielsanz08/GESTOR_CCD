@@ -118,6 +118,7 @@ def listar_articulo(request):
             Q(observacion__icontains=query) |
             Q(tipo__icontains=query) |
             Q(precio__icontains=query) |
+            Q(proveedor__icontains=query) |
             Q(cantidad__icontains=query) |
             Q(registrado_por__username__icontains=query)
         )
@@ -138,7 +139,7 @@ def buscar_articulo(request):
     query = request.GET.get('q', '').strip()
     if query:
         articulos = Articulo.objects.filter(nombre__icontains=query).values(
-            'id', 'nombre', 'marca', 'observacion', 'precio', 'registrado_por', 'fecha_formateada'
+            'id', 'nombre', 'marca', 'observacion', 'precio', 'registrado_por', 'fecha_formateada', 'proveedor'
         )
         return JsonResponse(list(articulos), safe=False)
     return JsonResponse([], safe=False)

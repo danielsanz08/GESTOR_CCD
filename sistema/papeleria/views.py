@@ -397,37 +397,31 @@ def crear_pedido(request):
     ] 
 
     if request.method == 'POST':
-        # Determina el estado del pedido dependiendo del rol del usuario
-        if request.user.role == 'Administrador':
-            estado = 'confirmado'
-        else:
-            estado = 'pendiente'
+        estado = 'confirmado' if request.user.role == 'Administrador' else 'pendiente'
+        area_usuario = request.user.area
 
-        # Crear el pedido
         pedido = Pedido.objects.create(registrado_por=request.user, estado=estado)
-
-        # Obtener los artículos y cantidades seleccionadas
         articulos = request.POST.getlist('articulo')
         cantidades = request.POST.getlist('cantidad')
+        tipos_seleccionados = request.POST.getlist('tipo_articulo')
 
-        for articulo_id, cantidad in zip(articulos, cantidades):
-            if articulo_id and cantidad:
-                cantidad = int(cantidad)
-                articulo = Articulo.objects.get(id=articulo_id)
+        resumen_articulos = []  # Para el correo
 
-                # Crear la relación entre el pedido y los artículos
-                PedidoArticulo.objects.create(
-                    pedido=pedido,
-                    articulo=articulo,
-                    cantidad=cantidad
-                )
+        for idx, (articulo_id, cantidad, tipo_id) in enumerate(zip(articulos, cantidades, tipos_seleccionados)):
+            if articulo_id and cantidad and tipo_id:
+                if articulo_id != tipo_id:
+                    pedido.delete()
+                    return render(request, 'pedidos/pedidos.html', {
+                        'articulos': Articulo.objects.all(),
+                        'breadcrumbs': breadcrumbs,
+                        'error': f"Error en la línea {idx + 1}: El artículo y el tipo seleccionado no coinciden."
+                    })
 
-                # Si el pedido está confirmado, verificar el stock de los artículos
-                if estado == 'confirmado':
-                    if articulo.cantidad >= cantidad:
-                        articulo.cantidad -= cantidad
-                        articulo.save()
-                    else:
+                try:
+                    cantidad = int(cantidad)
+                    articulo = Articulo.objects.get(id=articulo_id)
+
+                    if estado == 'confirmado' and articulo.cantidad < cantidad:
                         pedido.delete()
                         return render(request, 'pedidos/pedidos.html', {
                             'articulos': Articulo.objects.all(),
@@ -435,11 +429,33 @@ def crear_pedido(request):
                             'error': f"No hay suficiente stock para el artículo: {articulo.nombre}"
                         })
 
+                    PedidoArticulo.objects.create(
+                        pedido=pedido,
+                        articulo=articulo,
+                        cantidad=cantidad,
+                        area=area_usuario
+                    )
+
+                    if estado == 'confirmado':
+                        articulo.cantidad -= cantidad
+                        articulo.save()
+
+                    resumen_articulos.append(f"- {articulo.nombre} × {cantidad}")
+
+                except (ValueError, Articulo.DoesNotExist):
+                    pedido.delete()
+                    return render(request, 'pedidos/pedidos.html', {
+                        'articulos': Articulo.objects.all(),
+                        'breadcrumbs': breadcrumbs,
+                        'error': f"Error al procesar el artículo en la línea {idx + 1}."
+                    })
+
         # Enviar correo a administradores del módulo "Papelería"
         admin_users = User.objects.filter(role='Administrador', module='Papeleria', is_active=True)
         admin_emails = [admin.email for admin in admin_users if admin.email]
 
         if admin_emails:
+            articulos_str = '\n'.join(resumen_articulos)
             subject = "Nuevo pedido registrado por un usuario"
             message = (
                 f"Hola querido administrador,\n\n"
@@ -448,30 +464,37 @@ def crear_pedido(request):
                 f"Información del pedido:\n"
                 f"Usuario: {request.user.username}\n"
                 f"Rol: {request.user.role}\n"
+                f"Área: {request.user.area}\n"
                 f"Módulo: {request.user.module}\n"
                 f"ID del pedido: {pedido.id}\n"
                 f"Estado inicial del pedido: {estado}\n\n"
+                f"Artículos solicitados:\n"
+                f"{articulos_str}\n\n"
                 f"Por favor revisa y confirma el pedido si corresponde.\n\n"
                 f"Gracias por su atención.\n"
                 f"El equipo de Gestor CCD les desea un excelente día."
             )
+
             send_mail(
                 subject,
                 message,
                 settings.DEFAULT_FROM_EMAIL,
-                list(admin_emails),
+                admin_emails,
                 fail_silently=False,
             )
 
-        # Redirigir dependiendo del rol del usuario
         if request.user.role == 'Empleado':
             return redirect('papeleria:pedidos_pendientes')
         else:
             return redirect('papeleria:listado_pedidos')
 
-    # Si la solicitud es GET, mostrar los artículos disponibles
+    # Si la solicitud es GET
     articulos = Articulo.objects.all()
-    return render(request, 'pedidos/pedidos.html', {'articulos': articulos, 'breadcrumbs': breadcrumbs})
+    return render(request, 'pedidos/pedidos.html', {
+        'articulos': articulos,
+        'breadcrumbs': breadcrumbs
+    })
+
 def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -482,6 +505,53 @@ def listado_pedidos(request):
     pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
 
     return render(request, 'pedidos/lista_pedidos.html', {'pedidos': pedidos, 'breadcrumbs': breadcrumbs})
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.conf import settings
+
+@csrf_exempt
+@require_POST
+def cambiar_estado_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        
+        if nuevo_estado:
+            if nuevo_estado == 'confirmado':
+                articulos_del_pedido = pedido.articulos.all()
+                for articulo_pedido in articulos_del_pedido:
+                    articulo = articulo_pedido.articulo
+                    cantidad_pedida = articulo_pedido.cantidad
+
+                    if articulo.cantidad >= cantidad_pedida:
+                        articulo.cantidad -= cantidad_pedida
+                        articulo.save()
+                    else:
+                        messages.error(request, f"No hay suficiente stock de {articulo.nombre}.")
+                        return redirect('papeleria:pedidos_pendientes')
+
+            pedido.estado = nuevo_estado
+            pedido.save()
+
+            usuario = pedido.registrado_por
+            if usuario and usuario.email:
+                estado_legible = nuevo_estado.capitalize()
+                send_mail(
+                    'Actualización de tu pedido',
+                    f"Hola {usuario.username}, este correo es para avisarte que tu pedido fue {estado_legible.lower()}.",
+                    settings.DEFAULT_FROM_EMAIL,
+                    [usuario.email],
+                    fail_silently=False,
+                )
+
+            messages.success(request, 'Estado del pedido actualizado correctamente.')
+            return redirect('papeleria:pedidos_pendientes')
+
+    messages.error(request, 'No se pudo actualizar el estado' \
+    ' del pedido.')
+    return redirect('papeleria:pedidos_pendientes')
+    
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings

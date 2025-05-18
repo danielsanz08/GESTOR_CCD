@@ -45,6 +45,8 @@ class PedidoArticulo(models.Model):
     articulo = models.ForeignKey('Articulo', on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     tipo = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
+    area = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
 
     def __str__(self):
         return f"{self.articulo.nombre} x {self.cantidad} - {self.tipo}"
+

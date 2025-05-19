@@ -3,10 +3,31 @@
 {% block titulo %}Estadisticas - CCD{% endblock %}
 {% block contenido %}
 <style>
-    
+    #grafica {
+        width: 80%;
+        max-width: 800px;
+        position: absolute;
+        top: 20vh;
+        left: 40vh;
+        height: 55vh;
+        z-index: 1; /* Asegura que la gráfica esté encima del cuadrado */
+    }
+
+    #cuadradoFondo {
+        width: 80%;
+        max-width: 800px;
+        background-color: rgb(255, 255, 255); /* Color de fondo, ajustable */
+        position: absolute;
+        top: 29vh; /* Ajustado para centrar detrás de la gráfica */
+        left: 35vh;
+        height: 58vh;
+        z-index: 0; /* Asegura que esté detrás de la gráfica */
+    }
 </style>
-<div class="estadisticas-container">
-    <div style="width: 80%; max-width: 800px;">
+
+<div class="estadisticas-container" >
+    <div id="cuadradoFondo"></div> <!-- Nuevo div cuadrado -->
+    <div id="grafica" >
         <h2 class="text-center">Gráfica de Artículos por Porcentaje</h2>
         <canvas id="graficaArticulos"></canvas>
     </div>
@@ -22,9 +43,14 @@
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidadesAbsolutas = JSON.parse(document.getElementById('cantidades-data').textContent);
 
-    // Calcular porcentajes
-    const total = cantidadesAbsolutas.reduce((a, b) => a + b, 0);
-    const cantidadesPorcentaje = cantidadesAbsolutas.map(c => ((c / total) * 100).toFixed(2));
+    // Definir máximo fijo para calcular porcentaje (por ejemplo, 1000 unidades)
+    const maxCantidad = 100;
+
+    // Calcular porcentaje basado en maxCantidad y limitar máximo a 100%
+    const cantidadesPorcentaje = cantidadesAbsolutas.map(c => {
+        let porcentaje = (c / maxCantidad) * 100;
+        return porcentaje > 100 ? 100 : porcentaje.toFixed(2);
+    });
 
     // Configuración de la gráfica
     const ctx = document.getElementById('graficaArticulos').getContext('2d');
@@ -52,10 +78,10 @@
                     max: 100,
                     title: {
                         display: true,
-                        text: 'Porcentaje (%)'
+                        text: 'Cantidad (%)'
                     },
                     ticks: {
-                        callback: function(value) {
+                        callback: function (value) {
                             return value + '%'; // Agrega el símbolo de porcentaje en los ticks
                         }
                     }
@@ -64,7 +90,7 @@
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return context.parsed.y + '%'; // Muestra porcentaje en el tooltip
                         }
                     }

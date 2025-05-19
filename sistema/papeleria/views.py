@@ -103,14 +103,16 @@ def editar_articulo(request, articulo_id):
 def listar_articulo(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Listar artículos', 'url': reverse('papeleria:listar_articulo')},  
+        {'name': 'Listar artículos', 'url': reverse('papeleria:listar_articulo')},
     ]
 
     query = request.GET.get('q', '').strip()
-    fecha_str = request.GET.get('fecha')
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
 
     articulos = Articulo.objects.select_related('registrado_por').all()
 
+    # Búsqueda por texto
     if query:
         articulos = articulos.filter(
             Q(nombre__icontains=query) |
@@ -123,18 +125,31 @@ def listar_articulo(request):
             Q(registrado_por__username__icontains=query)
         )
 
-    if fecha_str:
+    # Filtrado por rango de fechas
+    if fecha_inicio_str:
         try:
-            fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-            articulos = articulos.filter(fecha_registro=fecha)
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            articulos = articulos.filter(fecha_registro__gte=fecha_inicio)
         except ValueError:
-            articulos = Articulo.objects.none()  # O puedes omitir este filtro si prefieres
+            # Manejo del error: ignorar filtro o asignar un queryset vacío
+            articulos = Articulo.objects.none()
 
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            articulos = articulos.filter(fecha_registro__lte=fecha_fin)
+        except ValueError:
+            articulos = Articulo.objects.none()
+
+    # Paginación
     paginator = Paginator(articulos, 4)
     page_number = request.GET.get('page')
     articulos = paginator.get_page(page_number)
 
-    return render(request, 'articulo/listar_articulo.html', {'articulos': articulos, 'breadcrumbs': breadcrumbs})
+    return render(request, 'articulo/listar_articulo.html', {
+        'articulos': articulos,
+        'breadcrumbs': breadcrumbs
+    })
 def buscar_articulo(request):
     query = request.GET.get('q', '').strip()
     if query:
@@ -188,7 +203,40 @@ def draw_table_on_canvas(canvas, doc):
                          y=(doc.pagesize[1] - 600) / 2,
                          width=600, height=600, mask='auto')
         canvas.restoreState()
+def get_articulos_filtrados(request):
+    query = request.GET.get('q', '').strip()
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
 
+    articulos = Articulo.objects.select_related('registrado_por').all()
+
+    if query:
+        articulos = articulos.filter(
+            Q(nombre__icontains=query) |
+            Q(marca__icontains=query) |
+            Q(observacion__icontains=query) |
+            Q(tipo__icontains=query) |
+            Q(precio__icontains=query) |
+            Q(proveedor__icontains=query) |
+            Q(cantidad__icontains=query) |
+            Q(registrado_por__username__icontains=query)
+        )
+
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            articulos = articulos.filter(fecha_registro__gte=fecha_inicio)
+        except ValueError:
+            articulos = Articulo.objects.none()
+
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            articulos = articulos.filter(fecha_registro__lte=fecha_fin)
+        except ValueError:
+            articulos = Articulo.objects.none()
+
+    return articulos
 def reporte_articulo_pdf(request):
     buffer = BytesIO()
 
@@ -625,9 +673,10 @@ def lista_stock_bajo(request):
 from django.db.models import Sum
 def index_estadistica(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
-    ]
+    {'name': 'Inicio', 'url': '/index_pap'},
+    {'name': 'Estadisticas', 'url': '/index_estadistica/'},  # URL fija
+]
+
     return render(request, 'estadisticas/index_estadistica.html', {'breadcrumbs': breadcrumbs})
 
 def estadisticas_articulos(request):
@@ -637,6 +686,7 @@ def estadisticas_articulos(request):
         'articulos': articulos,
         'total_cantidad': total_cantidad,
     })
+#GRAFIC DE CANTIDAD DE ARTICULOS
 def graficas_articulos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -652,3 +702,13 @@ def graficas_articulos(request):
         'cantidades': cantidades,
         'breadcrumbs': breadcrumbs
     })
+#grafica de usuario
+
+def graficas_usuario(request):
+    activos = CustomUser.objects.filter(is_active=True).count()
+    inactivos = CustomUser.objects.filter(is_active=False).count()
+
+    nombres = ['Activos', 'Inactivos']
+    cantidades = [activos, inactivos] 
+    return render(request, 'estadisticas/grafica_usuarios.html', {'nombres':nombres,
+                                                                  'cantidades': cantidades})

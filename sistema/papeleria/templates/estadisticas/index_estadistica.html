@@ -8,10 +8,12 @@
      <div class="card">
         <p>Usuarios activos</p>
     </div>
-    <div class="card">
-        <p>Usuarios inactivos</p>
+    <a href="{% url 'papeleria:graficas_usuarios' %}">
+        <div class="card">
+        <p>Usuarios Activos/inactivos</p>
     </div>
-    <a href="{% url 'papeleria:graficas_articulos'  %}">
+    </a>
+    <a href="{% url 'papeleria:graficas_articulos' %}">
         <div class="card">
         <p>Cantidad de articulos</p>
     </div>

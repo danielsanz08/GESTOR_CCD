@@ -27,6 +27,9 @@ urlpatterns = [
     path('api/validate-password/', views.validate_password, name='validate_password'),
     path('reporte_usuario_pdf/', views.reporte_usuario_pdf, name='reporte_usuario_pdf'),
     path('reporte_usuario_excel/', views.reporte_usuario_excel, name='reporte_usuario_excel'),
+    #estadisticas
+    path('graficas_usuarios_activos/', views.graficas_usuarios_activos, name='graficas_usuarios_activos'),
+
 ]
 
 if settings.DEBUG:

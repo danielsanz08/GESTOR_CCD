@@ -510,3 +510,22 @@ def reporte_usuario_excel(request):
     # Guardar el archivo en la respuesta
     wb.save(response)
     return response
+#GRAFICAS
+def graficas_usuarios_activos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('libreria:index_estadistica')}, 
+        {'name': 'Gráfico de usuarios activos', 'url': reverse('libreria:graficas_usuarios_activos')}, 
+    ]
+    
+    activos = CustomUser.objects.filter(is_active=True).count()
+    inactivos = CustomUser.objects.filter(is_active=False).count()
+
+    nombres = ['Activos', 'Inactivos']
+    cantidades = [activos, inactivos]
+
+    return render(request, 'estadisticas/grafica_usuarios.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
+    })

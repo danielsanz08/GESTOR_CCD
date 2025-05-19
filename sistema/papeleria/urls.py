@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 app_name = 'papeleria'
 urlpatterns = [
+    
    path('index_pap/', views.index_pap, name='index_pap'),
    path('login/papeleria/', views.login_papeleria, name='login_papeleria'),
    path('logout_view/', views.logout_view, name='logout_view'),
@@ -28,10 +29,10 @@ urlpatterns = [
     path('pedidos/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('pedidos/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
     path('pedidos/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
-    path('estadisticas/index_estadistica', views.index_estadistica, name='index_estadistica'),
+    path('index_estadistica/', views.index_estadistica, name='index_estadistica'),
      path('estadisticas/articulos/', views.estadisticas_articulos, name='estadisticas_articulos'),
      path('graficas_articulos/', views.graficas_articulos, name='graficas_articulos'),
-
+     path('graficas_usuarios/', views.graficas_usuario, name='graficas_usuarios'),
 
 ]
 

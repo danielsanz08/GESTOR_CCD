@@ -33,6 +33,10 @@ urlpatterns = [
      path('estadisticas/articulos/', views.estadisticas_articulos, name='estadisticas_articulos'),
      path('graficas_articulos/', views.graficas_articulos, name='graficas_articulos'),
      path('graficas_usuarios/', views.graficas_usuario, name='graficas_usuarios'),
+     path('grafica_bajoStock/', views.grafica_bajo_Stock, name='grafica_bajoStock'),
+     path('grafica_pedidos/', views.grafica_pedidos, name='grafica_pedidos'),
+     path('pedidos_area/', views.grafica_pedidos_area, name='pedidos_area'),
+
 
 ]
 

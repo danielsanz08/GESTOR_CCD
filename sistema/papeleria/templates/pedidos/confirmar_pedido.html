@@ -49,14 +49,14 @@
                     <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
                         action="{% url 'papeleria:cambiar_estado_pedido' pedido.id %}">
                         {% csrf_token %}
-                        <input type="hidden" name="estado" value="confirmado">
+                        <input type="hidden" name="estado" value="Confirmado">
                         <button type="submit" class="btn-confirmar"><i data-feather="check-square" class="icono"></i>
                         </button>
                          <!-- Formulario para cancelar -->
                     <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
                         action="{% url 'papeleria:cambiar_estado_pedido' pedido.id %}">
                         {% csrf_token %}
-                        <input type="hidden" name="estado" value="cancelado">
+                        <input type="hidden" name="estado" value="Cancelado">
                         <button type="submit" class="btn-cancelar"><i data-feather="x-square" class="icono"></i>
                         </button>
                     </form>

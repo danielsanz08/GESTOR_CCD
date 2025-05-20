@@ -120,11 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const usernameInput = document.getElementById('id_username');
     const emailInput = document.getElementById('id_email');
     const cargoInput = document.getElementById('id_cargo');
+    const areaInput = document.getElementById('id_area');  // campo area
     const boton = document.getElementById('btn');
 
     const usernameError = document.querySelector('.username-error') || document.getElementById('error-nombre');
     const emailError = document.querySelector('.email-error') || document.getElementById('error-email');
     const cargoError = document.querySelector('.cargo-error') || document.getElementById('error-cargo');
+    const areaError = document.querySelector('.area-error');
 
     const regexCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -136,12 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const usernameValido = usernameError.textContent === '';
         const emailValido = emailError.textContent === '';
         const cargoValido = cargoError.textContent === '';
+        const areaValido = areaError ? areaError.textContent === '' : true;
 
         const camposLlenos = usernameInput.value.trim() !== '' &&
                              emailInput.value.trim() !== '' &&
-                             cargoInput.value.trim() !== '';
+                             cargoInput.value.trim() !== '' &&
+                             (areaInput ? areaInput.value.trim() !== '' : true);
 
-        boton.disabled = !(usernameValido && emailValido && cargoValido && camposLlenos);
+        boton.disabled = !(usernameValido && emailValido && cargoValido && areaValido && camposLlenos);
     }
 
     if (usernameInput) {
@@ -160,20 +164,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    cargoInput.addEventListener('input', () => {
-    let value = cargoInput.value;
-    cargoInput.value = value.replace(/\d/g, '');
-    cargoError.textContent = '';
+    if (cargoInput) {
+        cargoInput.addEventListener('input', () => {
+            let value = cargoInput.value;
+            cargoInput.value = value.replace(/\d/g, '');
+            cargoError.textContent = '';
 
-    if (value.length < 2) {
-        cargoError.textContent = 'Debe tener al menos 2 caracteres.';
-    } else if (tieneCaracteresRepetidos(value)) {
-        cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            if (value.length < 2) {
+                cargoError.textContent = 'Debe tener al menos 2 caracteres.';
+            } else if (tieneCaracteresRepetidos(value)) {
+                cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            }
+
+            validarFormulario();
+        });
     }
-
-    validarFormulario();
-});
-
 
     if (emailInput) {
         emailInput.addEventListener('input', () => {
@@ -203,8 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (areaInput) {
+        areaInput.addEventListener('input', () => {
+            areaError.textContent = '';
+
+            if (areaInput.value.trim() === '') {
+                areaError.textContent = 'Debe seleccionar un área.';
+            }
+
+            validarFormulario();
+        });
+    }
+
     form.addEventListener('submit', (e) => {
-        if (usernameError.textContent || emailError.textContent || cargoError.textContent) {
+        if (usernameError.textContent || emailError.textContent || cargoError.textContent || (areaError && areaError.textContent)) {
             e.preventDefault();
         }
     });

@@ -705,10 +705,71 @@ def graficas_articulos(request):
 #grafica de usuario
 
 def graficas_usuario(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
+        {'name': 'Grafico de usuarios activos e inactivos', 'url': reverse('papeleria:graficas_usuarios')}, 
+    ]
     activos = CustomUser.objects.filter(is_active=True).count()
     inactivos = CustomUser.objects.filter(is_active=False).count()
 
     nombres = ['Activos', 'Inactivos']
     cantidades = [activos, inactivos] 
     return render(request, 'estadisticas/grafica_usuarios.html', {'nombres':nombres,
-                                                                  'cantidades': cantidades})
+                                                                  'cantidades': cantidades,
+                                                                  'breadcrumbs': breadcrumbs})
+def grafica_pedidos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
+        {'name': 'Grafico de estado de pedidos', 'url': reverse('papeleria:grafica_pedidos')}, 
+    ]
+    pendientes = Pedido.objects.filter(estado='Pendiente').count()
+    confirmados = Pedido.objects.filter(estado='Confirmado').count()
+    cancelados = Pedido.objects.filter(estado= 'Cancelado').count()
+
+    nombres = ['Pendiente', 'Confirmado', 'Cancelado']
+    cantidades = [pendientes, confirmados, cancelados]
+    return render(request, 'estadisticas/grafica_estado_pendiente.html',{'nombres':nombres,
+                                                                         'cantidades':cantidades,
+                                                                'breadcrumbs': breadcrumbs} )
+from django.db.models import Count
+
+
+def grafica_pedidos_area(request):
+    # Agrupar por área de los artículos en los pedidos
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
+        {'name': 'Grafico de pedidos por áreas', 'url': reverse('papeleria:pedidos_area')}, 
+    ]
+    pedidos_por_area = Pedido.objects.values('articulos__area').annotate(total=Count('id')).order_by('articulos__area')
+
+    nombres = []
+    cantidades = []
+
+    for item in pedidos_por_area:
+        nombres.append(item['articulos__area'] or 'Sin área')
+        cantidades.append(item['total'])
+
+    return render(request, 'estadisticas/grafico_pedido_area.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
+    })
+
+def grafica_bajo_Stock(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
+        {'name': 'Grafico de bajo stock', 'url': reverse('papeleria:grafica_bajoStock')}, 
+    ]
+    articulos = Articulo.objects.filter(cantidad__lt=10)
+    nombres = [art.nombre for art in articulos]
+    cantidades = [art.cantidad for art in articulos]
+    return render(request, 'estadisticas/grafica_bajoStock.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
+    })
+

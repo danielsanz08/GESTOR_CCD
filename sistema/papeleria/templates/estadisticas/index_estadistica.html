@@ -4,10 +4,7 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
 <section>
-   <div class="container">
-     <div class="card">
-        <p>Usuarios activos</p>
-    </div>
+   
     <a href="{% url 'papeleria:graficas_usuarios' %}">
         <div class="card">
         <p>Usuarios Activos/inactivos</p>
@@ -18,18 +15,21 @@
         <p>Cantidad de articulos</p>
     </div>
     </a>
-    <div class="card">
+    <a href="{% url 'papeleria:grafica_bajoStock' %}">
+        <div class="card">
         <p>Bajo stock </p>
     </div>
-    <div class="card">
-        <p>Pedidos Pendientes</p>
+    </a>
+    <a href="{% url 'papeleria:grafica_pedidos' %}">
+        <div class="card">
+        <p>Estado de pedidos</p>
     </div>
-    <div class="card">
-        <p>Pedidos Confirmados</p>
-    </div>
-    <div class="card">
-        <p>Usuarios Cancelados</p>
-    </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_area' %}">
+        <div class="card">
+            <p>Pedidos por areas</p>
+        </div>
+    </a>
    </div>
 </section>
 {% endblock %}

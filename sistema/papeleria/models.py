@@ -29,8 +29,9 @@ class Articulo(models.Model):
         return "{:,}".format(self.precio)
 class Pedido(models.Model):
     ESTADOS = [
-        ('pendiente', 'Pendiente'),
-        ('confirmado', 'Confirmado'),
+        ('Pendiente', 'Pendiente'),
+        ('Confirmado', 'Confirmado'),
+        ('Cancelado' , 'Cancelado'),
     ]
     registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     fecha_pedido = models.DateTimeField(auto_now_add=True)

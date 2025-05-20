@@ -1,0 +1,99 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Editar artículos{% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/editar_articulo.css' %}?v={% now 'U' %}">
+<div class="fondo">
+    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+</div>
+<div class="formulario">
+    <h2>Editar artículo</h2>
+    <form method="POST" id="form_articulo" action="{% url 'papeleria:editar_articulo' articulo.id %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del artículo</label>
+            {{ form.nombre }}
+        </div>
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Digite el tipo de articulo</label>
+            {{ form.tipo }}
+        </div>
+        <div class="mb-3">
+            <label for="marca" class="form-label">Marca del artículo</label>
+            {{ form.marca }}
+        </div>
+        <div class="mb-3">
+            <label for="precio" class="form-label">Digite el precio</label>
+            <input type="text" name="precio" id="id_precio" 
+                value="{{ form.precio.value|default:'' }}" class="form-control">
+            <div class="error-msg error-precio"></div>
+        </div>
+        <div class="mb-3">
+            <label for="cantidad" class="form-label">Digite la cantidad</label>
+            {{ form.cantidad }}
+        </div>
+         <div class="mb-3">
+            <label for="proveedor" class="form-label">Digite el proveedor</label>
+            {{ form.proveedor }}
+        </div>
+        <div class="mb-3">
+            <label for="observacion" class="form-label">Observación del artículo</label>
+            {{ form.observacion }}
+        </div>
+        <button type="submit">Editar artículo</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const precioInput = document.getElementById("id_precio");
+
+        function formatearConComas(valor) {
+            const partes = valor.split(".");
+            let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let decimal = partes[1] ? "." + partes[1] : "";
+            return entero + decimal;
+        }
+
+        function limpiarValor(valor) {
+            // Quitar caracteres no numéricos, excepto el punto
+            return valor.replace(/[^\d.]/g, "");
+        }
+
+        precioInput.addEventListener("input", function () {
+            let valor = precioInput.value;
+
+            // Limpiar valor de caracteres no válidos
+            valor = limpiarValor(valor);
+
+            // Solo permitir un punto decimal
+            const partes = valor.split(".");
+            if (partes.length > 2) {
+                valor = partes[0] + "." + partes.slice(1).join("");
+            }
+
+            // Limitar a 2 decimales
+            if (partes[1]) {
+                partes[1] = partes[1].slice(0, 2);
+            }
+
+            // Formatear con comas para la vista
+            const formateado = formatearConComas(valor);
+            precioInput.value = formateado;
+        });
+
+        // Formatear el valor inicial si ya tiene precio
+        if (precioInput.value) {
+            precioInput.value = formatearConComas(precioInput.value);
+        }
+
+        // Limpiar el valor antes de enviar el formulario
+        const formArticulo = document.getElementById("form_articulo");
+        formArticulo.addEventListener("submit", function () {
+            // Limpiar el valor del campo de precio antes de enviarlo
+            precioInput.value = limpiarValor(precioInput.value);
+        });
+    });
+</script>
+
+{% endblock %}

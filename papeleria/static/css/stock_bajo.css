@@ -1,0 +1,40 @@
+section{
+    background: rgba(19, 104, 161, 0.664);
+    position: relative;
+    top: 27vh;
+    left: 9vh;
+    text-align: center;
+    padding: 10px 20px 20px 20px;
+    width: 190vh;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    
+}
+table{
+    width: 180vh;
+    border-spacing: 10px;
+}
+.id,
+.nombre,
+.cargo,
+.marca,
+.cantidad,
+.precio,
+.observacion,
+.rol,
+.actividad,
+.estado,
+.editar {
+  left: 20vh;
+  background-color: rgba(61, 43, 226, 0.411);
+  border-radius: 10px;
+}
+td {
+  background-color: rgba(46, 151, 151, 0.384);
+  margin: 20vh 0 20vh 0;
+  border-radius: 10px;
+  height: 5vh;
+  align-items: center;
+  
+
+}

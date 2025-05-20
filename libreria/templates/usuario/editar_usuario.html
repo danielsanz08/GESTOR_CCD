@@ -1,0 +1,241 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Editar usuario{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/editar_usuario.css' %}?v={% now 'U' %}">
+
+<style>
+    #error-nombre { top: 27vh; left: 13vh; }
+    #error-cargo { top: 43vh; left: 13vh; }
+    #error-email { top: 43vh; left: 111vh; }
+
+
+       #error-nombre, #error-cargo, #error-email, #error-password {
+        font-size: 14px;
+        font-weight: bold;
+        position: absolute;
+        color: rgb(255, 0, 0);
+    }
+    button[type="submit"] {
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+        border: 2px solid black;
+        height: 6vh;
+        width: 35vh;
+        border-radius: 20px;
+        position: absolute;
+        left: 59vh;
+        top: 52vh;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: rgb(33, 74, 187);
+        color: black;
+    }
+
+    button[type="submit"]:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+</style>
+
+{% if request.user.role == 'Administrador' %}
+<div class="formulario">
+    <h2>Editar usuario</h2>
+    <form method="POST" id="userForm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username">Nombre de usuario</label><br>
+            {{ form.username }}
+            <div class="error-msg username-error" id="error-nombre"></div>
+        </div>
+        <div class="mb-3">
+            <label for="module">Módulo:</label><br>
+            {{ form.module }}
+        </div>
+        <div class="mb-3">
+            <label for="role">Rol</label><br>
+            {{ form.role }}
+        </div>
+        <div class="mb-3">
+            <label for="cargo">Cargo</label><br>
+            {{ form.cargo }}
+            <div class="error-msg cargo-error" id="error-cargo"></div>
+        </div>
+        <div class="mb-3">
+            <label for="area">Área:</label><br>
+            {{ form.area }}
+            <div class="error-msg area-error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="email">Correo Electrónico</label><br>
+            {{ form.email }}
+            <div class="error-msg email-error" id="error-email"></div>
+        </div>
+        
+        
+        
+        
+        <button type="submit" id="btn" disabled>Editar</button>
+    </form>
+</div>
+{% endif %}
+
+{% if request.user.role == 'Empleado' %}
+<div class="formulario">
+    <h2>Editar usuario</h2>
+    <form method="POST" id="editar-form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username">Nombre de usuario</label><br>
+            {{ form.username }}
+            <div class="error-msg username-error" id="error-nombre"></div>
+        </div>
+        <div class="mb-3">
+            <label for="email">Correo Electrónico</label><br>
+            {{ form.email }}
+            <div class="error-msg email-error" id="error-email"></div>
+        </div>
+        <div class="mb-3">
+            <label for="cargo">Cargo</label><br>
+            {{ form.cargo }}
+            <div class="error-msg cargo-error" id="error-cargo"></div>
+        </div>
+        <div class="mb-3">
+            <label for="module">Módulo:</label><br>
+            {{ form.module }}
+        </div>
+        <button type="submit" id="btn" disabled>Editar</button>
+    </form>
+</div>
+{% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('editar-form');
+    const boton = document.getElementById('btn');
+
+    // Inputs relevantes
+    const usernameInput = document.getElementById('id_username');
+    const emailInput = document.getElementById('id_email');
+    const cargoInput = document.getElementById('id_cargo');
+    const areaInput = document.getElementById('id_area');
+    const roleInput = document.getElementById('id_role');
+    const moduloInput = document.getElementById('id_modulo');  // si lo tienes
+
+    // Errores
+    const usernameError = document.getElementById('error-nombre');
+    const emailError = document.getElementById('error-email');
+    const cargoError = document.getElementById('error-cargo');
+    const areaError = document.querySelector('.area-error');
+
+    const regexCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+    // Desactiva el botón al cargar
+    boton.disabled = true;
+
+    function tieneCaracteresRepetidos(str) {
+        return /(.)\1\1/.test(str);
+    }
+
+    function validarFormulario() {
+        const usernameValido = usernameError.textContent === '';
+        const emailValido = emailError.textContent === '';
+        const cargoValido = cargoError.textContent === '';
+        const areaValido = areaError ? areaError.textContent === '' : true;
+
+        const camposLlenos = usernameInput.value.trim() !== '' &&
+                             emailInput.value.trim() !== '' &&
+                             cargoInput.value.trim() !== '' &&
+                             (areaInput ? areaInput.value.trim() !== '' : true) &&
+                             (roleInput ? roleInput.value.trim() !== '' : true);
+
+        boton.disabled = !(usernameValido && emailValido && cargoValido && areaValido && camposLlenos);
+    }
+
+    // Agrega eventos a todos los campos para activar el botón
+    const activarBoton = () => {
+        validarFormulario();  // Valida campos antes de habilitar
+    };
+
+    // Validación personalizada por campo
+    usernameInput.addEventListener('input', () => {
+        usernameError.textContent = '';
+        const value = usernameInput.value.replace(/\d/g, '');
+        usernameInput.value = value;
+
+        if (value.length < 3) {
+            usernameError.textContent = 'Debe tener al menos 3 caracteres.';
+        } else if (tieneCaracteresRepetidos(value)) {
+            usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+        }
+
+        activarBoton();
+    });
+
+    cargoInput.addEventListener('input', () => {
+        cargoError.textContent = '';
+        const value = cargoInput.value.replace(/\d/g, '');
+        cargoInput.value = value;
+
+        if (value.length < 2) {
+            cargoError.textContent = 'Debe tener al menos 2 caracteres.';
+        } else if (tieneCaracteresRepetidos(value)) {
+            cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+        }
+
+        activarBoton();
+    });
+
+    emailInput.addEventListener('input', () => {
+        emailError.textContent = '';
+        const email = emailInput.value;
+
+        if (!regexCorreo.test(email)) {
+            emailError.textContent = 'Correo no válido.';
+            validarFormulario();
+            return;
+        }
+
+        if (tieneCaracteresRepetidos(email)) {
+            emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            validarFormulario();
+            return;
+        }
+
+        // Verifica duplicados si es necesario
+        fetch(`/validar_datos?email=${encodeURIComponent(email)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.email) {
+                    emailError.textContent = data.email;
+                }
+                activarBoton();
+            });
+    });
+
+    // Otros campos
+    if (areaInput) {
+        areaInput.addEventListener('change', activarBoton);
+    }
+
+    if (roleInput) {
+        roleInput.addEventListener('change', activarBoton);
+    }
+
+    if (moduloInput) {
+        moduloInput.addEventListener('change', activarBoton);
+    }
+
+    form.addEventListener('submit', (e) => {
+        if (boton.disabled) {
+            e.preventDefault();  // Evita enviar si el botón no está habilitado
+        }
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,141 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html,
+body {
+    background-color: #86cfe61c;
+}
+
+.formulario {
+    background: rgba(255, 255, 255, 0.822);
+
+    position: absolute;
+    top: 20vh;
+    left: 32vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    height: 60vh;
+}
+
+#userForm {
+    background-color: rgba(255, 255, 255, 0);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    padding: 30px 30px 30px 30px;
+    height: 30vh;
+    margin-top: -2vh;
+
+}
+
+input,
+.form-select {
+    margin-bottom: 15vh;
+    margin-right: 5px;
+    border: none;
+    border-radius: 20px;
+    height: 4vh;
+    width: 35vh;
+    margin: 10px 30px 30px 30px;
+    border: 1px solid black;
+}
+
+label {
+    display: block;
+    margin: 10px 30px 0px 30px;
+}
+
+btn {
+
+    color: white;
+    font-weight: bold;
+    border: none;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 13vh;
+    top: -2vh;
+    cursor: pointer;
+}
+
+h2 {
+    text-align: center;
+}
+
+/* 📱 Teléfono pequeño (ej. 360x640) */
+@media (min-width: 360px) and (max-width: 374px) {
+    .formulario {
+
+        position: absolute;
+        left: 2vh;
+        width: 46vh;
+
+
+    }
+
+    #userForm {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 20px 20px 20px 20px;
+        background-color: aqua;
+        height: 40vh;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input,
+    .form-select {
+        margin-top: 1vh;
+        margin-right: 5px;
+        border: none;
+        border-radius: 20px;
+        height: 4vh;
+        width: 35vh;
+        border: 1px solid black;
+        position: relative;
+        top: 30vh;
+    }
+
+    label {
+        display: block;
+        margin: 5px 30px 0px 30px;
+    }
+
+    button[type="submit"]:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+        position: absolute;
+        left: 10vh;
+        top: 56vh;
+    }
+
+    button[type="submit"] {
+        position: absolute;
+        left: 10vh;
+        top: 56vh;
+    }
+
+    .btn {
+        position: absolute;
+        left: 10vh;
+        top: 1vh;
+    }
+}

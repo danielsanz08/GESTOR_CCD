@@ -1,0 +1,474 @@
+/* Reset y estilos base */
+body {
+    background: #ffffff;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    position: relative;
+    margin-top: 15vh;
+}
+
+/* Título */
+.title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    text-align: center;
+    color: #00f7ff;
+    text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    margin-bottom: 3rem;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 247, 255, 0.5), 0 0 20px rgba(0, 247, 255, 0.3);
+    }
+    to {
+        text-shadow: 0 0 15px rgba(0, 247, 255, 0.7), 0 0 30px rgba(0, 247, 255, 0.5);
+    }
+}
+
+/* Contenedor de opciones */
+.uno {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Estilo de cada tarjeta */
+.opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgb(9, 151, 194);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 180px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.opcion:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(17, 0, 255, 0.2);
+    border: 2px solid rgb(14, 79, 133);
+    background: linear-gradient(to bottom, #1cabd6, #1791b68e);
+}
+
+.opcion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 247, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.opcion:hover::before {
+    opacity: 1;
+}
+
+/* Iconos */
+.icono {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    filter: drop-shadow(0 0 5px rgba(0, 247, 255, 0.5));
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+.opcion:hover .icono {
+    transform: scale(1.2);
+}
+
+/* Texto en opciones */
+.opcion span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    font-family: 'Roboto', sans-serif;
+    z-index: 1;
+}
+
+/* Enlaces */
+a {
+    text-decoration: none;
+    width: 100%;
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.uno .opcion {
+    animation: slideIn 0.5s ease-out forwards;
+    animation-delay: calc(0.1s * var(--i));
+}
+
+/* Estilo para tarjetas adicionales */
+.empleado-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    margin: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.card-uno {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+}
+
+.card-uno:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(0, 247, 255, 0.2);
+    border-color: #00f7ff;
+}
+
+/* 📱 Teléfono pequeño (ej. 360x640) */
+@media (min-width: 360px) and (max-width: 374px) {
+    .container {
+        align-items: center;
+        /* Esta propiedad solo funciona si display: flex está activo */
+        height: 500px;
+        /* Altura fija */
+        width: 100%;
+        /* Opcional: ancho completo */
+        overflow: auto;
+        /* Agrega scroll si el contenido sobrepasa el tamaño */
+        display: flex;
+        /* Necesario para que align-items funcione */
+        flex-direction: column;
+        /* Ajuste para que los ítems se apilen verticalmente */
+
+    }
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        right: 2vh;
+        z-index: -10000;
+    }
+}
+
+/* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
+@media (min-width: 375px) and (max-width: 429px) {
+    .container {
+        align-items: center;
+        /* Esta propiedad solo funciona si display: flex está activo */
+        height: 600px;
+        /* Altura fija */
+        width: 100%;
+        /* Opcional: ancho completo */
+        overflow: auto;
+        /* Agrega scroll si el contenido sobrepasa el tamaño */
+        display: flex;
+        /* Necesario para que align-items funcione */
+        flex-direction: column;
+        /* Ajuste para que los ítems se apilen verticalmente */
+
+    }
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        right: 2vh;
+        z-index: -10000;
+    }
+}
+
+/* 📱 Teléfono grande (ej. 430x932 - 480x960) */
+@media (min-width: 430px) and (max-width: 539px) {
+    .container {
+        align-items: center;
+        /* Esta propiedad solo funciona si display: flex está activo */
+        height: 700px;
+        /* Altura fija */
+        width: 100%;
+        /* Opcional: ancho completo */
+        overflow: auto;
+        /* Agrega scroll si el contenido sobrepasa el tamaño */
+        display: flex;
+        /* Necesario para que align-items funcione */
+        flex-direction: column;
+        /* Ajuste para que los ítems se apilen verticalmente */
+
+    }
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        right: 2vh;
+        z-index: -10000;
+        width: 240px;
+    }
+}
+
+/* 📟 Phablet (600x960) */
+@media (min-width: 540px) and (max-width: 679px) {
+    .container {
+        align-items: center;
+        /* Esta propiedad solo funciona si display: flex está activo */
+        height: 700px;
+        /* Altura fija */
+        width: 100%;
+        /* Opcional: ancho completo */
+        overflow: auto;
+        /* Agrega scroll si el contenido sobrepasa el tamaño */
+        display: flex;
+        /* Necesario para que align-items funcione */
+        flex-direction: column;
+        /* Ajuste para que los ítems se apilen verticalmente */
+
+    }
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        right: 2vh;
+        z-index: -10000;
+        width: 200px;
+    }
+}
+
+/* 📱 Tablet pequeña (ej. iPad Mini vertical 768x1024) */
+@media (min-width: 680px) and (max-width: 799px) {
+    .container {
+        align-items: center;
+        /* Esta propiedad solo funciona si display: flex está activo */
+        height: 700px;
+        /* Altura fija */
+        width: 100%;
+        /* Opcional: ancho completo */
+        overflow: auto;
+        /* Agrega scroll si el contenido sobrepasa el tamaño */
+        display: flex;
+        /* Necesario para que align-items funcione */
+        flex-direction: column;
+        /* Ajuste para que los ítems se apilen verticalmente */
+
+    }
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        right: 2vh;
+        z-index: -10000;
+        width: 280px;
+    }
+}
+/* 💻 Laptop 11" (1024x600) */
+@media (min-width: 992px) and (max-width: 1099px) {
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: -3vh;
+    }
+}
+/* 💻 Laptop 12" (1152x720) */
+@media (min-width: 1100px) and (max-width: 1199px) {
+
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: 1vh;
+    }
+}
+
+/* 💻 Laptop 15-16" (1440x900) */
+@media (min-width: 1440px) and (max-width: 1599px) {
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: 4vh;
+        height: 100px;
+    }
+}
+
+/* 🎯 Ajuste más fino para monitor de 19" (1600x900) */
+@media (min-width: 1600px) and (max-width: 1600px) and (min-height: 900px) and (max-height: 900px) {
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: 4vh;
+        height: 100px;
+        width: 210px;
+        margin-left: 20px;
+        margin-right: 20px;
+        
+        margin-top: 20px;
+    }
+
+}
+
+/* 🖥️ Monitor 22-24" (1920x1080) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: -1vh;
+        height: 160px;
+        width: 310px;
+        margin: 20px;
+        display: flex;
+        /* Habilita Flexbox */
+        justify-content: center;
+        /* Centra horizontalmente */
+        align-items: center;
+        /* Centra verticalmente */
+        text-align: center;
+        padding-top: 0;
+        /* Ya no necesitas padding para centrar */
+    }
+
+}
+
+/* 🖥️ Monitor 27-32" (2560x1440 y más) */
+@media (min-width: 2560px) {
+    .uno {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 70px;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .opcion {
+        position: relative;
+        top: -1vh;
+        height: 240px;
+        width: 410px;
+        margin: 20px;
+        display: flex;
+        /* Habilita Flexbox */
+        justify-content: center;
+        /* Centra horizontalmente */
+        align-items: center;
+        /* Centra verticalmente */
+        text-align: center;
+        padding-top: 0;
+        /* Ya no necesitas padding para centrar */
+    }
+
+    .icono {
+        width: 78px;
+        height: 78px;
+
+    }
+
+   
+
+}

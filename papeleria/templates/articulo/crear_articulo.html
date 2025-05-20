@@ -1,0 +1,228 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Crear artículo{% endblock %}
+
+{% block contenido %}
+<style>
+    .error-msg {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .error-nombre,
+    .error-tipo,
+    .error-marca,
+    .error-precio,
+    .error-cantidad,
+    .error-proveedor,
+    .error-observacion {
+        color: #ff0101;
+        font-weight: bold;
+        position: absolute;
+    }
+
+    .error-nombre { top: 27vh; left: 13vh; }
+    .error-tipo { top: 27vh; left: 58vh; }
+    .error-marca { top: 27vh; left: 102vh; }
+    .error-precio { top: 39vh; left: 13vh; }
+    .error-cantidad { top: 23.5vh; left: 58vh; }
+    .error-proveedor { top: 42vh; left: 102vh; }
+    .error-observacion { top: 59vh; left: 11vh; }
+</style>
+
+<link rel="stylesheet" href="{% static 'css/crear_articulo.css' %}?v={% now 'U' %}">
+
+<div class="fondo">
+    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+</div>
+
+<div class="formulario">
+    <h2>Crear artículo</h2>
+    <form method="POST" id="form_articulo">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_nombre" class="form-label">Nombre del artículo</label>
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Digite el nombre del artículo">
+            <div class="error-msg error-nombre"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_tipo" class="form-label">Digite el tipo de artículo</label>
+            <input type="text" name="tipo" id="id_tipo" placeholder="Digite el tipo del artículo">
+            <div class="error-msg error-tipo"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_marca" class="form-label">Marca del artículo</label>
+            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Digite la marca del artículo">
+            <div class="error-msg error-marca"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_precio" class="form-label">Digite el precio</label>
+            <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del artículo">
+            <div class="error-msg error-precio"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_cantidad" class="form-label">Digite la cantidad</label>
+            <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad del artículo">
+            <div class="error-msg error-cantidad"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_proveedor" class="form-label">Digite el proveedor</label>
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Digite el proveedor del artículo">
+            <div class="error-msg error-proveedor"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_observacion" class="form-label">Observación del artículo:</label>
+            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Digite una observación del artículo">
+            <div class="error-msg error-observacion"></div>
+        </div>
+
+        <button type="submit" class="btn disabled" id="submit_btn" disabled>Registrar artículo</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const nombreInput = document.getElementById("id_nombre");
+        const tipoInput = document.getElementById("id_tipo");
+        const marcaInput = document.getElementById("id_marca");
+        const precioInput = document.getElementById("id_precio");
+        const cantidadInput = document.getElementById("id_cantidad");
+        const proveedorInput = document.getElementById("id_proveedor");
+        const observacionInput = document.getElementById("id_observacion");
+        const submitBtn = document.getElementById("submit_btn");
+        const form = document.querySelector("form");
+
+        const nombreError = document.querySelector(".error-nombre");
+        const tipoError = document.querySelector(".error-tipo");
+        const marcaError = document.querySelector(".error-marca");
+        const precioError = document.querySelector(".error-precio");
+        const cantidadError = document.querySelector(".error-cantidad");
+        const proveedorError = document.querySelector(".error-proveedor");
+        const observacionError = document.querySelector(".error-observacion");
+
+        function validarTexto(valor) {
+            if (valor.trim().length > 0 && valor.length < 3) {
+                return "Debe tener más de 3 caracteres.";
+            }
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?"'()\-]*$/.test(valor)) {
+                return "Solo se permiten letras, espacios y signos de puntuación.";
+            }
+            if (/(.)\1{2,}/.test(valor)) {
+                return "No se permiten caracteres repetidos 3 veces o más.";
+            }
+            return "";
+        }
+
+        function validarCantidad(valor) {
+            if (!/^\d*$/.test(valor) || parseInt(valor) < 0) {
+                return "Debe ser un número entero positivo.";
+            }
+            return "";
+        }
+
+        function validarPrecio(valor) {
+            valor = valor.replace(/,/g, "");
+            if (!/^\d+(\.\d{0,2})?$/.test(valor) || parseFloat(valor) < 0) {
+                return "Debe ser un número positivo con hasta 2 decimales.";
+            }
+            return "";
+        }
+
+        function validarObservacion(valor) {
+            if (valor.length > 30) {
+                return "Máximo 30 caracteres.";
+            }
+            return validarTexto(valor);
+        }
+
+        function mostrarError(elemento, mensaje) {
+            elemento.textContent = mensaje;
+        }
+
+        function toggleSubmit() {
+            const errores = [
+                nombreError.textContent,
+                tipoError.textContent,
+                marcaError.textContent,
+                precioError.textContent,
+                cantidadError.textContent,
+                proveedorError.textContent,
+                observacionError.textContent
+            ];
+            const vacios = [
+                nombreInput.value.trim(),
+                tipoInput.value.trim(),
+                marcaInput.value.trim(),
+                precioInput.value.trim(),
+                cantidadInput.value.trim(),
+                proveedorInput.value.trim(),
+                observacionInput.value.trim()
+            ];
+            const hayErrores = errores.some(msg => msg !== "");
+            const hayVacios = vacios.some(v => v === "");
+            submitBtn.disabled = hayErrores || hayVacios;
+            submitBtn.classList.toggle("disabled", submitBtn.disabled);
+        }
+
+        function formatearConComas(valor) {
+            const partes = valor.split(".");
+            let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let decimal = partes[1] ? "." + partes[1] : "";
+            return entero + decimal;
+        }
+
+        function bloquearNumeros(input, errorElement) {
+            input.addEventListener("input", function () {
+                this.value = this.value.replace(/[0-9]/g, "");
+                const mensaje = validarTexto(this.value);
+                mostrarError(errorElement, this.value.trim() ? mensaje : "");
+                toggleSubmit();
+            });
+        }
+
+        bloquearNumeros(nombreInput, nombreError);
+        bloquearNumeros(tipoInput, tipoError);
+        bloquearNumeros(marcaInput, marcaError);
+        bloquearNumeros(proveedorInput, proveedorError);
+
+        observacionInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[0-9]/g, "");
+            const mensaje = validarObservacion(this.value);
+            mostrarError(observacionError, this.value.trim() ? mensaje : "");
+            toggleSubmit();
+        });
+
+        precioInput.addEventListener("input", function () {
+            let valor = precioInput.value.replace(/[^\d.]/g, "");
+            const partes = valor.split(".");
+            if (partes.length > 2) {
+                valor = partes[0] + "." + partes.slice(1).join("");
+            }
+            let entero = partes[0];
+            let decimal = partes[1] ? partes[1].slice(0, 2) : "";
+            let reconstruido = entero + (decimal ? "." + decimal : "");
+            precioInput.value = formatearConComas(reconstruido);
+            const mensaje = validarPrecio(reconstruido);
+            mostrarError(precioError, reconstruido.trim() ? mensaje : "");
+            toggleSubmit();
+        });
+
+        cantidadInput.addEventListener("input", function () {
+            const valor = cantidadInput.value;
+            const mensaje = validarCantidad(valor);
+            mostrarError(cantidadError, valor.trim() ? mensaje : "");
+            toggleSubmit();
+        });
+
+        form.addEventListener("submit", function () {
+            precioInput.value = precioInput.value.replace(/,/g, "");
+        });
+    });
+</script>
+{% endblock %}

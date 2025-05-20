@@ -1,0 +1,60 @@
+/* Ajustes generales del body y html */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Sin scroll horizontal ni vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+/* Animación de entrada */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.container{
+    background: rgba(19, 104, 161, 0.664);
+    width: 100%;
+    max-width: 900px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    font-family: 'Times New Roman', serif;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
+    margin: 30px auto;
+
+}
+/* Estilo para los inputs y selects */
+input[type="text"],
+input[type="number"],
+select,
+.form-control {
+    margin: 10px 30px 30px 30px;
+    border: none;
+    border-radius: 20px;
+    height: 4vh;
+    width: 35vh;
+}
+
+/* Botón para agregar formularios y para enviar */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(4, 155, 255, 0.733);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #01815e;
+}

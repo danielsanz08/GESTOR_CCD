@@ -67,8 +67,9 @@ section {
   right: 5vh;
   color: white;
   transition: background-color 0.3s, transform 0.2s;
-  
+
 }
+
 .crear:hover {
   background-color: rgb(9, 36, 187);
   cursor: pointer;
@@ -322,6 +323,7 @@ td {
 .icono {
   height: 3vh;
 }
+
 #icono {
   height: 3vh;
 }
@@ -331,31 +333,12 @@ td {
   background-color: #ffffff;
   border: none;
   border-radius: 20px;
-  height: 5vh;
+  height: 3.5vh;
   width: 50vh;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: absolute;
   left: 20vh;
 }
-
-.btn-search {
-  background-color: #0056b3;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  left: 72vh;
-  top: 12vh;
-  width: 50px;
-  text-align: center;
-}
-
-.btn-search:hover {
-  background-color: #044080;
-  cursor: pointer;
-}
-
 .Botones {
   display: flex;
   justify-content: center;
@@ -415,6 +398,7 @@ td {
   background-color: rgb(4, 187, 13);
   cursor: pointer;
 }
+
 /*PAGINACION*/
 .paginacion {
   text-align: center;
@@ -422,15 +406,17 @@ td {
   top: 55vh;
   left: 80vh;
 }
-#pag{
+
+#pag {
   color: white;
 }
-.por_fecha{
+
+.por_fecha {
   background-color: #0056b3;
   color: white;
   border: none;
   width: 10vh;
-  height:35px;
+  height: 35px;
   border-radius: 20px;
   position: absolute;
   top: 12vh;
@@ -438,12 +424,14 @@ td {
   font-weight: bold;
   cursor: pointer;
 }
-#filtro-fechas{
-  
+
+#filtro-fechas {
+
   position: absolute;
   left: 95vh;
   top: 11vh;
 }
+
 .fecha_inicio,
 .fecha_fin {
   padding: 0.5rem 1rem;
@@ -454,7 +442,7 @@ td {
   outline: none;
   transition: border-color 0.3s ease;
   width: 100px;
-  height: 10px;
+  height: 7px;
 }
 
 .fecha_inicio:hover,
@@ -467,6 +455,7 @@ td {
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
+
 .search-date {
   background-color: #0056b3;
   color: white;
@@ -484,20 +473,74 @@ td {
   background-color: #044080;
   cursor: pointer;
 }
-.clean{
-   background-color: #b30000;
+
+.clean {
+  background-color: #b30000;
   color: white;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  right: 15vh;
-  top: 12vh;
-  width: 50px;
+  right: 20vh;
+  top: 12.5vh;
+  width: 10vh;
   text-align: center;
-  padding: 2px;;
+  margin-right: 1vh;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.clean:hover{
+
+.clean:hover {
   background-color: #8a0101;
+  cursor: pointer;
+  color: black;
+}
+.btn-search {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  left: 72vh;
+  top: 12vh;
+  width: 10vh;
+  height: 25px;
+  text-align: center;
+
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-search:hover {
+  background-color: #044080;
+  cursor: pointer;
+  color: black;
+}
+.search-date {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  height: 25px;
+  left: 58vh;
+  top: 0vh;
+  width: 10vh;
+  text-align: center;
+
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-date:hover {
+  background-color: #044080;
   cursor: pointer;
 }

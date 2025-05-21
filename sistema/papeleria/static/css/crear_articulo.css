@@ -10,14 +10,13 @@ body, html {
     background-color: #80808000; /* Gris de fondo si la imagen no carga */
   }
 .formulario{
-    background: rgba(255, 255, 255, 0.822);
- 
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     position: absolute;
     top: 20vh;
     left: 32vh;
     padding: 20px 20px 20px 20px;
     border-radius: 20px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     height: 60vh;
 }
 #form_articulo{

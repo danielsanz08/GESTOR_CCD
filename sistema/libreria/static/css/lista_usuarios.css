@@ -5,8 +5,8 @@ html {
 }
 
 section {
-  background: rgba(19, 104, 161, 0.664);
-
+  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -14,7 +14,6 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
 
 }
@@ -39,17 +38,19 @@ table {
 .actividad,
 .editar {
   left: 20vh;
-  background-color: rgba(61, 43, 226, 0.411);
-  
+  background-color: rgba(43, 116, 226, 0.616);
+  border-radius: 10px;
+
 }
 
 td {
   background-color: rgba(255, 255, 255, 0.384);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 5vh;
   align-items: center;
-  
+
 }
 
 /* Toggle Switch Container */
@@ -116,6 +117,8 @@ td {
 .cl-switch>input:checked {
   right: -10px;
   background-color: #85b8b7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .cl-switch>input:checked+span::before {
@@ -125,6 +128,8 @@ td {
 .cl-switch>input:checked+span::after {
   background-color: #018786;
   transform: translateX(16px);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Hover, Focus */
@@ -184,7 +189,7 @@ td {
 
 .editar-btn:hover {
   background-color: rgb(159, 170, 11);
-
+  cursor: pointer;
 }
 
 .icono {
@@ -272,7 +277,7 @@ td {
   background-color: #ffffff;
   border: none;
   border-radius: 20px;
-  height: 5vh;
+  height: 3.5vh;
   width: 50vh;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
@@ -284,14 +289,15 @@ td {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: relative;
-  top: 1vh;
-  width: 50px;
+  top: 2vh;
+  width: 10vh;
+  height: 25px;
   text-align: center;
 }
 
 .btn-search:hover {
   background-color: #044080;
-
+  cursor: pointer;
 }
 
 .paginacion {

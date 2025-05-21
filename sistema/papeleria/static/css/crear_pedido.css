@@ -17,13 +17,13 @@ body, html {
         transform: translateY(0);
     }
 }
-.container{
-    background: rgba(19, 104, 161, 0.664);
+section{
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     width: 100%;
     max-width: 900px;
     padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     font-family: 'Times New Roman', serif;
     transform: translateY(20px);
     animation: fadeInUp 0.5s forwards;
@@ -41,6 +41,37 @@ select,
     height: 4vh;
     width: 35vh;
 }
+form {
+    position: relative;
+    max-height: 240px;
+    overflow-y: auto;
+    width: 100%;
+    padding: 10px;
+
+    scrollbar-width: thin;            /* Firefox */
+    scrollbar-color: #00a67e #ffffff; /* Color del pulgar y del fondo en Firefox */
+}
+
+/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
+form::-webkit-scrollbar {
+    width: 8px; /* Grosor del scroll */
+}
+
+form::-webkit-scrollbar-track {
+    background: #ffffff; /* Color del fondo del scroll */
+    border-radius: 10px;
+}
+
+form::-webkit-scrollbar-thumb {
+    background-color: #00a67e; /* Color del "pulgar" del scroll */
+    border-radius: 10px;
+    border: 2px solid #ffffff; /* Espacio entre thumb y track */
+}
+
+form::-webkit-scrollbar-thumb:hover {
+    background-color: #007c5d; /* Color al pasar el cursor */
+}
+
 
 /* Botón para agregar formularios y para enviar */
 button {

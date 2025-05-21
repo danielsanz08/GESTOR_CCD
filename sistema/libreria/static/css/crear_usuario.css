@@ -19,14 +19,13 @@ body {
 }
 
 .formulario {
-    background: rgba(19, 104, 161, 0.664);
-
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     position: absolute;
     top: 20vh;
     left: 32vh;
     padding: 20px 20px 20px 20px;
     border-radius: 20px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     height: 60vh;
 }
 
@@ -88,10 +87,33 @@ h2 {
         display: grid;
         grid-template-columns: repeat(1, 1fr);
         overflow-y: auto;
-        /* Permite solo desplazamiento vertical */
         overflow-x: hidden;
-        /* Impide desplazamiento horizontal */
+        scrollbar-color: #cccccc00 rgba(255, 255, 255, 0);
+        /* Para Firefox: color del scroll y del fondo */
+        scrollbar-width: thin;
+        /* Para Firefox: delgado */
     }
+
+    /* Para navegadores basados en WebKit */
+    #userForm::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #userForm::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0);
+        border-radius: 4px;
+    }
+
+    #userForm::-webkit-scrollbar-thumb {
+        background-color: #ff000000;
+        border-radius: 4px;
+        border: 2px solid white;
+    }
+
+    #userForm::-webkit-scrollbar-thumb:hover {
+        background-color: #ffffff00;
+    }
+
 
     input,
     .form-select {
@@ -129,42 +151,192 @@ h2 {
         top: 1vh;
     }
 
-    .error-nombre{
+    .error-nombre {
         display: block !important;
         position: static !important;
         margin-top: -2vh !important;
         margin-left: 10vh !important;
         color: red !important;
+
         font-size: 0.9rem !important;
     }
-     .error-cargo{
+
+    .error-cargo {
         display: block !important;
         position: static !important;
         margin-top: -4vh !important;
         margin-left: 10vh !important;
-        color: rgb(8, 128, 58) !important;
+        color: rgb(255, 0, 0) !important;
         font-size: 0.9rem !important;
-     }
-     .error-email{
+    }
+
+    .error-email {
         display: block !important;
         position: static !important;
         margin-top: -4vh !important;
         margin-left: 10vh !important;
-        color: rgb(34, 8, 128) !important;
+        color: rgb(255, 0, 0) !important;
         font-size: 0.9rem !important;
     }
-    .error-password{
+
+    .error-password {
         display: block !important;
         position: static !important;
         margin-top: -4vh !important;
         margin-left: 10vh !important;
-        color: rgb(128, 8, 128) !important;
+        color: rgb(255, 0, 0) !important;
         font-size: 0.9rem !important;
     }
-    #area, #password, #rol{
+
+    #area,
+    #password,
+    #rol,
+    #module {
         margin-top: 3vh;
+
     }
-    #rol{
+
+    #rol {
         margin-top: 1vh;
     }
+
+    .mb-3 {
+        margin-left: -2.5vh;
+    }
+
+}
+
+/* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
+@media (min-width: 375px) and (max-width: 429px) {
+    .formulario {
+        position: absolute;
+        left: 2vh;
+        width: 37vh;
+    }
+
+    #userForm {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: #cccccc00 rgba(255, 255, 255, 0);
+        /* Para Firefox: color del scroll y del fondo */
+        scrollbar-width: thin;
+        /* Para Firefox: delgado */
+    }
+
+    /* Para navegadores basados en WebKit */
+    #userForm::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #userForm::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0);
+        border-radius: 4px;
+    }
+
+    #userForm::-webkit-scrollbar-thumb {
+        background-color: #ff000000;
+        border-radius: 4px;
+        border: 2px solid white;
+    }
+
+    #userForm::-webkit-scrollbar-thumb:hover {
+        background-color: #ffffff00;
+    }
+
+    input,
+    .form-select {
+        margin-left: 16px;
+        border: none;
+        border-radius: 20px;
+        height: 4vh;
+        width: 32vh;
+        border: 1px solid black;
+    }
+
+    label {
+        display: block;
+        margin: 5px 30px 0px 30px;
+    }
+
+    button[type="submit"]:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+        position: absolute;
+        left: 3vh;
+        top: 50vh;
+    }
+
+    button[type="submit"] {
+        position: absolute;
+        left: 3vh;
+        bottom: 5vh;
+    }
+
+    .btn {
+        position: absolute;
+        left: 3vh;
+        top: 1vh;
+
+    }
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 3.5vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    #area,
+    #password,
+    #rol,
+    #module {
+        margin-top: 3vh;
+
+    }
+
+    #rol {
+        margin-top: 1vh;
+    }
+
+    .mb-3 {
+        margin-left: -2.5vh;
+    }
+
 }

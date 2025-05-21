@@ -41,80 +41,80 @@
 
 {% if request.user.role == 'Administrador' %}
 
-<div class="uno">
-    <a href="{% url 'libreria:crear_usuario' %}">
+<div class="uno" >
+    <a href="{% url 'libreria:crear_usuario' %}" title="Crear usuario">
         <div class="opcion">
             <i data-feather="user-plus" class="icono"></i>
             <span>Crear usuario</span>
         </div>
     </a>
    
-    <a href="{% url 'libreria:ver_usuario' user.id %}">
+    <a href="{% url 'libreria:ver_usuario' user.id %}" title="Ver usuario">
         <div class="opcion">
-            <i data-feather="plus-square" class="icono"></i>
+            <i data-feather="user" class="icono"></i>
             <span>Ver perfil</span>
         </div>
     </a>
 
-    <a href="{% url 'libreria:lista_usuarios' %}">
+    <a href="{% url 'libreria:lista_usuarios' %}" title="Lista de usuarios">
         <div class="opcion">
             <i data-feather="users" class="icono"></i>
             <span>Lista de usuarios</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:crear_articulo' %}">
+    <a href="{% url 'papeleria:crear_articulo' %}" title="Crear articulos">
         <div class="opcion">
             <i data-feather="file-plus" class="icono"></i>
 </i>
-            <span>Crear articulo</span>
+            <span>Crear articulos</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:listar_articulo' %}">
+    <a href="{% url 'papeleria:listar_articulo' %}" title="Listar articulos">
         <div class="opcion">
             <i data-feather="package" class="icono"></i>
             <span>Listar articulos</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:crear_pedido' %}">
+    <a href="{% url 'papeleria:crear_pedido' %}" title="Realizar Pedidos">
         <div class="opcion">
             <i data-feather="shopping-cart" class="icono"></i>
             <span>Pedidos</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:listado_pedidos' %}">
+    <a href="{% url 'papeleria:listado_pedidos' %}" title="Listado de pedidos" >
         <div class="opcion">
             <i data-feather="list" class="icono"></i>
             <span>Listado de Pedidos</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:pedidos_pendientes' %}">
+    <a href="{% url 'papeleria:pedidos_pendientes' %}" title="Pedidos pendientes">
         <div class="opcion">
             <i data-feather="list" class="icono"></i>
             <span>Pedidos pendientes</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:lista_bajo_stock'  %}">
+    <a href="{% url 'papeleria:lista_bajo_stock'  %}" title="Bajo stock">
         <div class="opcion">
         <i data-feather="alert-triangle" class="icono"></i>
         <span>Bajo stock</span>
     </div>
     </a>
-    <a href="{% url 'papeleria:index_estadistica'  %}">
+    <a href="{% url 'papeleria:index_estadistica'  %}" title="Estadisticas">
         <div class="opcion">
         <i data-feather="bar-chart" class="icono"></i>
         <span>Estadisticas</span>
     </div>
     </a>
-    <a href="{% url 'libreria:cambiar_contraseña'  %}">
+    <a href="{% url 'libreria:cambiar_contraseña'  %}" title="Cambiar contraseña">
         <div class="opcion">
             <i data-feather="lock" class="icono"></i>
             <span>Cambiar contraseña</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:logout_view' %}">
+    <a href="{% url 'papeleria:logout_view' %}" title="Cerrar sesión">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>
-            <span>Salir</span>
+            <span>Cerrar sesión</span>
         </div>
     </a>
 </div>

@@ -6,12 +6,12 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
 
-<div id="container">
+<section>
     <h1>Realizar Pedido</h1>
 
     <form method="post">
         {% csrf_token %}
-        
+
         <!-- Campo área oculto -->
         <div class="mb-3" style="display: none;">
             <label class="form-label">Área:</label>
@@ -19,7 +19,7 @@
         </div>
 
         <div id="articulos-container">
-            <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px;">
+            <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
                 <select name="articulo" required>
                     <option value="">-- Seleccionar Artículo --</option>
                     {% for articulo in articulos %}
@@ -45,24 +45,38 @@
         <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
         <button type="submit">Realizar Pedido</button>
     </form>
-</div>
+</section>
 
 <style>
     option.no-allowed {
         color: red;
         cursor: not-allowed;
     }
+
+    .btn-eliminar-articulo {
+        margin-left: 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-eliminar-articulo:hover {
+        background-color: #c82333;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     function actualizarTipos(form) {
-        var selectArticulo = form.querySelector('select[name="articulo"]');
-        var selectTipo = form.querySelector('select[name="tipo_articulo"]');
-        var articuloSeleccionado = selectArticulo.value;
+        const selectArticulo = form.querySelector('select[name="articulo"]');
+        const selectTipo = form.querySelector('select[name="tipo_articulo"]');
+        const articuloSeleccionado = selectArticulo.value;
 
-        for (var i = 0; i < selectTipo.options.length; i++) {
-            var option = selectTipo.options[i];
+        for (let i = 0; i < selectTipo.options.length; i++) {
+            const option = selectTipo.options[i];
             if (option.value === "") {
                 option.disabled = false;
                 option.classList.remove('no-allowed');
@@ -75,51 +89,50 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (selectTipo.value !== articuloSeleccionado) {
+        if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex].getAttribute('data-articulo') !== articuloSeleccionado) {
             selectTipo.value = "";
         }
     }
 
-    // Inicializar el primer formulario
-    var defaultForm = document.querySelector('.articulo-form.default-form');
-    if (defaultForm) {
-        var selectArticulo = defaultForm.querySelector('select[name="articulo"]');
+    function inicializarFormulario(form, incluirEliminar = false) {
+        const selectArticulo = form.querySelector('select[name="articulo"]');
         selectArticulo.addEventListener('change', function () {
-            actualizarTipos(defaultForm);
+            actualizarTipos(form);
         });
-        actualizarTipos(defaultForm);
+
+        if (incluirEliminar) {
+            const eliminarBtn = document.createElement('button');
+            eliminarBtn.type = 'button';
+            eliminarBtn.textContent = 'Eliminar';
+            eliminarBtn.classList.add('btn-eliminar-articulo');
+            eliminarBtn.title = "Eliminar";
+            eliminarBtn.onclick = function () {
+                eliminarArticulo(form);
+            };
+            form.appendChild(eliminarBtn);
+        }
+
+        actualizarTipos(form);
+    }
+
+    const defaultForm = document.querySelector('.articulo-form.default-form');
+    if (defaultForm) {
+        inicializarFormulario(defaultForm);  // No incluye botón de eliminar
     }
 
     window.agregarArticulo = function () {
-        var container = document.getElementById('articulos-container');
-        var nuevoFormulario = document.querySelector('.articulo-form.default-form').cloneNode(true);
-        nuevoFormulario.style.display = 'flex';
+        const container = document.getElementById('articulos-container');
+        const nuevoFormulario = defaultForm.cloneNode(true);
         nuevoFormulario.classList.remove('default-form');
-
-        // Botón eliminar
-        var eliminarBtn = document.createElement('button');
-        eliminarBtn.type = 'button';
-        eliminarBtn.textContent = 'Eliminar';
-        eliminarBtn.onclick = function () {
-            eliminarArticulo(nuevoFormulario);
-        };
-        nuevoFormulario.appendChild(eliminarBtn);
+        nuevoFormulario.style.display = 'flex';
 
         // Limpiar valores
-        var selects = nuevoFormulario.getElementsByTagName('select');
-        for (var select of selects) {
-            select.selectedIndex = 0;
-        }
+        const selects = nuevoFormulario.querySelectorAll('select');
+        selects.forEach(select => select.selectedIndex = 0);
         nuevoFormulario.querySelector('input[name="cantidad"]').value = 1;
 
+        inicializarFormulario(nuevoFormulario, true);  // Incluir botón de eliminar
         container.appendChild(nuevoFormulario);
-
-        // Añadir listener para filtrar tipos en nuevo formulario
-        var selectArticuloNuevo = nuevoFormulario.querySelector('select[name="articulo"]');
-        selectArticuloNuevo.addEventListener('change', function () {
-            actualizarTipos(nuevoFormulario);
-        });
-        actualizarTipos(nuevoFormulario);
     };
 
     window.eliminarArticulo = function (form) {
@@ -129,6 +142,4 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 });
 </script>
-
 {% endblock %}
-

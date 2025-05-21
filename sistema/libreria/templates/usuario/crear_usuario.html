@@ -112,12 +112,12 @@ Crear usuario papelería
             <select id="id_module" name="module" class="form-select" required>
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="Papeleria">Papeleria</option>
-                <option value="Cafeteria">Cafeteria</option>
-                <option value="Centro de eventos">Centro de eventos</option>
             </select>
-        </div>
+            <div id="error_username" class="error-module"></div>
 
-        <div class="mb-3">
+        </div>
+        
+        <div class="mb-3" id="rol">
             <label for="id_role" class="form-label">Rol:</label>
             <select id="id_role" name="role" class="form-select" required>
                 <option value="" disabled selected>Seleccione una opción</option>
@@ -132,7 +132,7 @@ Crear usuario papelería
                    placeholder="Ingrese su cargo">
             <div id="error_cargo" class="error-cargo"></div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="area">
             <label for="id_area" class="form-label">Área:</label>
             <select id="id_area" name="area" class="form-select" required>
                 <option value="" disabled selected>Seleccione una opción</option>
@@ -152,7 +152,7 @@ Crear usuario papelería
             <div id="error_email" class="error-email"></div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="password">
             <label for="id_password" class="form-label">Contraseña:</label>
             <input type="password" id="id_password" name="password" class="form-control" required
                    autocomplete="new-password" placeholder="Ingrese su contraseña">

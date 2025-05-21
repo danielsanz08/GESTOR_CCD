@@ -79,7 +79,8 @@
         <!-- Input de búsqueda general -->
         <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
         <button type="submit" class="btn-search" title="Buscar texto">
-            <i data-feather="search" class="icono"></i>
+            <i class="fas fa-search text-white"></i>
+
         </button>
 
         
@@ -93,12 +94,14 @@
         <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
 
         <button type="submit" class="search-date" title="Buscar por rango de fecha">
-            <i data-feather="search" class="icono"></i>
+            <i class="fas fa-search text-white"></i>
+
         </button>
     </div>
      <!-- Botón para limpiar filtros -->
     <a href="{% url 'papeleria:listar_articulo' %}">
-      <button type="button" class="clean" title="Limpiar búsqueda"><i data-feather="trash-2" class="icono"></i></button>
+      <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white" title="Eliminar"></i>
+</button>
     </a>
   </div>
 </form>

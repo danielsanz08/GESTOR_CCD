@@ -18,9 +18,45 @@
         {% endfor %}
     </div>
     <table>
-        <form method="GET"  action="#">
-        <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
-        <button type="submit" class="btn-search"><i data-feather="search" class="icono"></i></button>
+        <div class="Bototnes">
+        <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
+        <a href="{% url 'papeleria:reporte_pedidos_pdf' %}"><button class="pdf" title="Exportar a PDF"><i
+                    class="fas fa-file-pdf text-white"></i></button></a>
+        <a href="{% url 'papeleria:reporte_pedidos_excel' %}"><button class="excel" title="Exportar a Excel"><i
+                    class="fas fa-file-excel text-white"></i></button></a>
+    </div>
+        <form method="GET" action="{% url 'papeleria:pedidos_pendientes' %}">
+        <div>
+            <!-- Input de búsqueda general -->
+            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
+                value="{{ request.GET.q }}">
+            <button type="submit" class="btn-search" title="Buscar texto">
+                <i class="fas fa-search text-white"></i>
+
+            </button>
+
+
+
+            <!-- Inputs de fecha (inicialmente ocultos) -->
+            <div id="filtro-fechas">
+                <label for="fecha_inicio">Desde:</label>
+                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+
+                <label for="fecha_fin">Hasta:</label>
+                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
+
+                <button type="submit" class="search-date" title="Buscar por rango de fecha">
+                    <i class="fas fa-search text-white"></i>
+
+                </button>
+            </div>
+            <!-- Botón para limpiar filtros -->
+            <a href="{% url 'papeleria:pedidos_pendientes' %}">
+                <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
+                        title="Eliminar"></i>
+                </button>
+            </a>
+        </div>
     </form>
         <thead>
             <tr>
@@ -72,6 +108,21 @@
             {% endfor %}
         </tbody>
     </table>
+     <div class="paginacion" id="pag">
+        {% if pedidos.has_previous %}
+        <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
+        {% endif %}
+        {% for num in pedidos.paginator.page_range %}
+        {% if pedidos.number == num %}
+        <span class="current">{{ num }}</span>
+        {% else %}
+        <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+        {% if pedidos.has_next %}
+        <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
+        {% endif %}
+    </div>
 </section>
 {% endif %}
 {% if request.user.role == 'Empleado' %}
@@ -99,6 +150,22 @@
 
         </tbody>
     </table>
+     <div class="paginacion" id="pag">
+    {% if articulos.has_previous %}
+        <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
+    {% endif %}
+    {% for num in articulos.paginator.page_range %}
+        {% if articulos.number == num %}
+            <span class="current">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if articulos.has_next %}
+        <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
+    {% endif %}
+</div>
+
 </section>
 {% endif %}
 {% endblock %}

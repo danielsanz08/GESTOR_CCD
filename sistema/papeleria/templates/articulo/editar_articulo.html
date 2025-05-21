@@ -32,7 +32,7 @@
             <label for="cantidad" class="form-label">Digite la cantidad</label>
             {{ form.cantidad }}
         </div>
-         <div class="mb-3">
+        <div class="mb-3">
             <label for="proveedor" class="form-label">Digite el proveedor</label>
             {{ form.proveedor }}
         </div>
@@ -40,13 +40,15 @@
             <label for="observacion" class="form-label">Observación del artículo</label>
             {{ form.observacion }}
         </div>
-        <button type="submit">Editar artículo</button>
+        <button type="submit" id="submitBtn" disabled>Editar artículo</button>
     </form>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const precioInput = document.getElementById("id_precio");
+        const formArticulo = document.getElementById("form_articulo");
+        const submitBtn = document.getElementById("submitBtn");
 
         function formatearConComas(valor) {
             const partes = valor.split(".");
@@ -56,41 +58,44 @@
         }
 
         function limpiarValor(valor) {
-            // Quitar caracteres no numéricos, excepto el punto
             return valor.replace(/[^\d.]/g, "");
         }
 
         precioInput.addEventListener("input", function () {
             let valor = precioInput.value;
-
-            // Limpiar valor de caracteres no válidos
             valor = limpiarValor(valor);
 
-            // Solo permitir un punto decimal
             const partes = valor.split(".");
             if (partes.length > 2) {
                 valor = partes[0] + "." + partes.slice(1).join("");
             }
-
-            // Limitar a 2 decimales
             if (partes[1]) {
                 partes[1] = partes[1].slice(0, 2);
             }
 
-            // Formatear con comas para la vista
             const formateado = formatearConComas(valor);
             precioInput.value = formateado;
+
+            enableSubmit();
         });
 
-        // Formatear el valor inicial si ya tiene precio
+        // Habilitar el botón al detectar cambios
+        const inputs = formArticulo.querySelectorAll("input, select, textarea");
+
+        function enableSubmit() {
+            submitBtn.disabled = false;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener("change", enableSubmit);
+            input.addEventListener("input", enableSubmit);
+        });
+
         if (precioInput.value) {
             precioInput.value = formatearConComas(precioInput.value);
         }
 
-        // Limpiar el valor antes de enviar el formulario
-        const formArticulo = document.getElementById("form_articulo");
         formArticulo.addEventListener("submit", function () {
-            // Limpiar el valor del campo de precio antes de enviarlo
             precioInput.value = limpiarValor(precioInput.value);
         });
     });

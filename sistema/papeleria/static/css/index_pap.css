@@ -15,10 +15,9 @@ body {
     padding: 3rem 1rem;
     position: relative;
     margin-top: 15vh;
-    /* Mueve el contenido más abajo */
 }
 
-/* Título (opcional, si añades un título en el HTML) */
+/* Título */
 .title {
     font-family: 'Orbitron', sans-serif;
     font-size: 2.5rem;
@@ -33,7 +32,6 @@ body {
     from {
         text-shadow: 0 0 10px rgba(0, 247, 255, 0.5), 0 0 20px rgba(0, 247, 255, 0.3);
     }
-
     to {
         text-shadow: 0 0 15px rgba(0, 247, 255, 0.7), 0 0 30px rgba(0, 247, 255, 0.5);
     }
@@ -59,6 +57,8 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     width: 180px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
 }
 
 .opcion:hover {
@@ -78,13 +78,14 @@ body {
     background: radial-gradient(circle at 50% 50%, rgba(0, 247, 255, 0.1), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: 0;
 }
 
 .opcion:hover::before {
     opacity: 1;
 }
 
-/* Estilo de los iconos */
+/* Iconos */
 .icono {
     width: 48px;
     height: 48px;
@@ -92,18 +93,20 @@ body {
     color: #ffffff;
     filter: drop-shadow(0 0 5px rgba(0, 247, 255, 0.5));
     transition: transform 0.3s ease;
+    z-index: 1;
 }
 
 .opcion:hover .icono {
     transform: scale(1.2);
 }
 
-/* Texto de las opciones */
+/* Texto en opciones */
 .opcion span {
     font-size: 1.1rem;
     font-weight: 500;
     letter-spacing: 0.5px;
     font-family: 'Roboto', sans-serif;
+    z-index: 1;
 }
 
 /* Enlaces */
@@ -118,7 +121,6 @@ a {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -130,7 +132,7 @@ a {
     animation-delay: calc(0.1s * var(--i));
 }
 
-/* Estilos para .card-uno y .empleado-card (si se usan) */
+/* Estilo para tarjetas adicionales */
 .empleado-card {
     display: grid;
     grid-template-columns: 1fr;
@@ -164,6 +166,7 @@ a {
     box-shadow: 0 12px 40px rgba(0, 247, 255, 0.2);
     border-color: #00f7ff;
 }
+
 /* 📱 Teléfono pequeño (ej. 360x640) */
 @media (min-width: 360px) and (max-width: 374px) {
     .container {

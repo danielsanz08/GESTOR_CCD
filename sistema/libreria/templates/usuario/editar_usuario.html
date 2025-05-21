@@ -113,22 +113,29 @@
     </form>
 </div>
 {% endif %}
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('userForm') || document.getElementById('editar-form');
+    const form = document.getElementById('editar-form');
+    const boton = document.getElementById('btn');
+
+    // Inputs relevantes
     const usernameInput = document.getElementById('id_username');
     const emailInput = document.getElementById('id_email');
     const cargoInput = document.getElementById('id_cargo');
-    const areaInput = document.getElementById('id_area');  // campo area
-    const boton = document.getElementById('btn');
+    const areaInput = document.getElementById('id_area');
+    const roleInput = document.getElementById('id_role');
+    const moduloInput = document.getElementById('id_modulo');  // si lo tienes
 
-    const usernameError = document.querySelector('.username-error') || document.getElementById('error-nombre');
-    const emailError = document.querySelector('.email-error') || document.getElementById('error-email');
-    const cargoError = document.querySelector('.cargo-error') || document.getElementById('error-cargo');
+    // Errores
+    const usernameError = document.getElementById('error-nombre');
+    const emailError = document.getElementById('error-email');
+    const cargoError = document.getElementById('error-cargo');
     const areaError = document.querySelector('.area-error');
 
     const regexCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+    // Desactiva el botón al cargar
+    boton.disabled = true;
 
     function tieneCaracteresRepetidos(str) {
         return /(.)\1\1/.test(str);
@@ -143,86 +150,89 @@ document.addEventListener('DOMContentLoaded', () => {
         const camposLlenos = usernameInput.value.trim() !== '' &&
                              emailInput.value.trim() !== '' &&
                              cargoInput.value.trim() !== '' &&
-                             (areaInput ? areaInput.value.trim() !== '' : true);
+                             (areaInput ? areaInput.value.trim() !== '' : true) &&
+                             (roleInput ? roleInput.value.trim() !== '' : true);
 
         boton.disabled = !(usernameValido && emailValido && cargoValido && areaValido && camposLlenos);
     }
 
-    if (usernameInput) {
-        usernameInput.addEventListener('input', () => {
-            let value = usernameInput.value;
-            usernameInput.value = value.replace(/\d/g, '');
-            usernameError.textContent = '';
+    // Agrega eventos a todos los campos para activar el botón
+    const activarBoton = () => {
+        validarFormulario();  // Valida campos antes de habilitar
+    };
 
-            if (value.length < 3) {
-                usernameError.textContent = 'Debe tener al menos 3 caracteres.';
-            } else if (tieneCaracteresRepetidos(value)) {
-                usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
-            }
+    // Validación personalizada por campo
+    usernameInput.addEventListener('input', () => {
+        usernameError.textContent = '';
+        const value = usernameInput.value.replace(/\d/g, '');
+        usernameInput.value = value;
 
+        if (value.length < 3) {
+            usernameError.textContent = 'Debe tener al menos 3 caracteres.';
+        } else if (tieneCaracteresRepetidos(value)) {
+            usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+        }
+
+        activarBoton();
+    });
+
+    cargoInput.addEventListener('input', () => {
+        cargoError.textContent = '';
+        const value = cargoInput.value.replace(/\d/g, '');
+        cargoInput.value = value;
+
+        if (value.length < 2) {
+            cargoError.textContent = 'Debe tener al menos 2 caracteres.';
+        } else if (tieneCaracteresRepetidos(value)) {
+            cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+        }
+
+        activarBoton();
+    });
+
+    emailInput.addEventListener('input', () => {
+        emailError.textContent = '';
+        const email = emailInput.value;
+
+        if (!regexCorreo.test(email)) {
+            emailError.textContent = 'Correo no válido.';
             validarFormulario();
-        });
-    }
+            return;
+        }
 
-    if (cargoInput) {
-        cargoInput.addEventListener('input', () => {
-            let value = cargoInput.value;
-            cargoInput.value = value.replace(/\d/g, '');
-            cargoError.textContent = '';
-
-            if (value.length < 2) {
-                cargoError.textContent = 'Debe tener al menos 2 caracteres.';
-            } else if (tieneCaracteresRepetidos(value)) {
-                cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
-            }
-
+        if (tieneCaracteresRepetidos(email)) {
+            emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
             validarFormulario();
-        });
-    }
+            return;
+        }
 
-    if (emailInput) {
-        emailInput.addEventListener('input', () => {
-            const email = emailInput.value;
-            emailError.textContent = '';
+        // Verifica duplicados si es necesario
+        fetch(`/validar_datos?email=${encodeURIComponent(email)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.email) {
+                    emailError.textContent = data.email;
+                }
+                activarBoton();
+            });
+    });
 
-            if (!regexCorreo.test(email)) {
-                emailError.textContent = 'Correo no válido.';
-                validarFormulario();
-                return;
-            }
-
-            if (tieneCaracteresRepetidos(email)) {
-                emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
-                validarFormulario();
-                return;
-            }
-
-            fetch(`/validar_datos?email=${encodeURIComponent(email)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.email) {
-                        emailError.textContent = data.email;
-                    }
-                    validarFormulario();
-                });
-        });
-    }
-
+    // Otros campos
     if (areaInput) {
-        areaInput.addEventListener('input', () => {
-            areaError.textContent = '';
+        areaInput.addEventListener('change', activarBoton);
+    }
 
-            if (areaInput.value.trim() === '') {
-                areaError.textContent = 'Debe seleccionar un área.';
-            }
+    if (roleInput) {
+        roleInput.addEventListener('change', activarBoton);
+    }
 
-            validarFormulario();
-        });
+    if (moduloInput) {
+        moduloInput.addEventListener('change', activarBoton);
     }
 
     form.addEventListener('submit', (e) => {
-        if (usernameError.textContent || emailError.textContent || cargoError.textContent || (areaError && areaError.textContent)) {
-            e.preventDefault();
+        if (boton.disabled) {
+            e.preventDefault();  // Evita enviar si el botón no está habilitado
         }
     });
 });

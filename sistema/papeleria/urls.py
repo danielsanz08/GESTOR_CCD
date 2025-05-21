@@ -36,6 +36,9 @@ urlpatterns = [
      path('grafica_bajoStock/', views.grafica_bajo_Stock, name='grafica_bajoStock'),
      path('grafica_pedidos/', views.grafica_pedidos, name='grafica_pedidos'),
      path('pedidos_area/', views.grafica_pedidos_area, name='pedidos_area'),
+     path('reporte_pedidos_pdf/', views.reporte_pedidos_pdf, name='reporte_pedidos_pdf'),
+     path('reporte_pedidos_excel/', views.reporte_pedidos_excel, name='reporte_pedidos_excel'),
+     path('reporte_bajo_stock_pdf/', views.reporte_articulo_bajo_stock_pdf, name='reporte_articulo_bajo_stock_pdf'),
 
 
 ]

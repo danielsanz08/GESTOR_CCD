@@ -486,7 +486,7 @@ def reporte_usuario_excel(request):
     ws.column_dimensions['B'].width = 40
     ws.column_dimensions['C'].width = 20
     ws.column_dimensions['D'].width = 40
-    ws.column_dimensions['E'].width = 50
+    ws.column_dimensions['E'].width = 40
     ws.column_dimensions['F'].width = 20
     ws.column_dimensions['G'].width = 15
 
@@ -529,3 +529,59 @@ def graficas_usuarios_activos(request):
         'cantidades': cantidades,
         'breadcrumbs': breadcrumbs
     })
+
+#validación para la cantidad de administradores
+def registro_usuarios(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        role = request.POST.get('role')
+        area = request.POST.get('area')
+        cargo = request.POST.get('cargo')
+        module = request.POST.get('module')
+
+        # Validar que el rol sea permitido
+        admins_count = CustomUser.objects.filter(role='Administrador', module='papeleria').count()
+        if role == 'Administrador' and admins_count >= 3:
+            messages.error(request, 'No se pueden registrar más administradores en Papelería.')
+            return redirect('registro_usuarios')
+
+        # Crear el usuario
+        try:
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                role=role,
+                area=area,
+                cargo=cargo,
+                module=module,
+                password='default_password'  # Cambia esto según tu lógica de contraseñas
+            )
+            messages.success(request, 'Usuario registrado exitosamente.')
+            return redirect('registro_usuarios')
+        except Exception as e:
+            messages.error(request, f'Error al registrar el usuario: {str(e)}')
+
+    # GET: Mostrar el formulario
+    admins_count = CustomUser.objects.filter(role='Administrador', module='papeleria').count()
+    print(f"Administradores en Papeleria: {admins_count}")
+    
+    mostrar_admin = admins_count < 3
+    mostrar_empleado = True
+    
+    roles = CustomUser.ROLES
+    areas = CustomUser.AREA
+    modules = CustomUser.MODULES
+    
+    context = {
+        'mostrar_admin': mostrar_admin,
+        'mostrar_empleado': mostrar_empleado,
+        'admins_count': admins_count,
+        'roles': roles,
+        'areas': areas,
+        'modules': modules,
+    }
+    return render(request, 'usuario/crear_usuario.html', context)
+
+def sesion_expirada(request):
+    return render(request, 'sesion_expirada.html')

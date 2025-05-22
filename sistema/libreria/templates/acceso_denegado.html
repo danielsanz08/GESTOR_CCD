@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Acción Denegada</title>
-    <style>
+{% extends 'navbar.html' %}
+{% block titulo %}Acceso denegado{% endblock %}
+{% block contenido %}
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
         
         :root {
@@ -36,12 +34,12 @@
             z-index: 1;
             padding: 2rem;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(0px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0);
             max-width: 90%;
-            width: 500px;
+            width: 200vh;
             transform: translateY(20px);
             animation: float 4s ease-in-out infinite, appear 1s forwards;
             opacity: 0;
@@ -74,7 +72,7 @@
             animation: pulse 2s infinite;
         }
         
-        p {
+        .text {
             color: var(--light);
             margin-bottom: 2rem;
             line-height: 1.6;
@@ -295,10 +293,9 @@
     <div class="container">
         <div class="warning-icon">⚠️</div>
         <h1 class="glitch">Acción Denegada</h1>
-        <p>No tienes permiso para acceder a esta página. Por favor inicia sesión para continuar.</p>
+        <p class="text">No tienes permiso para acceder a esta página. Por favor inicia sesión para continuar.</p>
         <a href="#">
             <a href="{% url 'libreria:inicio' %}"><button class="btn">Ir a inicio</button></a>
         </a>
     </div>
-</body>
-</html>
+{% endblock %}

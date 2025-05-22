@@ -28,7 +28,7 @@ urlpatterns = [
     path('reporte_usuario_pdf/', views.reporte_usuario_pdf, name='reporte_usuario_pdf'),
     path('reporte_usuario_excel/', views.reporte_usuario_excel, name='reporte_usuario_excel'),
     #estadisticas
-    path('graficas_usuarios_activos/', views.graficas_usuarios_activos, name='graficas_usuarios_activos'),
+  path('sesion_expirada/', views.sesion_expirada, name='sesion_expirada'),
 
 ]
 

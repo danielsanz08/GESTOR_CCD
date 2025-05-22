@@ -10,6 +10,9 @@ body, html {
     align-items: center;
     
 }
+ html, body{
+      background-color: #1c96bb1c;
+    }
 /* Animación de entrada */
 @keyframes fadeInUp {
     to {

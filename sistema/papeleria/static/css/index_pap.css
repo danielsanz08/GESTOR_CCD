@@ -7,7 +7,9 @@ body {
     margin: 0;
     overflow-x: hidden;
 }
-
+ html, body{
+      background-color: #1c96bb1c;
+    }
 /* Contenedor principal */
 .container {
     max-width: 1400px;

@@ -9,6 +9,9 @@ body, html {
     align-items: center;
     background-color: #80808000; /* Gris de fondo si la imagen no carga */
   }
+   html, body{
+      background-color: #1c96bb1c;
+    }
 .formulario{
     background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);

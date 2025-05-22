@@ -3,6 +3,9 @@ html {
   justify-content: center;
   align-items: center;
 }
+ html, body{
+      background-color: #1c96bb1c;
+    }
 
 section {
   background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);

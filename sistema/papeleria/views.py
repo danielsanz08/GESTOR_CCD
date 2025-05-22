@@ -413,12 +413,12 @@ def reporte_articulo_excel(request):
 
     # Ajustar ancho de columnas
     ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 20
+    ws.column_dimensions['B'].width = 40
     ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 15
-    ws.column_dimensions['E'].width = 15
-    ws.column_dimensions['F'].width = 15
-    ws.column_dimensions['G'].width = 30
+    ws.column_dimensions['D'].width = 40
+    ws.column_dimensions['E'].width = 40
+    ws.column_dimensions['F'].width = 20
+    ws.column_dimensions['G'].width = 15
 
     # Aplicar estilo a celdas de datos
     for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
@@ -854,9 +854,12 @@ def grafica_bajo_Stock(request):
 def reporte_pedidos_pdf(request):
     buffer = BytesIO()
 
+    # Crear documento
     doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
                             leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
-    doc.title = "Listado de Pedidos CCD"
+
+    # Metadatos
+    doc.title = "Listado de pedidos CCD"
     doc.author = "CCD"
     doc.subject = "Listado de pedidos"
     doc.creator = "Sistema de Gestión CCD"
@@ -867,15 +870,12 @@ def reporte_pedidos_pdf(request):
     # Título
     titulo = Paragraph("REPORTE DE PEDIDOS", styles["Title"])
     elements.append(titulo)
-    elements.append(Spacer(1, 12))
 
-    # Fecha actual
-    fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
-
-    # Encabezado empresa (tabla)
+    # Encabezado empresa
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
     encabezado_data = [
-        ["GESTOR CCD", "Lista de pedidos", "Correo:", f"Fecha: {fecha_actual}"],
-        ["Cámara de comercio de Duitama", "Nit: 123456789", "contacto@gestorccd.com", "Teléfono: (123) 456-7890"],
+        ["GESTOR CCD", "Lista de usuarios", "Correo: gestorccd@gmail.com", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "(Correo de la camara)", "Teléfono: (tel. camara)"],
     ]
     tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
     estilo_encabezado = TableStyle([
@@ -891,11 +891,10 @@ def reporte_pedidos_pdf(request):
     ])
     tabla_encabezado.setStyle(estilo_encabezado)
     elements.append(tabla_encabezado)
-    elements.append(Spacer(1, 12))
 
     # Tabla usuario
     usuario = request.user
-    data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
+    data_usuario = [["Usuario:", "Email:", "Rol:", "Cargo:"]]
     data_usuario.append([
         usuario.username,
         usuario.email,
@@ -916,12 +915,9 @@ def reporte_pedidos_pdf(request):
     ])
     table_usuario.setStyle(style_usuario)
     elements.append(table_usuario)
-    elements.append(Spacer(1, 12))
 
-    # Cabecera tabla pedidos
+    # Tabla artículos
     data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos"]]
-
-    from .models import Pedido
 
     pedidos = Pedido.objects.prefetch_related('articulos__articulo').all()
 
@@ -938,42 +934,43 @@ def reporte_pedidos_pdf(request):
             pedido.registrado_por.username if pedido.registrado_por else 'No definido',
             articulos_text or 'Sin artículos'
         ])
-
-    tabla_pedidos = Table(data_pedidos, colWidths=[70, 90, 90, 110, 320])
-    style_pedidos = TableStyle([
+    tabla_articulos = Table(data_pedidos, colWidths=[60, 140, 120, 180, 220, 80, 40])
+    style_articulos = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-2, -1), 'CENTER'),
-        ('ALIGN', (-1, 1), (-1, -1), 'LEFT'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
     ])
-    tabla_pedidos.setStyle(style_pedidos)
-    elements.append(tabla_pedidos)
+    tabla_articulos.setStyle(style_articulos)
+    elements.append(tabla_articulos)
 
+    # Construir documento con marca de agua
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="pedidos.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Lista de pedidos Gestor CCD.pdf"'
     return response
 
 def reporte_pedidos_excel(request):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Pedidos"
+    ws.title = "Listado de pedidos CCD"
 
-    # Ajustar el ancho de columnas para el logo y títulos
+    # Ajustar ancho columnas para logo y títulos
     ws.column_dimensions['A'].width = 25
     ws.column_dimensions['B'].width = 25
 
-    # Ajustar la altura de la fila 1 para el logo
+    # Ajustar altura fila 1 para logo
     ws.row_dimensions[1].height = 90
 
-    # Agregar el logo
+    # Agregar logo
     logo_path = finders.find('imagen/logo.png')
     if logo_path:
         img = Image(logo_path)
@@ -981,34 +978,34 @@ def reporte_pedidos_excel(request):
         img.width = 200
         ws.add_image(img, 'A1')
 
-    # Fusionar celdas A1 y B1 para que el logo ocupe espacio visualmente
+    # Fusionar A1:B1 para logo
     ws.merge_cells('A1:B1')
 
-    # Título principal
-    ws.merge_cells('C1:F1')
+    # Título principal en C1:E1 (hasta E)
+    ws.merge_cells('C1:E1')
     ws['C1'] = "GESTOR CCD"
     ws['C1'].font = Font(size=24, bold=True)
     ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Subtítulo con fecha actual
-    ws.merge_cells('A2:G2')
-    fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
-    ws['A2'] = f"Listado de Pedidos - Fecha: {fecha_actual}"
+    # Subtítulo en A2:E2 (hasta E)
+    ws.merge_cells('A2:E2')
+    ws['A2'] = f"Listado de Pedidos CCD"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Encabezados de la tabla
+    # Encabezados en A3:E3
     headers = ["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos"]
     ws.append(headers)
 
-    # Estilo para los encabezados
+    # Aplicar sombreado y estilo solo a A3:E3
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
-    for cell in ws[3]:
+    for col in ['A', 'B', 'C', 'D', 'E']:
+        cell = ws[f"{col}3"]
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
-    # Bordes para las celdas
+    # Bordes para celdas A3:E última fila
     border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -1016,10 +1013,10 @@ def reporte_pedidos_excel(request):
         bottom=Side(style='thin')
     )
 
-    # Obtener pedidos con sus artículos relacionados
+    # Obtener pedidos con artículos relacionados
     pedidos = Pedido.objects.prefetch_related('articulos__articulo').all()
 
-    # Agregar datos
+    # Agregar datos a partir de fila 4
     for pedido in pedidos:
         articulos_text = ""
         for pa in pedido.articulos.all():
@@ -1034,27 +1031,30 @@ def reporte_pedidos_excel(request):
             articulos_text,
         ])
 
-    # Ajustar ancho de columnas
-    ws.column_dimensions['A'].width = 12
-    ws.column_dimensions['B'].width = 15
-    ws.column_dimensions['C'].width = 15
-    ws.column_dimensions['D'].width = 20
-    ws.column_dimensions['E'].width = 50
+    # Ajustar ancho de columnas A-E
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 40
+    ws.column_dimensions['E'].width = 40
 
-    # Aplicar estilo a celdas de datos
+    # Aplicar bordes a todas las celdas desde fila 3 hasta la última fila, columnas A-E
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=5):
+        for cell in row:
+            cell.border = border
+
+    # Alinear datos, wrap_text para artículos (col E)
     for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=5):
         for i, cell in enumerate(row, 1):
             if i < 5:
-                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=(i==5))
-            cell.border = border
-        # Para la columna de artículos (col 5), aplicar wrap_text y alineación izquierda
+                cell.alignment = Alignment(horizontal='center', vertical='center')
         row[4].alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
 
-    # Altura de filas para títulos
+    # Altura filas para títulos
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Preparar la respuesta HTTP
+    # Preparar respuesta HTTP para descarga Excel
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
@@ -1162,4 +1162,306 @@ def reporte_articulo_bajo_stock_pdf(request):
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Listado bajos en stock.pdf"'
+    return response
+
+def reporte_pedidos_pendientes_pdf(request):
+    buffer = BytesIO()
+
+    # Crear documento
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
+                            leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
+
+    # Metadatos
+    doc.title = "Listado de pedidos pendientes CCD"
+    doc.author = "CCD"
+    doc.subject = "Listado de pedidos pendientes"
+    doc.creator = "Sistema de Gestión CCD"
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Título
+    titulo = Paragraph("REPORTE DE PEDIDOS PENDIENTES", styles["Title"])
+    elements.append(titulo)
+
+    # Encabezado empresa
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    encabezado_data = [
+        ["GESTOR CCD", "Lista de usuarios", "Correo: gestorccd@gmail.com", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "(Correo de la camara)", "Teléfono: (tel. camara)"],
+    ]
+    tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
+    estilo_encabezado = TableStyle([
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_encabezado.setStyle(estilo_encabezado)
+    elements.append(tabla_encabezado)
+
+    # Tabla usuario
+    usuario = request.user
+    data_usuario = [["Usuario:", "Email:", "Rol:", "Cargo:"]]
+    data_usuario.append([
+        usuario.username,
+        usuario.email,
+        getattr(usuario, 'role', 'No definido'),
+        getattr(usuario, 'cargo', 'No definido'),
+    ])
+    table_usuario = Table(data_usuario, colWidths=[180, 180, 180, 180])
+    style_usuario = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table_usuario.setStyle(style_usuario)
+    elements.append(table_usuario)
+
+    # Tabla artículos
+    data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos"]]
+
+    pedidos = Pedido.objects.filter(estado='Pendiente')
+
+    for pedido in pedidos:
+        articulos_text = ""
+        for pa in pedido.articulos.all():
+            articulos_text += f"{pa.articulo.nombre} x {pa.cantidad} (Tipo: {pa.tipo}, Área: {pa.area})\n"
+        articulos_text = articulos_text.strip()
+
+        data_pedidos.append([
+            str(pedido.id),
+            pedido.fecha_pedido.strftime('%d-%m-%Y'),
+            pedido.get_estado_display(),
+            pedido.registrado_por.username if pedido.registrado_por else 'No definido',
+            articulos_text or 'Sin artículos'
+        ])
+    tabla_articulos = Table(data_pedidos, colWidths=[60, 140, 120, 180, 220, 80, 40])
+    style_articulos = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_articulos.setStyle(style_articulos)
+    elements.append(tabla_articulos)
+
+    # Construir documento con marca de agua
+    doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
+
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Lista de pedidos pendientes Gestor CCD.pdf"'
+    return response
+
+def reporte_pedidos_pendientes_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Listado de pedidos pendientes CCD"
+
+    # Ajustar ancho columnas para logo y títulos
+    ws.column_dimensions['A'].width = 25
+    ws.column_dimensions['B'].width = 25
+
+    # Ajustar altura fila 1 para logo
+    ws.row_dimensions[1].height = 90
+
+    # Agregar logo
+    logo_path = finders.find('imagen/logo.png')
+    if logo_path:
+        img = Image(logo_path)
+        img.height = 80
+        img.width = 200
+        ws.add_image(img, 'A1')
+
+    # Fusionar A1:B1 para logo
+    ws.merge_cells('A1:B1')
+
+    # Título principal en C1:E1 (hasta E)
+    ws.merge_cells('C1:E1')
+    ws['C1'] = "GESTOR CCD"
+    ws['C1'].font = Font(size=24, bold=True)
+    ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Subtítulo en A2:E2 (hasta E)
+    ws.merge_cells('A2:E2')
+    ws['A2'] = f"Listado de Pedidos pendientes CCD"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Encabezados en A3:E3
+    headers = ["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos"]
+    ws.append(headers)
+
+    # Aplicar sombreado y estilo solo a A3:E3
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+    for col in ['A', 'B', 'C', 'D', 'E']:
+        cell = ws[f"{col}3"]
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    # Bordes para celdas A3:E última fila
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    # Obtener pedidos con artículos relacionados
+    pedidos = Pedido.objects.filter(estado='Pendiente')
+
+    # Agregar datos a partir de fila 4
+    for pedido in pedidos:
+        articulos_text = ""
+        for pa in pedido.articulos.all():
+            articulos_text += f"{pa.articulo.nombre} x {pa.cantidad} (Tipo: {pa.tipo}, Área: {pa.area})\n"
+        articulos_text = articulos_text.strip() or 'Sin artículos'
+
+        ws.append([
+            pedido.id,
+            pedido.fecha_pedido.strftime('%d-%m-%Y'),
+            pedido.get_estado_display(),
+            pedido.registrado_por.username if pedido.registrado_por else 'No definido',
+            articulos_text,
+        ])
+
+    # Ajustar ancho de columnas A-E
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 40
+    ws.column_dimensions['E'].width = 40
+
+    # Aplicar bordes a todas las celdas desde fila 3 hasta la última fila, columnas A-E
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=5):
+        for cell in row:
+            cell.border = border
+
+    # Alinear datos, wrap_text para artículos (col E)
+    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=5):
+        for i, cell in enumerate(row, 1):
+            if i < 5:
+                cell.alignment = Alignment(horizontal='center', vertical='center')
+        row[4].alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
+
+    # Altura filas para títulos
+    ws.row_dimensions[1].height = 60
+    ws.row_dimensions[2].height = 30
+
+    # Preparar respuesta HTTP para descarga Excel
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes.xlsx"'
+    wb.save(response)
+    return response
+def reporte_articulo_bajo_stock_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Artículos Bajo Stock CCD"
+
+    # Ajustar columnas para logo y títulos
+    ws.column_dimensions['A'].width = 25
+    ws.column_dimensions['B'].width = 25
+    ws.row_dimensions[1].height = 90
+
+    # Agregar logo
+    logo_path = finders.find('imagen/logo.png')
+    if logo_path:
+        img = Image(logo_path)
+        img.height = 80
+        img.width = 200
+        ws.add_image(img, 'A1')
+    ws.merge_cells('A1:B1')
+
+    # Título principal
+    ws.merge_cells('C1:G1')
+    ws['C1'] = "GESTOR CCD"
+    ws['C1'].font = Font(size=24, bold=True)
+    ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Subtítulo
+    ws.merge_cells('A2:G2')
+    ws['A2'] = "Listado de Artículos Bajo en Stock"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Encabezados
+    headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
+    ws.append(headers)
+
+    # Estilo encabezados
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        cell = ws[f"{col}3"]
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        
+
+    # Bordes
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    # Obtener artículos con bajo stock
+    articulos = Articulo.objects.filter(cantidad__lt=10)
+
+    # Agregar filas
+    for articulo in articulos:
+        ws.append([
+            articulo.id,
+            articulo.nombre,
+            articulo.marca,
+            articulo.tipo,
+            articulo.precio,
+            articulo.cantidad,
+            articulo.observacion or '',
+        ])
+
+    # Ajustar ancho columnas
+    column_widths = [10, 25, 25, 20, 15, 15, 40]
+    for i, width in enumerate(column_widths, start=1):
+        ws.column_dimensions[chr(64 + i)].width = width
+
+    # Aplicar bordes y alineación
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=7):
+        for i, cell in enumerate(row, 1):
+            cell.border = border
+            if i < 7:
+                cell.alignment = Alignment(horizontal='center', vertical='center')
+        row[6].alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
+
+    # Altura de filas título
+    ws.row_dimensions[1].height = 60
+    ws.row_dimensions[2].height = 30
+
+    # Respuesta HTTP
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="Articulos_bajo_stock.xlsx"'
+    wb.save(response)
     return response

@@ -7,8 +7,9 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+    background-color: #1c96bb1c;
   }
+
 .formulario{
     background: rgba(19, 104, 161, 0.411);
     position: absolute;

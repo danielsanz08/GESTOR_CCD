@@ -8,7 +8,7 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+    background-color: #1c96bb1c;
 }
 section {
     display: flex;
@@ -23,11 +23,12 @@ section {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: rgb(9, 151, 194);
+    background: linear-gradient(135deg, #f0f0f0, #cde0f7);
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    width: 180px;
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    width: 187px;
+    max-height: 30vh;
     color: white;
     /* Estado inicial para animación */
     opacity: 0;
@@ -50,4 +51,27 @@ section {
         opacity: 1;
         transform: translateY(0);
     }
+}
+/* Iconos */
+.icono {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+    color: #000000;
+    
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+.card:hover .icono {
+    transform: scale(1.2);
+    color: #cde0f7;
+}
+.name{
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
 }

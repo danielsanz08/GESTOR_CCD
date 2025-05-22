@@ -3,9 +3,12 @@ html {
   justify-content: center;
   align-items: center;
 }
-
+ html, body{
+      background-color: #1c96bb1c;
+    }
 section {
-  background: rgba(19, 104, 161, 0.664);
+  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -13,7 +16,6 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
 
 
@@ -34,12 +36,12 @@ table {
 .estado,
 .accion {
   left: 20vh;
-  background-color: #3d2be269;
+  background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
 }
 
 td {
-  background-color: rgba(46, 151, 151, 0.384);
+  background-color: rgba(255, 255, 255, 0.384);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
   height: 5vh;

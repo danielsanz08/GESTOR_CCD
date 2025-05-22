@@ -11,7 +11,7 @@
                     id="icono"></i></button>
             <a href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}"><button class="pdf" title="Exportar a PDF"><i
                         class="fas fa-file-pdf text-white"></i></button></a>
-            <a href="{% url 'papeleria:reporte_pedidos_excel' %}"><button class="excel" title="Exportar a Excel"><i
+            <a href="{% url 'papeleria:reporte_articulo_bajo_stock_excel' %}"><button class="excel" title="Exportar a Excel"><i
                         class="fas fa-file-excel text-white"></i></button></a>
         </div>
         <form method="GET" action="{% url 'papeleria:pedidos_pendientes' %}">

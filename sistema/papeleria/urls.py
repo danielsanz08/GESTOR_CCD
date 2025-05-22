@@ -39,9 +39,9 @@ urlpatterns = [
      path('reporte_pedidos_pdf/', views.reporte_pedidos_pdf, name='reporte_pedidos_pdf'),
      path('reporte_pedidos_excel/', views.reporte_pedidos_excel, name='reporte_pedidos_excel'),
      path('reporte_bajo_stock_pdf/', views.reporte_articulo_bajo_stock_pdf, name='reporte_articulo_bajo_stock_pdf'),
-
-
+     path('reporte_pedidos_pendiente_pdf/', views.reporte_pedidos_pendientes_pdf, name='reporte_pedidos_pendientes_pdf'),
+     path('reporte_pedidos_pendientes_excel/', views.reporte_pedidos_pendientes_excel, name='reporte_pedidos_pendientes_Excel'),
+     path('reporte_articulo_bajo_stock_excel/', views.reporte_articulo_bajo_stock_excel, name='reporte_articulo_bajo_stock_excel'),
 ]
-
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

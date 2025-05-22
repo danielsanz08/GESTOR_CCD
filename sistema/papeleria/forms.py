@@ -52,10 +52,11 @@ class ArticuloEditForm(forms.ModelForm):
 class PedidoArticuloForm(forms.ModelForm):
     class Meta:
         model = PedidoArticulo
-        fields = ['articulo', 'cantidad']  # Elimina el campo 'tipo' del formulario
+        fields = ['articulo', 'cantidad', 'area']  # incluye area
         widgets = {
             'articulo': forms.Select(),
             'cantidad': forms.NumberInput(attrs={'min': 1, 'step': '1'}),
+            'area': forms.TextInput(attrs={'readonly': 'readonly'}),  # área es solo lectura porque se asigna desde usuario
         }
 
     def __init__(self, *args, **kwargs):

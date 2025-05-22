@@ -16,7 +16,6 @@
         position: absolute;
         top: 5vh;
         left: 5vh;
-        
     }
 
     .error-new1 {
@@ -48,6 +47,7 @@
         position: absolute;
         left: 10vh;
         bottom: 32vh;
+        /* Quitado el cursor y colores de disabled */
     }
 
     button[type="submit"]:hover {
@@ -55,14 +55,7 @@
         color: black;
     }
 
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
-        position: absolute;
-        left: 10vh;
-        bottom: 32vh;
-    }
+    /* Quité el estilo para button[type="submit"]:disabled */
 </style>
 
 <link rel="stylesheet" href="{% static 'css/cambiar_contraseña.css' %}?v={% now 'U' %}">
@@ -94,7 +87,8 @@
             <div class="error-new2"></div>
         </div>
 
-        <button type="submit" class="btn" id="submit-btn" disabled>
+        <!-- Botón SIN atributo disabled -->
+        <button type="submit" class="btn" id="submit-btn">
             Restablecer
         </button>
     </form>
@@ -140,7 +134,7 @@
             showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 6 caracteres.");
             new1Group.style.display = "none";
             new2Group.style.display = "none";
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         }
     });
 
@@ -148,11 +142,11 @@
         if (!validatePassword(newPassword1.value)) {
             showError(errorNew1, "Debe cumplir con los mismos requisitos de seguridad.");
             new2Group.style.display = "none";
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         } else if (newPassword1.value === oldPassword.value) {
             showError(errorNew1, "La nueva contraseña no puede ser igual a la anterior.");
             new2Group.style.display = "none";
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         } else {
             clearError(errorNew1);
             new2Group.style.display = "block";
@@ -162,16 +156,16 @@
     newPassword2.addEventListener("input", () => {
         if (!validatePassword(newPassword2.value)) {
             showError(errorNew2, "Debe cumplir con los requisitos de seguridad.");
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         } else if (newPassword2.value !== newPassword1.value) {
             showError(errorNew2, "Las contraseñas no coinciden.");
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         } else if (newPassword2.value === oldPassword.value) {
             showError(errorNew2, "La nueva contraseña no puede ser igual a la anterior.");
-            submitBtn.disabled = true;
+            // Ya no deshabilita botón
         } else {
             showSuccess(errorNew2, "Las contraseñas coinciden.");
-            submitBtn.disabled = false;
+            // Ya no habilita botón, porque nunca fue deshabilitado
         }
     });
 </script>

@@ -163,6 +163,14 @@
                         <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
                         <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
                         <p><strong>Artículos:</strong></p>
+                        <p><strong>Áreas:</strong>
+                            {% for articulo in pedido.articulos.all %}
+                            {{ articulo.area }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                            No hay artículos
+                            {% endfor %}
+                        </p>
+
                         <ul>
                             {% for articulo in pedido.articulos.all %}
                             <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>

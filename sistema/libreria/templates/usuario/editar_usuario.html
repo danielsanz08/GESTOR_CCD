@@ -10,8 +10,7 @@
     #error-cargo { top: 43vh; left: 13vh; }
     #error-email { top: 43vh; left: 111vh; }
 
-
-       #error-nombre, #error-cargo, #error-email, #error-password {
+    #error-nombre, #error-cargo, #error-email, #error-password {
         font-size: 14px;
         font-weight: bold;
         position: absolute;
@@ -34,12 +33,6 @@
     button[type="submit"]:hover {
         background-color: rgb(33, 74, 187);
         color: black;
-    }
-
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
     }
 </style>
 
@@ -76,11 +69,8 @@
             {{ form.email }}
             <div class="error-msg email-error" id="error-email"></div>
         </div>
-        
-        
-        
-        
-        <button type="submit" id="btn" disabled>Editar</button>
+
+        <button type="submit" id="btn">Editar</button>
     </form>
 </div>
 {% endif %}
@@ -109,13 +99,14 @@
             <label for="module">Módulo:</label><br>
             {{ form.module }}
         </div>
-        <button type="submit" id="btn" disabled>Editar</button>
+        <button type="submit" id="btn">Editar</button>
     </form>
 </div>
 {% endif %}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('editar-form');
+    const form = document.getElementById('editar-form') || document.getElementById('userForm');
     const boton = document.getElementById('btn');
 
     // Inputs relevantes
@@ -134,34 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const regexCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-    // Desactiva el botón al cargar
-    boton.disabled = true;
+    // Ya no deshabilitamos ni validamos para habilitar el botón
+    // Simplemente mostramos errores en pantalla
 
     function tieneCaracteresRepetidos(str) {
         return /(.)\1\1/.test(str);
     }
 
-    function validarFormulario() {
-        const usernameValido = usernameError.textContent === '';
-        const emailValido = emailError.textContent === '';
-        const cargoValido = cargoError.textContent === '';
-        const areaValido = areaError ? areaError.textContent === '' : true;
-
-        const camposLlenos = usernameInput.value.trim() !== '' &&
-                             emailInput.value.trim() !== '' &&
-                             cargoInput.value.trim() !== '' &&
-                             (areaInput ? areaInput.value.trim() !== '' : true) &&
-                             (roleInput ? roleInput.value.trim() !== '' : true);
-
-        boton.disabled = !(usernameValido && emailValido && cargoValido && areaValido && camposLlenos);
-    }
-
-    // Agrega eventos a todos los campos para activar el botón
-    const activarBoton = () => {
-        validarFormulario();  // Valida campos antes de habilitar
-    };
-
-    // Validación personalizada por campo
     usernameInput.addEventListener('input', () => {
         usernameError.textContent = '';
         const value = usernameInput.value.replace(/\d/g, '');
@@ -172,23 +142,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (tieneCaracteresRepetidos(value)) {
             usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
         }
-
-        activarBoton();
     });
 
-    cargoInput.addEventListener('input', () => {
-        cargoError.textContent = '';
-        const value = cargoInput.value.replace(/\d/g, '');
-        cargoInput.value = value;
+    if (cargoInput) {
+        cargoInput.addEventListener('input', () => {
+            cargoError.textContent = '';
+            const value = cargoInput.value.replace(/\d/g, '');
+            cargoInput.value = value;
 
-        if (value.length < 2) {
-            cargoError.textContent = 'Debe tener al menos 2 caracteres.';
-        } else if (tieneCaracteresRepetidos(value)) {
-            cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
-        }
-
-        activarBoton();
-    });
+            if (value.length < 2) {
+                cargoError.textContent = 'Debe tener al menos 2 caracteres.';
+            } else if (tieneCaracteresRepetidos(value)) {
+                cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            }
+        });
+    }
 
     emailInput.addEventListener('input', () => {
         emailError.textContent = '';
@@ -196,13 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!regexCorreo.test(email)) {
             emailError.textContent = 'Correo no válido.';
-            validarFormulario();
             return;
         }
 
         if (tieneCaracteresRepetidos(email)) {
             emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
-            validarFormulario();
             return;
         }
 
@@ -213,27 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.email) {
                     emailError.textContent = data.email;
                 }
-                activarBoton();
             });
-    });
-
-    // Otros campos
-    if (areaInput) {
-        areaInput.addEventListener('change', activarBoton);
-    }
-
-    if (roleInput) {
-        roleInput.addEventListener('change', activarBoton);
-    }
-
-    if (moduloInput) {
-        moduloInput.addEventListener('change', activarBoton);
-    }
-
-    form.addEventListener('submit', (e) => {
-        if (boton.disabled) {
-            e.preventDefault();  // Evita enviar si el botón no está habilitado
-        }
     });
 });
 </script>

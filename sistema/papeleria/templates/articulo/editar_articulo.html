@@ -40,7 +40,7 @@
             <label for="observacion" class="form-label">Observación del artículo</label>
             {{ form.observacion }}
         </div>
-        <button type="submit" id="submitBtn" disabled>Editar artículo</button>
+        <button type="submit" id="submitBtn">Editar artículo</button>
     </form>
 </div>
 
@@ -48,7 +48,6 @@
     document.addEventListener("DOMContentLoaded", function () {
         const precioInput = document.getElementById("id_precio");
         const formArticulo = document.getElementById("form_articulo");
-        const submitBtn = document.getElementById("submitBtn");
 
         function formatearConComas(valor) {
             const partes = valor.split(".");
@@ -75,20 +74,6 @@
 
             const formateado = formatearConComas(valor);
             precioInput.value = formateado;
-
-            enableSubmit();
-        });
-
-        // Habilitar el botón al detectar cambios
-        const inputs = formArticulo.querySelectorAll("input, select, textarea");
-
-        function enableSubmit() {
-            submitBtn.disabled = false;
-        }
-
-        inputs.forEach(input => {
-            input.addEventListener("change", enableSubmit);
-            input.addEventListener("input", enableSubmit);
         });
 
         if (precioInput.value) {

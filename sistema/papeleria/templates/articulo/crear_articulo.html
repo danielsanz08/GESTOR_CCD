@@ -82,7 +82,7 @@
             <div class="error-msg error-observacion"></div>
         </div>
 
-        <button type="submit" class="btn disabled" id="submit_btn" disabled>Registrar artículo</button>
+        <button type="submit" class="btn" id="submit_btn">Registrar artículo</button>
     </form>
 </div>
 
@@ -95,8 +95,6 @@
         const cantidadInput = document.getElementById("id_cantidad");
         const proveedorInput = document.getElementById("id_proveedor");
         const observacionInput = document.getElementById("id_observacion");
-        const submitBtn = document.getElementById("submit_btn");
-        const form = document.querySelector("form");
 
         const nombreError = document.querySelector(".error-nombre");
         const tipoError = document.querySelector(".error-tipo");
@@ -145,31 +143,6 @@
             elemento.textContent = mensaje;
         }
 
-        function toggleSubmit() {
-            const errores = [
-                nombreError.textContent,
-                tipoError.textContent,
-                marcaError.textContent,
-                precioError.textContent,
-                cantidadError.textContent,
-                proveedorError.textContent,
-                observacionError.textContent
-            ];
-            const vacios = [
-                nombreInput.value.trim(),
-                tipoInput.value.trim(),
-                marcaInput.value.trim(),
-                precioInput.value.trim(),
-                cantidadInput.value.trim(),
-                proveedorInput.value.trim(),
-                observacionInput.value.trim()
-            ];
-            const hayErrores = errores.some(msg => msg !== "");
-            const hayVacios = vacios.some(v => v === "");
-            submitBtn.disabled = hayErrores || hayVacios;
-            submitBtn.classList.toggle("disabled", submitBtn.disabled);
-        }
-
         function formatearConComas(valor) {
             const partes = valor.split(".");
             let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -182,7 +155,6 @@
                 this.value = this.value.replace(/[0-9]/g, "");
                 const mensaje = validarTexto(this.value);
                 mostrarError(errorElement, this.value.trim() ? mensaje : "");
-                toggleSubmit();
             });
         }
 
@@ -195,7 +167,6 @@
             this.value = this.value.replace(/[0-9]/g, "");
             const mensaje = validarObservacion(this.value);
             mostrarError(observacionError, this.value.trim() ? mensaje : "");
-            toggleSubmit();
         });
 
         precioInput.addEventListener("input", function () {
@@ -210,16 +181,15 @@
             precioInput.value = formatearConComas(reconstruido);
             const mensaje = validarPrecio(reconstruido);
             mostrarError(precioError, reconstruido.trim() ? mensaje : "");
-            toggleSubmit();
         });
 
         cantidadInput.addEventListener("input", function () {
             const valor = cantidadInput.value;
             const mensaje = validarCantidad(valor);
             mostrarError(cantidadError, valor.trim() ? mensaje : "");
-            toggleSubmit();
         });
 
+        const form = document.querySelector("form");
         form.addEventListener("submit", function () {
             precioInput.value = precioInput.value.replace(/,/g, "");
         });

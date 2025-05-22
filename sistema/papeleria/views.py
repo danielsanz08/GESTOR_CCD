@@ -447,31 +447,41 @@ def crear_pedido(request):
     ] 
 
     if request.method == 'POST':
-        estado = 'confirmado' if request.user.role == 'Administrador' else 'pendiente'
-        area_usuario = request.user.area
+        # Determina el estado del pedido dependiendo del rol del usuario
+        if request.user.role == 'Administrador':
+            estado = 'confirmado'
+        else:
+            estado = 'pendiente'
 
+        # Crear el pedido
         pedido = Pedido.objects.create(registrado_por=request.user, estado=estado)
+
+        # Obtener los artículos y cantidades seleccionadas
         articulos = request.POST.getlist('articulo')
         cantidades = request.POST.getlist('cantidad')
-        tipos_seleccionados = request.POST.getlist('tipo_articulo')
 
-        resumen_articulos = []  # Para el correo
+        for articulo_id, cantidad in zip(articulos, cantidades):
+            if articulo_id and cantidad:
+                cantidad = int(cantidad)
+                articulo = Articulo.objects.get(id=articulo_id)
 
-        for idx, (articulo_id, cantidad, tipo_id) in enumerate(zip(articulos, cantidades, tipos_seleccionados)):
-            if articulo_id and cantidad and tipo_id:
-                if articulo_id != tipo_id:
-                    pedido.delete()
-                    return render(request, 'pedidos/pedidos.html', {
-                        'articulos': Articulo.objects.all(),
-                        'breadcrumbs': breadcrumbs,
-                        'error': f"Error en la línea {idx + 1}: El artículo y el tipo seleccionado no coinciden."
-                    })
+                # Obtener el área desde la info del usuario
+                area_usuario = getattr(request.user, 'area', 'No establecido')
 
-                try:
-                    cantidad = int(cantidad)
-                    articulo = Articulo.objects.get(id=articulo_id)
+                # Crear la relación entre el pedido y los artículos, agregando area
+                PedidoArticulo.objects.create(
+                    pedido=pedido,
+                    articulo=articulo,
+                    cantidad=cantidad,
+                    area=area_usuario,
+                )
 
-                    if estado == 'confirmado' and articulo.cantidad < cantidad:
+                # Si el pedido está confirmado, verificar el stock de los artículos
+                if estado == 'confirmado':
+                    if articulo.cantidad >= cantidad:
+                        articulo.cantidad -= cantidad
+                        articulo.save()
+                    else:
                         pedido.delete()
                         return render(request, 'pedidos/pedidos.html', {
                             'articulos': Articulo.objects.all(),
@@ -479,33 +489,11 @@ def crear_pedido(request):
                             'error': f"No hay suficiente stock para el artículo: {articulo.nombre}"
                         })
 
-                    PedidoArticulo.objects.create(
-                        pedido=pedido,
-                        articulo=articulo,
-                        cantidad=cantidad,
-                        area=area_usuario
-                    )
-
-                    if estado == 'confirmado':
-                        articulo.cantidad -= cantidad
-                        articulo.save()
-
-                    resumen_articulos.append(f"- {articulo.nombre} × {cantidad}")
-
-                except (ValueError, Articulo.DoesNotExist):
-                    pedido.delete()
-                    return render(request, 'pedidos/pedidos.html', {
-                        'articulos': Articulo.objects.all(),
-                        'breadcrumbs': breadcrumbs,
-                        'error': f"Error al procesar el artículo en la línea {idx + 1}."
-                    })
-
         # Enviar correo a administradores del módulo "Papelería"
         admin_users = User.objects.filter(role='Administrador', module='Papeleria', is_active=True)
         admin_emails = [admin.email for admin in admin_users if admin.email]
 
         if admin_emails:
-            articulos_str = '\n'.join(resumen_articulos)
             subject = "Nuevo pedido registrado por un usuario"
             message = (
                 f"Hola querido administrador,\n\n"
@@ -514,37 +502,41 @@ def crear_pedido(request):
                 f"Información del pedido:\n"
                 f"Usuario: {request.user.username}\n"
                 f"Rol: {request.user.role}\n"
-                f"Área: {request.user.area}\n"
                 f"Módulo: {request.user.module}\n"
                 f"ID del pedido: {pedido.id}\n"
                 f"Estado inicial del pedido: {estado}\n\n"
-                f"Artículos solicitados:\n"
-                f"{articulos_str}\n\n"
                 f"Por favor revisa y confirma el pedido si corresponde.\n\n"
                 f"Gracias por su atención.\n"
                 f"El equipo de Gestor CCD les desea un excelente día."
             )
-
             send_mail(
                 subject,
                 message,
                 settings.DEFAULT_FROM_EMAIL,
-                admin_emails,
+                list(admin_emails),
                 fail_silently=False,
             )
 
+        # Redirigir dependiendo del rol del usuario
         if request.user.role == 'Empleado':
             return redirect('papeleria:pedidos_pendientes')
         else:
             return redirect('papeleria:listado_pedidos')
 
-    # Si la solicitud es GET
+    # Si la solicitud es GET, mostrar los artículos disponibles
     articulos = Articulo.objects.all()
-    return render(request, 'pedidos/pedidos.html', {
-        'articulos': articulos,
-        'breadcrumbs': breadcrumbs
-    })
+    return render(request, 'pedidos/pedidos.html', {'articulos': articulos, 'breadcrumbs': breadcrumbs})
 
+def listado_pedidos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Listado de pedidos', 'url': reverse('papeleria:listado_pedidos')},
+    ]
+    
+    # Usamos el campo correcto del modelo
+    pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
+
+    return render(request, 'pedidos/lista_pedidos.html', {'pedidos': pedidos, 'breadcrumbs': breadcrumbs})
 def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

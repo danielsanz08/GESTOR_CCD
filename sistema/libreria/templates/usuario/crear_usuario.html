@@ -7,89 +7,7 @@ Crear usuario papelería
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
-<style>
-    .error-nombre, .error-cargo, .error-email, .error-password {
-        font-size: 14px;
-        font-weight: bold;
-        position: absolute;
-        color: rgb(255, 0, 0);
-    }
-    .error-password{
-        white-space: pre-line;
-    }
-    .error-nombre { top: 27vh; left: 13vh; }
-    .error-cargo { top: 43vh; left: 13vh; }
-    .error-email { top: 43vh; left: 111vh; }
-    .error-password { top: 59vh; left: 11vh; }
 
-    button[type="submit"] {
-        background-color: rgb(255, 255, 255);
-        color: rgb(0, 0, 0);
-        font-weight: bold;
-        border: 2px solid black;
-        height: 6vh;
-        width: 35vh;
-        border-radius: 20px;
-        position: absolute;
-        left: 57vh;
-        top: 52vh;
-        cursor: pointer;
-    }
-
-    .alert {
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-        font-weight: bold;
-        text-align: center;
-        opacity: 0;
-        transform: translateY(-10px);
-        animation: fadeIn 0.5s ease-in-out forwards, fadeOut 0.5s ease-in-out 4.5s forwards;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(-10px); }
-    }
-
-    .error_rol {
-        display: block;
-        background-color: #ffebee;
-        color: #d32f2f;
-        border: 1px solid #f44336;
-        border-radius: 4px;
-        padding: 10px;
-        margin-top: 5px;
-        font-size: 14px;
-        font-weight: bold;
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    button[type="submit"]:hover {
-        background-color: rgb(33, 74, 187);
-        color: black;
-    }
-
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
-    }
-
-    #id_roles_error {
-        display: inline;
-        color: red;
-        font-size: 14px;
-        margin-left: 10px;
-    }
-</style>
 
 <div class="fondo">
     <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
@@ -113,8 +31,7 @@ Crear usuario papelería
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="Papeleria">Papeleria</option>
             </select>
-            <div id="error_username" class="error-module"></div>
-
+            <div id="error_module" class="error-module"></div>
         </div>
         
         <div class="mb-3" id="rol">
@@ -163,109 +80,5 @@ Crear usuario papelería
     </form>
 </div>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const username = document.getElementById('id_username');
-        const cargo = document.getElementById('id_cargo');
-        const email = document.getElementById('id_email');
-        const password = document.getElementById('id_password');
-        const btn = document.getElementById('btn');
-
-        const errorUsername = document.getElementById('error_username');
-        const errorCargo = document.getElementById('error_cargo');
-        const errorEmail = document.getElementById('error_email');
-        const errorPassword = document.getElementById('error_password');
-
-        const repeatedCharRegex = /(.)\1\1/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        function validateForm() {
-            const valid =
-                errorUsername.textContent === '' &&
-                errorCargo.textContent === '' &&
-                errorEmail.textContent === '' &&
-                errorPassword.textContent === '' &&
-                username.value.trim() !== '' &&
-                cargo.value.trim() !== '' &&
-                email.value.trim() !== '' &&
-                password.value.trim() !== '';
-
-            btn.disabled = !valid;
-        }
-
-        username.addEventListener('input', function () {
-            let value = username.value.replace(/[0-9]/g, '');
-            username.value = value;
-
-            if (value.length < 3) {
-                errorUsername.textContent = 'Mínimo 3 caracteres';
-                return validateForm();
-            }
-            if (repeatedCharRegex.test(value)) {
-                errorUsername.textContent = 'No se permiten 3 caracteres iguales seguidos';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        cargo.addEventListener('input', function () {
-            let value = cargo.value.replace(/[0-9]/g, '');
-            cargo.value = value;
-
-            if (value.length < 3) {
-                errorCargo.textContent = 'Mínimo 3 caracteres';
-                return validateForm();
-            }
-            if (repeatedCharRegex.test(value)) {
-                errorCargo.textContent = 'No se permiten 3 caracteres iguales seguidos';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        email.addEventListener('input', function () {
-            const value = email.value;
-
-            if (!emailRegex.test(value)) {
-                errorEmail.textContent = 'Correo inválido';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        password.addEventListener('input', function () {
-            const value = password.value;
-
-            if (value.length < 6) {
-                errorPassword.textContent = 'Debe tener al menos 6 caracteres, 1 mayúscula,\n 1 minúscula, signos de puntuación y números';
-            } else if (repeatedCharRegex.test(value)) {
-                errorPassword.textContent = 'No se permiten 3 caracteres iguales seguidos';
-            } else {
-                errorPassword.textContent = '';
-            }
-
-            validateForm();
-        });
-    });
-</script>
 
 {% endblock %}

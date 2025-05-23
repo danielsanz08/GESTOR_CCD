@@ -18,13 +18,6 @@
         {% endfor %}
     </div>
     <table>
-        <div class="Bototnes">
-        <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
-        <a href="{% url 'papeleria:reporte_pedidos_pendientes_pdf' %}"><button class="pdf" title="Exportar a PDF"><i
-                    class="fas fa-file-pdf text-white"></i></button></a>
-        <a href="{% url 'papeleria:reporte_pedidos_pendientes_Excel' %}"><button class="excel" title="Exportar a Excel"><i
-                    class="fas fa-file-excel text-white"></i></button></a>
-    </div>
         <form method="GET" action="{% url 'papeleria:pedidos_pendientes' %}">
         <div>
             <!-- Input de búsqueda general -->

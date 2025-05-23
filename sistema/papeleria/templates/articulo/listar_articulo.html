@@ -52,8 +52,13 @@
 
 <div class="Bototnes">
     <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
-    <a href="{% url 'papeleria:reporte_articulo_pdf' %}"><button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button></a>
-    <a href="{% url 'papeleria:reporte_articulo_excel' %}"><button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button></a>
+    <a href="{% url 'papeleria:reporte_articulo_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+    <button class="pdf" title="Exportar a PDF">
+        <i class="fas fa-file-pdf text-white"></i>
+    </button>
+</a>
+
+    <a href="{% url 'papeleria:reporte_articulo_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}"><button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button></a>
     <a href="{% url 'papeleria:crear_articulo' %}"><button class="crear" title="Crear articulo"><i class="bi bi-plus-circle"></i></button></a>
 </div>
 

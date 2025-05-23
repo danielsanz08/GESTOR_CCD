@@ -96,10 +96,16 @@
     <h1>Listado de Pedidos</h1>
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
-        <a href="{% url 'papeleria:reporte_pedidos_pdf' %}"><button class="pdf" title="Exportar a PDF"><i
-                    class="fas fa-file-pdf text-white"></i></button></a>
-        <a href="{% url 'papeleria:reporte_pedidos_excel' %}"><button class="excel" title="Exportar a Excel"><i
-                    class="fas fa-file-excel text-white"></i></button></a>
+        <a href="{% url 'papeleria:reporte_pedidos_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+    <button class="pdf" title="Exportar a PDF"><i
+                    class="fas fa-file-pdf text-white"></i></button>
+</a>
+
+  <a href="{% url 'papeleria:reporte_pedidos_excel' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+    <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
+</a>
+
+
     </div>
     <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
         <div>

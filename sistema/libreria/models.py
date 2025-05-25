@@ -49,6 +49,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     area = models.CharField(max_length=30, choices=AREA,default='Administrativa' )
     cargo = models.CharField(max_length=50, default='No establecido')
     module = models.CharField(max_length=30, choices=MODULES, default='papeleria')
+    fecha_registro = models.DateField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

@@ -9,15 +9,17 @@
         <div class="Bototnes">
             <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer"
                     id="icono"></i></button>
-            <a href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}{% if request.GET.marca or request.GET.tipo %}?{% if request.GET.marca %}marca={{ request.GET.marca }}{% endif %}{% if request.GET.marca and request.GET.tipo %}&{% endif %}{% if request.GET.tipo %}tipo={{ request.GET.tipo }}{% endif %}{% endif %}">
-    <button class="pdf" title="Exportar a PDF">
-        <i class="fas fa-file-pdf text-white"></i>
-    </button>
-</a>
+            <a
+                href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+                <button class="pdf" title="Exportar a PDF">
+                    <i class="fas fa-file-pdf text-white"></i>
+                </button>
+            </a>
 
 
-            <a href="{% url 'papeleria:reporte_articulo_bajo_stock_excel' %}"><button class="excel" title="Exportar a Excel"><i
-                        class="fas fa-file-excel text-white"></i></button></a>
+            <a
+                href="{% url 'papeleria:reporte_articulo_bajo_stock_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}"><button
+                    class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button></a>
         </div>
         <form method="GET" action="{% url 'papeleria:lista_bajo_stock'  %}">
             <div>
@@ -85,20 +87,20 @@
         </tbody>
     </table>
     <div class="paginacion" id="pag">
-    {% if articulos.has_previous %}
+        {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
-    {% endif %}
-    {% for num in articulos.paginator.page_range %}
-        {% if articulos.number == num %}
-            <span class="current">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}">{{ num }}</a>
         {% endif %}
-    {% endfor %}
-    {% if articulos.has_next %}
+        {% for num in articulos.paginator.page_range %}
+        {% if articulos.number == num %}
+        <span class="current">{{ num }}</span>
+        {% else %}
+        <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+        {% if articulos.has_next %}
         <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 
 </section>
 {% endblock %}

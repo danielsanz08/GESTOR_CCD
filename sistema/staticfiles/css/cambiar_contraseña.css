@@ -1,0 +1,132 @@
+.card-confirm {
+    background: rgba(19, 104, 161, 0.664);
+    text-align: center;
+    position: relative;
+    top: 26vh;
+    width: 70vh;
+    left: 70vh;
+    border-radius: 20px;
+    height: 57vh;
+}
+.form-label0{
+    position: absolute;
+    display: block;
+    top: -4vh;
+    left: 17vh;
+    font-weight: bold;
+}
+.form-input0{
+    background-color: rgb(253, 253, 253);
+    height: 30px;
+    border-radius: 20px;
+    border: none;
+    width: 60vh;
+    margin: 20px 20px 20px 20px;
+    text-align: center;
+    left: -4vh;
+    position: absolute;
+    bottom: 42vh;
+}
+.form-label1{
+    position: absolute;
+    display: block;
+    top: 7vh;
+    left: 17vh;
+    font-weight: bold;
+}
+.form-control1{
+    background-color: rgb(255, 255, 255);
+    height: 30px;
+    border-radius: 20px;
+    border: none;
+    width: 60vh;
+    margin: 20px 20px 20px 20px;
+    text-align: center;
+    left: -4vh;
+    position: absolute;
+    bottom: 31vh;
+
+}
+.form-label2{
+    position: absolute;
+    display: block;
+    top: 18vh;
+    left: 14vh;
+    font-weight: bold;
+}
+.form-control2{
+    background-color: rgb(253, 253, 253);
+    height: 30px;
+    border-radius: 20px;
+    border: none;
+    width: 60vh;
+    margin: 20px 20px 20px 20px;
+    text-align: center;
+    left: -4vh;
+    position: absolute;
+    bottom: 20vh;
+
+}
+
+@keyframes shake-slow {
+    0% { transform: translateX(-3px); }
+    25% { transform: translateX(3px); }
+    50% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+  }
+
+  .error-card {
+    position: relative;
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 85, 85, 0.85), rgba(180, 0, 0, 0.85));
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    border: 2px solid #ff4d4d;
+    animation: shake-slow 2.5s infinite ease-in-out;
+  }
+
+  .expirado {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+form{
+    background: rgba(19, 104, 161, 0);
+    width: 50vh;
+    position: relative;
+    left: 6vh;
+    height: 50vh;
+    top: 2vh;
+    
+}
+
+
+
+.btn{
+    background-color: rgb(51, 104, 248);
+    color: white;
+    font-weight: bold;
+    border: none;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 20px;
+    position: relative;
+    left: 3.5vh;
+    top: 32vh;
+    transition: opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.btn:hover{
+    background-color: rgb(33, 74, 187);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}

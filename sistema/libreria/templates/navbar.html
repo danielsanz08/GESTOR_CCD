@@ -24,7 +24,7 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
     }
-   
+
     .modal-content {
       background-color: white;
       margin: auto;
@@ -86,33 +86,33 @@
     z-index: 9999;
     backdrop-filter: blur(5px);
     animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
-}
+  }
 
-/* Animación de entrada */
-@keyframes fadeIn {
+  /* Animación de entrada */
+  @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: translate(-50%, -10px);
+      opacity: 0;
+      transform: translate(-50%, -10px);
     }
 
     to {
-        opacity: 1;
-        transform: translate(-50%, 0);
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
-}
+  }
 
-/* Animación de salida */
-@keyframes fadeOut {
+  /* Animación de salida */
+  @keyframes fadeOut {
     from {
-        opacity: 1;
-        transform: translate(-50%, 0);
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
 
     to {
-        opacity: 0;
-        transform: translate(-50%, -10px);
+      opacity: 0;
+      transform: translate(-50%, -10px);
     }
-}
+  }
 
 
   .navbar {
@@ -385,7 +385,8 @@
       width: 100px;
 
     }
-    #accessibility-menu{
+
+    #accessibility-menu {
       position: absolute;
       top: 20vh;
     }
@@ -588,6 +589,7 @@
       top: 20vh;
       height: 55vh;
     }
+
     #accessibility-menu {
       position: absolute;
       top: 15vh;
@@ -601,40 +603,39 @@
     .titulos,
     .enlaces {
       height: 9.5vh;
-      
+
     }
 
   }
+
   /* Estilos de la sección de nombre de usuario */
   .header-icons {
     position: absolute;
     left: 10vh;
-}
+  }
 
-.header-icons .name {
+  .header-icons .name {
     font-size: 19px;
-}
+  }
 
-.header-icons .icono {
+  .header-icons .icono {
     width: 20px !important;
     height: 20px !important;
     stroke-width: 1.5;
     vertical-align: middle;
     font-weight: bold;
-}
+  }
 
-a {
+  a {
     text-decoration: none;
-}
-
-
+  }
 </style>
 {% if messages %}
-  {% for message in messages %}
-    <div class="custom-alert alert-{{ message.tags }}">
-      {{ message }}
-    </div>
-  {% endfor %}
+{% for message in messages %}
+<div class="custom-alert alert-{{ message.tags }}">
+  {{ message }}
+</div>
+{% endfor %}
 {% endif %}
 
 <div class="fondo">
@@ -646,32 +647,35 @@ a {
     <h2>GESTOR CCD</h2>
     <div class="header-icons" title="Usuario">
       {% if user.is_authenticated %}
-        <span class="name">
-          <i data-feather="users" class="icono"></i> {{ user.username }}
-        </span>
-        {% else %}
-      <span>
-        
+      <span class="name">
+        <i data-feather="users" class="icono"></i> {{ user.username }}
       </span>
-  {% endif %}
+      {% else %}
+      <span>
+
+      </span>
+      {% endif %}
     </div>
-    
+
   </div>
-  {% if user.is_authenticated %}
-     
-  {% if bajo_stock %}
   
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.module == 'Papeleria' and bajo_stock and mostrar_alerta_stock %}
   <div id="stock-alert" class="alert-overlay">
-      <div class="alert-box">
-          <p style="font-weight: bold; color: #000;">⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.</p>
-          <button onclick="cerrarAlerta()">Aceptar</button>
-          <a href="{% url 'papeleria:lista_bajo_stock'  %}"><button>ver</button></a>
-      </div>
+    <div class="alert-box">
+      <p style="font-weight: bold; color: #000;">
+        ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
+      </p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+      <a href="{% url 'papeleria:lista_bajo_stock' %}">
+        <button>Ver</button>
+      </a>
+    </div>
   </div>
 {% endif %}
-  
+
+
   <style>
-  .alert-overlay {
+    .alert-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -682,15 +686,17 @@ a {
       align-items: center;
       justify-content: center;
       z-index: 1000;
-  }
-  .alert-box {
+    }
+
+    .alert-box {
       background: white;
       padding: 20px 30px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       text-align: center;
-  }
-  .alert-box button {
+    }
+
+    .alert-box button {
       margin-top: 15px;
       padding: 8px 15px;
       border: none;
@@ -698,19 +704,20 @@ a {
       color: white;
       border-radius: 5px;
       cursor: pointer;
-  }
-  .alert-box button:hover {
+    }
+
+    .alert-box button:hover {
       background-color: #0056b3;
-  }
+    }
   </style>
-  
+
   <script>
-  function cerrarAlerta() {
+    function cerrarAlerta() {
       document.getElementById("stock-alert").style.display = "none";
-  }
+    }
   </script>
-  {% endif %}
   
+
   <div class="container">
     {% block contenido %}
     {% endblock %}

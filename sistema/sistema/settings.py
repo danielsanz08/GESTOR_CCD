@@ -4,6 +4,7 @@ import smtplib
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DEBUG = True
 
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'imagenes')
@@ -13,10 +14,17 @@ MEDIA_URL = '/imagenes/'
 SECRET_KEY = 'django-insecure-w=vb@dyxyk30)xbk52m@kx1q9)aj5s685fma)a+zh9jc0!1jy2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Durante el desarrollo:
 DEBUG = True
+# DEBUG = False  # ← lo dejas comentado
+
+# Para el despliegue, cambias así:
+# DEBUG = True
+#DEBUG = False
+
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.10.151']
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # asegúrate de importar os
 AUTH_USER_MODEL = 'libreria.CustomUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600  # La sesión expira después de 10 minutos

@@ -23,6 +23,9 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 # Create your views here.
 # Página de inicio
 User = get_user_model()
@@ -151,28 +154,48 @@ def editar_usuario(request, user_id):
 
 
 def lista_usuarios(request):
-    breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Listado de usuarios', 'url': '/lista_usuarios'},
-    ]
-    query = request.GET.get('q', '').strip()
-    usuarios_lista = CustomUser.objects.filter(module='papeleria')  # Ordenar por ID
+    q = request.GET.get('q', '')
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
 
-    if query:
-        usuarios_lista = usuarios_lista.filter(
-            Q(username__icontains=query) |
-            Q(email__icontains=query) |
-            Q(role__icontains=query) |
-            Q(cargo__icontains=query) |
-            Q(is_active__icontains=query)
+    fecha_inicio = None
+    fecha_fin = None
+
+    usuarios = CustomUser.objects.all()
+
+    # Filtrado por texto
+    if q:
+        usuarios = usuarios.filter(
+            Q(username__icontains=q) |
+            Q(email__icontains=q) |
+            Q(role__icontains=q) |
+            Q(area__icontains=q) |
+            Q(cargo__icontains=q)
         )
 
-    paginator = Paginator(usuarios_lista, 5)  # Muestra 10 usuarios por página
-    page_number = request.GET.get('page')
-    usuarios = paginator.get_page(page_number)
+    # Filtrado por fecha
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            usuarios = usuarios.filter(fecha_registro__gte=fecha_inicio)
+        except ValueError:
+            usuarios = CustomUser.objects.none()
 
-    return render(request, 'usuario/lista_usuarios.html', {'usuarios': usuarios, 'breadcrumbs': breadcrumbs})
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            usuarios = usuarios.filter(fecha_registro__lte=fecha_fin)
+        except ValueError:
+            usuarios = CustomUser.objects.none()
 
+    # Paginación
+    paginator = Paginator(usuarios, 10)
+    page = request.GET.get('page')
+    usuarios = paginator.get_page(page)
+
+    return render(request, 'usuario/lista_usuarios.html', {
+        'usuarios': usuarios,
+    })
 
 def cambiar_estado_usuario(request, user_id):
     if request.method == 'POST':
@@ -293,223 +316,7 @@ def draw_table_on_canvas(canvas, doc):
                          width=600, height=600, mask='auto')
         canvas.restoreState()
 
-def reporte_usuario_pdf(request):
-    buffer = BytesIO()
 
-    # Crear documento
-    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
-                            leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
-
-    # Metadatos
-    doc.title = "Listado de usuarios CCD"
-    doc.author = "CCD"
-    doc.subject = "Listado de usuarios"
-    doc.creator = "Sistema de Gestión CCD"
-
-    elements = []
-    styles = getSampleStyleSheet()
-
-    # Título
-    titulo = Paragraph("REPORTE DE USUARIOS", styles["Title"])
-    elements.append(titulo)
-
-    # Encabezado empresa
-    fecha_actual = datetime.now().strftime("%d/%m/%Y")
-    encabezado_data = [
-        ["GESTOR CCD", "Lista de usuarios", "Correo: gestorccd@gmail.com", f"Fecha: {fecha_actual}"],
-        ["Cámara de comercio de Duitama", "Nit: 123456789", "(Correo de la camara)", "Teléfono: (tel. camara)"],
-    ]
-    tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
-    estilo_encabezado = TableStyle([
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_encabezado.setStyle(estilo_encabezado)
-    elements.append(tabla_encabezado)
-
-    # Tabla usuario
-    usuario = request.user
-    data_usuario = [["Usuario:", "Email:", "Rol:", "Cargo:"]]
-    data_usuario.append([
-        usuario.username,
-        usuario.email,
-        getattr(usuario, 'role', 'No definido'),
-        getattr(usuario, 'cargo', 'No definido'),
-    ])
-    table_usuario = Table(data_usuario, colWidths=[180, 180, 180, 180])
-    style_usuario = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ])
-    table_usuario.setStyle(style_usuario)
-    elements.append(table_usuario)
-
-    # Tabla artículos
-    data_usuarios = [["ID", "Usuario", "Rol", "correo", "Cargo", "Área", "Estado"]]
-    estado = "Activo" if usuario.is_active else "Inactivo"
-    for usuario in CustomUser.objects.all():
-        data_usuarios.append([
-            usuario.id,
-            usuario.username,
-            usuario.role,
-            usuario.email,
-            usuario.cargo,
-            usuario.area,
-             "Activo" if usuario.is_active else "Inactivo"
-        ])
-    tabla_articulos = Table(data_usuarios, colWidths=[20, 100, 80, 180, 220, 80, 40])
-    style_articulos = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
-
-    # Construir documento con marca de agua
-    doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
-
-    buffer.seek(0)
-    response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Lista de usuarios Gestor CCD.pdf"'
-    return response
-
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
-from openpyxl import Workbook
-from openpyxl.drawing.image import Image
-
-def reporte_usuario_excel(request):
-    # Crear un nuevo libro de trabajo de Excel
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Artículos"
-
-    # Ajustar el ancho de las columnas A y B para que quepa el logo
-    ws.column_dimensions['A'].width = 25
-    ws.column_dimensions['B'].width = 25
-
-    # Ajustar la altura de la fila 1 para el logo
-    ws.row_dimensions[1].height = 90
-
-    # Estilo de borde delgado
-    border = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
-    )
-# Agregar el logo
-    logo_path = finders.find('imagen/logo.png')  # Ajustar ruta según ubicación real
-    if logo_path:
-        img = Image(logo_path)
-        img.height = 80
-        img.width = 200
-        ws.add_image(img, 'A1')
-        ws.merge_cells('A1:B1')
-
-    # Aplicar bordes a las celdas del logo (A1 y B1)
-    for col in ['A', 'B']:
-        cell = ws[f'{col}1']
-        cell.border = border
-
-
-    # Título principal
-    ws.merge_cells('C1:G1')
-    ws['C1'] = "GESTOR CCD"
-    ws['C1'].font = Font(size=24, bold=True)
-    ws['C1'].alignment = Alignment(horizontal='center', vertical='center')
-
-    # Aplicar borde a las celdas del título
-    for col in ['C', 'D', 'E', 'F', 'G']:
-        cell = ws[f'{col}1']
-        cell.border = border
-
-   # Subtítulo
-    ws.merge_cells('A2:G2')
-    ws['A2'] = "Listado de usuarios Gestor CCD"
-    ws['A2'].font = Font(size=18)
-    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
-
-# Aplicar borde a las celdas del subtítulo
-    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
-        cell = ws[f'{col}2']
-        cell.border = border
-
-    # Encabezados de la tabla
-    headers = ["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]
-    ws.append(headers)
-
-    # Estilo para los encabezados
-    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
-    for cell in ws[3]:
-        cell.fill = header_fill
-        cell.font = Font(color="FFFFFF", bold=True)
-        cell.alignment = Alignment(horizontal='center', vertical='center')
-        cell.border = border
-
-    # Agregar datos de los usuarios
-    for usuario in CustomUser.objects.all():
-        estado = "Activo" if usuario.is_active else "Inactivo"
-        ws.append([
-            usuario.id,
-            usuario.username,
-            usuario.role,
-            usuario.email,
-            usuario.cargo,
-            usuario.area,
-            estado
-        ])
-
-    # Ajustar el ancho de las columnas
-    ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 40
-    ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 40
-    ws.column_dimensions['E'].width = 40
-    ws.column_dimensions['F'].width = 20
-    ws.column_dimensions['G'].width = 15
-
-
-    # Aplicar estilo a las filas de datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
-        for cell in row:
-            cell.alignment = Alignment(horizontal='center', vertical='center')
-            cell.border = border
-
-    # Ajustar la altura de las filas del encabezado y subtítulo
-    ws.row_dimensions[1].height = 60
-    ws.row_dimensions[2].height = 30
-
-    # Preparar la respuesta para descargar el archivo
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = 'attachment; filename="Lista de usuarios Gestor CCD.xlsx"'
-
-    # Guardar el archivo en la respuesta
-    wb.save(response)
-    return response
 #GRAFICAS
 def graficas_usuarios_activos(request):
     breadcrumbs = [
@@ -585,3 +392,214 @@ def registro_usuarios(request):
 
 def sesion_expirada(request):
     return render(request, 'sesion_expirada.html')
+
+#PDF Y XSLS DE BAJO STOCK
+def obtener_usuarios(request):
+    query = request.GET.get('q')
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    usuarios = CustomUser.objects.filter(module='papeleria')  # mejor nombrar 'usuarios' para que coincida
+
+    if query:
+        usuarios = usuarios.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(role__icontains=query) |
+            Q(area__icontains=query) |
+            Q(cargo__icontains=query)
+        )
+
+    if fecha_inicio and fecha_fin:
+        usuarios = usuarios.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
+
+    return usuarios
+
+ 
+
+def reporte_usuario_pdf(request):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
+                            leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
+
+    doc.title = "Listado de usuarios CCD"
+    doc.author = "Gestor CCD"
+    doc.subject = "Listado de usuarios CCD"
+    doc.creator = "Sistema de Gestión CCD"
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Título
+    titulo = Paragraph("REPORTE DE USUARIOS", styles["Title"])
+    elements.append(titulo)
+
+    # Encabezado empresa
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    encabezado_data = [
+        ["GESTOR CCD", "Lista de artículos", "Correo:", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "contacto@gestorccd.com", "Teléfono: (123) 456-7890"],
+    ]
+    tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
+    estilo_encabezado = TableStyle([
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_encabezado.setStyle(estilo_encabezado)
+    elements.append(tabla_encabezado)
+
+    # Tabla usuario
+    usuario = request.user
+    data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
+
+    if usuario.is_authenticated:
+        data_usuario.append([
+            usuario.username,
+            usuario.email,
+            getattr(usuario, 'role', 'No definido'),
+            getattr(usuario, 'cargo', 'No definido'),
+        ])
+    else:
+        data_usuario.append(["Invitado", "-", "-", "-"])
+
+    table_usuario = Table(data_usuario, colWidths=[180, 180, 180, 180])
+    style_usuario = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table_usuario.setStyle(style_usuario)
+    elements.append(table_usuario)
+
+    # Aquí asumo que tienes una función para obtener usuarios filtrados
+    usuarios_filtrados = obtener_usuarios(request)
+
+    # Tabla artículos (usuarios)
+    data_usuarios = [["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]]
+    for u in usuarios_filtrados:
+        data_usuarios.append([
+            u.id,
+            u.username,
+            u.role,
+            u.email,
+            u.cargo,
+            getattr(u, 'area', 'No definido'),  # usa getattr por si no existe área
+            "Activo" if u.is_active else "Inactivo"
+        ])
+    tabla_articulos = Table(data_usuarios, colWidths=[70, 100, 100, 90, 90, 90, 180])
+    style_articulos = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_articulos.setStyle(style_articulos)
+    elements.append(tabla_articulos)
+
+    # Construir el PDF
+    doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
+
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Listado de usuarios CCD.pdf"'
+    return response
+
+def reporte_usuario_excel(request):
+    # Obtener artículos filtrados usando la función reutilizable
+    usuarios = obtener_usuarios(request)
+
+    # Crear archivo Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Listado de Artículos CCD"
+
+    # Configuración columnas y filas (sin logo)
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 30
+    ws.column_dimensions['E'].width = 20
+    ws.column_dimensions['F'].width = 15
+    ws.column_dimensions['G'].width = 33
+
+    ws.row_dimensions[1].height = 60
+    ws.row_dimensions[2].height = 30
+
+    # Título principal y subtítulo
+    ws.merge_cells('A1:G1')
+    ws['A1'] = "GESTOR CCD"
+    ws['A1'].font = Font(size=24, bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    ws.merge_cells('A2:G2')
+    ws['A2'] = "Listado de Artículos"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Encabezados
+    headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
+    ws.append(headers)
+
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        cell = ws[f"{col}3"]
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    # Agregar datos
+    for usuario in usuarios:
+        estado = "Activo" if usuario.is_active else "Inactivo"
+        ws.append([
+            usuario.id,
+            usuario.username,
+            usuario.role,
+            usuario.email,
+            usuario.cargo,
+            usuario.area,
+            estado
+        ])
+
+    # Aplicar estilos a celdas de datos
+    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
+        for i, cell in enumerate(row, 1):
+            cell.border = border
+            # Alineación centrada excepto la columna Observación
+            if i < 7:
+                cell.alignment = Alignment(horizontal='center', vertical='center')
+            else:
+                cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
+
+    # Preparar respuesta
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="Reporte_articulos_filtrados.xlsx"'
+    wb.save(response)
+    return response

@@ -5,60 +5,93 @@
 
 {% block contenido %}
 <style>
-     @media print {
-  body * {
-    visibility: hidden;
-  }
+    @media print {
+        body * {
+            visibility: hidden;
+        }
 
-  h1, table, table * {
-    visibility: visible;
-  }
+        h1,
+        table,
+        table * {
+            visibility: visible;
+        }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-  table {
-    width: 80%;
-    margin: auto;
-    border-collapse: collapse;
-    border: 1px solid black;
-    background: rgba(19, 104, 161, 0.411);
-  }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            border: 1px solid black;
+            background: rgba(19, 104, 161, 0.411);
+        }
 
-  th, td {
-    border: 1px solid black;
-    padding: 6px;
-    text-align: center;
-  }
+        th,
+        td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
 
-  #btn-print, 
-  .Bototnes, 
-  form, 
-  .paginacion,
-  .fondo,
-  .modal {
-    display: none !important;
-  }
-}
+        #btn-print,
+        .Bototnes,
+        form,
+        .paginacion,
+        .fondo,
+        .modal {
+            display: none !important;
+        }
+    }
 </style>
 <link rel="stylesheet" href="{% static 'css/lista_usuarios.css' %}?v={% now 'U' %}">
 
 
 <section>
     <h1>Usuarios de Papelería</h1>
-    <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
-        <input type="text" name="q" id="buscador" placeholder="Buscar ..." class = "buscador "value="{{ request.GET.q }}">
-        <button type="submit" class="btn-search"><i data-feather="search" class="icono"></i></button>
-    </form>
-    
-    <div class="Botones">
-        <button class="print"><i class="bi bi-printer" id="icono"></i></button>
-        <a href="{% url 'libreria:reporte_usuario_pdf' %}"><button class="pdf"><i class="fas fa-file-pdf text-white"></i></button></a>
-        <a href="{% url 'libreria:reporte_usuario_excel' %}"><button class="excel"><i class="fas fa-file-excel text-white"></i></button></a>
+    <div>
+        <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
+            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador "
+                value="{{ request.GET.q }}">
+            <button type="submit" class="btn-search"><i data-feather="search" class="icono"></i></button>
+            <div id="filtro-fechas">
+                <label for="fecha_inicio">Desde:</label>
+                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+
+                <label for="fecha_fin">Hasta:</label>
+                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
+
+                <button type="submit" class="search-date" title="Buscar por rango de fecha">
+                    <i class="fas fa-search text-white"></i>
+
+                </button>
+            </div>
+        </form>
+        <!-- Inputs de fecha (inicialmente ocultos) -->
+
+        <!-- Botón para limpiar filtros -->
+        <a href="{% url 'libreria:lista_usuarios' %}">
+            <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
+                    title="Eliminar"></i>
+            </button>
+        </a>
     </div>
-    
+
+<div class="Botones">
+    <button class="print"><i class="bi bi-printer" id="icono"></i></button>
+
+    <a href="{% url 'libreria:reporte_usuario_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+        <button class="pdf"><i class="fas fa-file-pdf text-white"></i></button>
+    </a>
+
+    <a href="{% url 'libreria:reporte_usuario_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+        <button class="excel"><i class="fas fa-file-excel text-white"></i></button>
+    </a>
+</div>
+
+
     <table>
         <thead>
             <tr>
@@ -79,7 +112,7 @@
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.username }}</td>
                 <td>{{ usuario.role }}</td>
-                
+
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.area }}</td>
                 <td>{{ usuario.cargo }}</td>
@@ -88,14 +121,15 @@
                     <form action="{% url 'libreria:cambiar_estado_usuario' usuario.id %}" method="POST">
                         {% csrf_token %}
                         <label class="cl-switch">
-                            <input type="checkbox" name="is_active" {% if usuario.is_active %}checked{% endif %} onchange="this.form.submit()">
+                            <input type="checkbox" name="is_active" {% if usuario.is_active %}checked{% endif %}
+                                onchange="this.form.submit()">
                             <span></span>
                         </label>
                     </form>
                 </td>
                 <td class="td_editar"><a href="{% url 'libreria:editar_usuario' usuario.id %}">
-                    <button class="editar-btn"><i data-feather="edit" class="icono"></i></button>
-                </a></td>
+                        <button class="editar-btn"><i data-feather="edit" class="icono"></i></button>
+                    </a></td>
             </tr>
             {% empty %}
             <tr>
@@ -103,37 +137,37 @@
             </tr>
             {% endfor %}
         </tbody>
-        
+
     </table>
     <div class="paginacion" id="pag">
         {% if usuarios.has_previous %}
-            <a href="?page=={{ usuarios.previous_page_number }}">Anterior</a>
+        <a href="?page=={{ usuarios.previous_page_number }}">Anterior</a>
         {% endif %}
         {% for num in usuarios.paginator.page_range %}
-            <a href="?page={{ num }}" class="{% if usuarios.number == num %}active {% endif %}">
-                {{ num }}
-            </a>
+        <a href="?page={{ num }}" class="{% if usuarios.number == num %}active {% endif %}">
+            {{ num }}
+        </a>
         {% endfor %}
         {% if usuarios.has_next %}
         <a href="?page={{ usuarios.next_page_number }}">Siguiente</a>
-    
-        {% endif  %}
+
+        {% endif %}
     </div>
 </section>
 <script>
 
-document.querySelector('.print').addEventListener('click', function () {
-    const contenidoOriginal = document.body.innerHTML;
-    const titulo = document.querySelector('h1').outerHTML;
-    const tabla = document.querySelector('table').outerHTML;
+    document.querySelector('.print').addEventListener('click', function () {
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
 
-    const fondo = `
+        const fondo = `
         <div class="fondo">
             <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
         </div>
     `;
 
-    const estiloImpresion = `
+        const estiloImpresion = `
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -190,19 +224,19 @@ document.querySelector('.print').addEventListener('click', function () {
         </style>
     `;
 
-    const ventanaImpresion = window.open('', '', 'height=700,width=900');
-    ventanaImpresion.document.write('<html><head><title>Listado de usuarios</title>');
-    ventanaImpresion.document.write(estiloImpresion);
-    ventanaImpresion.document.write('</head><body>');
-    ventanaImpresion.document.write(fondo);  // logo de fondo
-    ventanaImpresion.document.write(titulo); // título
-    ventanaImpresion.document.write(tabla);  // tabla
-    ventanaImpresion.document.write('</body></html>');
-    ventanaImpresion.document.close();
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de usuarios</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);  // logo de fondo
+        ventanaImpresion.document.write(titulo); // título
+        ventanaImpresion.document.write(tabla);  // tabla
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
 
-    ventanaImpresion.focus();
-    ventanaImpresion.print();
-    ventanaImpresion.close();
-});
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+    });
 </script>
 {% endblock %}

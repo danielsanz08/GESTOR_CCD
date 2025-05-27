@@ -45,7 +45,7 @@ class PedidoArticulo(models.Model):
     pedido = models.ForeignKey(Pedido, related_name='articulos', on_delete=models.CASCADE, null=True)  # Make nullable
     articulo = models.ForeignKey('Articulo', on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
-    tipo = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
+    tipo = models.CharField(max_length=50, null=True, blank=True)
     area = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
 
     def __str__(self):

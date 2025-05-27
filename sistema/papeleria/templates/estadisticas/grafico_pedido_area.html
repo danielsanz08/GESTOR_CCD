@@ -1,5 +1,5 @@
 {% extends 'navbar.html' %}
-{% block titulo %}Gráfica de pedidos por área{% endblock %}
+{% block titulo %}Gráfica de pedidos por área y artículo{% endblock %}
 {% block contenido %}
 <style>
     #grafica {
@@ -27,7 +27,7 @@
 <div class="estadisticas-container">
     <div class="cuadradoFondo">
         <div id="grafica">
-            <h2>Gráfica de pedidos por área</h2>
+            <h2>Gráfica de pedidos por área y artículo</h2>
             <canvas id="graficaPedidos"></canvas>
         </div>
     </div>
@@ -40,11 +40,6 @@
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = Math.max(...cantidades, 1);
-    const porcentajes = cantidades.map(c => {
-        let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : porcentaje.toFixed(2);
-    });
 
     const ctx = document.getElementById('graficaPedidos').getContext('2d');
     new Chart(ctx, {
@@ -52,8 +47,8 @@
         data: {
             labels: nombres,
             datasets: [{
-                label: 'Pedidos por área (%)',
-                data: porcentajes,
+                label: 'Pedidos por área y artículo (total)',
+                data: cantidades,
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
@@ -65,15 +60,9 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 100,
                     title: {
                         display: true,
-                        text: 'Porcentaje (%)'
-                    },
-                    ticks: {
-                        callback: function (value) {
-                            return value + '%';
-                        }
+                        text: 'Cantidad de pedidos'
                     }
                 }
             },
@@ -81,7 +70,7 @@
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            return context.parsed.y + '%';
+                            return context.parsed.y;
                         }
                     }
                 }

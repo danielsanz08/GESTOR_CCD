@@ -31,7 +31,7 @@
                     <select name="tipo_articulo" required>
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
-                            <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}">
+                            <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}" >
                                 {{ articulo.tipo }} ({{ articulo.nombre }})
                             </option>
                         {% endfor %}

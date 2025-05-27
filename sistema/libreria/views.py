@@ -154,6 +154,10 @@ def editar_usuario(request, user_id):
 
 
 def lista_usuarios(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Listado de usuarios', 'url': '/lista_usuarios'},
+    ]
     q = request.GET.get('q', '')
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
@@ -189,12 +193,13 @@ def lista_usuarios(request):
             usuarios = CustomUser.objects.none()
 
     # Paginación
-    paginator = Paginator(usuarios, 10)
+    paginator = Paginator(usuarios, 4)
     page = request.GET.get('page')
     usuarios = paginator.get_page(page)
 
     return render(request, 'usuario/lista_usuarios.html', {
         'usuarios': usuarios,
+        'breadcrumbs': breadcrumbs
     })
 
 def cambiar_estado_usuario(request, user_id):
@@ -415,7 +420,11 @@ def obtener_usuarios(request):
 
     return usuarios
 
- 
+def wrap_text(text, max_len=20):
+    parts = [text[i:i+max_len] for i in range(0, len(text), max_len)]
+    for i in range(len(parts) - 1):
+        parts[i] += '-'  # Agrega guion al final de todas menos la última
+    return '\n'.join(parts)
 
 def reporte_usuario_pdf(request):
     buffer = BytesIO()
@@ -431,7 +440,7 @@ def reporte_usuario_pdf(request):
     styles = getSampleStyleSheet()
 
     # Título
-    titulo = Paragraph("REPORTE DE USUARIOS", styles["Title"])
+    titulo = Paragraph("REPORTE DE USUARIOS CCD ", styles["Title"])
     elements.append(titulo)
 
     # Encabezado empresa
@@ -491,15 +500,17 @@ def reporte_usuario_pdf(request):
     data_usuarios = [["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]]
     for u in usuarios_filtrados:
         data_usuarios.append([
-            u.id,
-            u.username,
-            u.role,
-            u.email,
-            u.cargo,
-            getattr(u, 'area', 'No definido'),  # usa getattr por si no existe área
-            "Activo" if u.is_active else "Inactivo"
-        ])
-    tabla_articulos = Table(data_usuarios, colWidths=[70, 100, 100, 90, 90, 90, 180])
+            wrap_text(str(u.id)),
+            wrap_text(u.username),
+            wrap_text(u.role),
+            wrap_text(u.email),
+            wrap_text(u.cargo),
+            wrap_text(getattr(u, 'area', 'No definido')),
+            wrap_text("Activo" if u.is_active else "Inactivo")
+])
+
+    tabla_articulos = Table(data_usuarios, colWidths=[30, 100, 100, 160, 160, 100
+                                                      , 70])
     style_articulos = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
@@ -534,12 +545,12 @@ def reporte_usuario_excel(request):
 
     # Configuración columnas y filas (sin logo)
     ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['B'].width = 30
     ws.column_dimensions['C'].width = 20
     ws.column_dimensions['D'].width = 30
-    ws.column_dimensions['E'].width = 20
-    ws.column_dimensions['F'].width = 15
-    ws.column_dimensions['G'].width = 33
+    ws.column_dimensions['E'].width = 30
+    ws.column_dimensions['F'].width = 20
+    ws.column_dimensions['G'].width = 15
 
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
@@ -551,12 +562,13 @@ def reporte_usuario_excel(request):
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
     ws.merge_cells('A2:G2')
-    ws['A2'] = "Listado de Artículos"
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    ws['A2'] = f"Listado de Artículos - {fecha_actual}"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
     # Encabezados
-    headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
+    headers = ["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]
     ws.append(headers)
 
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
@@ -578,28 +590,33 @@ def reporte_usuario_excel(request):
         estado = "Activo" if usuario.is_active else "Inactivo"
         ws.append([
             usuario.id,
-            usuario.username,
-            usuario.role,
-            usuario.email,
-            usuario.cargo,
-            usuario.area,
-            estado
+            wrap_text(usuario.username),
+            wrap_text(usuario.role),
+            wrap_text(usuario.email),
+            wrap_text(usuario.cargo),
+            wrap_text(usuario.area),
+            wrap_text(estado)
         ])
 
-    # Aplicar estilos a celdas de datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
-        for i, cell in enumerate(row, 1):
+    # Aplicar bordes y alineación a filas 1 y 2 (título y subtítulo)
+    for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=7):
+        for cell in row:
             cell.border = border
-            # Alineación centrada excepto la columna Observación
-            if i < 7:
-                cell.alignment = Alignment(horizontal='center', vertical='center')
-            else:
-                cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+
+    # Aplicar bordes y alineación a filas 3 hasta el final (encabezados y datos)
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=7):
+        for cell in row:
+            cell.border = border
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+
+    # Filtros en la fila 3 (encabezados)
+    ws.auto_filter.ref = "A3:G3"
 
     # Preparar respuesta
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte_articulos_filtrados.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Listado de usuarios CCD.xlsx"'
     wb.save(response)
     return response

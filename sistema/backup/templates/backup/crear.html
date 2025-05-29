@@ -1,0 +1,35 @@
+{% extends 'navbar.html' %}
+
+{% block contenido %}
+<style>
+    body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+  }
+</style>
+<h1>Crear nueva copia de seguridad</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre descriptivo">
+    </div>
+    <p>Se incluirán los siguientes modelos:</p>
+    <ul>
+        <li>libreria.CustomUser</li>
+        <li>papeleria.Articulo</li>
+        <li>papeleria.Pedido</li>
+        <li>papeleria.PedidoArticulo</li>
+    </ul>
+    <button type="submit" class="btn btn-primary">Crear copia</button>
+    <a href="{% url 'backup:lista_backups' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

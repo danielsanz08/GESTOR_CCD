@@ -111,6 +111,12 @@
             <span>Cambiar contraseña</span>
         </div>
     </a>
+        <a href="{% url 'backup:index_backup'  %}" title="Copia de seguridad">
+        <div class="opcion">
+            <i data-feather="database" class="icono"></i>
+            <span>Backup</span>
+        </div>
+    </a>
     <a href="{% url 'papeleria:logout_view' %}" title="Cerrar sesión">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>

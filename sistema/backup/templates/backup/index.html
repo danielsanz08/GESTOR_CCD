@@ -1,0 +1,27 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}{% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+<section>
+
+    <a href="{% url 'backup:crear_backup' %}">
+        <div class="card">
+            <i data-feather="plus" class="icono"></i>
+            <p class="name">Crear backup</p>
+        </div>
+    </a>
+    <a href="{% url 'backup:lista_backups' %}">
+        <div class="card">
+            <i data-feather="list" class="icono"></i>
+            <p class="name">Listar</p>
+        </div>
+    </a>
+        <a href="{% url 'backup:importar' %}">
+        <div class="card">
+            <i data-feather="import" class="icono"></i>
+            <p class="name">Importar</p>
+        </div>
+    </a>
+</section>
+{% endblock %}

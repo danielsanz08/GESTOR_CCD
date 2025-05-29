@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 # Media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'imagenes')
-MEDIA_URL = '/imagenes/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-w=vb@dyxyk30)xbk52m@kx1q9)aj5s685fma)a+zh9jc0!1jy2'
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'cafeteria',
     'cde',
     'django.contrib.humanize',
+     'backup',
     
     
 ]
@@ -132,8 +133,8 @@ LANGUAGE_CODE = 'es'
 TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
-# settings.py
-LOGIN_REDIRECT_URL = 'papeleria:login_view'  # Nombre de la vista en lugar de una ruta directa
+ # Nombre de la vista en lugar de una ruta directa
+LOGIN_URL = '/accounts/login/'
 
 # Static files
 STATIC_URL = '/static/'  # URL donde se accederán los archivos estáticos en el navegador
@@ -160,3 +161,8 @@ LOGGING = {
         },
     },
 }
+BACKUP_ROOT = os.path.join(BASE_DIR, 'backups')
+
+# Asegúrate de que el directorio exista
+if not os.path.exists(BACKUP_ROOT):
+    os.makedirs(BACKUP_ROOT)

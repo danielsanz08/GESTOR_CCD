@@ -111,7 +111,6 @@ h2 {
 }
 
 
-
 /* 📱 Teléfono pequeño (ej. 360x640) */
 @media (min-width: 360px) and (max-width: 374px) {
     .formulario {
@@ -129,6 +128,7 @@ h2 {
         /* Para Firefox: color del scroll y del fondo */
         scrollbar-width: thin;
         /* Para Firefox: delgado */
+
     }
 
     /* Para navegadores basados en WebKit */
@@ -225,14 +225,19 @@ h2 {
     .mb-3 {
         margin-left: -2.5vh;
     }
-
 }
 
 /* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
 @media (min-width: 375px) and (max-width: 429px) {
+
+    body,
+    html {
+        font-size: medium;
+    }
+
     .formulario {
         position: absolute;
-        left: 2vh;
+        left: 2.5vh;
         width: 37vh;
     }
 
@@ -245,6 +250,10 @@ h2 {
         /* Para Firefox: color del scroll y del fondo */
         scrollbar-width: thin;
         /* Para Firefox: delgado */
+        position: absolute;
+        top: 10vh;
+        left: 2vh;
+        height: 40vh;
     }
 
     /* Para navegadores basados en WebKit */
@@ -283,10 +292,11 @@ h2 {
     }
 
     .btn {
-        position: absolute;
-        left: 3vh;
-        top: 51vh;
-
+        position: relative;
+        left: -1vh;
+        top: 5vh;
+        width: 34vh;
+        text-align: center;
 
     }
 
@@ -349,6 +359,7 @@ h2 {
 
 }
 
+
 /* 📱 Teléfono grande (ej. 430x932 - 480x960) */
 @media (min-width: 430px) and (max-width: 539px) {
     .formulario {
@@ -367,6 +378,7 @@ h2 {
         /* Para Firefox: color del scroll y del fondo */
         scrollbar-width: thin;
         /* Para Firefox: delgado */
+        height: 35vh;
     }
 
     /* Para navegadores basados en WebKit */
@@ -467,15 +479,13 @@ h2 {
     .mb-3 {
         margin-left: -2.5vh;
     }
-
-
 }
 
 /* 📟 Phablet (600x960) */
 @media (min-width: 540px) and (max-width: 679px) {
     .formulario {
         position: absolute;
-        left: 5vh;
+        left: 6vh;
         width: 47vh;
     }
 
@@ -718,6 +728,129 @@ h2 {
     }
 }
 
+/* 📱 iPad grande (1024x1366) */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
+    .formulario {
+        position: absolute;
+        left: 10vh;
+        width: 53vh;
+    }
+
+    #userForm {
+        margin-top: 3vh;
+        margin-left: 6vh;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: #cccccc00 rgba(255, 255, 255, 0);
+        /* Para Firefox: color del scroll y del fondo */
+        scrollbar-width: thin;
+        /* Para Firefox: delgado */
+        width: 37vh;
+        height: 37vh;
+    }
+
+    /* Para navegadores basados en WebKit */
+    #userForm::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #userForm::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0);
+        border-radius: 4px;
+    }
+
+    #userForm::-webkit-scrollbar-thumb {
+        background-color: #ff000000;
+        border-radius: 4px;
+        border: 2px solid white;
+    }
+
+    #userForm::-webkit-scrollbar-thumb:hover {
+        background-color: #ffffff00;
+    }
+
+    input,
+    .form-select {
+        margin-left: 10px;
+        border: none;
+        border-radius: 20px;
+        height: 4vh;
+        width: 39vh;
+        border: 1px solid black;
+    }
+
+    label {
+        display: block;
+        margin: 5px 30px 0px 30px;
+    }
+
+    .btn {
+        position: absolute;
+        left: 10vh;
+        top: 51vh;
+        font-size: larger;
+    }
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
+        font-size: 0.9rem !important;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 3.5vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    #area,
+    #password,
+    #rol,
+    #module {
+        margin-top: 3vh;
+
+    }
+
+    #rol {
+        margin-top: 1vh;
+    }
+
+    .mb-3 {
+        margin-left: -2.5vh;
+    }
+}
+
 /* 💻 Laptop 11" (1024x600) */
 @media (min-width: 992px) and (max-width: 1099px) {
     .formulario {
@@ -728,62 +861,6 @@ h2 {
         position: relative;
         top: -3vh;
     }
-}
-
-.error-nombre {
-    display: block !important;
-    position: static !important;
-    margin-top: -4vh !important;
-    margin-left: 4vh !important;
-    color: red !important;
-    font-weight: bold;
-    font-size: 0.9rem !important;
-}
-
-.error-cargo {
-    display: block !important;
-    position: static !important;
-    margin-top: -4vh !important;
-    margin-left: 4vh !important;
-    color: red !important;
-
-    font-size: 0.9rem !important;
-}
-
-
-.error-email {
-    display: block !important;
-    position: static !important;
-    margin-top: -4vh !important;
-    margin-left: 4vh !important;
-    color: red !important;
-
-    font-size: 0.9rem !important;
-}
-
-.error-password {
-    position: absolute !important;
-    margin-top: -11vh !important;
-    margin-left: -2vh !important;
-    color: red !important;
-    font-size: 0.9rem !important;
-    white-space: nowrap !important;
-    /* Evita saltos de línea */
-    display: inline !important;
-}
-
-.btn {
-    position: absolute;
-    left: 1;
-    top: 42vh;
-}
-
-/* 💻 Laptop 12" (1152x720) */
-@media (min-width: 1100px) and (max-width: 1199px) {
-    .formulario {
-        left: 8.5vh;
-    }
-
 
     .error-nombre {
         display: block !important;
@@ -801,7 +878,61 @@ h2 {
         margin-top: -4vh !important;
         margin-left: 4vh !important;
         color: red !important;
+        font-size: 0.9rem !important;
+    }
 
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -4vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        position: absolute !important;
+        margin-top: -11vh !important;
+        margin-left: -2vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap !important;
+        /* Evita saltos de línea */
+        display: inline !important;
+    }
+
+    .btn {
+        position: absolute;
+        left: 1;
+        top: 42vh;
+    }
+}
+
+/* 💻 Laptop 12" (1152x720) */
+@media (min-width: 1100px) and (max-width: 1199px) {
+    .formulario {
+        left: 8.5vh;
+    }
+
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -4vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
+        font-size: 0.9rem !important;
+        font-weight: bold;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -4vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
         font-size: 0.9rem !important;
     }
 
@@ -812,12 +943,13 @@ h2 {
         margin-top: -4vh !important;
         margin-left: 4vh !important;
         color: red !important;
-
+        font-weight: bold;
         font-size: 0.9rem !important;
     }
 
     .error-password {
         position: absolute !important;
+        font-weight: bold;
         margin-top: -6vh !important;
         margin-left: -4vh !important;
         color: red !important;
@@ -839,8 +971,13 @@ h2 {
 @media (min-width: 1366px) and (max-width: 1439px) {
     .formulario {
         left: 18vh;
+        
     }
 
+    label,
+    select {
+        font-size: 12px;
+    }
 
     .error-nombre {
         display: block !important;
@@ -850,30 +987,31 @@ h2 {
         color: red !important;
         font-weight: bold;
         font-size: 0.9rem !important;
+        font-size: 18px;
     }
 
     .error-cargo {
+        font-size: 18px;
         display: block !important;
         position: static !important;
         margin-top: -4vh !important;
         margin-left: 4vh !important;
         color: red !important;
-
         font-size: 0.9rem !important;
     }
 
-
     .error-email {
+        font-size: 18px;
         display: block !important;
         position: static !important;
         margin-top: -4vh !important;
         margin-left: 4vh !important;
         color: red !important;
-
         font-size: 0.9rem !important;
     }
 
     .error-password {
+        font-size: 18px;
         position: absolute !important;
         margin-top: -8vh !important;
         margin-left: -4vh !important;
@@ -894,16 +1032,14 @@ h2 {
 /* 💻 Laptop 15-16" (1440x900) */
 @media (min-width: 1440px) and (max-width: 1599px) {
     .formulario {
-        left: 18vh;
+        left: 11vh;
     }
 
     #userForm {
 
         position: relative;
         top: 5vh;
-
     }
-
 
     .error-nombre {
         display: block !important;
@@ -950,11 +1086,235 @@ h2 {
     .btn {
         position: absolute;
         left: 49vh;
-        top: 32vh;
+        top: 39vh;
+        font-size: 18px;
     }
 
     input,
-    .form-select {
+    .form-select,
+    label {
         height: 4.5vh;
+        font-size: 18px;
+    }
+}
+
+/* Ajuste más fino para monitor de 19" (1600x900) */
+@media (min-width: 1600px) and (max-width: 1600px) and (min-height: 900px) and (max-height: 900px) {
+    .formulario {
+        left: 18vh;
+    }
+
+    #userForm {
+
+        position: relative;
+        top: 5vh;
+    }
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
+        font-size: 0.9rem !important;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        position: absolute !important;
+        margin-top: -13.5vh !important;
+        margin-left: -4vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap !important;
+        /* Evita saltos de línea */
+        display: block !important;
+        font-weight: bold;
+    }
+
+    .btn {
+        position: absolute;
+        left: 49vh;
+        top: 39vh;
+        font-size: 18px;
+    }
+
+    input,
+    .form-select,
+    label {
+        height: 4.5vh;
+        font-size: 18px;
+    }
+}
+
+/* 🖥️ Monitor 22-24" (1920x1080) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+    .formulario {
+        left: 18vh;
+        width: 140vh;
+    }
+
+    #userForm {
+
+        position: relative;
+        top: 5vh;
+    }
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
+        font-size: 0.9rem !important;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        position: absolute !important;
+        margin-top: -13.5vh !important;
+        margin-left: -4vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap !important;
+        /* Evita saltos de línea */
+        display: block !important;
+        font-weight: bold;
+    }
+
+    .btn {
+        position: absolute;
+        left: 49vh;
+        top: 36vh;
+        font-size: 18px;
+    }
+
+    input,
+    .form-select,
+    label {
+        height: 4.5vh;
+        font-size: 24px;
+    }
+}
+
+/* 🖥️ Monitor 27-32" (2560x1440 y más) */
+@media (min-width: 2560px) {
+    .formulario {
+        left: 18vh;
+        width: 140vh;
+    }
+
+    #userForm {
+
+        position: relative;
+        top: 1vh;
+    }
+
+    .error-nombre {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+        font-weight: bold;
+        font-size: 0.9rem !important;
+    }
+
+    .error-cargo {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+
+    .error-email {
+        display: block !important;
+        position: static !important;
+        margin-top: -3vh !important;
+        margin-left: 4vh !important;
+        color: red !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .error-password {
+        position: absolute !important;
+        margin-top: -13.5vh !important;
+        margin-left: -4vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap !important;
+        /* Evita saltos de línea */
+        display: block !important;
+        font-weight: bold;
+    }
+
+    .btn {
+        position: absolute;
+        left: 49vh;
+        top: 38vh;
+        font-size: 25px;
+        text-align: center;
+    }
+
+    input,
+    .form-select,
+    label {
+        height: 4.5vh;
+        font-size: 28px;
+    }
+
+    .titulo {
+        font-size: 50px;
+    }
+
+    .mb-3 {
+        margin-top: 27px;
     }
 }

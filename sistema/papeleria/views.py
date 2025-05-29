@@ -520,33 +520,37 @@ from .models import PedidoArticulo
 def grafica_pedidos_area(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
-        {'name': 'Grafico de pedidos por áreas', 'url': reverse('papeleria:pedidos_area')}, 
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Gráfico de pedidos por áreas', 'url': reverse('papeleria:pedidos_area')},
     ]
 
-    pedidos_por_area_articulo = PedidoArticulo.objects.filter(
-        area='Administrativa'  # filtro solo para área Administrativa
-    ).values(
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Administrativa')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
         'area',
         'articulo__nombre'
     ).annotate(
         total_cantidad=Sum('cantidad')
     ).order_by('articulo__nombre')
 
-    etiquetas = []
-    cantidades = []
-
-    for item in pedidos_por_area_articulo:
-        articulo = item['articulo__nombre'] or 'Sin artículo'
-        etiquetas.append(articulo)  # Ya sabemos que es área Administrativa, no lo pongo
-        cantidades.append(item['total_cantidad'] or 0)
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
 
     return render(request, 'estadisticas/grafico_pedido_area.html', {
         'nombres': etiquetas,
         'cantidades': cantidades,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
     })
-
 def grafica_bajo_Stock(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

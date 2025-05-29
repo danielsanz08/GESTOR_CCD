@@ -22,9 +22,33 @@
         height: 61vh;
         z-index: 0;
     }
+
+    .form-fechas {
+        position: absolute;
+        top: 10vh;
+        left: 10vh;
+        z-index: 2000;
+    }
 </style>
 
 <div class="estadisticas-container">
+    <!-- Formulario de fechas -->
+    <form method="get" class="form-fechas">
+        <div>
+            <label for="fecha_inicio">Fecha inicio:</label>
+            <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ fecha_inicio }}">
+        </div>
+        <div>
+            <label for="fecha_fin">Fecha fin:</label>
+            <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="{% url 'papeleria:pedidos_area' %}" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </form>
+
+    <!-- Gráfica -->
     <div class="cuadradoFondo">
         <div id="grafica">
             <h2>Gráfica de pedidos por área y artículo</h2>
@@ -33,9 +57,11 @@
     </div>
 </div>
 
+<!-- Datos desde Django -->
 {{ nombres|json_script:"labels-data" }}
 {{ cantidades|json_script:"cantidades-data" }}
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
@@ -47,7 +73,7 @@
         data: {
             labels: nombres,
             datasets: [{
-                label: 'Pedidos por área y artículo (total)',
+                label: 'Pedidos por artículo',
                 data: cantidades,
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -60,6 +86,12 @@
             scales: {
                 y: {
                     beginAtZero: true,
+                    ticks: {
+                        stepSize: 10,  // Puedes ajustar esto según tus datos
+                        callback: function(value) {
+                            return value; // No mostrar decimales
+                        }
+                    },
                     title: {
                         display: true,
                         text: 'Cantidad de pedidos'

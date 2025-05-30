@@ -32,42 +32,34 @@ from django.contrib.staticfiles import finders
 from xhtml2pdf import pisa
 User = get_user_model()
 #ACCESO DENEGADO
-def acceso_denegado(request):
-    return render(request, 'acceso_denegado.html')
 #INDEX DE PAPELERIA
 @never_cache
-@login_required(login_url='/acceso_denegado/')
+@login_required
 def index_pap(request):
     breadcrumbs = [{'name': 'Inicio', 'url': '/index_pap'}]
     return render(request, 'index_pap/index_pap.html', {'breadcrumbs': breadcrumbs})
 
 #LOGIN  Y LOGOUT DE PAPELERIA
+# Ejemplo para el login de papelería
 def login_papeleria(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, email=email, password=password)
 
-            if user is not None:
-                if not user.is_active:  # Check if the user is inactive
-                    messages.error(request, "Tu usuario está inactivo.")
-                elif user.module == 'Papeleria':  # Verify the user belongs to Papelería
-                    login(request, user)
-                    messages.success(request, "Sesión iniciada correctamente en Papelería.")
-                    return redirect('papeleria:index_pap')  # Redirect to Papelería homepage
-                else:
-                    messages.error(request, "No tienes acceso a este módulo.")
+        if user is not None:
+            if user.is_active and getattr(user, 'acceso_pap', False):
+                login(request, user)
+                return redirect('papeleria:index_pap')
             else:
-                messages.error(request, 'Usuario o contraseña incorrectos.')
-    else:
-        form = LoginForm()
+                messages.error(request, "No tienes permiso para acceder a este módulo.")
+        else:
+            messages.error(request, "Credenciales inválidas.")
 
-    return render(request, 'login_pap/login_pap.html', {'form': form})
+    return render(request, 'login_pap/login_pap.html')
 
 @never_cache
-@login_required(login_url='/acceso_denegado/')
+@login_required
 def logout_view(request):
     request.session.flush()  # borra toda la sesión y regenera session_key
     response = redirect('libreria:inicio')

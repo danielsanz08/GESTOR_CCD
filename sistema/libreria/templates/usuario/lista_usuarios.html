@@ -4,94 +4,92 @@
 {% block titulo %}Lista de usuarios{% endblock %}
 
 {% block contenido %}
-<style>
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-
-        h1,
-        table,
-        table * {
-            visibility: visible;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-            border: 1px solid black;
-            background: rgba(19, 104, 161, 0.411);
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 6px;
-            text-align: center;
-        }
-
-        #btn-print,
-        .Bototnes,
-        form,
-        .paginacion,
-        .fondo,
-        .modal {
-            display: none !important;
-        }
-    }
-</style>
 <link rel="stylesheet" href="{% static 'css/lista_usuarios.css' %}?v={% now 'U' %}">
 
+<style>
+    
+    /* Modal personalizado */
+    .modal-custom {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content-custom {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 320px;
+        max-width: 90%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    .modal-header-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .modal-header-custom h5 {
+        margin: 0;
+        font-size: 18px;
+    }
+    .btn-close-custom {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    /* Permisos */
+    .permiso-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .permiso-label {
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
+    /* Footer modal */
+    .modal-footer-custom {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .btn-cancelar, .btn-guardar {
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        border: none;
+        font-size: 14px;
+    }
+    .btn-cancelar {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-cancelar:hover {
+        background-color: #5a6268;
+    }
+    .btn-guardar {
+        background-color: #0d6efd;
+        color: white;
+    }
+    .btn-guardar:hover {
+        background-color: #0b5ed7;
+    }
+</style>
 
 <section>
     <h1>Usuarios de Papelería</h1>
-    <div>
-        <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador "
-                value="{{ request.GET.q }}">
-            <button type="submit" class="btn-search"><i data-feather="search" class="icono"></i></button>
-            <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
-                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-
-                <label for="fecha_fin">Hasta:</label>
-                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
-
-                <button type="submit" class="search-date" title="Buscar por rango de fecha">
-                    <i class="fas fa-search text-white"></i>
-
-                </button>
-            </div>
-        </form>
-        <!-- Inputs de fecha (inicialmente ocultos) -->
-
-        <!-- Botón para limpiar filtros -->
-        <a href="{% url 'libreria:lista_usuarios' %}">
-            <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
-                    title="Eliminar"></i>
-            </button>
-        </a>
-    </div>
-
-<div class="Botones">
-    <button class="print"><i class="bi bi-printer" id="icono"></i></button>
-
-    <a href="{% url 'libreria:reporte_usuario_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-        <button class="pdf"><i class="fas fa-file-pdf text-white"></i></button>
-    </a>
-
-    <a href="{% url 'libreria:reporte_usuario_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-        <button class="excel"><i class="fas fa-file-excel text-white"></i></button>
-    </a>
-</div>
-
-
+    
     <table>
         <thead>
             <tr>
@@ -103,7 +101,7 @@
                 <th class="cargo">Cargo</th>
                 <th class="estado">Estado</th>
                 <th class="actividad">Actividad</th>
-                <th class="editar">Editar</th>
+                <th class="editar">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -112,7 +110,6 @@
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.username }}</td>
                 <td>{{ usuario.role }}</td>
-
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.area }}</td>
                 <td>{{ usuario.cargo }}</td>
@@ -127,116 +124,82 @@
                         </label>
                     </form>
                 </td>
-                <td class="td_editar"><a href="{% url 'libreria:editar_usuario' usuario.id %}">
-                        <button class="editar-btn"><i data-feather="edit" class="icono"></i></button>
-                    </a></td>
+                <td class="td_editar">
+                    <a href="{% url 'libreria:editar_usuario' usuario.id %}">
+                        <button class="editar-btn" title="Editar usuario">
+                            ✎
+                        </button>
+                    </a>
+                    <button class="permisos-btn" title="Gestionar permisos" onclick="abrirModal({{ usuario.id }})">
+                        🔑
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8">No se encontraron usuarios.</td>
+                <td colspan="9">No se encontraron usuarios.</td>
             </tr>
             {% endfor %}
         </tbody>
-
     </table>
-    <div class="paginacion" id="pag">
-        {% if usuarios.has_previous %}
-        <a href="?page=={{ usuarios.previous_page_number }}">Anterior</a>
-        {% endif %}
-        {% for num in usuarios.paginator.page_range %}
-        <a href="?page={{ num }}" class="{% if usuarios.number == num %}active {% endif %}">
-            {{ num }}
-        </a>
-        {% endfor %}
-        {% if usuarios.has_next %}
-        <a href="?page={{ usuarios.next_page_number }}">Siguiente</a>
 
-        {% endif %}
-    </div>
-</section>
-<script>
-
-    document.querySelector('.print').addEventListener('click', function () {
-        const contenidoOriginal = document.body.innerHTML;
-        const titulo = document.querySelector('h1').outerHTML;
-        const tabla = document.querySelector('table').outerHTML;
-
-        const fondo = `
-        <div class="fondo">
-            <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+    <!-- Modales para permisos -->
+    {% for usuario in usuarios %}
+    <div id="modal{{ usuario.id }}" class="modal-custom" onclick="cerrarModal({{ usuario.id }})">
+        <div class="modal-content-custom" onclick="event.stopPropagation()">
+            <div class="modal-header-custom">
+                <h5>Permisos de {{ usuario.username }}</h5>
+                <button onclick="cerrarModal({{ usuario.id }})" class="btn-close-custom">&times;</button>
+            </div>
+            <form method="POST" action="{% url 'libreria:lista_usuarios' %}">
+                {% csrf_token %}
+                <input type="hidden" name="actualizar_permisos" value="1">
+                <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                <div class="modal-body-custom">
+                    <div class="permiso-item">
+                        <input type="checkbox" id="pap{{ usuario.id }}" name="acceso_pap" 
+                               {% if usuario.acceso_pap %}checked{% endif %} 
+                               class="form-check-input">
+                        <label for="pap{{ usuario.id }}" class="permiso-label">Acceso a Papelería</label>
+                    </div>
+                    <div class="permiso-item">
+                        <input type="checkbox" id="caf{{ usuario.id }}" name="acceso_caf" 
+                               {% if usuario.acceso_caf %}checked{% endif %} 
+                               class="form-check-input">
+                        <label for="caf{{ usuario.id }}" class="permiso-label">Acceso a Cafetería</label>
+                    </div>
+                    <div class="permiso-item">
+                        <input type="checkbox" id="cde{{ usuario.id }}" name="acceso_cde" 
+                               {% if usuario.acceso_cde %}checked{% endif %} 
+                               class="form-check-input">
+                        <label for="cde{{ usuario.id }}" class="permiso-label">Acceso a Centro de Eventos</label>
+                    </div>
+                </div>
+                <div class="modal-footer-custom">
+                    <button type="button" onclick="cerrarModal({{ usuario.id }})" class="btn-cancelar">Cerrar</button>
+                    <button type="submit" class="btn-guardar">Guardar cambios</button>
+                </div>
+            </form>
         </div>
-    `;
+    </div>
+    {% endfor %}
+</section>
 
-        const estiloImpresion = `
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                position: relative;
-                background: rgba(19, 104, 161, 0.411);
-            }
-            h1 {
-                margin-bottom: 20px;
-                position: relative;
-                z-index: 2;
-            }
-            table {
-                margin: auto;
-                width: 90%;
-                border-collapse: collapse;
-                position: absolute;
-                z-index: 2;
-            }
-            th {
-                border: 1px solid black;
-                padding: 8px;
-                text-align: center;
-            }
-            td {
-                border: 1px solid black;
-                padding: 8px;
-                text-align: center;
+<script>
+    function abrirModal(id) {
+        document.getElementById('modal' + id).style.display = 'flex';
+    }
+    function cerrarModal(id) {
+        document.getElementById('modal' + id).style.display = 'none';
+    }
 
-            }
-            thead {
-                background-color: rgba(61, 43, 226, 0.411);
-            }
-            .fondo {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 1;
-                opacity: 0.1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            .fondo img {
-                max-width: 80%;
-                max-height: 80%;
-                object-fit: contain;
-            }
-                .td_acciones, .editar, .actividad, .td_editar, .td_btn_estado{
-                    display : none;
-                }
-        </style>
-    `;
-
-        const ventanaImpresion = window.open('', '', 'height=700,width=900');
-        ventanaImpresion.document.write('<html><head><title>Listado de usuarios</title>');
-        ventanaImpresion.document.write(estiloImpresion);
-        ventanaImpresion.document.write('</head><body>');
-        ventanaImpresion.document.write(fondo);  // logo de fondo
-        ventanaImpresion.document.write(titulo); // título
-        ventanaImpresion.document.write(tabla);  // tabla
-        ventanaImpresion.document.write('</body></html>');
-        ventanaImpresion.document.close();
-
-        ventanaImpresion.focus();
-        ventanaImpresion.print();
-        ventanaImpresion.close();
+    // Cerrar modal si presionas la tecla ESC
+    document.addEventListener('keydown', function(event) {
+        if(event.key === "Escape") {
+            const modals = document.querySelectorAll('.modal-custom');
+            modals.forEach(modal => modal.style.display = 'none');
+        }
     });
 </script>
+
 {% endblock %}

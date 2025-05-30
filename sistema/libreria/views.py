@@ -47,45 +47,57 @@ def crear_usuario(request):
         if form.is_valid():
             try:
                 user = form.save(commit=False)
-                module = user.module
                 role = user.role
 
-                # Verificar el número de administradores en cada módulo
+                # Verificar el número de administradores en general
                 if role == 'Administrador':
                     admin_count = CustomUser.objects.filter(
-                        role='Administrador', module=module, is_active=True
+                        role='Administrador', is_active=True
                     ).count()
 
-                    limits = {'Papeleria': 3, 'Cafeteria': 2, 'Centro de eventos': 1}
-                    if module in limits and admin_count >= limits[module]:
+                    limit = 5  # Puedes ajustar este número según tu necesidad
+                    if admin_count >= limit:
                         messages.error(
                             request,
-                            f"Ya existen {limits[module]} administradores en el módulo {module}."
+                            f"Ya existen {limit} administradores activos en el sistema."
                         )
                         return redirect('crear_usuario')
+
+                    # Asignar todos los permisos a los administradores
+                    user.acceso_pap = True
+                    user.acceso_caf = True
+                    user.acceso_cde = True
+                else:
+                    # Para empleados, asegurarse que los permisos son False
+                    user.acceso_pap = False
+                    user.acceso_caf = False
+                    user.acceso_cde = False
 
                 # Guardar el usuario
                 user.save()
 
-                # Enviar correo a los administradores del mismo módulo
+                # Enviar correo a todos los administradores activos
                 admin_emails = CustomUser.objects.filter(
-                    role='Administrador', module=module, is_active=True
+                    role='Administrador', is_active=True
                 ).values_list('email', flat=True)
 
                 cargo = request.POST.get("cargo", "").strip()
                 email = user.email  # Se obtiene directamente del objeto user
 
                 if admin_emails:
-                    subject = f"Nuevo usuario creado en {module}"
+                    subject = "Nuevo usuario creado"
                     message = (
                         f"Hola querido usuario,\n\n"
                         f"Por parte de Gestor CCD, te informamos que se ha creado un nuevo usuario.\n\n"
                         f"Información:\n\n"
                         f"Nombre: {user.username}\n"
                         f"Rol: {role}\n"
-                        f"Módulo: {module}\n"
                         f"Cargo: {cargo}\n"
-                        f"Email: {email}\n\n"
+                        f"Email: {email}\n"
+                        f"Permisos:\n"
+                        f"- Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
+                        f"- Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
+                        f"- Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
                         f"En caso de ser infiltrado, por favor te invitamos a desactivarlo.\n\n"
                         f"Muchas gracias por su atención.\n"
                         f"El director de Gestor CCD te desea un feliz día."
@@ -192,6 +204,23 @@ def lista_usuarios(request):
         except ValueError:
             usuarios = CustomUser.objects.none()
 
+    # Procesar actualización de permisos si es POST
+    if request.method == 'POST' and 'actualizar_permisos' in request.POST:
+        usuario_id = request.POST.get('usuario_id')
+        try:
+            usuario = CustomUser.objects.get(id=usuario_id)
+            if usuario.role != 'Administrador':  # Solo actualizar si no es admin
+                usuario.acceso_pap = 'acceso_pap' in request.POST
+                usuario.acceso_caf = 'acceso_caf' in request.POST
+                usuario.acceso_cde = 'acceso_cde' in request.POST
+                usuario.save()
+                messages.success(request, f"Permisos de {usuario.username} actualizados correctamente.")
+            else:
+                messages.info(request, "Los administradores tienen todos los permisos por defecto.")
+        except CustomUser.DoesNotExist:
+            messages.error(request, "Usuario no encontrado.")
+        return redirect('libreria:lista_usuarios')
+
     # Paginación
     paginator = Paginator(usuarios, 4)
     page = request.GET.get('page')
@@ -201,7 +230,6 @@ def lista_usuarios(request):
         'usuarios': usuarios,
         'breadcrumbs': breadcrumbs
     })
-
 def cambiar_estado_usuario(request, user_id):
     if request.method == 'POST':
         user = get_object_or_404(CustomUser, id=user_id)

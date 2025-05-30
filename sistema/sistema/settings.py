@@ -109,8 +109,10 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
+    'libreria.backends.EmailBackend',              # Tu backend personalizado
+    'django.contrib.auth.backends.ModelBackend',   # El backend por defecto de Django
 ]
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

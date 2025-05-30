@@ -16,7 +16,7 @@ def login_cafeteria(request):
             user = authenticate(request, email=email, password=password)
 
             if user is not None:
-                if user.module == 'Cafeteria':  # Verifica que el usuario pertenece a Cafetería
+                if user.module == 'Cafeteria':  # o user.acceso_caf si usas booleanos
                     login(request, user)
                     messages.success(request, "Sesión iniciada correctamente en Cafetería.")
                     return redirect('cafeteria:index_caf')

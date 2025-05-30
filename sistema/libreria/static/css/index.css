@@ -44,19 +44,18 @@ body {
   transform: scale(1.05);
   
 }
-
-.card img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: filter 0.3s ease-in-out;
+#pap{
+  background: linear-gradient(to bottom, #1c96bb, #325180);
 }
-
-.card:hover img {
-  filter: blur(5px);
+#caf{
+  background: linear-gradient(to bottom, #5b91e2, #326180);
 }
-
+#cde{
+  background-color: orange;
+}
+#user{
+  background-color: bisque;
+}
 .card h2,
 .card p {
   position: absolute;

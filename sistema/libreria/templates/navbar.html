@@ -646,20 +646,19 @@
   <div class="navbar">
     <h2>GESTOR CCD</h2>
     <div class="header-icons" title="Usuario">
-      {% if user.is_authenticated %}
+      {% if request.user.is_authenticated %}
       <span class="name">
-        <i data-feather="users" class="icono"></i> {{ user.username }}
+        <i data-feather="users" class="icono"></i> {{ request.user.username }}
       </span>
       {% else %}
-      <span>
-
-      </span>
+      <span>Desconocido</span>
       {% endif %}
+
     </div>
 
   </div>
-  
-{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.module == 'Papeleria' and bajo_stock and mostrar_alerta_stock %}
+
+ {% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.module == 'Papeleria' and bajo_stock and mostrar_alerta_stock %}
   <div id="stock-alert" class="alert-overlay">
     <div class="alert-box">
       <p style="font-weight: bold; color: #000;">
@@ -672,6 +671,7 @@
     </div>
   </div>
 {% endif %}
+
 
 
   <style>
@@ -716,7 +716,7 @@
       document.getElementById("stock-alert").style.display = "none";
     }
   </script>
-  
+
 
   <div class="container">
     {% block contenido %}

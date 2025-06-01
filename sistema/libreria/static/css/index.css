@@ -30,7 +30,7 @@ body {
   /* Menos altas */
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
   display: flex;
   justify-content: center;
@@ -38,43 +38,26 @@ body {
   text-align: center;
   left: 23vh;
   cursor: pointer;
+  background: linear-gradient(to bottom, #1791b68e, #1cabd6);
+  border: 1px solid rgba(0, 0, 0, 0.199);
 }
 
 .card:hover {
   transform: scale(1.05);
-  
+  background: linear-gradient(to bottom, #1cabd6, #1791b68e);
+  border: 2px solid rgba(14, 79, 133, 0.192);
 }
-#pap{
-  background: linear-gradient(to bottom, #1c96bb, #325180);
-}
-#caf{
-  background: linear-gradient(to bottom, #5b91e2, #326180);
-}
-#cde{
-  background-color: orange;
-}
-#user{
-  background-color: bisque;
-}
-.card h2,
-.card p {
-  position: absolute;
-  z-index: 2;
-  color: white;
-  width: 100%;
-  text-align: center;
-  margin: 0;
-  padding: 10px;
-}
+
+
 
 .card h2 {
   top: 10px;
   font-size: 18px;
 }
 
-.card p {
-  bottom: 10px;
-  font-size: 14px;
+h2{
+  color: white;
+  
 }
 
 /*RESPONSIVE*/

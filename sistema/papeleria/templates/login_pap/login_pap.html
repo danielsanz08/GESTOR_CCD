@@ -2,7 +2,13 @@
 {% load static%}
 {% block contenido %}
 <style>
- 
+ body.dark form{
+    background: rgba(112, 112, 112, 0.747);
+ }
+ body.dark label,
+ body.dark h3{
+    color: white;
+ }
 </style>
 <link rel="stylesheet" href="{% static 'css/login_pap.css' %}?v={% now 'U' %}">
 <form method="POST" action="{% url 'papeleria:login_papeleria' %}" class="login">

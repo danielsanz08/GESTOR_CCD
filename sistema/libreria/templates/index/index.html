@@ -1,43 +1,48 @@
 {% extends "navbar.html" %}
 {% load static %}
 {% block titulo %}
-  GESTOR CCD
+GESTOR CCD
 {% endblock %}
 
 {% block contenido %}
 <style>
-  
+body.dark .card{
+  background: linear-gradient(135deg, #292929, #67707c);
+}
+body.monocromo-activo .card{
+  background: linear-gradient(135deg, #353232, #67707c);
+}
+body.resaltar-enlaces .text_Card{
+  background-color: lightblue;
+}
 </style>
 <link rel="stylesheet" href="{% static 'css/index.css' %}?v={% now 'U' %}">
-  <div class="fondo">
-    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
-  </div>  <!-- Agregar el fondo al inicio -->
-  
-  <a href="{% url 'papeleria:login_papeleria' %}  "><div class="container">
+<div class="fondo">
+  <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+</div> <!-- Agregar el fondo al inicio -->
+
+<a href="{% url 'papeleria:login_papeleria' %}  ">
+  <div class="container">
     <div class="card" id="pap">
-      <h2>Papeleria</h2>
-      <p>Ingresa para gestión el módulo de papeleria</p>
-    </div></a>
-    <a href="{% url 'cafeteria:login_cafeteria' %}">
-      <div class="card" id="caf">
-        <h2>Cafetería</h2>
-        <p>Ingresa para gestionar la Cafetería</p>
-      </div>
-    </a>
-    <a href="{% url 'cde:login_cde' %}">
-      <div class="card" id="cde">
-        <h2>Centro de eventos</h2>
-        <p>Ingresa para gestionar centro de eventos</p>
-      </div>
-    </a>
-    <a href="{% url 'libreria:crear_usuario' %}">
-      <div class="card" id="user">
-        <h2>Crear usuarios</h2>
-        <p>Ingresa para gestionar centro de eventos</p>
-      </div>
-    </a>
-    
-  
+      <h2 class="text_Card"><i class="bi bi-journal-bookmark-fill me-2"></i> Papeleria</h2>
+    </div>
+</a>
+<a href="{% url 'cafeteria:login_cafeteria' %}">
+  <div class="card" id="caf">
+    <h2 class="text_Card"><i class="bi bi-cup-hot-fill me-2"></i> Cafeteria</h2>
   </div>
-  
+</a>
+<a href="{% url 'cde:login_cde' %}">
+  <div class="card" id="cde">
+    <h2 class="text_Card"><i class="bi bi-calendar-event"></i> Centro De Eventos</h2>
+  </div>
+</a>
+
+<a href="{% url 'libreria:crear_usuario' %}">
+  <div class="card" id="user">
+    <h2 class="text_Card"><i class="bi bi-person-plus"></i> Crear usuarios</h2>
+  </div>
+</a>
+</div>
+
 {% endblock %}

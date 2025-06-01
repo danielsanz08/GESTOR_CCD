@@ -644,8 +644,8 @@
 
 <body>
   <div class="navbar">
-    <h2>GESTOR CCD</h2>
-    <div class="header-icons" title="Usuario">
+    <h2 class="gestor">GESTOR CCD</h2>
+    <div class="header-icons" title="Usuario" id="name">
       {% if request.user.is_authenticated %}
       <span class="name">
         <i data-feather="users" class="icono"></i> {{ request.user.username }}
@@ -745,7 +745,8 @@
   </footer>
 
   <button id="toggle-accessibility-menu" title="Botón de accesibilidad">
-    <i class="bi bi-list fs-1" id="simbolo"></i>
+    <i class="bi bi-person-gear" id="menu_Acc"></i>
+
   </button>
 
   <div id="accessibility-menu" class="hidden">
@@ -757,15 +758,11 @@
     </div>
 
     <div class="op">
-      <button class="dark-mode">🌙||🌞 Modo Oscuro</button>
-      <button class="monocromo">🔘Modo Monocromo</button>
+      <button class="dark-mode">Modo Oscuro</button>
+      <button class="monocromo">Modo Monocromo</button>
       <button class="titulos">Resaltar titulos</button>
       <button class="enlaces">Resaltar enlaces</button>
-      <div id="zoom-controls" class="menu-option">
-        <button class="zoom-button" id="zoom-in" title="Aumentar zoom">+</button>
-        <button class="zoom-button" id="zoom-out" title="Disminuir zoom">-</button>
-        <button class="zoom-reset" id="zoom-reset" title="Restablecer zoom">⟳</button>
-        <span id="zoom-percentage">100%</span>
+      
       </div>
     </div>
   </div>
@@ -778,13 +775,143 @@
         menu.classList.toggle("visible"); // Agrega o quita la clase visible
       });
     });
+
+    // Función para activar o desactivar el modo oscuro
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    // Guardar el estado actual en localStorage
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+  }
+
+  // Agregar el listener al botón
+  document.querySelector('.dark-mode').addEventListener('click', toggleDarkMode);
+
+  // Activar el modo oscuro si estaba habilitado anteriormente
+  window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = localStorage.getItem('darkMode');
+    if (darkMode === 'enabled') {
+      document.body.classList.add('dark');
+    }
+  });
+  /*MONOCROMO*/
+  function toggleMonocromo() {
+    document.body.classList.toggle('monocromo-activo');
+    const isMonocromo = document.body.classList.contains('monocromo-activo');
+    localStorage.setItem('monocromo', isMonocromo ? 'enabled' : 'disabled');
+  }
+
+  document.querySelector('.monocromo').addEventListener('click', toggleMonocromo);
+
+  // Al cargar la página, aplicar modo monocromo si estaba activado
+  window.addEventListener('DOMContentLoaded', () => {
+    const estadoMonocromo = localStorage.getItem('monocromo');
+    if (estadoMonocromo === 'enabled') {
+      document.body.classList.add('monocromo-activo');
+    }
+  });
+  /*resaltar titulos*/
+  function toggleResaltarTitulos() {
+    document.body.classList.toggle('resaltar-titulos');
+    const resaltado = document.body.classList.contains('resaltar-titulos');
+    localStorage.setItem('resaltarTitulos', resaltado ? 'enabled' : 'disabled');
+  }
+
+  document.querySelector('.titulos').addEventListener('click', toggleResaltarTitulos);
+
+  // Aplicar resaltado si estaba activado
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('resaltarTitulos') === 'enabled') {
+      document.body.classList.add('resaltar-titulos');
+    }
+  });
+  /*resaltar enlaces*/
+  function toggleResaltarEnlaces() {
+    document.body.classList.toggle('resaltar-enlaces');
+    const resaltado = document.body.classList.contains('resaltar-enlaces');
+    localStorage.setItem('resaltarEnlaces', resaltado ? 'enabled' : 'disabled');
+  }
+
+  document.querySelector('.enlaces').addEventListener('click', toggleResaltarEnlaces);
+
+  // Aplicar resaltado si estaba activado
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('resaltarEnlaces') === 'enabled') {
+      document.body.classList.add('resaltar-enlaces');
+    }
+  });
+  /*aumentar o disminuir tamaño de la fuente */
+    const zoomStep = 10; // porcentaje a aumentar o disminuir
+  const minZoom = 50;
+  const maxZoom = 200;
+  const root = document.documentElement;
+  const zoomDisplay = document.getElementById("zoom-percentage");
+
+  function setZoom(percentage) {
+    percentage = Math.max(minZoom, Math.min(maxZoom, percentage));
+    root.style.fontSize = percentage + "%";
+    zoomDisplay.textContent = percentage + "%";
+    localStorage.setItem("zoomLevel", percentage);
+  }
+
+  document.getElementById("zoom-in").addEventListener("click", () => {
+    const current = parseInt(localStorage.getItem("zoomLevel")) || 100;
+    setZoom(current + zoomStep);
+  });
+
+  document.getElementById("zoom-out").addEventListener("click", () => {
+    const current = parseInt(localStorage.getItem("zoomLevel")) || 100;
+    setZoom(current - zoomStep);
+  });
+
+  document.getElementById("zoom-reset").addEventListener("click", () => {
+    setZoom(100);
+  });
+
+  // Al cargar, aplicar el nivel de zoom guardado
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedZoom = parseInt(localStorage.getItem("zoomLevel")) || 100;
+    setZoom(savedZoom);
+  });
+  
   </script>
+  
+<style>
+  body.dark .navbar,
+  body.dark footer,
+  body.dark body{
+    background-color: #000000;
+  }
+  body.dark{
+    background-color: rgb(31, 31, 31);
+    background-size: cover;
+  }
+</style>
 
 
+<style>
+  body.monocromo-activo .navbar,
+  body.monocromo-activo footer{
+    background-color: gray;
+  }
+  body.monocromo-activo {
+    background-color: rgba(128, 128, 128, 0.555);
+  }
+</style>
   <script src="https://unpkg.com/feather-icons"></script>
   <script>
     feather.replace();
   </script>
+
+<style>
+  body.resaltar-titulos #name,
+  body.resaltar-titulos .gestor{
+    background-color: yellow;
+    color: black;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+  }
+</style>
 
 
 </body>

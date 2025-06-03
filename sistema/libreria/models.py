@@ -37,7 +37,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     ]
     AREA = [
         ('Administrativa', 'Administrativa'),
-        ('Comunicaciones', 'Comunicaciones'),
         ('Registros públicos', 'Registros públicos'),
         ('Gestión empresarial', 'Gestión empresarial'),
         ('Competitividad', 'Competitividad'),

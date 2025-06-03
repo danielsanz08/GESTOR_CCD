@@ -256,7 +256,7 @@ def crear_pedido(request):
                     area=area_usuario,
                 )
 
-        admin_users = User.objects.filter(role='Administrador', module='Papeleria', is_active=True)
+        admin_users = User.objects.filter(role='Administrador', is_active=True)
         admin_emails = [admin.email for admin in admin_users if admin.email]
 
         if admin_emails:
@@ -268,7 +268,6 @@ def crear_pedido(request):
                 f"Información del pedido:\n"
                 f"Usuario: {request.user.username}\n"
                 f"Rol: {request.user.role}\n"
-                f"Módulo: {request.user.module}\n"
                 f"ID del pedido: {pedido.id}\n"
                 f"Estado inicial del pedido: {estado}\n\n"
                 f"Por favor revisa y confirma el pedido si corresponde.\n\n"
@@ -293,6 +292,7 @@ def crear_pedido(request):
         'articulos': articulos,
         'breadcrumbs': breadcrumbs,
     })
+
 def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -509,11 +509,11 @@ from django.db.models import Sum
 from django.urls import reverse
 from .models import PedidoArticulo
 
-def grafica_pedidos_area(request):
+def grafica_pedidos_administrativa(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
-        {'name': 'Gráfico de pedidos por áreas', 'url': reverse('papeleria:pedidos_area')},
+        {'name': 'Gráfico de pedidos por áreas', 'url': reverse('papeleria:pedidos_administrativa')},
     ]
 
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -537,6 +537,178 @@ def grafica_pedidos_area(request):
     cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
 
     return render(request, 'estadisticas/grafico_pedido_area.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_pedidos_rues(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Pedidos REGISTROS PÜBLICOS', 'url': reverse('papeleria:pedidos_rues')},
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Registros públicos')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
+        'area',
+        'articulo__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('articulo__nombre')
+
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
+
+    return render(request, 'estadisticas/grafico_pedido_rues.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_pedidos_presidencia(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Pedidos presidencia', 'url': reverse('papeleria:pedidos_presidencia')},
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Presidencia')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
+        'area',
+        'articulo__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('articulo__nombre')
+
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
+
+    return render(request, 'estadisticas/grafico_pedido_presidencia.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_pedidos_presidencia(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Pedidos financiera', 'url': reverse('papeleria:pedidos_financiera')},
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Financiera')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
+        'area',
+        'articulo__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('articulo__nombre')
+
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
+
+    return render(request, 'estadisticas/grafico_pedido_financiera.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_pedidos_gestion_empresarial(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Pedidos gestión empresarial', 'url': reverse('papeleria:pedidos_gestion_empresarial')},
+
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Gestión empresarial')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
+        'area',
+        'articulo__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('articulo__nombre')
+
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
+
+    return render(request, 'estadisticas/grafico_pedido_gestion_empresarial.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_pedidos_competitividad(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Pedidos gestión empresarial', 'url': reverse('papeleria:pedidos_gestion_empresarial')},
+
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = PedidoArticulo.objects.filter(area='Competitividad')
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    pedidos_por_area_articulo = pedidos.values(
+        'area',
+        'articulo__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('articulo__nombre')
+
+    etiquetas = [item['articulo__nombre'] or 'Sin artículo' for item in pedidos_por_area_articulo]
+    cantidades = [item['total_cantidad'] or 0 for item in pedidos_por_area_articulo]
+
+    return render(request, 'estadisticas/grafico_pedido_competitividad.html', {
         'nombres': etiquetas,
         'cantidades': cantidades,
         'breadcrumbs': breadcrumbs,

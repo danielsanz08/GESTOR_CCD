@@ -1,92 +1,73 @@
 {% extends 'navbar.html' %}
-
+{% load static %}
 {% block contenido %}
-<div class="container mt-4">
+<link rel="stylesheet" href="{% static 'css/lista_backup.css' %}?v={% now 'U' %}">
+<section>
+    
     <h1 class="mb-4"><i class="fas fa-database"></i> Copias de Seguridad</h1>
+    
 
     <!-- Botones principales -->
     <div class="d-flex flex-wrap gap-3 mb-4">
         <a href="{% url 'backup:crear_backup' %}" class="btn btn-primary">
             <i class="fas fa-plus-circle me-2"></i>Nueva copia
         </a>
-        <a href="{% url 'backup:exportar' %}" class="btn btn-success">
+        <a href="{% url 'backup:exportar_backup' %}" class="btn btn-success">
             <i class="fas fa-file-export me-2"></i>Exportar BD completa
         </a>
         <a href="{% url 'backup:importar' %}" class="btn btn-secondary">
             <i class="fas fa-file-import me-2"></i>Importar backup
         </a>
     </div>
-
-    <!-- Tabla de backups -->
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th><i class="fas fa-tag me-1"></i>Nombre</th>
-                            <th><i class="fas fa-calendar me-1"></i>Fecha</th>
-                            <th><i class="fas fa-weight-hanging me-1"></i>Tamaño</th>
-                            <th><i class="fas fa-table me-1"></i>Modelos incluidos</th>
-                            <th class="text-end"><i class="fas fa-cogs me-1"></i>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for backup in backups %}
-                        <tr>
-                            <td>{{ backup.nombre }}</td>
-                            <td>{{ backup.fecha_creacion|date:"d/m/Y H:i" }}</td>
-                            <td>{{ backup.tamano }}</td>
-                            <td>
-                                <span class="d-inline-block text-truncate" style="max-width: 200px;" 
-                                      title="{{ backup.modelos_incluidos }}">
-                                    {{ backup.modelos_incluidos }}
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{% url 'backup:descargar_backup' backup.id %}" 
-                                       class="btn btn-outline-info" title="Descargar">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    <a href="{% url 'backup:restaurar_backup' backup.id %}" 
-                                       class="btn btn-outline-warning" title="Restaurar"
-                                       onclick="return confirm('¿Restaurar esta copia? Se sobrescribirán los datos actuales.')">
-                                        <i class="fas fa-undo"></i>
-                                    </a>
-                                    <a href="{% url 'backup:eliminar_backup' backup.id %}" 
-                                       class="btn btn-outline-danger" title="Eliminar"
-                                       onclick="return confirm('¿Eliminar permanentemente esta copia?')">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">
-                                <i class="fas fa-database fa-2x mb-3"></i><br>
-                                No hay copias de seguridad disponibles
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Estilos adicionales -->
-<style>
-    .table-hover tbody tr:hover {
-        background-color: rgba(0, 0, 0, 0.02);
-    }
-    .text-truncate {
-        max-width: 200px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
+    <table>
+        <thead>
+            <tr>
+                <th id="nombre">Nombre</th>
+                <th id="fecha">Fecha</th>
+                <th id="Tamaño">Tamaño</th>
+                <th id="modelos">Modelos incluidos</th>
+                <th id="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for backup in backups %}
+            <tr>
+                <td>{{ backup.nombre }}</td>
+                <td>{{ backup.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                <td>{{ backup.tamano }}</td>
+                <td>
+                    <span class="d-inline-block text-truncate" style="max-width: 200px;"
+                        title="{{ backup.modelos_incluidos }}">
+                        {{ backup.modelos_incluidos }}
+                    </span>
+                </td>
+                <td class="text-end">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{% url 'backup:descargar_backup' backup.id %}" class="btn btn-outline-info"
+                            title="Descargar">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        <a href="{% url 'backup:restaurar_backup' backup.id %}" class="btn btn-outline-warning"
+                            title="Restaurar"
+                            onclick="return confirm('¿Restaurar esta copia? Se sobrescribirán los datos actuales.')">
+                            <i class="fas fa-undo"></i>
+                        </a>
+                        <a href="{% url 'backup:eliminar_backup' backup.id %}" class="btn btn-outline-danger"
+                            title="Eliminar" onclick="return confirm('¿Eliminar permanentemente esta copia?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    <br>
+                    No hay copias de seguridad disponibles
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

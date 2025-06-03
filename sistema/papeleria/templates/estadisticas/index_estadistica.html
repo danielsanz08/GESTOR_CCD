@@ -2,7 +2,7 @@
 {% load static %}
 {% block titulo %}Estadisticas Gestor CCD {% endblock %}
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/index_backup.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
 <section>
 
     <a href="{% url 'papeleria:graficas_usuarios' %}">
@@ -29,10 +29,41 @@
             <p class="name">Estado de pedidos</p>
         </div>
     </a>
-    <a href="{% url 'papeleria:pedidos_area' %}">
+    <a href="{% url 'papeleria:pedidos_administrativa' %}">
         <div class="card">
             <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos por areas</p>
+            <p class="name">Pedidos administrativa</p>
+        </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_rues' %}">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos RUES</p>
+        </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_presidencia' %}">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos presidencia</p>
+        </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_financiera' %}">
+
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos financiera</p>
+        </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_gestion_empresarial' %}">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos gestión empresarial</p>
+        </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_competitividad' %}">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos competitividad</p>
         </div>
     </a>
     </div>

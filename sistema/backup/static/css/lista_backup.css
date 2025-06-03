@@ -1,0 +1,150 @@
+html {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+html,
+body {
+    background-color: #1c96bb1c;
+}
+section {
+  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+  position: relative;
+  top: 23vh;
+  left: 9vh;
+  text-align: center;
+  padding: 10px 20px 20px 20px;
+  width: 190vh;
+  height: 60vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+
+}
+table {
+    width: 180vh;
+    border-spacing: 10px;
+    position: absolute;
+    top: 20vh;
+    left: 8vh;
+
+}
+
+#nombre,
+#fecha,
+#Tamaño,
+#modelos,
+#acciones {
+    left: 20vh;
+    background-color: rgba(43, 116, 226, 0.616);
+    border-radius: 10px;
+}
+td {
+  background-color: rgba(255, 255, 255, 0.384);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 20vh 0 20vh 0;
+  border-radius: 10px;
+  height: 5vh;
+  align-items: center;
+
+}
+/* Container for buttons */
+.d-flex.flex-wrap.gap-3.mb-4 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 24px;
+    justify-content: center;
+}
+
+/* General button styling */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Primary button (Nueva copia) */
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Success button (Exportar BD completa) */
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Secondary button (Importar backup) */
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Icon styling */
+.btn i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .d-flex.flex-wrap.gap-3.mb-4 {
+        gap: 10px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        font-size: 13px;
+        padding: 8px 16px;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .btn i {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .btn i {
+        font-size: 13px;
+        margin-right: 6px;
+    }
+}

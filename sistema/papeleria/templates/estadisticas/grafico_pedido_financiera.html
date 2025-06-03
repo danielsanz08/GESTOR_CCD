@@ -1,35 +1,7 @@
 {% extends 'navbar.html' %}
 {% block titulo %}Gráfica de pedidos por área y artículo{% endblock %}
 {% block contenido %}
-<style>
-    #grafica {
-        width: 80%;
-        max-width: 800px;
-        position: absolute;
-        top: -2vh;
-        left: 10vh;
-        height: 55vh;
-        z-index: 1;
-    }
-
-    .cuadradoFondo {
-        width: 80%;
-        max-width: 800px;
-        background-color: rgb(255, 255, 255);
-        position: absolute;
-        top: 29vh;
-        left: 35vh;
-        height: 61vh;
-        z-index: 0;
-    }
-
-    .form-fechas {
-        position: absolute;
-        top: 10vh;
-        left: 10vh;
-        z-index: 2000;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/graficas_estadisticas.css' %}?v={% now 'U' %}">
 
 <div class="estadisticas-container">
     <!-- Formulario de fechas -->
@@ -51,7 +23,7 @@
     <!-- Gráfica -->
     <div class="cuadradoFondo">
         <div id="grafica">
-            <h2>Gráfica de pedidos por área y artículo</h2>
+            <h2>Pedidos de financiera</h2>
             <canvas id="graficaPedidos"></canvas>
         </div>
     </div>
@@ -88,7 +60,7 @@
                     beginAtZero: true,
                     ticks: {
                         stepSize: 10,  // Puedes ajustar esto según tus datos
-                        callback: function(value) {
+                        callback: function (value) {
                             return value; // No mostrar decimales
                         }
                     },

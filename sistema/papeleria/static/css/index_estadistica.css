@@ -11,12 +11,11 @@ html {
     background-color: #1c96bb1c;
 }
 section {
-    display: flex;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    justify-content: center;
     padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 .card {
     display: flex;

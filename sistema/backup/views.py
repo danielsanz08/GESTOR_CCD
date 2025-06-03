@@ -8,7 +8,7 @@ from .utils import crear_backup, restaurar_backup
 from datetime import datetime
 import subprocess
 import os
-
+from django.core import serializers
 
 @login_required(login_url='/acceso_denegado/')
 def index_backup(request):
@@ -131,34 +131,58 @@ def importar_backup_view(request):
     if request.method == 'POST':
         try:
             archivo_subido = request.FILES['archivo']
-            nombre = request.POST.get('nombre', f"backup_importado_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+            # Nombre “legible” para el backup en la base de datos
+            nombre = request.POST.get(
+                'nombre',
+                f"backup_importado_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            )
 
-            os.makedirs(settings.BACKUP_ROOT, exist_ok=True)
+            # 1) Carpeta física donde guardaremos el JSON/SQL importado:
+            carpeta_backups = os.path.join(settings.MEDIA_ROOT, 'backups')
+            os.makedirs(carpeta_backups, exist_ok=True)
 
-            nombre_archivo = f"imported_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{archivo_subido.name}"
-            ruta_completa = os.path.join(settings.BACKUP_ROOT, nombre_archivo)
+            # 2) Decidir el nombre del fichero en disco
+            #    (aquí le anteponemos timestamp para evitar colisiones,
+            #     pero podrías usar solo archivo_subido.name si prefieres)
+            ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+            nombre_archivo = f"{ts}_{archivo_subido.name}"
+            ruta_completa = os.path.join(carpeta_backups, nombre_archivo)
 
+            # 3) Guardar físicamente el archivo en MEDIA_ROOT/backups/
             with open(ruta_completa, 'wb+') as destino:
                 for chunk in archivo_subido.chunks():
                     destino.write(chunk)
 
+            # 4) Obtener tamaño en MB (para mostrar en la tabla)
             tamano = os.path.getsize(ruta_completa)
             tamano_mb = round(tamano / (1024 * 1024), 2)
 
+            # 5) Crear el registro en la tabla Backup, usando archivo.save()
             backup = Backup(
                 nombre=nombre,
-                archivo=os.path.join('backups', nombre_archivo),
                 tamano=f"{tamano_mb} MB",
                 modelos_incluidos="Todos (backup completo)",
                 creado_por=request.user
             )
+            # Al hacer backup.archivo.save(), el FileField guardará
+            # 'backups/<nombre_archivo>' en backup.archivo.name y
+            # físicamente el fichero estará en MEDIA_ROOT/backups/<nombre_archivo>
+            with open(ruta_completa, 'rb') as f:
+                backup.archivo.save(nombre_archivo, f, save=False)
+
             backup.save()
 
+            # 6) Si el formulario incluyó el botón “restaurar”…
             if 'restaurar' in request.POST:
                 try:
+                    # Cerrar conexiones antes de restaurar
                     from django import db
                     db.connections.close_all()
-                    restaurar_backup(ruta_completa)
+
+                    # Restauramos a partir de la misma ruta física
+                    from .utils import restaurar_backup
+                    restaurar_backup(backup.archivo.path)
+
                     messages.success(request, 'Backup importado y restaurado exitosamente.')
                 except Exception as e:
                     messages.warning(request, f'Backup importado pero error al restaurar: {str(e)}')

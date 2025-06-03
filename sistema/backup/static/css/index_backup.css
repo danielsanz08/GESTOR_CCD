@@ -67,7 +67,7 @@ section {
     transform: scale(1.2);
     color: #cde0f7;
 }
-.name{
+.text{
     color: black;
     display: flex;
     justify-content: center;

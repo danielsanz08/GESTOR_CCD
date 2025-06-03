@@ -26,7 +26,7 @@ table {
     width: 180vh;
     border-spacing: 10px;
     position: absolute;
-    top: 20vh;
+    top: 24vh;
     left: 8vh;
 
 }
@@ -57,94 +57,260 @@ td {
     margin-bottom: 24px;
     justify-content: center;
 }
-
-/* General button styling */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    font-family: 'Arial', sans-serif;
+.Botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 13vh;
+  top: 5vh;
+  background-color: violet;
+}
+.eliminar{
+background-color: #b30000;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  width: 9vh;
+  text-align: center;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+}
+.restaurar{
+  background-color: #00b35f;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  width: 9vh;
+  text-align: center;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+}
+.descargar{
+background-color: #005cb3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  width: 9vh;
+  text-align: center;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+}
+.eliminar:hover{
+    background-color: #8a0101;
+    cursor: pointer;
+    color: black;
+}
+.restaurar:hover{
+    background-color: #03703d;
+    cursor: pointer;
+    color: black;
+}
+.descargar:hover{
+    background-color: #003b72;
+    cursor: pointer;
+    color: black;
+}
+#td_descargar, #td_restaurar, #td_eliminar {
+    width: 20px;
+    padding-left: 8px;
+}
+.buscador {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  height: 3.5vh;
+  width: 50vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 20vh;
+}
+.crear{
+  background-color: yellow;
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  margin-right: 1vh;
+  right: 40vh;
+  position: absolute;
+  cursor: pointer;
+}
+.crear:hover{
+  background-color: rgb(190, 190, 3);
+}
+.importar{
+  background-color: rgb(255, 0, 0);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  position: absolute;
+  font-weight: bold;
+  right: 30vh;
+}
+.importar:hover{
+  background-color: rgb(187, 3, 3);
+  cursor: pointer;
+}
+.exportar{
+  background-color: rgb(0, 255, 13);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  position: absolute;
+  right: 18vh;
+  font-weight: bold;
+}
+.exportar:hover{
+   background-color: rgb(4, 187, 13);
+  cursor: pointer;
+}
+.por_fecha {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  width: 10vh;
+  height: 35px;
+  border-radius: 20px;
+  position: absolute;
+  top: 12vh;
+  left: 80vh;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-/* Primary button (Nueva copia) */
-.btn-primary {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
+#filtro-fechas {
+
+  position: absolute;
+  left: 95vh;
+  top: 11vh;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+.fecha_inicio,
+.fecha_fin {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100px;
+  height: 7px;
 }
 
-/* Success button (Exportar BD completa) */
-.btn-success {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
+.fecha_inicio:hover,
+.fecha_fin:hover {
+  border-color: #1e90ff;
 }
 
-.btn-success:hover {
-    background-color: #218838;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+.fecha_inicio:focus,
+.fecha_fin:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* Secondary button (Importar backup) */
-.btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
-    border: none;
+.search-date {
+  background-color: #b30000;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  left: 58vh;
+  top: -1vh;
+  width: 50px;
+  text-align: center;
 }
 
-.btn-secondary:hover {
-    background-color: #5a6268;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+.search-date:hover {
+  background-color: #044080;
+  cursor: pointer;
 }
 
-/* Icon styling */
-.btn i {
-    margin-right: 8px;
-    font-size: 16px;
+.clean {
+  background-color: #b30000;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  right: 20vh;
+  top: 12.5vh;
+  width: 10vh;
+  text-align: center;
+  margin-right: 1vh;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .d-flex.flex-wrap.gap-3.mb-4 {
-        gap: 10px;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .btn {
-        font-size: 13px;
-        padding: 8px 16px;
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .btn i {
-        font-size: 14px;
-    }
+.clean:hover {
+  background-color: #8a0101;
+  cursor: pointer;
+  color: black;
 }
 
-@media (max-width: 480px) {
-    .btn {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
+.btn-search {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  left: 72vh;
+  top: 12vh;
+  width: 10vh;
+  height: 25px;
+  text-align: center;
 
-    .btn i {
-        font-size: 13px;
-        margin-right: 6px;
-    }
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-search:hover {
+  background-color: #044080;
+  cursor: pointer;
+  color: black;
+}
+
+.search-date {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  height: 25px;
+  left: 58vh;
+  top: 0vh;
+  width: 10vh;
+  text-align: center;
+
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-date:hover {
+  background-color: #044080;
+  cursor: pointer;
 }

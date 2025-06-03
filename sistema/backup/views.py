@@ -4,40 +4,94 @@ from django.http import FileResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .models import Backup
+from django.core.paginator import Paginator
+from django.db.models import Q
 from .utils import crear_backup, restaurar_backup
 from datetime import datetime
 import subprocess
 import os
 from django.core import serializers
+from django.urls import reverse
 
 @login_required(login_url='/acceso_denegado/')
 def index_backup(request):
-    return render(request, 'backup/index.html')
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Backup', 'url': 'index_backup'}]
+    return render(request, 'backup/index.html', {'breadcrumbs': breadcrumbs})
 
 
 @login_required
 def lista_backups(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Backup', 'url': 'index_backup'},
+        {'name': 'Lista de backups', 'url': 'lista_backups'},
+        ]
+    q = request.GET.get('q', '')
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
+    fecha_inicio = None
+    fecha_fin = None
     backups = Backup.objects.all().order_by('-fecha_creacion')
-    return render(request, 'backup/listar.html', {'backups': backups})
+    # Filtrado por texto
+    if q:
+        backups = backups.filter(
+            Q(nombre__icontains=q) |
+            Q(fecha_creacion__icontains=q) |
+            Q(creado_por__icontains=q) 
+        )
+
+    # Filtrado por fecha
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            backups = backups.filter(fecha_registro__gte=fecha_inicio)
+        except ValueError:
+            backups = Backup.objects.none()
+
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            backups = backups.filter(fecha_registro__lte=fecha_fin)
+        except ValueError:
+            backups = Backup.objects.none()
+    #paginacion
+    paginator = Paginator(backups, 4)
+    page = request.GET.get('page')
+    Backups = paginator.get_page(page)
+    return render(request, 'backup/listar.html', {'backups': backups, 'breadcrumbs': breadcrumbs})
 
 from django.core.files import File
 @login_required
 def crear_nuevo_backup(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Backup', 'url': reverse('backup:index_backup')},
+        {'name': 'Crear backups', 'url': reverse('backup:crear_backup')},
+    ]
+
     if request.method == 'POST':
         try:
+            # Crear el archivo de backup
             nombre_archivo, ruta_archivo = crear_backup()
 
+            # Calcular tamaño en MB
             tamano = os.path.getsize(ruta_archivo)
             tamano_mb = round(tamano / (1024 * 1024), 2)
 
-            nombre = request.POST.get('nombre', f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+            # Nombre del backup (personalizado o automático)
+            nombre = request.POST.get('nombre') or f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+            # Crear instancia de Backup
             backup = Backup(
                 nombre=nombre,
                 tamano=f"{tamano_mb} MB",
                 modelos_incluidos="libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo",
                 creado_por=request.user
             )
+
+            # Guardar el archivo al campo FileField
             with open(ruta_archivo, 'rb') as f:
                 django_file = File(f)
                 backup.archivo.save(nombre_archivo, django_file)
@@ -45,12 +99,13 @@ def crear_nuevo_backup(request):
             backup.save()
 
             messages.success(request, 'Copia de seguridad creada exitosamente.')
+
         except Exception as e:
             messages.error(request, f'Error al crear copia de seguridad: {str(e)}')
 
         return redirect('backup:lista_backups')
 
-    return render(request, 'backup/crear.html')
+    return render(request, 'backup/crear.html', {'breadcrumbs': breadcrumbs})
 
 from django.contrib.sessions.middleware import SessionInterrupted
 
@@ -128,6 +183,11 @@ def exportar(request):
 
 @login_required
 def importar_backup_view(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Backup', 'url': reverse('backup:index_backup')},
+        {'name': 'Crear backups', 'url': reverse('backup:crear_backup')},
+    ]
     if request.method == 'POST':
         try:
             archivo_subido = request.FILES['archivo']
@@ -195,4 +255,4 @@ def importar_backup_view(request):
             messages.error(request, f'Error al importar el backup: {str(e)}')
             return redirect('backup:importar')
 
-    return render(request, 'backup/importar.html')
+    return render(request, 'backup/importar.html', {'breadcrumbs': breadcrumbs})

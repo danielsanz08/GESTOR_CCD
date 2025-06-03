@@ -1,5 +1,6 @@
 /* General body and HTML styling */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -8,152 +9,96 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f4f6f9; /* Light gray background for better contrast */
+    background-color: #f4f6f9;
+    /* Light gray background for better contrast */
     font-family: 'Arial', sans-serif;
 }
 
-/* Container for the form */
-form {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
-}
-
-/* Heading styling */
-h1 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-/* Form group styling */
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.form-group input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-group input[type="text"]:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-/* Paragraph and list styling */
-p {
-    font-size: 14px;
-    color: #555;
-    margin: 15px 0;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 15px 0;
-}
-
-ul li {
-    font-size: 14px;
-    color: #333;
-    padding: 5px 0;
-    position: relative;
-    padding-left: 20px;
-}
-
-ul li::before {
-    content: '•';
-    color: #007bff;
-    font-size: 18px;
-    position: absolute;
-    left: 0;
-}
-
-/* Button styling */
-button, a.btn {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-    margin: 5px;
-}
-
-button.btn-primary {
-    background-color: #007bff;
-    color: #fff;
+section {
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    width: 400px;
+    padding: 5vh 5vh 5vh 5vh;
     border: none;
+    border-radius: 15px;
+    height: 40vh;
 }
-
-button.btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+.form-group {
+    display: block;
 }
-
-a.btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
-    text-decoration: none;
+.form-group label {
+    display: block;
+    width: 100%; /* Opcional: para que el input ocupe todo el ancho disponible */
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
 }
-
-a.btn-secondary:hover {
-    background-color: #5a6268;
-    transform: translateY(-1px);
+.form-group input {
+    display: block;
+    width: 100%; 
+    border-radius: 20px;
+    height: 4vh;
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    form {
-        width: 95%;
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .form-group input[type="text"],
-    button, a.btn {
-        font-size: 13px;
-    }
+.error-limite {
+    color: red;
+    font-size: 0.9em;
+    margin-left: 8px;
+    font-weight: bold;
+    position: absolute;
 }
-
-@media (max-width: 480px) {
-    form {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 18px;
-    }
-
-    .form-group input[type="text"],
-    button, a.btn {
-        font-size: 12px;
-        padding: 8px 15px;
-    }
-
-    ul li {
-        font-size: 13px;
-    }
+.error-repetido {
+    color: red;
+    font-size: 0.9em;
+    margin-left: 8px;
+    display: none;
+    font-weight: bold;
+    position: absolute;
+}
+.botones{
+    background-color: aqua;
+    width: 30vh;
+}
+#crear{
+    margin-right: 15px;
+    background-color: red;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 77vh;
+    top: 65vh;
+    cursor: pointer;
+}
+#crear:hover{
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+.cancelar{
+    margin-right: 15px;
+    background-color: red;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 112vh;
+    top: 65vh;
+    cursor: pointer;
+}
+.cancelar:hover{
+    background-color: rgb(187, 33, 33);
+        color: rgb(255, 253, 253);
+}
+.modelos{
+    
+    margin-top: 5vh;
 }

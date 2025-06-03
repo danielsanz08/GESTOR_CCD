@@ -73,16 +73,22 @@ section {
   cursor: pointer;
 }
 .btn-search {
-   background-color: #0056b3;
+  background-color: #0056b3;
   color: white;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  left: 58vh;
-  top: -1vh;
-  width: 50px;
+  left: 72vh;
+  top: 12vh;
+  width: 10vh;
+  height: 25px;
   text-align: center;
+
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-search:hover {

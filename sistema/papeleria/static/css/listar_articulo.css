@@ -407,23 +407,41 @@ td {
 
 /*PAGINACION*/
 .paginacion {
-  text-align: center;
-  margin-top: 300px;
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
 }
-.paginacion a {
-  margin: 0 5px;
-  padding: 8px 12px;
+
+.paginacion a,
+.paginacion span {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #007bff; /* azul para enlaces */
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  position: absolute;
+  top: 58vh;
+}
+
+.paginacion a:hover {
   background-color: #007bff;
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  border-color: #007bff;
 }
-.paginacion a:hover {
-  background-color: #0056b3;
+
+.paginacion .current {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  cursor: default;
+  font-weight: bold;
 }
-.paginacion span {
-  margin: 0 10px;
-}
+
 
 .por_fecha {
   background-color: #0056b3;

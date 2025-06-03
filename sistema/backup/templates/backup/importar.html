@@ -1,23 +1,65 @@
 {% extends 'navbar.html' %}
 {% load static %}
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
-<h2>Importar Backup</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="archivo">Archivo de Backup:</label>
-        <input type="file" class="form-control" id="archivo" name="archivo" required>
-    </div>
-    <div class="form-group">
-        <label for="nombre">Nombre del Backup (opcional):</label>
-        <input type="text" class="form-control" id="nombre" name="nombre">
-    </div>
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="restaurar" name="restaurar">
-        <label class="form-check-label" for="restaurar">Restaurar inmediatamente después de importar</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Importar Backup</button>
-    <a href="{% url 'backup:lista_backups' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+<link rel="stylesheet" href="{% static 'css/importar.css' %}?v={% now 'U' %}">
+
+<section>
+    <h2>Importar Backup</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="archivo">Archivo de Backup:</label>
+            <input type="file" class="form-control" id="archivo" name="archivo" required>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre">Nombre del Backup (opcional):</label>
+            <input type="text" class="form-control" id="nombre" name="nombre">
+            <div class="error-limite text-danger" style="display: none;">Máximo 15 caracteres.</div>
+            <div class="error-repetido text-danger" style="display: none;">No repitas caracteres consecutivos.</div>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="restaurar" name="restaurar">
+            <label class="form-check-label" for="restaurar">Restaurar inmediatamente después de importar</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Importar Backup</button>
+        <a href="{% url 'backup:lista_backups' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const nombreInput = document.getElementById('nombre');
+    const errorLimite = document.querySelector('.error-limite');
+    const errorRepetido = document.querySelector('.error-repetido');
+
+    nombreInput.addEventListener('input', () => {
+        const valor = nombreInput.value;
+        const soloValidos = /^[a-zA-Z0-9 ]*$/;
+        let tieneError = false;
+
+        // Validación de caracteres permitidos y longitud
+        if (valor.length > 15 || !soloValidos.test(valor)) {
+            errorLimite.style.display = 'block';
+            tieneError = true;
+        } else {
+            errorLimite.style.display = 'none';
+        }
+
+        // Validación de caracteres repetidos
+        const repetido = /(.)\1\1+/; // 3 o más repeticiones consecutivas
+        if (repetido.test(valor)) {
+            errorRepetido.style.display = 'block';
+            tieneError = true;
+        } else {
+            errorRepetido.style.display = 'none';
+        }
+
+        // Opcional: deshabilitar el botón si hay errores
+        // document.querySelector('button[type="submit"]').disabled = tieneError;
+    });
+});
+</script>
 {% endblock %}

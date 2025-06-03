@@ -20,7 +20,7 @@ def lista_backups(request):
     backups = Backup.objects.all().order_by('-fecha_creacion')
     return render(request, 'backup/listar.html', {'backups': backups})
 
-
+from django.core.files import File
 @login_required
 def crear_nuevo_backup(request):
     if request.method == 'POST':
@@ -30,13 +30,18 @@ def crear_nuevo_backup(request):
             tamano = os.path.getsize(ruta_archivo)
             tamano_mb = round(tamano / (1024 * 1024), 2)
 
+            nombre = request.POST.get('nombre', f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+
             backup = Backup(
-                nombre=request.POST.get('nombre', f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"),
-                archivo=os.path.join('backups', nombre_archivo),
+                nombre=nombre,
                 tamano=f"{tamano_mb} MB",
                 modelos_incluidos="libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo",
                 creado_por=request.user
             )
+            with open(ruta_archivo, 'rb') as f:
+                django_file = File(f)
+                backup.archivo.save(nombre_archivo, django_file)
+
             backup.save()
 
             messages.success(request, 'Copia de seguridad creada exitosamente.')
@@ -47,6 +52,7 @@ def crear_nuevo_backup(request):
 
     return render(request, 'backup/crear.html')
 
+from django.contrib.sessions.middleware import SessionInterrupted
 
 @login_required
 def restaurar_backup_view(request, id):
@@ -63,7 +69,6 @@ def restaurar_backup_view(request, id):
         messages.error(request, f'Error al restaurar copia de seguridad: {str(e)}')
 
     return redirect('backup:lista_backups')
-
 
 @login_required
 def descargar_backup(request, id):
@@ -88,28 +93,21 @@ def eliminar_backup(request, id):
 
     return redirect('backup:lista_backups')
 
-
+from django.core import management
 def exportar_bd(nombre_archivo=None):
     if not nombre_archivo:
-        nombre_archivo = f"backup_db_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
-
+        nombre_archivo = f"backup_db_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    
     ruta_backup = os.path.join(settings.BACKUP_ROOT, nombre_archivo)
-
-    comando = [
-        'mysqldump',
-        '-u', settings.DATABASES['default']['USER'],
-        f"-p{settings.DATABASES['default']['PASSWORD']}",
-        settings.DATABASES['default']['NAME']
-    ]
-
+    
     try:
+        # Capturar la salida de dumpdata en un archivo
         with open(ruta_backup, 'w', encoding='utf-8') as f:
-            subprocess.run(comando, stdout=f, check=True)
+            management.call_command('dumpdata', stdout=f)
+        
         return nombre_archivo, ruta_backup
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         raise Exception(f"Error al exportar la base de datos: {str(e)}")
-    except FileNotFoundError:
-        raise Exception("No se encontró el ejecutable 'mysqldump'. Asegúrate de tenerlo instalado y en el PATH del sistema.")
 
 
 @login_required

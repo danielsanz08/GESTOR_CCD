@@ -87,8 +87,8 @@ def crear_articulo(request):
 
 def editar_articulo(request, articulo_id):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-         {'name': 'Listar artículos', 'url': reverse('papeleria:listar_articulo')}, 
+        {'name': 'Inicio', 'url': '/index_caf'},
+         {'name': 'Crear productos', 'url': reverse('papeleria:listar_articulo')}, 
          {'name': 'Editar artículo', 'url': reverse('papeleria:editar_articulo', kwargs={'articulo_id': articulo_id})},
         
     ]

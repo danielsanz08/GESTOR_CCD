@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from libreria.models import CustomUser
-
+from .models import Productos
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
@@ -26,3 +26,43 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError("Tu cuenta está inactiva, contacta al administrador.")
         
         return cleaned_data
+class ProductoForm(forms.ModelForm):
+    class Meta:
+        model = Productos
+        fields = ['nombre', 'marca', 'presentacion', 'precio', 'cantidad', 'unidad_medida', 'proveedor']
+
+def clean_precio(self):
+        # Limpiar las comas solo si 'precio' es una cadena
+        precio = self.cleaned_data['precio']
+        if isinstance(precio, str):  # Asegurarse de que es una cadena
+            precio = precio.replace(',', '')  # Eliminar las comas
+            try:
+                return int(precio)  # Asegurarse de que sea un número entero
+            except ValueError:
+                raise forms.ValidationError('El precio debe ser un número válido.')
+        return precio
+
+class ProductosEditForm(forms.ModelForm):    
+    class Meta:
+        model = Productos
+        fields = ['nombre', 'marca', 'presentacion', 'precio', 'cantidad', 'unidad_medida', 'proveedor']
+    def __init__(self, *args,**kwargs):
+        super(ProductosEditForm, self).__init__(*args, **kwargs)
+        # Hace que los campos sean opcionales
+        self.fields['nombre'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nombre del producto'})
+        self.fields['marca'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Marca del producto'})
+        self.fields['presentacion'].widget.attrs.update({'class':'form-control', 'placeholder': 'Presentacion' })
+        self.fields['precio'].widget.attrs.update({'class':'form-control', 'placeholder': 'Precio del  producto'})
+        self.fields['cantidad'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cantidad de producto'})
+        self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
+        self.fields['unidad_medida'].widget.attrs.update({'class': 'form-select'})
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # Mantener valores anteriores si no se proporciona un nuevo valor
+        for field in self.fields:
+            if not cleaned_data.get(field):
+                cleaned_data[field] = getattr(self.instance, field)
+
+        return cleaned_data
+

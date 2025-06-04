@@ -66,10 +66,13 @@ label {
     width: 35vh;
     border-radius: 20px;
     position: absolute;
-    left: 57vh;
+    left: 58vh;
     top: 52vh;
     cursor: pointer;
-
+}
+.btn:hover{
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
 }
 
 h2 {
@@ -92,22 +95,22 @@ h2 {
 
 .error-nombre {
     top: 27vh;
-    left: 13vh;
+    left: 14vh;
 }
 
 .error-cargo {
-    top: 43vh;
-    left: 13vh;
+    top: 27vh;
+    left: 105vh;
 }
 
 .error-email {
     top: 43vh;
-    left: 111vh;
+    left: 60vh;
 }
 
 .error-password {
-    top: 59vh;
-    left: 11vh;
+    top: 43vh;
+    left: 100vh;
 }
 
 
@@ -855,6 +858,7 @@ h2 {
 @media (min-width: 992px) and (max-width: 1099px) {
     .formulario {
         left: 8.5vh;
+        
     }
 
     #userForm {
@@ -912,6 +916,7 @@ h2 {
 @media (min-width: 1100px) and (max-width: 1199px) {
     .formulario {
         left: 8.5vh;
+        
     }
 
 
@@ -967,67 +972,7 @@ h2 {
 
 }
 
-/* 💻 Laptop 13-14" (1366x768) */
-@media (min-width: 1366px) and (max-width: 1439px) {
-    .formulario {
-        left: 18vh;
-        
-    }
 
-    label,
-    select {
-        font-size: 12px;
-    }
-
-    .error-nombre {
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 4vh !important;
-        color: red !important;
-        font-weight: bold;
-        font-size: 0.9rem !important;
-        font-size: 18px;
-    }
-
-    .error-cargo {
-        font-size: 18px;
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 4vh !important;
-        color: red !important;
-        font-size: 0.9rem !important;
-    }
-
-    .error-email {
-        font-size: 18px;
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 4vh !important;
-        color: red !important;
-        font-size: 0.9rem !important;
-    }
-
-    .error-password {
-        font-size: 18px;
-        position: absolute !important;
-        margin-top: -8vh !important;
-        margin-left: -4vh !important;
-        color: red !important;
-        font-size: 0.9rem !important;
-        white-space: nowrap !important;
-        /* Evita saltos de línea */
-        display: block !important;
-    }
-
-    .btn {
-        position: absolute;
-        left: 1;
-        top: 44vh;
-    }
-}
 
 /* 💻 Laptop 15-16" (1440x900) */
 @media (min-width: 1440px) and (max-width: 1599px) {

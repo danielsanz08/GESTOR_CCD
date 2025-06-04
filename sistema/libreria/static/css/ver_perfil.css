@@ -13,65 +13,86 @@
     align-items: center;
 }
 .card-body {
-    
     padding: 40px;
     position: relative;
-
 }
-/*informacion del perfil*/
-.nombre, .rol, .email, .cargo{
-    margin-bottom: 24px;
-    padding-bottom: 14px;
+.card {
+    max-width: 550px;
+    margin: 60px auto;
+    top: 10.5vh;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    position: relative;
+    overflow: hidden;
     display: flex;
-    align-items: baseline;
+    justify-content: center;
+    align-items: center;
 }
-.nombre{
-    padding-bottom: 20px;
-    margin-bottom: 28px;
-    border-bottom: 2px #eaeaea;
+
+.card-body {
+    padding: 40px;
+    position: relative;
+    width: 100%;
+    background-color: aqua;
 }
 label{
-    
-    font-weight: 600;
-    color: #1a3a1a;
-    width: 180px;
-    font-size: 15px;
+    background-color: blue;
+}
+.info {
     text-align: center;
-}
-/* Botones */
-.botones {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-}
-.botones button {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.atras{
-    background-color: rgb(253, 45, 45);
-    color: white;
+    margin-bottom: 30px;
     font-weight: bold;
+    color: #333;
 }
-.atras:hover{
-    background-color: rgb(252, 0, 0);
+
+.nombre_div,
+.rol_div,
+.email_div,
+.cargo_div {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    color: #444;
+}
+
+span {
+    display: block;
+    margin-top: 5px;
+    color: #222;
+}
+
+.editar{
+    background-color: rgb(255, 255, 255);
+    margin-right: 15px;
     color: rgb(0, 0, 0);
     font-weight: bold;
-}
-.editar{
-    background-color: rgb(51, 248, 51);
-    color: white;
-    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
 }
 .editar:hover{
-    background-color: rgb(0, 253, 0);
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.atras{
+    background-color: rgb(255, 255, 255);
+    margin-right: 15px;
     color: rgb(0, 0, 0);
     font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
+    margin-left: 50px;
+}
+.atras:hover{
+    background-color: rgb(187, 69, 33);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
 }

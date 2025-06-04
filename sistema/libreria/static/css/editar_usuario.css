@@ -57,6 +57,10 @@ label{
     top: 55vh;
     cursor: pointer;
 }
+.btn:hover{
+    background-color: rgb(33, 74, 187);
+    color: black;
+}
 h2{
     text-align: center;
 }

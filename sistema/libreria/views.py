@@ -49,13 +49,15 @@ def crear_usuario(request):
                 user = form.save(commit=False)
                 role = user.role
 
-                # Verificar el número de administradores en general
+                # Si el nuevo usuario es administrador, validamos el límite y le damos permisos,
+                # si es empleado, dejamos todos los accesos en False.
                 if role == 'Administrador':
                     admin_count = CustomUser.objects.filter(
-                        role='Administrador', is_active=True
+                        role='Administrador',
+                        is_active=True
                     ).count()
 
-                    limit = 5  # Puedes ajustar este número según tu necesidad
+                    limit = 5
                     if admin_count >= limit:
                         messages.error(
                             request,
@@ -68,39 +70,41 @@ def crear_usuario(request):
                     user.acceso_caf = True
                     user.acceso_cde = True
                 else:
-                    # Para empleados, asegurarse que los permisos son False
+                    # Para empleados, asegurarse que los permisos queden en False
                     user.acceso_pap = False
                     user.acceso_caf = False
                     user.acceso_cde = False
 
-                # Guardar el usuario
+                # Guardamos el usuario (aún no envía correo)
                 user.save()
 
-                # Enviar correo a todos los administradores activos
+                # Recogemos las direcciones de correo de todos los administradores activos,
+                # excluyendo al usuario recién creado (por si él mismo es Admin).
                 admin_emails = CustomUser.objects.filter(
-                    role='Administrador', is_active=True
-                ).values_list('email', flat=True)
+                    role='Administrador',
+                    is_active=True
+                ).exclude(pk=user.pk).values_list('email', flat=True)
 
+                # Información adicional que venías viendo (cargo, email del nuevo usuario, etc.)
                 cargo = request.POST.get("cargo", "").strip()
-                email = user.email  # Se obtiene directamente del objeto user
+                email_nuevo = user.email
 
                 if admin_emails:
                     subject = "Nuevo usuario creado"
                     message = (
-                        f"Hola querido usuario,\n\n"
-                        f"Por parte de Gestor CCD, te informamos que se ha creado un nuevo usuario.\n\n"
-                        f"Información:\n\n"
-                        f"Nombre: {user.username}\n"
-                        f"Rol: {role}\n"
-                        f"Cargo: {cargo}\n"
-                        f"Email: {email}\n"
-                        f"Permisos:\n"
-                        f"- Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
-                        f"- Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
-                        f"- Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
-                        f"En caso de ser infiltrado, por favor te invitamos a desactivarlo.\n\n"
-                        f"Muchas gracias por su atención.\n"
-                        f"El director de Gestor CCD te desea un feliz día."
+                        f"Hola,\n\n"
+                        f"Se ha registrado un nuevo usuario en Gestor CCD:\n\n"
+                        f"• Nombre de usuario: {user.username}\n"
+                        f"• Rol: {role}\n"
+                        f"• Cargo: {cargo}\n"
+                        f"• Email: {email_nuevo}\n\n"
+                        f"Permisos asignados:\n"
+                        f"  - Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
+                        f"  - Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
+                        f"  - Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
+                        f"Si algún administrador desea desactivar este usuario, puede hacerlo desde el panel.\n\n"
+                        f"Saludos,\n"
+                        f"Equipo de Gestor CCD"
                     )
                     try:
                         send_mail(
@@ -110,7 +114,6 @@ def crear_usuario(request):
                             list(admin_emails),
                             fail_silently=False,
                         )
-                        print("Correo enviado correctamente.")
                     except Exception as e:
                         messages.error(request, f"No se pudo enviar el correo: {e}")
 
@@ -120,6 +123,7 @@ def crear_usuario(request):
             except Exception as e:
                 messages.error(request, f"Hubo un error al crear el usuario: {e}")
         else:
+            # Si el formulario no es válido, mostramos los errores
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")

@@ -25,6 +25,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from openpyxl import Workbook
+import os
+from django.http import FileResponse, Http404
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 # Create your views here.
 # Página de inicio
@@ -33,7 +35,14 @@ User = get_user_model()
 def inicio(request):
     return render(request, 'index/index.html')
 
-
+def manual_usuario_view(request):
+    pdf_path = os.path.join(settings.BASE_DIR, 'libreria', 'static', 'manual','manual_usuario_papeleria.pdf')
+    try:
+        return FileResponse(open(pdf_path, 'rb'),
+    content_type='application/pdf')
+    except FileNotFoundError:
+        raise Http404("Manual no encontrado")
+    
 def crear_usuario(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

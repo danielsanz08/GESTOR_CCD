@@ -140,7 +140,7 @@ LOGIN_URL = '/accounts/login/'
 
 # Static files
 STATIC_URL = '/static/'  # URL donde se accederán los archivos estáticos en el navegador
-
+STATICFILES_DIRS = [BASE_DIR/'static']
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

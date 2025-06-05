@@ -12,7 +12,7 @@
         left: 10vh;
         top: 10vh;
         padding: 10vh 10vh 10vh 10vh;
-        
+
     }
 
     .card-uno {
@@ -41,14 +41,14 @@
 
 {% if request.user.role == 'Administrador' %}
 
-<div class="uno" >
+<div class="uno">
     <a href="{% url 'libreria:crear_usuario' %}" title="Crear usuario">
         <div class="opcion">
             <i data-feather="user-plus" class="icono"></i>
             <span>Crear usuario</span>
         </div>
     </a>
-   
+
     <a href="{% url 'libreria:ver_usuario' user.id %}" title="Ver usuario">
         <div class="opcion">
             <i data-feather="user" class="icono"></i>
@@ -65,7 +65,7 @@
     <a href="{% url 'papeleria:crear_articulo' %}" title="Crear articulos">
         <div class="opcion">
             <i data-feather="file-plus" class="icono"></i>
-</i>
+            </i>
             <span>Crear articulos</span>
         </div>
     </a>
@@ -81,7 +81,7 @@
             <span>Pedidos</span>
         </div>
     </a>
-    <a href="{% url 'papeleria:listado_pedidos' %}" title="Listado de pedidos" >
+    <a href="{% url 'papeleria:listado_pedidos' %}" title="Listado de pedidos">
         <div class="opcion">
             <i data-feather="list" class="icono"></i>
             <span>Listado de Pedidos</span>
@@ -95,15 +95,15 @@
     </a>
     <a href="{% url 'papeleria:lista_bajo_stock'  %}" title="Bajo stock">
         <div class="opcion">
-        <i data-feather="alert-triangle" class="icono"></i>
-        <span>Bajo stock</span>
-    </div>
+            <i data-feather="alert-triangle" class="icono"></i>
+            <span>Bajo stock</span>
+        </div>
     </a>
     <a href="{% url 'papeleria:index_estadistica'  %}" title="Estadisticas">
         <div class="opcion">
-        <i data-feather="bar-chart" class="icono"></i>
-        <span>Estadisticas</span>
-    </div>
+            <i data-feather="bar-chart" class="icono"></i>
+            <span>Estadisticas</span>
+        </div>
     </a>
     <a href="{% url 'libreria:cambiar_contraseña'  %}" title="Cambiar contraseña">
         <div class="opcion">
@@ -111,12 +111,18 @@
             <span>Cambiar contraseña</span>
         </div>
     </a>
-        <a href="{% url 'backup:index_backup'  %}" title="Copia de seguridad">
+    <a href="{% url 'backup:index_backup'  %}" title="Copia de seguridad">
         <div class="opcion">
             <i data-feather="database" class="icono"></i>
             <span>Backup</span>
         </div>
     </a>
+    <a href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+    <div class="opcion">
+        <i data-feather="book-open" class="icono"></i>
+        <span>Manual de usuario</span>
+    </div>
+</a>
     <a href="{% url 'papeleria:logout_view' %}" title="Cerrar sesión">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>
@@ -124,7 +130,7 @@
         </div>
     </a>
 </div>
->
+
 {% endif %}
 {% if request.user.role == 'Empleado' %}
 <div class="uno">
@@ -142,7 +148,7 @@
             <span>Pedidos</span>
         </div>
     </a>
-  
+
     <a href="{% url 'libreria:cambiar_contraseña'  %}">
         <div class="opcion">
             <i data-feather="lock" class="icono"></i>
@@ -167,7 +173,7 @@
             <span>Salir</span>
         </div>
     </a>
-    
+
 </div>
 
 {% endif %}

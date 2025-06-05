@@ -12,6 +12,9 @@ urlpatterns = [
     path('listar_productos/', views.listar_productos, name='listar_productos'),
     path('eliminar_productos/<int:id>/', views.eliminar_producto, name='eliminar_productos'),
      path("editar_producto/<int:producto_id>/", views.editar_producto, name="editar_producto"),
+     path("reporte_productos_pdf", views.reporte_productos_pdf, name="reporte_productos_pdf"),
+     path("reporte_productos_excel", views.reporte_productos_excel, name="reporte_productos_excel"),
+     path('productos/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
 ]
 
 if settings.DEBUG:

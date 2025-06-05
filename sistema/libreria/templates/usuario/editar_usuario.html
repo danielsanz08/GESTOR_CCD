@@ -6,85 +6,42 @@
 <link rel="stylesheet" href="{% static 'css/editar_usuario.css' %}?v={% now 'U' %}">
 
 <style>
-    #error-nombre { top: 27vh; left: 13vh; }
-    #error-cargo { top: 43vh; left: 13vh; }
-    #error-email { top: 43vh; left: 111vh; }
-
-    #error-nombre, #error-cargo, #error-email, #error-password {
-        font-size: 14px;
-        font-weight: bold;
-        position: absolute;
-        color: rgb(255, 0, 0);
-    }
+   
 </style>
-
-{% if request.user.role == 'Administrador' %}
 <div class="formulario">
     <h2>Editar usuario</h2>
     <form method="POST" id="userForm">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="username">Nombre de usuario</label><br>
+            <label for="username">Nombre de usuario</label>
             {{ form.username }}
             <div class="error-msg username-error" id="error-nombre"></div>
         </div>
+        
         <div class="mb-3">
-            <label for="module">Módulo:</label><br>
-            {{ form.module }}
-        </div>
-        <div class="mb-3">
-            <label for="role">Rol</label><br>
+            <label for="role">Rol</label>
             {{ form.role }}
         </div>
         <div class="mb-3">
-            <label for="cargo">Cargo</label><br>
+            <label for="cargo">Cargo</label>
             {{ form.cargo }}
             <div class="error-msg cargo-error" id="error-cargo"></div>
         </div>
         <div class="mb-3">
-            <label for="area">Área:</label><br>
+            <label for="area">Área:</label>
             {{ form.area }}
             <div class="error-msg area-error"></div>
         </div>
         <div class="mb-3">
-            <label for="email">Correo Electrónico</label><br>
+            <label for="email">Correo Electrónico</label>
             {{ form.email }}
             <div class="error-msg email-error" id="error-email"></div>
         </div>
 
-        <button type="submit" id="btn">Editar</button>
+        <button type="submit" id="btn" class="btn">Editar</button>
     </form>
 </div>
-{% endif %}
 
-{% if request.user.role == 'Empleado' %}
-<div class="formulario">
-    <h2>Editar usuario</h2>
-    <form method="POST" id="editar-form">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="username">Nombre de usuario</label><br>
-            {{ form.username }}
-            <div class="error-msg username-error" id="error-nombre"></div>
-        </div>
-        <div class="mb-3">
-            <label for="email">Correo Electrónico</label><br>
-            {{ form.email }}
-            <div class="error-msg email-error" id="error-email"></div>
-        </div>
-        <div class="mb-3">
-            <label for="cargo">Cargo</label><br>
-            {{ form.cargo }}
-            <div class="error-msg cargo-error" id="error-cargo"></div>
-        </div>
-        <div class="mb-3">
-            <label for="module">Módulo:</label><br>
-            {{ form.module }}
-        </div>
-        <button type="submit" id="btn">Editar</button>
-    </form>
-</div>
-{% endif %}
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -120,9 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
         usernameInput.value = value;
 
         if (value.length < 3) {
-            usernameError.textContent = 'Debe tener al menos 3 caracteres.';
+            usernameError.textContent = 'Mínimo 3 caracteres';
         } else if (tieneCaracteresRepetidos(value)) {
-            usernameError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            usernameError.textContent = 'No se permiten 3 caracteres iguales seguidos.';
         }
     });
 
@@ -133,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
             cargoInput.value = value;
 
             if (value.length < 2) {
-                cargoError.textContent = 'Debe tener al menos 2 caracteres.';
+                cargoError.textContent = 'Mínimo 3 caracteres';
             } else if (tieneCaracteresRepetidos(value)) {
-                cargoError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+                cargoError.textContent = 'No se permiten 3 caracteres iguales seguidos';
             }
         });
     }
@@ -150,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (tieneCaracteresRepetidos(email)) {
-            emailError.textContent = 'No se permiten caracteres repetidos más de dos veces.';
+            emailError.textContent = 'No se permiten 3 caracteres iguales seguidos.';
             return;
         }
 

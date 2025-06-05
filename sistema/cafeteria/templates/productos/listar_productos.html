@@ -60,14 +60,14 @@
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
         <a
-            href="{% url 'cafeteria:listar_productos' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+            href="{% url 'cafeteria:reporte_productos_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="pdf" title="Exportar a PDF">
                 <i class="fas fa-file-pdf text-white"></i>
             </button>
         </a>
 
         <a
-            href="{% url 'cafeteria:listar_productos' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+            href="{% url 'cafeteria:reporte_productos_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
         </a>
         <a href="{% url 'cafeteria:crear_producto' %}"><button class="crear" title="Crear producto"><i
@@ -107,12 +107,14 @@
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Nombre</th>
+                <th>Unidad de medida</th>
                 <th class="marca">Marca</th>
-                <th class="cantidad">Cantidad</th>
                 <th class="precio">Precio</th>
+                <th class="cantidad">Cantidad</th>
+                <th>Provedor</th>
+                <th class="observacion">Presentación</th>
                 <th class="estado">Registrado por</th>
                 <th class="actividad">Fecha de registro</th>
-                <th class="observacion">Presentación</th>
                 <th class="editar">Acciones</th>
             </tr>
         </thead>
@@ -122,11 +124,13 @@
                 <td>{{ producto.id }}</td>
                 <td>{{ producto.nombre }}</td>
                 <td>{{ producto.marca }}</td>
-                <td>{{ producto.cantidad }}</td>
                 <td>${{ producto.precio_formateado }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>{{ producto.unidad_medida }}</td>
+                <td>{{ producto.proveedor }}</td>
+                <td>{{ producto.presentacion_formateada }}</td>
                 <td>{{ producto.registrado_por }}</td>
                 <td>{{ producto.fecha_formateada }}</td>
-                <td>{{ producto.presentacion_formateada }}</td>
                 <td class="td_acciones">
                     <a href="{% url 'cafeteria:editar_producto' producto.id %}">
                         <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>

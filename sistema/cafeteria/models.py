@@ -8,6 +8,7 @@ class Productos(models.Model):
         ('Litros', 'Litros'),
         ('Mililitros', 'Mililitros'),
         ('Onzas', 'Onzas'),
+        ('Unidad', 'Unidad'),
     ]
     nombre = models.CharField(max_length=100, unique=True)
     marca = models.CharField(max_length=50, null=False, blank=False)
@@ -33,3 +34,5 @@ class Productos(models.Model):
         Formatea el precio con comas para miles (ejemplo: 1000 -> 1,000).
         """
         return "{:,}".format(self.precio)
+    
+

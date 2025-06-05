@@ -56,13 +56,4 @@ class ProductosEditForm(forms.ModelForm):
         self.fields['cantidad'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cantidad de producto'})
         self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
         self.fields['unidad_medida'].widget.attrs.update({'class': 'form-select'})
-    def clean(self):
-        cleaned_data = super().clean()
-        
-        # Mantener valores anteriores si no se proporciona un nuevo valor
-        for field in self.fields:
-            if not cleaned_data.get(field):
-                cleaned_data[field] = getattr(self.instance, field)
-
-        return cleaned_data
-
+    

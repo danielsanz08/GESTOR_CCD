@@ -1,71 +1,75 @@
-.card{
-    max-width: 550px;
-    margin: 60px auto;
-    top: 10.5vh;
-    border: none;
-    border-radius: 15px;
-    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.card-body {
-    padding: 40px;
-    position: relative;
-}
 .card {
     max-width: 550px;
     margin: 60px auto;
-    top: 10.5vh;
+    top: 17vh;
     border: none;
     border-radius: 15px;
-    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    background: linear-gradient(135deg, #f0f0f04f, #cde0f7e8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     position: relative;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+}
+
+.info {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+
 }
 
 .card-body {
-    padding: 40px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    background-color: aqua;
-}
-label{
-    background-color: blue;
-}
-.info {
-    text-align: center;
-    margin-bottom: 30px;
-    font-weight: bold;
-    color: #333;
 }
 
-.nombre_div,
-.rol_div,
-.email_div,
-.cargo_div {
+.labels-data-container {
+    display: flex;
+    align-items: flex-start;
     margin-bottom: 20px;
 }
 
-label {
-    font-weight: 600;
-    color: #444;
+.labels,
+.data {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-span {
-    display: block;
-    margin-top: 5px;
-    color: #222;
+.labels {
+    margin-right: 20px;
+    font-weight: bold;
+    color: #555;
 }
 
-.editar{
+.data {
+    color: #333;
+}
+
+.labels label,
+.data span {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.labels label {
+    font-weight: bold;
+}
+
+.botones {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.editar {
     background-color: rgb(255, 255, 255);
     margin-right: 15px;
     color: rgb(0, 0, 0);
@@ -75,12 +79,14 @@ span {
     width: 25vh;
     border-radius: 20px;
 }
-.editar:hover{
+
+.editar:hover {
     background-color: rgb(33, 74, 187);
     color: rgb(255, 255, 255);
     cursor: pointer;
 }
-.atras{
+
+.atras {
     background-color: rgb(255, 255, 255);
     margin-right: 15px;
     color: rgb(0, 0, 0);
@@ -91,8 +97,237 @@ span {
     border-radius: 20px;
     margin-left: 50px;
 }
-.atras:hover{
+
+.atras:hover {
     background-color: rgb(187, 69, 33);
     color: rgb(255, 255, 255);
     cursor: pointer;
 }
+
+/* 📱 Teléfono pequeño (ej. 360x640) */
+@media (min-width: 360px) and (max-width: 374px) {
+    .info {
+        position: absolute;
+        top: 3vh;
+    }
+
+    .card {
+        width: 300px;
+        height: 50vh;
+    }
+
+    label {
+        white-space: nowrap;
+    }
+
+    .botones {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+    }
+
+    .editar {
+        position: absolute;
+        left: 3vh;
+    }
+}
+
+/* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
+@media (min-width: 375px) and (max-width: 429px) {
+    body {
+        font-size: larger;
+    }
+
+    .info {
+        position: absolute;
+        top: 3vh;
+    }
+
+    .card {
+        width: 40vh;
+        height: 50vh;
+    }
+
+    label {
+        white-space: nowrap;
+    }
+
+    .botones {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+
+    .editar {
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+}
+
+/* 📱 Teléfono grande (ej. 430x932 - 480x960) */
+@media (min-width: 430px) and (max-width: 539px) {
+    body {
+        font-size: 22px;
+    }
+
+    .card {
+        height: 50vh;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+    .editar{
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+}
+/* 📟 Phablet (600x960) */
+      @media (min-width: 540px) and (max-width: 679px) {
+        body {
+        font-size: 22px;
+    }
+
+    .card {
+        height: 50vh;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+    .editar{
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+     .info {
+        position: absolute;
+        top: 4vh;
+        font-size: 25px;
+    }
+      }
+      /* 📱 Tablet pequeña (ej. iPad Mini vertical 768x1024) */
+      @media (min-width: 680px) and (max-width: 799px) {
+            body {
+        font-size: 22px;
+    }
+
+    .card {
+        height: 50vh;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+    .editar{
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+}
+/* 📟 Phablet (600x960) */
+      @media (min-width: 540px) and (max-width: 679px) {
+        body {
+        font-size: 25px;
+    }
+
+    .card {
+        height: 50vh;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+    .editar{
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+     .info {
+        position: absolute;
+        top: 5vh;
+        font-size: 25px;
+    }
+      }
+      /* 📱 Tablet pequeña (ej. iPad Mini vertical 768x1024) */
+      @media (min-width: 680px) and (max-width: 799px) {
+                body {
+        font-size: 25px;
+    }
+
+    .card {
+        height: 50vh;
+    }
+
+    .atras {
+        width: 17vh;
+        position: absolute;
+        right: 2vh;
+        font-size: large;
+        top: 43vh;
+    }
+    .editar{
+        position: absolute;
+        left: 3vh;
+        font-size: large;
+        width: 18vh;
+        top: 43vh;
+    }
+     .info {
+        position: absolute;
+        top: 5vh;
+        font-size: 25px;
+    }
+      }
+      /* 💻 Laptop 12" (1152x720) */
+      @media (min-width: 1100px) and (max-width: 1199px) {
+        body,html{
+            font-size: 22px;
+        }
+        .atras, .editar{
+            font-size: 18px;
+        }
+      }
+   

@@ -471,4 +471,13 @@ td {
     .btn-guardar:hover {
         background-color: #0b5ed7;
     }
-   
+/* 📱 Teléfono pequeño (ej. 360x640) */
+        @media (min-width: 360px) and (max-width: 374px) {
+          table{
+            background-color: red;
+            
+          }
+          section{
+            overflow-x: auto;
+          };
+        }

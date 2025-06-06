@@ -1,18 +1,24 @@
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Elimina el scroll horizontal y vertical */
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #80808000; /* Gris de fondo si la imagen no carga */
-  }
-   html, body{
-      background-color: #1c96bb1c;
-    }
-.formulario{
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html,
+body {
+    background-color: #1c96bb1c;
+}
+
+.formulario {
     background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     position: absolute;
@@ -22,16 +28,19 @@ body, html {
     border-radius: 20px;
     height: 60vh;
 }
-#form_articulo{
+
+#form_articulo {
     background-color: rgba(255, 255, 255, 0);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
     padding: 30px 30px 30px 30px;
     height: 30vh;
-    margin-top: -2vh;
+    margin-top: -3vh;
 }
-input, .form-select{
+
+input,
+.form-select {
     margin-bottom: 15vh;
     margin-right: 5px;
     border: none;
@@ -41,34 +50,108 @@ input, .form-select{
     margin: 10px 30px 30px 30px;
     border: 1px solid black;
 }
-label{
+
+label {
     display: block;
     margin: 10px 30px 0px 30px;
 }
-h2{
+
+h2 {
     text-align: center;
 }
 
-    button[type="submit"] {
-        background-color: rgb(255, 255, 255);
-        color: rgb(0, 0, 0);
-        font-weight: bold;
-        border: 2px solid black;
-        height: 6vh;
-        width: 35vh;
-        border-radius: 20px;
-        position: absolute;
-        left: 57vh;
-        top: 52vh;
-        cursor: pointer;
-    }
+button[type="submit"] {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 57vh;
+    top: 44vh;
+    cursor: pointer;
+}
+
 button[type="submit"]:hover {
-        background-color: rgb(33, 74, 187);
-        color: black;
+    background-color: rgb(33, 74, 187);
+    color: black;
+}
+
+button[type="submit"]:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+/* 📱 Teléfono pequeño (ej. 360x640) */
+@media (min-width: 360px) and (max-width: 374px) {
+    .formulario {
+        position: absolute;
+        left: 2vh;
+        width: 46vh;
+    }
+    #form_articulo{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: #cccccc00 rgba(255, 255, 255, 0);
+        /* Para Firefox: color del scroll y del fondo */
+        scrollbar-width: thin;
+    }
+    /* Para navegadores basados en WebKit */
+    #form_articulo::-webkit-scrollbar {
+        width: 8px;
     }
 
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
+    #form_articulo::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0);
+        border-radius: 4px;
     }
+
+    #form_articulo::-webkit-scrollbar-thumb {
+        background-color: #ff000000;
+        border-radius: 4px;
+        border: 2px solid white;
+    }
+
+    #form_articulo::-webkit-scrollbar-thumb:hover {
+        background-color: #ffffff00;
+    }
+button[type="submit"] {
+        position: absolute;
+        left: 9vh;
+        top: 56vh;
+    }
+    .error-nombre{
+        display: block !important;
+        position: static !important;
+        margin-top: -2vh !important;
+        margin-left: 5vh !important;
+        color: red !important;
+        font-size: 0.9rem !important;
+    }
+    .error-tipo,.error-marca,.error-precio,
+    .error-cantidad,
+    .error-proveedor,
+    .error-observacion{
+        display: block !important;
+        position: static !important;
+        margin-top: -4vh !important;
+        margin-left: 5vh !important;
+        color: rgb(255, 0, 0) !important;
+        font-size: 0.9rem !important;
+    }
+     input,
+    .form-select {
+        position: relative;
+        left: -3vh;
+        border: none;
+        border-radius: 20px;
+        height: 4vh;
+        width: 35vh;
+        border: 1px solid black;
+    }
+}

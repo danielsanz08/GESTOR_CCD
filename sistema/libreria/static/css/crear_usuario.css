@@ -70,7 +70,8 @@ label {
     top: 52vh;
     cursor: pointer;
 }
-.btn:hover{
+
+.btn:hover {
     background-color: rgb(33, 74, 187);
     color: rgb(255, 255, 255);
 }
@@ -858,7 +859,7 @@ h2 {
 @media (min-width: 992px) and (max-width: 1099px) {
     .formulario {
         left: 8.5vh;
-        
+
     }
 
     #userForm {
@@ -916,7 +917,7 @@ h2 {
 @media (min-width: 1100px) and (max-width: 1199px) {
     .formulario {
         left: 8.5vh;
-        
+
     }
 
 

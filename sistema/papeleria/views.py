@@ -34,13 +34,14 @@ User = get_user_model()
 #ACCESO DENEGADO
 #INDEX DE PAPELERIA
 @never_cache
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def index_pap(request):
     breadcrumbs = [{'name': 'Inicio', 'url': '/index_pap'}]
     return render(request, 'index_pap/index_pap.html', {'breadcrumbs': breadcrumbs})
 
 #LOGIN  Y LOGOUT DE PAPELERIA
 # Ejemplo para el login de papelería
+
 def login_papeleria(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -59,7 +60,7 @@ def login_papeleria(request):
     return render(request, 'login_pap/login_pap.html')
 
 @never_cache
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def logout_view(request):
     request.session.flush()  # borra toda la sesión y regenera session_key
     response = redirect('libreria:inicio')

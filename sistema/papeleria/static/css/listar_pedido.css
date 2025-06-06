@@ -226,27 +226,49 @@ td {
   cursor: pointer;
 }
 
+/* PAGINACION */
 .paginacion {
-  text-align: center;
-  margin-top: 50vh;
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
 }
 
-.paginacion a {
-  margin: 0 5px;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
+.paginacion a,
+.paginacion span {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
   border-radius: 5px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+ 
 }
 
 .paginacion a:hover {
-  background-color: #0056b3;
+  background-color: #004288;
+  color: rgb(0, 0, 0);
+  border-color: #007bff;
 }
 
-.paginacion span {
-  margin: 0 10px;
+.paginacion .current {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  cursor: default;
+  font-weight: bold;
 }
+.paginacion .current:hover{
+  background-color: #004288;
+  color: rgb(0, 0, 0);
+  border: 1px solid #007bff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 
 /* Modal */
 #modal {

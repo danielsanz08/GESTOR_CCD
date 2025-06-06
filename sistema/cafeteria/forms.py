@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from libreria.models import CustomUser
-from .models import Productos
+from .models import Productos, PedidoProducto, Pedido
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
@@ -57,3 +57,16 @@ class ProductosEditForm(forms.ModelForm):
         self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
         self.fields['unidad_medida'].widget.attrs.update({'class': 'form-select'})
     
+class PedidoProductoForm(forms.ModelForm):
+    class Meta:
+        model = PedidoProducto
+        fields = ['producto', 'cantidad', 'area']  # incluye area
+        widgets = {
+            'producto': forms.Select(),
+            'cantidad': forms.NumberInput(attrs={'min': 1, 'step': '1'}),
+            'area': forms.TextInput(attrs={'readonly': 'readonly'}),  # área es solo lectura porque se asigna desde usuario
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Aquí no es necesario configurar dinámicamente el campo 'tipo' ya que no lo estamos usando

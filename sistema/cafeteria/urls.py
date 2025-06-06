@@ -15,6 +15,11 @@ urlpatterns = [
      path("reporte_productos_pdf", views.reporte_productos_pdf, name="reporte_productos_pdf"),
      path("reporte_productos_excel", views.reporte_productos_excel, name="reporte_productos_excel"),
      path('productos/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
+      path('pedidos_caf/crear/', views.crear_pedido_caf, name='crear_pedido_caf'),
+    path('pedidos_caf/mis_pedidos', views.mis_pedidos, name='mis_pedidos'),
+    path('pedidos_caf/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
+    path('pedidos_caf/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
+    path('pedidos_caf/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
 ]
 
 if settings.DEBUG:

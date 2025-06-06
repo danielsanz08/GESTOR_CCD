@@ -345,6 +345,7 @@ td {
   background-color: rgb(159, 170, 11);
   cursor: pointer;
 }
+/* PAGINACION */
 .paginacion {
   display: flex;
   justify-content: center;
@@ -359,12 +360,12 @@ td {
   padding: 0.4rem 0.8rem;
   border-radius: 5px;
   text-decoration: none;
-  color: #007bff; /* azul para enlaces */
+  color: #007bff;
   border: 1px solid transparent;
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
-  position: absolute;
-  top: 58vh;
+  position: relative; 
+  top: 45vh; 
 }
 
 .paginacion a:hover {
@@ -380,6 +381,7 @@ td {
   cursor: default;
   font-weight: bold;
 }
+
 
 /* Modal personalizado */
     .modal-custom {

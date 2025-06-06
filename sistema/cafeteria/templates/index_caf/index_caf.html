@@ -20,28 +20,25 @@
             <span>Listar productos</span>
         </div>
     </a>
-    <div class="opcion">
-        <i data-feather="refresh-ccw" class="icono"></i>
-        <span>Movimientos</span>
-    </div>
-    <div class="opcion">
-        <i data-feather="briefcase" class="icono"></i>
-        <span></span>
-    </div>
-    <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+    <a href="{% url 'cafeteria:crear_pedido_caf' %}">
         <div class="opcion">
-        <i data-feather="alert-triangle" class="icono"></i>
-        <span>Articulos con bajo stock</span>
+        <i data-feather="refresh-ccw" class="icono"></i>
+        <span>Pedidos</span>
     </div>
     </a>
-    <div class="opcion">
-        <i data-feather="bar-chart" class="icono"></i>
-        <span>Estadisticas</span>
+    <a href="{% url 'cafeteria:pedidos_pendientes' %}">
+        <div class="opcion">
+        <i data-feather="refresh-ccw" class="icono"></i>
+        <span>Pedidos Pendientes</span>
     </div>
-    <div class="opcion">
-        <i data-feather="lock" class="icono"></i>
-        <span>Cambiar contraseña</span>
+    </a>
+    <a href="{% url 'cafeteria:mis_pedidos' %}">
+        <div class="opcion">
+        <i data-feather="refresh-ccw" class="icono"></i>
+        <span>Mis Pedidos</span>
     </div>
+    </a>
+    
     <a href="{% url 'papeleria:logout_view' %}">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>

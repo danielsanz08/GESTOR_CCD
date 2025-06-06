@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
-from cafeteria.forms import LoginForm , ProductoForm, ProductosEditForm
+from cafeteria.forms import LoginForm , ProductoForm, ProductosEditForm, PedidoProductoForm
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.core.paginator import Paginator
 import datetime
-from .models import Productos
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Productos, PedidoProducto, Pedido
 from django.shortcuts import get_object_or_404, redirect
 from io import BytesIO
 from datetime import datetime
@@ -21,12 +23,16 @@ from datetime import datetime
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 from .models import Productos  # Asegúrate de que la ruta sea correcta
-
+@login_required(login_url='/acceso_denegado/')
 def index_caf(request):
     return render(request, 'index_caf/index_caf.html')
 # Create your views here.
+
 def login_cafeteria(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -131,6 +137,7 @@ def editar_producto(request, producto_id):
     else:
             form = ProductosEditForm(instance=producto)
     return render(request, 'productos/editar_producto.html', {'form': form, 'producto': producto})
+@login_required(login_url='/acceso_denegado/')
 def logout_caf(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
@@ -434,7 +441,202 @@ def lista_stock_bajo(request):
     productos_page = paginator.get_page(page_number)
 
     return render(request, 'productos/bajo_stock.html', {
-        'articulos': productos_page,
+        'productos': productos_page,
         'bajo_stock': bajo_stock_caf,
         'nombres_bajo_stock': nombres_bajo_stock,
+    })
+def crear_pedido_caf(request):
+    
+    if request.method == 'POST':
+        estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
+
+        pedido = Pedido.objects.create(
+            registrado_por=request.user,
+            estado=estado,
+        )
+
+        productos_ids = request.POST.getlist('producto')
+        tipos = request.POST.getlist('tipo_producto')
+        cantidades = request.POST.getlist('cantidad')
+
+        area_usuario = getattr(request.user, 'area', 'No establecido')
+
+        for producto_id, tipo, cantidad in zip(productos_ids, tipos, cantidades):
+            if producto_id and tipo and cantidad:
+                cantidad = int(cantidad)
+                producto = Productos.objects.get(id=producto_id)
+
+                if estado == 'Confirmado' and producto.cantidad < cantidad:
+                    pedido.delete()
+                    return render(request, 'pedidos/pedidos.html', {
+                        'productos': Productos.objects.all(),
+                        'error': f"No hay suficiente stock para el producto: {producto.nombre}"
+                    })
+
+                if estado == 'Confirmado':
+                    producto.cantidad -= cantidad
+                    producto.save()
+
+                PedidoProducto.objects.create(
+                    pedido=pedido,
+                    producto=producto,
+                    cantidad=cantidad,
+                    tipo=tipo,
+                    area=area_usuario,
+                )
+
+        admin_users = User.objects.filter(role='Administrador', is_active=True)
+        admin_emails = [admin.email for admin in admin_users if admin.email]
+
+        if admin_emails:
+            subject = "Nuevo pedido registrado por un usuario"
+            message = (
+                f"Hola querido administrador,\n\n"
+                f"Desde el módulo de Papelería te informamos que el usuario '{request.user.username}' "
+                f"ha realizado un nuevo pedido.\n\n"
+                f"Información del pedido:\n"
+                f"Usuario: {request.user.username}\n"
+                f"Rol: {request.user.role}\n"
+                f"ID del pedido: {pedido.id}\n"
+                f"Estado inicial del pedido: {estado}\n\n"
+                f"Por favor revisa y confirma el pedido si corresponde.\n\n"
+                f"Gracias por su atención.\n"
+                f"El equipo de Gestor CCD les desea un excelente día."
+            )
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                admin_emails,
+                fail_silently=False,
+            )
+
+        if request.user.role == 'Empleado':
+            return redirect('cafeteria:pedidos_pendientes')
+        else:
+            return redirect('cafeteria:listado_pedidos')
+
+    productos = Productos.objects.all()
+    return render(request, 'pedidos/pedidos_caf.html', {
+        'productos': productos,
+    })
+
+def mis_pedidos(request):
+    query = request.GET.get('q', '').strip()
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
+
+    # Obtiene pedidos del usuario actual ordenados por fecha_pedido descendente
+    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+
+
+    if query:
+        pedidos = pedidos.filter(
+            Q(registrado_por__username__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(articulos__area__icontains=query)  # filtro por area en modelo relacionado
+        ).distinct()  # distinct para evitar duplicados por joins
+
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    paginator = Paginator(pedidos, 4)
+    page_number = request.GET.get('page')
+    pedidos_page = paginator.get_page(page_number)
+
+    return render(request, 'pedidos/mis_pedidos_caf.html', {
+        'pedidos': pedidos_page,
+    })
+
+
+@csrf_exempt
+@require_POST
+def cambiar_estado_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        
+        if nuevo_estado:
+            if nuevo_estado == 'confirmado':
+                productos_del_pedido = pedido.articulos.all()
+                for producto_pedido in productos_del_pedido:
+                    producto = producto_pedido.producto
+                    cantidad_pedida = producto_pedido.cantidad
+
+                    if producto.cantidad >= cantidad_pedida:
+                        producto.cantidad -= cantidad_pedida
+                        producto.save()
+                    else:
+                        messages.error(request, f"No hay suficiente stock de {producto.nombre}.")
+                        return redirect('cafeteria:pedidos_pendientes')
+
+            pedido.estado = nuevo_estado
+            pedido.save()
+
+            usuario = pedido.registrado_por
+            if usuario and usuario.email:
+                estado_legible = nuevo_estado.capitalize()
+                send_mail(
+                    'Actualización de tu pedido',
+                    f"Hola {usuario.username}, este correo es para avisarte que tu pedido fue {estado_legible.lower()}.",
+                    settings.DEFAULT_FROM_EMAIL,
+                    [usuario.email],
+                    fail_silently=False,
+                )
+
+            messages.success(request, 'Estado del pedido actualizado correctamente.')
+            return redirect('cafeteria:pedidos_pendientes')
+
+    messages.error(request, 'No se pudo actualizar el estado' \
+    ' del pedido.')
+    return redirect('cafeteria:pedidos_pendientes')
+
+def pedidos_pendientes(request):
+
+    query = request.GET.get('q', '').strip()
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
+
+    # Filtrar solo pedidos pendientes
+    pedidos = Pedido.objects.filter(estado='pendiente').order_by('-fecha_pedido')
+
+    if query:
+        pedidos = pedidos.filter(
+            Q(registrado_por__username__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(articulos__area__icontains=query)
+        ).distinct()
+
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    paginator = Paginator(pedidos, 4)
+    page_number = request.GET.get('page')
+    pedidos_page = paginator.get_page(page_number)
+
+    return render(request, 'pedidos/confirmar_pedido_caf.html', {
+        'pedidos': pedidos_page,
     })

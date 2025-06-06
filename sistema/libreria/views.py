@@ -31,6 +31,8 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 # Create your views here.
 # Página de inicio
 User = get_user_model()
+def acceso_denegado(request):
+    return render(request, 'acceso_denegado.html')
 
 def inicio(request):
     return render(request, 'index/index.html')

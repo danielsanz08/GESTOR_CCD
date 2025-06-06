@@ -5,9 +5,6 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/editar_usuario.css' %}?v={% now 'U' %}">
 
-<style>
-   
-</style>
 <div class="formulario">
     <h2>Editar usuario</h2>
     <form method="POST" id="userForm">
@@ -30,7 +27,7 @@
         <div class="mb-3">
             <label for="area">Área:</label>
             {{ form.area }}
-            <div class="error-msg area-error"></div>
+            <div class="error-msg area-error" id="error-area"></div>
         </div>
         <div class="mb-3">
             <label for="email">Correo Electrónico</label>
@@ -42,35 +39,31 @@
     </form>
 </div>
 
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('editar-form') || document.getElementById('userForm');
+    const form = document.getElementById('userForm');
     const boton = document.getElementById('btn');
 
-    // Inputs relevantes
+    // Inputs
     const usernameInput = document.getElementById('id_username');
     const emailInput = document.getElementById('id_email');
     const cargoInput = document.getElementById('id_cargo');
     const areaInput = document.getElementById('id_area');
     const roleInput = document.getElementById('id_role');
-    const moduloInput = document.getElementById('id_modulo');  // si lo tienes
 
-    // Errores
+    // Mensajes de error
     const usernameError = document.getElementById('error-nombre');
     const emailError = document.getElementById('error-email');
     const cargoError = document.getElementById('error-cargo');
-    const areaError = document.querySelector('.area-error');
+    const areaError = document.getElementById('error-area');
 
     const regexCorreo = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-    // Ya no deshabilitamos ni validamos para habilitar el botón
-    // Simplemente mostramos errores en pantalla
 
     function tieneCaracteresRepetidos(str) {
         return /(.)\1\1/.test(str);
     }
 
+    // Validación en tiempo real
     usernameInput.addEventListener('input', () => {
         usernameError.textContent = '';
         const value = usernameInput.value.replace(/\d/g, '');
@@ -89,10 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const value = cargoInput.value.replace(/\d/g, '');
             cargoInput.value = value;
 
-            if (value.length < 2) {
+            if (value.length < 3) {
                 cargoError.textContent = 'Mínimo 3 caracteres';
             } else if (tieneCaracteresRepetidos(value)) {
-                cargoError.textContent = 'No se permiten 3 caracteres iguales seguidos';
+                cargoError.textContent = 'No se permiten 3 caracteres iguales seguidos.';
             }
         });
     }
@@ -111,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Verifica duplicados si es necesario
+        // Verificar si el correo ya existe
         fetch(`/validar_datos?email=${encodeURIComponent(email)}`)
             .then(res => res.json())
             .then(data => {
@@ -120,7 +113,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
     });
+
+    // Validación al enviar el formulario
+    form.addEventListener('submit', (e) => {
+        let valido = true;
+
+        // Validar username
+        const nombre = usernameInput.value.replace(/\d/g, '');
+        if (nombre.length < 3 || tieneCaracteresRepetidos(nombre)) {
+            usernameError.textContent = 'Nombre inválido.';
+            valido = false;
+        }
+
+        // Validar email
+        const email = emailInput.value;
+        if (!regexCorreo.test(email) || tieneCaracteresRepetidos(email)) {
+            emailError.textContent = 'Correo inválido.';
+            valido = false;
+        }
+
+        // Validar cargo
+        const cargo = cargoInput.value.replace(/\d/g, '');
+        if (cargo.length < 3 || tieneCaracteresRepetidos(cargo)) {
+            cargoError.textContent = 'Cargo inválido.';
+            valido = false;
+        }
+
+        // Validar área (si es un select vacío)
+        if (!areaInput.value) {
+            areaError.textContent = 'Seleccione un área.';
+            valido = false;
+        } else {
+            areaError.textContent = '';
+        }
+
+        if (!valido) {
+            e.preventDefault(); // Evita el envío del formulario
+        }
+    });
 });
 </script>
-
 {% endblock %}

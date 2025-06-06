@@ -26,6 +26,7 @@ urlpatterns = [
     
      path('pedidos/crear/', views.crear_pedido, name='crear_pedido'),
     path('pedidos/lista/', views.listado_pedidos, name='listado_pedidos'),
+    path('pedidos/mis_pedidos', views.mis_pedidos, name='mis_pedidos'),
     path('pedidos/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('pedidos/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
     path('pedidos/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),

@@ -66,7 +66,7 @@ def crear_usuario(request):
                         is_active=True
                     ).count()
 
-                    limit = 5
+                    limit = 1
                     if admin_count >= limit:
                         messages.error(
                             request,
@@ -155,6 +155,7 @@ def ver_usuario(request, user_id):
 
 
 def editar_usuario(request, user_id):
+
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Ver usuario', 'url': reverse('libreria:ver_usuario', kwargs={'user_id': user_id})},
@@ -166,7 +167,12 @@ def editar_usuario(request, user_id):
         form = CustomUserEditForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
-            return redirect('libreria:lista_usuarios')
+            messages.success(request, "Usuario actualizado correctamente.")
+            return redirect('libreria:ver_usuario', user_id=usuario.id)  # Aquí está el fix
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
 
     else:
         form = CustomUserEditForm(instance=usuario)
@@ -176,6 +182,7 @@ def editar_usuario(request, user_id):
         'usuario': usuario,
         'breadcrumbs': breadcrumbs
     })
+
 
 
 def lista_usuarios(request):

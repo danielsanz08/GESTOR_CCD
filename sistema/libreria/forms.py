@@ -44,11 +44,9 @@ class CustomUserEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CustomUserEditForm, self).__init__(*args, **kwargs)
 
-        # Hace que los campos sean opcionales
         for field in self.fields:
             self.fields[field].required = False
 
-        # Agrega clases CSS
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nombre de usuario'})
         self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Correo electrónico'})
         self.fields['role'].widget.attrs.update({'class': 'form-select'})
@@ -57,9 +55,16 @@ class CustomUserEditForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if not email:
-            return self.instance.email  # Mantiene el valor anterior si no se cambia
-        return email
+        return email or self.instance.email  # Mantiene el valor anterior si no se cambia
+
+    def clean_role(self):
+        new_role = self.cleaned_data.get('role')
+        if new_role == 'Administrador':
+            admin_exists = CustomUser.objects.filter(role='Administrador', is_active=True).exclude(id=self.instance.id).exists()
+            if admin_exists:
+                raise forms.ValidationError("Ya existe un usuario con rol de Administrador. No puedes asignar este rol.")
+        return new_role
+
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):

@@ -23,7 +23,9 @@ DEBUG = True
 #DEBUG = False
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.10.151']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # asegúrate de importar os
 AUTH_USER_MODEL = 'libreria.CustomUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

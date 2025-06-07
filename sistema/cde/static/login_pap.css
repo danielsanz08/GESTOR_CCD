@@ -1,4 +1,3 @@
-/* Estilos generales */
 body, html {
     margin: 0;
     padding: 0;
@@ -10,30 +9,26 @@ body, html {
     align-items: center;
     background-color: #80808000; /* Gris de fondo si la imagen no carga */
   }
-  
-  /* Formulario de inicio de sesión */
   .login {
-    background: rgba(255, 255, 255, 0.425); /* Fondo blanco con transparencia */
+    background: rgba(255, 255, 255, 0.747); /* Fondo blanco con transparencia */
     padding: 30px 30px 30px 30px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     width: 350px;
     text-align: center;
     position: absolute;
-    top: 27vh;
+    top: 23vh;
     right: 75vh;
   }
-  
-
-  /* Texto del formulario */
-  h3 {
+   .password-label, .email-label{
+    font-weight: bold;
+  }
+   h3 {
     margin-bottom: 20px;
     color: #333;
     font-weight: bold;
   }
-  
-  /* Inputs */
-  input {
+    input {
     width: 52vh;
     padding: 10px;
     margin: 10px 0;
@@ -42,9 +37,7 @@ body, html {
     font-size: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
-  
-  /* Botón */
-  button {
+  #btn {
     width: 100%;
     padding: 12px;
     background: #007bff;
@@ -56,11 +49,10 @@ body, html {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
   
-  button:hover {
+  #btn:hover {
     background: #0056b3;
   }
-  
-  /* Enlace de contraseña */
+   /* Enlace de contraseña */
   a {
     display: block;
     margin-top: 10px;
@@ -71,6 +63,319 @@ body, html {
   a:hover {
     text-decoration: underline;
   }
-.op{
+.reset_password{
   color: rgb(0, 0, 0);
 }
+ /* 📱 Teléfono pequeño (ej. 360x640) */
+ @media (min-width: 360px) and (max-width: 374px) {
+  /* Formulario de inicio de sesión */
+  .login {
+   position: absolute;
+   left: 5vh;
+   width: 37vh;
+   top: 20vh;
+   height: 47vh;
+  }
+  h3{
+    position: absolute;
+    top: -2vh;
+  }
+  .email-label{
+    position: absolute;
+    top: 11vh;
+    left: 5vh;
+  }
+  #email{
+    position: absolute;
+    top: 14vh;
+    left: 3vh;
+    width: 37vh;
+  }
+  .password-label{
+    position: absolute;
+    top: 24vh;
+    left: 5vh;
+  }
+  #password{
+    position: absolute;
+    top: 27vh;
+    left: 3vh;
+    width: 37vh;
+  }
+  #btn{
+    position: absolute;
+    top: 38vh;
+    left: 8vh;
+    width: 30vh;
+  }
+  .reset_password{
+    position: absolute;
+    top: 45vh;
+    left: 10vh;
+  }
+  ::placeholder{
+    text-align: center;
+  }
+ }
+       /* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
+       @media (min-width: 375px) and (max-width: 429px) {
+        .login {
+          position: absolute;
+          left: 3vh;
+          width: 34vh;
+          top: 20vh;
+          height: 47vh;
+         }
+         h3{
+           position: absolute;
+           top: 2vh;
+         }
+         .email-label{
+           position: absolute;
+           top: 11vh;
+           left: 5vh;
+         }
+         #email{
+           position: absolute;
+           top: 14vh;
+           left: 3vh;
+           width: 32vh;
+         }
+         .password-label{
+           position: absolute;
+           top: 24vh;
+           left: 5vh;
+         }
+         #password{
+           position: absolute;
+           top: 27vh;
+           left: 3vh;
+           width: 32vh;
+         }
+         #btn{
+           position: absolute;
+           top: 36vh;
+           left: 8vh;
+           width: 25vh;
+         }
+         .reset_password{
+           position: absolute;
+           top: 42vh;
+           left: 10vh;
+         }
+         ::placeholder{
+           text-align: center;
+         }
+        }
+ /* 📱 Teléfono grande (ej. 430x932 - 480x960) */
+ @media (min-width: 430px) and (max-width: 539px) {
+  .login {
+    position: absolute;
+    left: 5vh;
+    width: 34vh;
+    top: 20vh;
+    height: 47vh;
+   }
+   h3{
+     position: absolute;
+     top: 2vh;
+   }
+   .email-label{
+     position: absolute;
+     top: 11vh;
+     left: 5vh;
+   }
+   #email{
+     position: absolute;
+     top: 14vh;
+     left: 3vh;
+     width: 32vh;
+   }
+   .password-label{
+     position: absolute;
+     top: 24vh;
+     left: 5vh;
+   }
+   #password{
+     position: absolute;
+     top: 27vh;
+     left: 3vh;
+     width: 32vh;
+   }
+   #btn{
+     position: absolute;
+     top: 36vh;
+     left: 8vh;
+     width: 25vh;
+   }
+   .reset_password{
+     position: absolute;
+     top: 42vh;
+     left: 12vh;
+   }
+   ::placeholder{
+     text-align: center;
+   }
+ }
+   /* 📟 Phablet (600x960) */
+   @media (min-width: 540px) and (max-width: 679px) {
+    .login {
+      position: absolute;
+      left: 11vh;
+      width: 34vh;
+      top: 20vh;
+      height: 47vh;
+     }
+     h3{
+       position: absolute;
+       top: 2vh;
+     }
+     .email-label{
+       position: absolute;
+       top: 11vh;
+       left: 5vh;
+     }
+     #email{
+       position: absolute;
+       top: 14vh;
+       left: 3vh;
+       width: 32vh;
+     }
+     .password-label{
+       position: absolute;
+       top: 24vh;
+       left: 5vh;
+     }
+     #password{
+       position: absolute;
+       top: 27vh;
+       left: 3vh;
+       width: 32vh;
+     }
+     #btn{
+       position: absolute;
+       top: 36vh;
+       left: 8vh;
+       width: 25vh;
+     }
+     .reset_password{
+       position: absolute;
+       top: 42vh;
+       left: 12vh;
+     }
+     ::placeholder{
+       text-align: center;
+     }
+   }
+ /* 📱 Tablet pequeña (ej. iPad Mini vertical 768x1024) */
+ @media (min-width: 680px) and (max-width: 799px) {
+  .login {
+    position: absolute;
+    left: 16vh;
+    width: 34vh;
+    top: 25vh;
+    height: 47vh;
+   }
+   h3{
+     position: absolute;
+     top: 2vh;
+   }
+   .email-label{
+     position: absolute;
+     top: 11vh;
+     left: 5vh;
+   }
+   #email{
+     position: absolute;
+     top: 14vh;
+     left: 3vh;
+     width: 32vh;
+   }
+   .password-label{
+     position: absolute;
+     top: 24vh;
+     left: 5vh;
+   }
+   #password{
+     position: absolute;
+     top: 27vh;
+     left: 3vh;
+     width: 32vh;
+   }
+   #btn{
+     position: absolute;
+     top: 36vh;
+     left: 8vh;
+     width: 25vh;
+   }
+   .reset_password{
+     position: absolute;
+     top: 42vh;
+     left: 12vh;
+   }
+   ::placeholder{
+     text-align: center;
+   }
+ }
+   /* 💻 Laptop 11" (1024x600) */
+   @media (min-width: 992px) and (max-width: 1099px) {
+    .login {
+      position: absolute;
+      left: 48vh;
+      top: 22vh;
+     }
+   }
+   /* 💻 Laptop 12" (1152x720) */
+   @media (min-width: 1100px) and (max-width: 1199px) {
+    .login {
+      position: absolute;
+      left: 48vh;
+      top: 26vh;
+      width: 60vh;
+     }
+    .btn{
+      width: 40vh;
+    }
+   }
+   /* 💻 Laptop 15-16" (1440x900) */
+   @media (min-width: 1440px) and (max-width: 1599px) {
+    .login {
+      position: absolute;
+      left: 48vh;
+      top: 29vh;
+      width: 60vh;
+     }
+   }
+/* 🎯 Ajuste más fino para monitor de 19" (1600x900) */
+      @media (min-width: 1600px) and (max-width: 1600px) and (min-height: 900px) and (max-height: 900px) {
+        .login {
+          position: absolute;
+          left: 48vh;
+          top: 29vh;
+          width: 60vh;
+         }
+      }
+  /* 🖥️ Monitor 22-24" (1920x1080) */
+  @media (min-width: 1920px) and (max-width: 2559px) {
+    .login {
+      position: absolute;
+      left: 52vh;
+      top: 30vh;
+      width: 60vh;
+      height: 40vh;
+     }
+     .email-label, .password-label{
+    display: block;
+     }
+     .btn{
+      width: 30vh;
+     }
+     #password, #email{
+      width: 40vh;
+     }
+     .reset_password{
+      position: absolute;
+      top: 32vh;
+      left: 26vh;
+    }
+  }

@@ -221,9 +221,15 @@
       height: 40%;
       z-index: -1;
     }
-
+    #name{
+      position: relative;
+      top: 80%;
+      left: -38%;
+      height: 60px;
+      width: 80px;
+    }
     #toggle-accessibility-menu {
-      background-color: #1c96bb;
+      margin-top: 20%;
       height: 60px;
       width: 80px;
     }
@@ -256,12 +262,25 @@
       background: #1c96bb;
     }
 
-    #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 100px;
+     #name{
+      position: relative;
+      top: 80%;
+      left: -38%;
+      height: 60px;
+      width: 80px;
     }
-
+    #toggle-accessibility-menu {
+      position: relative;
+      top: -41%;
+      right: -35%;
+      height: 60px;
+      width: 80px;
+    }
+    #accessibility-menu{
+      position: relative;
+      top: -18%;
+      right: -1%;
+    }
     #zoom-controls,
     .dark-mode,
     .monocromo,
@@ -297,10 +316,25 @@
       font-size: medium;
     }
 
+    #name{
+      position: relative;
+      top: 80%;
+      left: -38%;
+      height: 60px;
+      width: 80px;
+      font-size: large;
+    }
     #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 100px;
+      position: relative;
+      top: -42%;
+      right: -35%;
+      height: 60px;
+      width: 80px;
+    }
+    #accessibility-menu{
+      position: relative;
+      top: -18%;
+      right: -1%;
     }
 
     #zoom-controls,
@@ -338,10 +372,25 @@
       font-size: medium;
     }
 
+    #name{
+      position: relative;
+      top: 80%;
+      left: -38%;
+      height: 60px;
+      width: 80px;
+      font-size: 23px;
+    }
     #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 100px;
+      position: relative;
+      top: -42%;
+      right: -35%;
+      height: 60px;
+      width: 80px;
+    }
+    #accessibility-menu{
+      position: relative;
+      top: -18%;
+      right: -10%;
     }
 
     #zoom-controls,
@@ -363,9 +412,7 @@
       position: absolute;
       left: 35vh;
     }
-
-    /* Fondo */
-    .fondo img {
+    fondo img {
       opacity: 0.2;
       position: fixed;
       top: 25vh;
@@ -378,19 +425,34 @@
     footer {
       font-size: large;
     }
+    #name{
+      position: relative;
+      top: 60%;
+      left: -38%;
 
-    #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 100px;
-
+      height: 60px;
+      font-size: 30px;
+      width: 80px;
     }
-
-    #accessibility-menu {
-      position: absolute;
-      top: 20vh;
+    #toggle-accessibility-menu  {
+      position: relative;
+      top: -44%;
+      
+      right: -35%;
+      height: 60px;
+      width: 80px;
+      font-size: 20px;
     }
-
+    #menu_Acc{
+      font-size: 40px;
+    }
+     #accessibility-menu{
+      position: relative;
+      top: -18%;
+      right: -10%;
+      width: 50vh;
+      height: 46vh;
+    }
     #zoom-controls,
     .dark-mode,
     .monocromo,
@@ -409,11 +471,10 @@
     }
 
     #toggle-accessibility-menu {
-      height: 80px;
-      width: 100px;
-      position: absolute;
-      top: 80vh;
+     
+      top: 5vh;
     }
+    
 
     #zoom-controls,
     .dark-mode,
@@ -436,11 +497,12 @@
     }
 
     #toggle-accessibility-menu {
-      height: 100px;
-      width: 100px;
-
+     top: -7vh;
     }
-
+    #menu_Acc{
+      
+      font-size: 40px;
+    }
     #accessibility-menu {
       position: absolute;
       top: 11vh;
@@ -454,21 +516,51 @@
     .enlaces {
       height: 8vh;
     }
+    #name{
+      position: relative;
+      top: 60%;
+      left: -48%;
+
+      height: 60px;
+      font-size: 25px;
+      width: 80px;
+    }
   }
 
   /* 💻 Laptop 13-14" (1366x768) */
   @media (min-width: 1300px) and (max-width: 1439px) {
     footer {
-      height: 5vh;
+      height: 3vh;
       font-size: medium;
-
+    }
+    
+    #toggle-accessibility-menu {
+     top: 5vh;
+    }
+    #menu_Acc{
+      font-size: 40px;
+    }
+    #accessibility-menu {
+      position: absolute;
+      top: 15vh;
+      height: 50vh;
     }
 
-    #toggle-accessibility-menu {
+    #zoom-controls,
+    .dark-mode,
+    .monocromo,
+    .titulos,
+    .enlaces {
+      height: 8vh;
+    }
+    #name{
+      position: relative;
+      top: 60%;
+      left: -48%;
 
-
-      height: 90px;
-      width: 90px;
+      height: 60px;
+      font-size: 20px;
+      width: 80px;
     }
   }
 
@@ -481,22 +573,18 @@
     }
 
     #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 120px;
+     top: -26vh;
     }
-
+    #menu_Acc{
+      font-size: 50px;
+      color: #000;
+    }
     #accessibility-menu {
       position: absolute;
-      top: 17vh;
-      height: 60vh;
+      top: 11vh;
+      height: 50vh;
     }
 
-    #accessibility-menu {
-      position: absolute;
-      top: 14vh;
-      height: 60vh;
-    }
 
     #zoom-controls,
     .dark-mode,
@@ -505,21 +593,51 @@
     .enlaces {
       height: 9vh;
     }
+    #name{
+      position: relative;
+      top: 60%;
+      left: -48%;
+
+      height: 60px;
+      font-size: 20px;
+      width: 80px;
+    }
   }
 
   /* 🎯 Ajuste más fino para monitor de 19" (1600x900) */
   @media (min-width: 1600px) and (max-width: 1600px) and (min-height: 900px) and (max-height: 900px) {
     footer {
-      height: 4vh;
+      height: 5vh;
       font-size: large;
     }
 
-    #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 100px;
-      width: 110px;
-    }
+    #name{
+      position: relative;
+      top: 50%;
+      left: -48%;
 
+      height: 60px;
+      font-size: 30px;
+      width: 80px;
+    }
+    #toggle-accessibility-menu {
+     top: -27vh;
+    }
+    #menu_Acc{
+      font-size: 50px;
+    }
+    #accessibility-menu {
+      position: absolute;
+      top: 11vh;
+      height: 50vh;
+    }
+    #zoom-controls,
+    .dark-mode,
+    .monocromo,
+    .titulos,
+    .enlaces {
+      height: 9vh;
+    }
   }
 
   /* 🖥️ Monitor 22-24" (1920x1080) */
@@ -528,27 +646,32 @@
       height: 5vh;
       font-size: large;
     }
+    .navbar{
+      height: 7vh;
+    }
+   
+    #name{
+      position: relative;
+      top: 50%;
+      left: -48%;
 
+      height: 60px;
+      font-size: 30px;
+      width: 80px;
+    }
     #toggle-accessibility-menu {
-      background-color: #1c96bb;
-      height: 130px;
-      width: 150px;
-      position: absolute;
-      top: 80vh;
+     top: -38vh;
     }
-
-    #toggle-accessibility-menu i {
-      font-size: xx-large;
-      /* más grande que large */
+    #menu_Acc{
+      font-size: 50px;
+      color: #000;
     }
-
     #accessibility-menu {
       position: absolute;
-      top: 17vh;
-      height: 61vh;
+      top: 11vh;
+      height: 50vh;
       width: 40vh;
     }
-
     #zoom-controls,
     .dark-mode,
     .monocromo,
@@ -556,55 +679,48 @@
     .enlaces {
       height: 9vh;
     }
-
   }
 
   /* 🖥️ Monitor 27-32" (2560x1440 y más) */
   @media (min-width: 2560px) {
-    .navbar {
-      height: 9vh;
+       footer {
+      height: 5vh;
+      font-size: 40px;
     }
-
-    footer {
-      height: 4vh;
-      font-size: large;
+    .navbar{
+      height: 7vh;
+      font-size: 30px;
     }
+   
+    #name{
+      position: relative;
+      top: 50%;
+      left: -48%;
 
+      height: 60px;
+      font-size: 40px;
+      width: 80px;
+    }
     #toggle-accessibility-menu {
-      background-color: #bb1c1c;
-      height: 130px;
-      width: 150px;
-      position: absolute;
-      top: 80vh;
+     top: -50vh;
     }
-
-    #toggle-accessibility-menu i {
-      font-size: xx-large;
-      /* más grande que large */
+    #menu_Acc{
+      font-size: 80px;
+      color: #000;
     }
-
     #accessibility-menu {
+      position: absolute;
+      top: 11vh;
+      height: 50vh;
       width: 40vh;
-      position: absolute;
-      top: 20vh;
-      height: 55vh;
     }
-
-    #accessibility-menu {
-      position: absolute;
-      top: 15vh;
-      height: 62.5vh;
-      width: 45vh;
-    }
-
     #zoom-controls,
     .dark-mode,
     .monocromo,
     .titulos,
     .enlaces {
-      height: 9.5vh;
-
-    }
+      height: 9vh;
+    } 
 
   }
 
@@ -768,13 +884,25 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const toggleButton = document.getElementById("toggle-accessibility-menu");
-      const menu = document.getElementById("accessibility-menu");
+  const toggleButton = document.getElementById("toggle-accessibility-menu");
+  const menu = document.getElementById("accessibility-menu");
 
-      toggleButton.addEventListener("click", function () {
-        menu.classList.toggle("visible"); // Agrega o quita la clase visible
-      });
-    });
+  // Mostrar/ocultar al hacer clic en el botón
+  toggleButton.addEventListener("click", function (event) {
+    event.stopPropagation(); // Evita que el clic se propague al documento
+    menu.classList.toggle("visible");
+  });
+
+  // Evita que el clic dentro del menú lo cierre
+  menu.addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
+
+  // Cerrar el menú si se hace clic fuera
+  document.addEventListener("click", function () {
+    menu.classList.remove("visible");
+  });
+});
 
     // Función para activar o desactivar el modo oscuro
   function toggleDarkMode() {

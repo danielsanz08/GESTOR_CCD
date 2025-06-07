@@ -1,9 +1,9 @@
 {% extends 'navbar.html' %}
 {% load static%}
 {% block contenido %}
+<link rel="stylesheet" href="{% static 'css/login_caf.css' %}?v={% now 'U' %}">
 
-</style>
-<link rel="stylesheet" href="{% static 'css/login_pap.css' %}?v={% now 'U' %}">
+
 <form method="POST" action="{% url 'cafeteria:login_cafeteria' %}" class="login">
     <h3><i data-feather="user"></i>
         Iniciar sesión - Módulo Cafeteria</h3>
@@ -16,10 +16,9 @@
         <label for="password">Contraseña</label>
         <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
     </div>
-    <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
-    <div class="op">
+    <button type="submit" class="btn" id="btn">Iniciar sesión</button>
+    <div class="reset_password">
         <a href="{% url 'libreria:password_reset' %}">¿Olvidaste la contraseña?</a>
     </div>
 </form>
-
 {% endblock %}

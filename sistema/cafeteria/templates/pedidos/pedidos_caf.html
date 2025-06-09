@@ -8,123 +8,60 @@
 
 <section>
     <h1>Realizar Pedido</h1>
-
-    <form method="post">
+    <form method="post" id="pedidoForm">
         {% csrf_token %}
-
         <!-- Campo área oculto -->
         <div class="mb-3">
             <label class="form-label">Área:</label>
             <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
         </div>
-
         <div id="productos-container">
             <div class="producto-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
                 <select name="producto" required>
                     <option value="">-- Seleccionar producto --</option>
                     {% for producto in productos %}
-                        <option value="{{ producto.id }}">{{ producto.nombre }} ({{ producto.cantidad }})</option>
+                    <option value="{{ producto.id }}">{{ producto.nombre }} ({{ producto.cantidad }})</option>
                     {% endfor %}
                 </select>
-
-                <div>
-                    <select name="tipo_producto" required>
-                        <option value="">-- Seleccionar Tipo --</option>
-                        {% for producto in productos %}
-                            <option value="{{ producto.tipo }}" data-producto="{{ producto.id }}" >
-                                {{ producto.tipo }} ({{ producto.nombre }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <label for="lugar">Cantidad:</label>
+                <label for="cantidad">Cantidad:</label>
                 <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
                 <label for="lugar">Área o lugar:</label>
-                <input type="text" name="lugar" min="1"  required placeholder="Lugar">
+                <input type="text" name="lugar" required placeholder="Lugar">
+            </div>
+            <!-- Buttons moved here, outside of producto-form -->
+            <div id="buttons-container">
+                <button type="button" onclick="agregarProducto()" class="btn">Añadir otro Producto</button>
+                <button type="submit" class="btn">Realizar Pedido</button>
             </div>
         </div>
-
-        <button type="button" onclick="agregarProducto()">Añadir otro Producto</button>
-        <button type="submit">Realizar Pedido</button>
     </form>
 </section>
 
-<style>
-    option.no-allowed {
-        color: red;
-        cursor: not-allowed;
-    }
-
-    .btn-eliminar-producto {
-        margin-left: 10px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .btn-eliminar-producto:hover {
-        background-color: #c82333;
-    }
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    function actualizarTipos(form) {
-        const selectProducto = form.querySelector('select[name="producto"]');
-        const selectTipo = form.querySelector('select[name="tipo_producto"]');
-        const productoSeleccionado = selectProducto.value;
-
-        for (let i = 0; i < selectTipo.options.length; i++) {
-            const option = selectTipo.options[i];
-            if (option.value === "") {
-                option.disabled = false;
-                option.classList.remove('no-allowed');
-            } else if (option.getAttribute('data-producto') === productoSeleccionado) {
-                option.disabled = false;
-                option.classList.remove('no-allowed');
-            } else {
-                option.disabled = true;
-                option.classList.add('no-allowed');
-            }
-        }
-
-        if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex].getAttribute('data-producto') !== productoSeleccionado) {
-            selectTipo.value = "";
-        }
-    }
-
     function inicializarFormulario(form, incluirEliminar = false) {
-    const selectProducto = form.querySelector('select[name="producto"]');
-    selectProducto.addEventListener('change', function () {
-        actualizarTipos(form);
-    });
-
-    if (incluirEliminar) {
-        const eliminarBtn = document.createElement('button');
-        eliminarBtn.type = 'button';
-        eliminarBtn.textContent = 'Eliminar';
-        eliminarBtn.classList.add('btn-eliminar-producto');
-        eliminarBtn.title = "Eliminar";
-        eliminarBtn.onclick = function () {
-            eliminarProductos(form);  // Aquí corregido el nombre
-        };
-        form.appendChild(eliminarBtn);
+        if (incluirEliminar) {
+            const eliminarBtn = document.createElement('button');
+            eliminarBtn.type = 'button';
+            eliminarBtn.textContent = 'Eliminar';
+            eliminarBtn.classList.add('btn', 'btn-eliminar-producto');
+            eliminarBtn.id = 'btn_delete';
+            eliminarBtn.title = "Eliminar";
+            eliminarBtn.onclick = function () {
+                eliminarProductos(form);
+            };
+            form.appendChild(eliminarBtn);
+        }
     }
-
-    actualizarTipos(form);
-}
-
 
     const defaultForm = document.querySelector('.producto-form.default-form');
     if (defaultForm) {
-        inicializarFormulario(defaultForm);  // No incluye botón de eliminar
+        inicializarFormulario(defaultForm);
     }
 
     window.agregarProducto = function () {
         const container = document.getElementById('productos-container');
+        const buttonsContainer = document.getElementById('buttons-container');
         const nuevoFormulario = defaultForm.cloneNode(true);
         nuevoFormulario.classList.remove('default-form');
         nuevoFormulario.style.display = 'flex';
@@ -133,9 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const selects = nuevoFormulario.querySelectorAll('select');
         selects.forEach(select => select.selectedIndex = 0);
         nuevoFormulario.querySelector('input[name="cantidad"]').value = 1;
+        nuevoFormulario.querySelector('input[name="lugar"]').value = '';
 
-        inicializarFormulario(nuevoFormulario, true);  // Incluir botón de eliminar
-        container.appendChild(nuevoFormulario);
+        inicializarFormulario(nuevoFormulario, true);
+        // Insertar antes del contenedor de botones
+        container.insertBefore(nuevoFormulario, buttonsContainer);
     };
 
     window.eliminarProductos = function (form) {
@@ -145,4 +84,5 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 });
 </script>
+
 {% endblock %}

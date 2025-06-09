@@ -445,11 +445,11 @@ def lista_stock_bajo(request):
         'bajo_stock': bajo_stock_caf,
         'nombres_bajo_stock': nombres_bajo_stock,
     })
+
 def crear_pedido_caf(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-         {'name': 'Crear pedido', 'url': reverse('cafeteria:crear_pedido_caf')},
-        
+        {'name': 'Crear pedido', 'url': reverse('cafeteria:crear_pedido_caf')},
     ]
     
     if request.method == 'POST':
@@ -461,13 +461,13 @@ def crear_pedido_caf(request):
         )
 
         productos_ids = request.POST.getlist('producto')
-        tipos = request.POST.getlist('tipo_producto')
         cantidades = request.POST.getlist('cantidad')
+        lugares = request.POST.getlist('lugar')
 
         area_usuario = getattr(request.user, 'area', 'No establecido')
 
-        for producto_id, tipo, cantidad in zip(productos_ids, tipos, cantidades):
-            if producto_id and tipo and cantidad:
+        for producto_id, cantidad, lugar in zip(productos_ids, cantidades, lugares):
+            if producto_id and cantidad and lugar:
                 cantidad = int(cantidad)
                 producto = Productos.objects.get(id=producto_id)
 
@@ -486,7 +486,7 @@ def crear_pedido_caf(request):
                     pedido=pedido,
                     producto=producto,
                     cantidad=cantidad,
-                    tipo=tipo,
+                    lugar=lugar,
                     area=area_usuario,
                 )
 
@@ -523,7 +523,8 @@ def crear_pedido_caf(request):
 
     productos = Productos.objects.all()
     return render(request, 'pedidos/pedidos_caf.html', {
-        'productos': productos,'breadcrumbs': breadcrumbs
+        'productos': productos,
+        'breadcrumbs': breadcrumbs
     })
 
 

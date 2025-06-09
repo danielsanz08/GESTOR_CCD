@@ -23,15 +23,12 @@ body, html {
 section{
     background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-    width: 100%;
-    max-width: 900px;
-    padding: 25px;
-    border-radius: 15px;
-    font-family: 'Times New Roman', serif;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s forwards;
-    margin: 30px auto;
-
+    position: absolute;
+    top: 20vh;
+    left: 25vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 20px;
+    height: 60vh;
 }
 /* Estilo para los inputs y selects */
 input[type="text"],
@@ -52,7 +49,7 @@ form {
     padding: 10px;
 
     scrollbar-width: thin;            /* Firefox */
-    scrollbar-color: #00a67e #ffffff; /* Color del pulgar y del fondo en Firefox */
+    scrollbar-color: #000ba6 #ffffff; /* Color del pulgar y del fondo en Firefox */
 }
 
 /* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
@@ -81,14 +78,140 @@ button {
     margin: 10px;
     padding: 10px 20px;
     border-radius: 20px;
-    border: none;
-    background: rgba(4, 155, 255, 0.733);
-    color: white;
+    border: 2px solid black;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #01815e;
+.btn:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+#btn_delete:hover {
+    background-color: rgb(187, 33, 33);
+    color: rgb(255, 255, 255);
+}
+/* Móviles (hasta 767px) */
+@media (max-width: 767px) {
+    body{
+        background-color: red;
+    }
+}
+
+/* Tablets (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    body{
+        background-color: #00a653;
+    }
+}
+
+/* Escritorio (1025px en adelante) */
+@media (min-width: 1025px) {
+    body{
+        background-color: violet;
+    }
+    body{
+        body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Sin scroll horizontal ni vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+ html, body{
+      background-color: #1c96bb1c;
+    }
+/* Animación de entrada */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+section{
+    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    position: absolute;
+    top: 20vh;
+    left: 25vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 20px;
+    height: 60vh;
+}
+/* Estilo para los inputs y selects */
+input[type="text"],
+input[type="number"],
+select,
+.form-control {
+    margin: 10px 30px 30px 30px;
+    border: none;
+    border-radius: 20px;
+    height: 4vh;
+    width: 35vh;
+}
+form {
+    position: relative;
+    max-height: 240px;
+    overflow-y: auto;
+    width: 100%;
+    padding: 10px;
+
+    scrollbar-width: thin;            /* Firefox */
+    scrollbar-color: #000ba6 #ffffff; /* Color del pulgar y del fondo en Firefox */
+}
+
+/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
+form::-webkit-scrollbar {
+    width: 8px; /* Grosor del scroll */
+}
+
+form::-webkit-scrollbar-track {
+    background: #ffffff; /* Color del fondo del scroll */
+    border-radius: 10px;
+}
+
+form::-webkit-scrollbar-thumb {
+    background-color: #00a67e; /* Color del "pulgar" del scroll */
+    border-radius: 10px;
+    border: 2px solid #ffffff; /* Espacio entre thumb y track */
+}
+
+form::-webkit-scrollbar-thumb:hover {
+    background-color: #007c5d; /* Color al pasar el cursor */
+}
+
+
+/* Botón para agregar formularios y para enviar */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid black;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+#btn_delete:hover {
+    background-color: rgb(187, 33, 33);
+    color: rgb(255, 255, 255);
+}
+    }
+}
+/* Móviles (hasta 767px) */
+@media (max-width: 767px) {
+    section{
+        background: #007c5d;
+    }
 }

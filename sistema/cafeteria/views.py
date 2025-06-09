@@ -446,6 +446,11 @@ def lista_stock_bajo(request):
         'nombres_bajo_stock': nombres_bajo_stock,
     })
 def crear_pedido_caf(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
+         {'name': 'Crear pedido', 'url': reverse('cafeteria:crear_pedido_caf')},
+        
+    ]
     
     if request.method == 'POST':
         estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
@@ -518,24 +523,31 @@ def crear_pedido_caf(request):
 
     productos = Productos.objects.all()
     return render(request, 'pedidos/pedidos_caf.html', {
-        'productos': productos,
+        'productos': productos,'breadcrumbs': breadcrumbs
     })
 
+
+@login_required
 def mis_pedidos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
+         {'name': 'Crear producto', 'url': reverse('cafeteria:crear_producto')},
+        
+    ]
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Obtiene pedidos del usuario actual ordenados por fecha_pedido descendente
-    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+    # Filtra los pedidos por el usuario autenticado
+    pedidos = Pedido.objects.filter(registrado_por=request.user,estado='pendiente').order_by('-fecha_pedido')
 
 
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(articulos__area__icontains=query)  # filtro por area en modelo relacionado
-        ).distinct()  # distinct para evitar duplicados por joins
+            Q(articulos__area__icontains=query)
+        ).distinct()
 
     if fecha_inicio_str:
         try:
@@ -556,7 +568,7 @@ def mis_pedidos(request):
     pedidos_page = paginator.get_page(page_number)
 
     return render(request, 'pedidos/mis_pedidos_caf.html', {
-        'pedidos': pedidos_page,
+        'pedidos': pedidos_page, 'breadcrumbs': breadcrumbs
     })
 
 
@@ -604,7 +616,11 @@ def cambiar_estado_pedido(request, pedido_id):
     return redirect('cafeteria:pedidos_pendientes')
 
 def pedidos_pendientes(request):
-
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
+         {'name': 'Pedidos pendientes', 'url': reverse('cafeteria:pedidos_pendientes')},
+        
+    ]
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
@@ -638,5 +654,5 @@ def pedidos_pendientes(request):
     pedidos_page = paginator.get_page(page_number)
 
     return render(request, 'pedidos/confirmar_pedido_caf.html', {
-        'pedidos': pedidos_page,
+        'pedidos': pedidos_page,'breadcrumbs': breadcrumbs
     })

@@ -59,7 +59,7 @@ class PedidoProducto(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
     tipo = models.CharField(max_length=50, null=True, blank=True)
     area = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
-
+    lugar = models.CharField(max_length=100, null=False, blank=False, default='CCD')
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad} - {self.tipo}"
 

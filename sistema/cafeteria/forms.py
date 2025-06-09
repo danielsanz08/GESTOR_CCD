@@ -60,11 +60,12 @@ class ProductosEditForm(forms.ModelForm):
 class PedidoProductoForm(forms.ModelForm):
     class Meta:
         model = PedidoProducto
-        fields = ['producto', 'cantidad', 'area']  # incluye area
+        fields = ['producto', 'cantidad', 'area', 'lugar']  # incluye area
         widgets = {
             'producto': forms.Select(),
             'cantidad': forms.NumberInput(attrs={'min': 1, 'step': '1'}),
             'area': forms.TextInput(attrs={'readonly': 'readonly'}),  # área es solo lectura porque se asigna desde usuario
+            'lugar': forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):

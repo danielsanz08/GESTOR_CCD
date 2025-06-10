@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'papeleria.context_processors.bajo_stock_alert',
+                'cafeteria.context_processors.bajo_stock_cafeteria_alert',
             ],
         },
     },

@@ -334,7 +334,24 @@
   </div>
 {% endif %}
 
-
+{% if mostrar_alerta_caf and bajo_stock_caf %}
+  <div id="stock-alert-caf" class="alert-overlay">
+    <div class="alert-box">
+      <p style="font-weight: bold; color: #000;">
+        ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
+      </p>
+      <button onclick="cerrarAlertaCaf()">Aceptar</button>
+      <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+        <button>Ver Productos</button>
+      </a>
+    </div>
+  </div>
+{% endif %}
+<script>
+function cerrarAlertaCaf() {
+    document.getElementById('stock-alert-caf').style.display = 'none';
+}
+</script>
 
 
   <style>

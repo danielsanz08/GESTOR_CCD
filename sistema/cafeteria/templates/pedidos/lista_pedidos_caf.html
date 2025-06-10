@@ -6,6 +6,62 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido.css' %}?v={% now 'U' %}">
 <style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        h1,
+        table,
+        table * {
+            visibility: visible;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
+
+        #btn-print,
+        .Bototnes,
+        form,
+        .paginacion,
+        .fondo,
+        .modal {
+            display: none !important;
+        }
+
+        /* Ocultar estos elementos al imprimir */
+        #btn-print,
+        .Bototnes,
+        form,
+        .paginacion,
+        .fondo,
+        .modal,
+        button,
+        #modal,
+        #modal-backdrop,
+        #fecha {
+            display: none !important;
+        }
+
+    }
+
+
     .paginacion {
         text-align: center;
         margin-top: 50vh;
@@ -93,17 +149,18 @@
 </style>
 
 <section class="pedido">
-    <h1>Listado de Pedidos</h1>
+    <h1>Listado de Pedidos de cafeteria y aseo</h1>
     <div class="Bototnes">
-        <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
-        <a href="{% url 'papeleria:reporte_pedidos_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-    <button class="pdf" title="Exportar a PDF"><i
-                    class="fas fa-file-pdf text-white"></i></button>
-</a>
+        <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
+        <a
+            href="{% url 'cafeteria:reporte_pedidos_caf_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+            <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
+        </a>
 
-  <a href="{% url 'papeleria:reporte_pedidos_excel' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
-    <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
-</a>
+        <a
+            href="{% url 'cafeteria:reporte_pedidos_caf_xsls' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+            <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
+        </a>
 
 
     </div>
@@ -156,30 +213,29 @@
             <tr>
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
-                <td>{{ pedido.fecha_formateada }}</p>
+                <td class="fecha_td">{{ pedido.fecha_formateada }}</p>
                 </td>
                 <td>{{ pedido.get_estado_display }}</td>
                 <td>
-                    <button type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i data-feather="eye"
-                            class="icono"></i></button>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i class="fas fa-eye"></i></button>
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
-                        <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                        <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                        <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                        <p class="estado_d"><strong >Estado:</strong> {{ pedido.get_estado_display }}</p>
                         <p><strong>Artículos:</strong></p>
                         <p><strong>Áreas:</strong>
-                            {% for articulo in pedido.articulos.all %}
-                            {{ articulo.area }}{% if not forloop.last %}, {% endif %}
+                            {% for productos in pedido.productos.all %}
+                            {{ producto.area }}{% if not forloop.last %}, {% endif %}
                             {% empty %}
-                            No hay artículos
+                            No hay productos
                             {% endfor %}
                         </p>
 
                         <ul>
-                            {% for articulo in pedido.articulos.all %}
-                            <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>
+                            {% for producto in pedido.productos.all %}
+                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -255,7 +311,7 @@
         <div class="fondo">
             <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
         </div>
-    `;
+    `
 
         const estiloImpresion = `
         <style>
@@ -304,11 +360,14 @@
             .td_acciones, .editar {
                 display: none;
             }
+            #detalles, .fecha_pedido, .registrado, .estado_d{
+                display: none;
+    }
         </style>
     `;
 
         const ventanaImpresion = window.open('', '', 'height=700,width=900');
-        ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
+        ventanaImpresion.document.write('<html><head><title>Listado de productos</title>');
         ventanaImpresion.document.write(estiloImpresion);
         ventanaImpresion.document.write('</head><body>');
         ventanaImpresion.document.write(fondo);

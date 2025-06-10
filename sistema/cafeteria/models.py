@@ -55,12 +55,13 @@ class Pedido(models.Model):
         return f"Pedido {self.id} - {self.get_estado_display()}"
 
 class PedidoProducto(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='productos', null=True, blank=True)
     producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
-    tipo = models.CharField(max_length=50, null=True, blank=True)
     area = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
     lugar = models.CharField(max_length=100, null=False, blank=False, default='CCD')
+    
     def __str__(self):
-        return f"{self.producto.nombre} x {self.cantidad} - {self.tipo}"
+        return f"{self.producto.nombre} x {self.cantidad}"
 
 

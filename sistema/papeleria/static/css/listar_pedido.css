@@ -39,17 +39,27 @@ table {
   border-radius: 10px;
   background-color: rgba(43, 116, 226, 0.616);
 }
-
+.usuario, .fecha, .estado{
+  width: 200px;
+  text-align: center;
+}
+.detalle{
+  width: 90px;
+}
+.id{
+  width: 30px;
+}
 td {
   background-color: rgba(255, 255, 255, 0.384);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
-  height: 5vh;
-  align-items: center;
-
+  height: 1vh;
 }
-
+.fecha_td{
+  padding: 15px 0 0 0;
+  
+}
 .icono {
   height: 3vh;
   padding: 2px 2px 2px 2px;
@@ -159,7 +169,21 @@ td {
   justify-content: center;
   align-items: center;
 }
-
+#detalles{
+   width: 10vh;
+   height: 25px;
+   background-color: yellow;
+   border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px 0 0 0;
+}
+#detalles:hover{
+  background-color: rgb(190, 190, 3);
+}
 .clean:hover {
   background-color: #8a0101;
   cursor: pointer;

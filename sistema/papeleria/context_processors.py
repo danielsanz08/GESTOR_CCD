@@ -1,36 +1,23 @@
-# context_processors.py
-
-from datetime import datetime, timedelta
 from .models import Articulo
 
 def bajo_stock_alert(request):
     """
-    Context processor para mostrar alerta si hay artículos con stock bajo (cantidad < 10).
-    La alerta solo se muestra a usuarios Administradores con acceso al módulo Papelería,
-    y no se muestra más de una vez cada 24 horas por sesión.
+    Solo muestra alerta si el usuario está en rutas de Papelería.
     """
-    bajo_stock = Articulo.objects.filter(cantidad__lt=10).exists()
     mostrar_alerta = False
+    bajo_stock = False
 
-    user = request.user
-    if user.is_authenticated and user.role == 'Administrador' and getattr(user, 'acceso_pap', False):
-        ultima_alerta = request.session.get('ultima_alerta_stock')
-        ahora = datetime.now()
-
-        if not ultima_alerta:
-            mostrar_alerta = True
-        else:
-            try:
-                ultima_alerta_dt = datetime.fromisoformat(ultima_alerta)
-                if ahora - ultima_alerta_dt > timedelta(hours=24):
-                    mostrar_alerta = True
-            except Exception:
-                mostrar_alerta = True
-
-        if mostrar_alerta:
-            request.session['ultima_alerta_stock'] = ahora.isoformat()
+    # Verificar si la ruta actual es de Papelería
+    if request.path.startswith('/papeleria/'):  # Ajusta según tus URLs
+        bajo_stock = Articulo.objects.filter(cantidad__lt=10).exists()
+        
+        user = request.user
+        if user.is_authenticated and user.role == 'Administrador' and getattr(user, 'acceso_pap', False):
+            if 'alerta_stock_mostrada' not in request.session:
+                mostrar_alerta = bajo_stock  # Solo mostrar si hay stock bajo
+                request.session['alerta_stock_mostrada'] = True
 
     return {
         'bajo_stock': bajo_stock,
-        'mostrar_alerta_stock': mostrar_alerta
+        'mostrar_alerta': mostrar_alerta,
     }

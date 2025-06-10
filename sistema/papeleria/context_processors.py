@@ -1,23 +1,36 @@
 from .models import Articulo
 
-def bajo_stock_alert(request):
+def bajo_stock_papeleria_alert(request):
     """
-    Solo muestra alerta si el usuario está en rutas de Papelería.
+    Procesador de contexto EXCLUSIVO para alertas de Papelería
+    Compatible con tu template actual que usa:
+    - mostrar_alerta
+    - bajo_stock
     """
-    mostrar_alerta = False
-    bajo_stock = False
+    # Valores por defecto
+    context = {
+        'mostrar_alerta': False,
+        'bajo_stock': False
+    }
 
-    # Verificar si la ruta actual es de Papelería
-    if request.path.startswith('/papeleria/'):  # Ajusta según tus URLs
-        bajo_stock = Articulo.objects.filter(cantidad__lt=10).exists()
+    # Solo activar en rutas de Papelería
+    if request.path.startswith('/papeleria/'):
+        # Verificar stock bajo
+        bajo_stock = Articulo.objects.filter(
+            seccion='Papelería',
+            cantidad__lt=10
+        ).exists()
         
         user = request.user
+        
+        # Verificar permisos
         if user.is_authenticated and user.role == 'Administrador' and getattr(user, 'acceso_pap', False):
+            # Control de visualización única por sesión
             if 'alerta_stock_mostrada' not in request.session:
-                mostrar_alerta = bajo_stock  # Solo mostrar si hay stock bajo
+                context = {
+                    'mostrar_alerta': bajo_stock,
+                    'bajo_stock': bajo_stock
+                }
                 request.session['alerta_stock_mostrada'] = True
 
-    return {
-        'bajo_stock': bajo_stock,
-        'mostrar_alerta': mostrar_alerta,
-    }
+    return context

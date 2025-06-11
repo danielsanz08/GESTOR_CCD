@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: ccd
 -- ------------------------------------------------------
@@ -91,7 +91,7 @@ CREATE TABLE `auth_permission` (
 
 LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
-INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can view log entry',1,'view_logentry'),(5,'Can add permission',2,'add_permission'),(6,'Can change permission',2,'change_permission'),(7,'Can delete permission',2,'delete_permission'),(8,'Can view permission',2,'view_permission'),(9,'Can add group',3,'add_group'),(10,'Can change group',3,'change_group'),(11,'Can delete group',3,'delete_group'),(12,'Can view group',3,'view_group'),(13,'Can add content type',4,'add_contenttype'),(14,'Can change content type',4,'change_contenttype'),(15,'Can delete content type',4,'delete_contenttype'),(16,'Can view content type',4,'view_contenttype'),(17,'Can add session',5,'add_session'),(18,'Can change session',5,'change_session'),(19,'Can delete session',5,'delete_session'),(20,'Can view session',5,'view_session'),(21,'Can add custom user',6,'add_customuser'),(22,'Can change custom user',6,'change_customuser'),(23,'Can delete custom user',6,'delete_customuser'),(24,'Can view custom user',6,'view_customuser'),(25,'Can add articulo',7,'add_articulo'),(26,'Can change articulo',7,'change_articulo'),(27,'Can delete articulo',7,'delete_articulo'),(28,'Can view articulo',7,'view_articulo'),(29,'Can add pedido articulo',8,'add_pedidoarticulo'),(30,'Can change pedido articulo',8,'change_pedidoarticulo'),(31,'Can delete pedido articulo',8,'delete_pedidoarticulo'),(32,'Can view pedido articulo',8,'view_pedidoarticulo'),(33,'Can add pedido',9,'add_pedido'),(34,'Can change pedido',9,'change_pedido'),(35,'Can delete pedido',9,'delete_pedido'),(36,'Can view pedido',9,'view_pedido'),(37,'Can add productos',10,'add_productos'),(38,'Can change productos',10,'change_productos'),(39,'Can delete productos',10,'delete_productos'),(40,'Can view productos',10,'view_productos'),(41,'Can add backup',11,'add_backup'),(42,'Can change backup',11,'change_backup'),(43,'Can delete backup',11,'delete_backup'),(44,'Can view backup',11,'view_backup'),(45,'Can add pedido',12,'add_pedido'),(46,'Can change pedido',12,'change_pedido'),(47,'Can delete pedido',12,'delete_pedido'),(48,'Can view pedido',12,'view_pedido'),(49,'Can add pedido producto',13,'add_pedidoproducto'),(50,'Can change pedido producto',13,'change_pedidoproducto'),(51,'Can delete pedido producto',13,'delete_pedidoproducto'),(52,'Can view pedido producto',13,'view_pedidoproducto');
+INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can view log entry',1,'view_logentry'),(5,'Can add permission',2,'add_permission'),(6,'Can change permission',2,'change_permission'),(7,'Can delete permission',2,'delete_permission'),(8,'Can view permission',2,'view_permission'),(9,'Can add group',3,'add_group'),(10,'Can change group',3,'change_group'),(11,'Can delete group',3,'delete_group'),(12,'Can view group',3,'view_group'),(13,'Can add content type',4,'add_contenttype'),(14,'Can change content type',4,'change_contenttype'),(15,'Can delete content type',4,'delete_contenttype'),(16,'Can view content type',4,'view_contenttype'),(17,'Can add session',5,'add_session'),(18,'Can change session',5,'change_session'),(19,'Can delete session',5,'delete_session'),(20,'Can view session',5,'view_session'),(21,'Can add custom user',6,'add_customuser'),(22,'Can change custom user',6,'change_customuser'),(23,'Can delete custom user',6,'delete_customuser'),(24,'Can view custom user',6,'view_customuser'),(25,'Can add articulo',7,'add_articulo'),(26,'Can change articulo',7,'change_articulo'),(27,'Can delete articulo',7,'delete_articulo'),(28,'Can view articulo',7,'view_articulo'),(29,'Can add pedido articulo',8,'add_pedidoarticulo'),(30,'Can change pedido articulo',8,'change_pedidoarticulo'),(31,'Can delete pedido articulo',8,'delete_pedidoarticulo'),(32,'Can view pedido articulo',8,'view_pedidoarticulo'),(33,'Can add pedido',9,'add_pedido'),(34,'Can change pedido',9,'change_pedido'),(35,'Can delete pedido',9,'delete_pedido'),(36,'Can view pedido',9,'view_pedido'),(37,'Can add productos',10,'add_productos'),(38,'Can change productos',10,'change_productos'),(39,'Can delete productos',10,'delete_productos'),(40,'Can view productos',10,'view_productos'),(41,'Can add pedido',11,'add_pedido'),(42,'Can change pedido',11,'change_pedido'),(43,'Can delete pedido',11,'delete_pedido'),(44,'Can view pedido',11,'view_pedido'),(45,'Can add pedido producto',12,'add_pedidoproducto'),(46,'Can change pedido producto',12,'change_pedidoproducto'),(47,'Can delete pedido producto',12,'delete_pedidoproducto'),(48,'Can view pedido producto',12,'view_pedidoproducto'),(49,'Can add backup',13,'add_backup'),(50,'Can change backup',13,'change_backup'),(51,'Can delete backup',13,'delete_backup'),(52,'Can view backup',13,'view_backup');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +113,7 @@ CREATE TABLE `backup_backup` (
   PRIMARY KEY (`id`),
   KEY `backup_backup_creado_por_id_217c3075_fk_libreria_customuser_id` (`creado_por_id`),
   CONSTRAINT `backup_backup_creado_por_id_217c3075_fk_libreria_customuser_id` FOREIGN KEY (`creado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,6 @@ CREATE TABLE `backup_backup` (
 
 LOCK TABLES `backup_backup` WRITE;
 /*!40000 ALTER TABLE `backup_backup` DISABLE KEYS */;
-INSERT INTO `backup_backup` VALUES (1,'BACKUP 1','backups/backup_20250606_140715_mWyddAM.json','2025-06-06 19:07:15.994332','0.01 MB','libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo',1);
 /*!40000 ALTER TABLE `backup_backup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +140,7 @@ CREATE TABLE `cafeteria_pedido` (
   PRIMARY KEY (`id`),
   KEY `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,6 +149,7 @@ CREATE TABLE `cafeteria_pedido` (
 
 LOCK TABLES `cafeteria_pedido` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedido` DISABLE KEYS */;
+INSERT INTO `cafeteria_pedido` VALUES (1,'2025-06-11 02:47:54.759239','Confirmado',1),(2,'2025-06-11 02:55:56.729033','Confirmado',1),(3,'2025-06-11 03:00:13.695758','Confirmado',1),(4,'2025-06-11 03:06:50.071129','Confirmado',2);
 /*!40000 ALTER TABLE `cafeteria_pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,14 +163,17 @@ DROP TABLE IF EXISTS `cafeteria_pedidoproducto`;
 CREATE TABLE `cafeteria_pedidoproducto` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `cantidad` int unsigned NOT NULL,
-  `tipo` varchar(50) DEFAULT NULL,
   `area` varchar(50) DEFAULT NULL,
   `producto_id` bigint NOT NULL,
+  `lugar` varchar(100) NOT NULL,
+  `pedido_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cafeteria_pedidoprod_producto_id_53398573_fk_cafeteria` (`producto_id`),
+  KEY `cafeteria_pedidoprod_pedido_id_cf5da2ef_fk_cafeteria` (`pedido_id`),
+  CONSTRAINT `cafeteria_pedidoprod_pedido_id_cf5da2ef_fk_cafeteria` FOREIGN KEY (`pedido_id`) REFERENCES `cafeteria_pedido` (`id`),
   CONSTRAINT `cafeteria_pedidoprod_producto_id_53398573_fk_cafeteria` FOREIGN KEY (`producto_id`) REFERENCES `cafeteria_productos` (`id`),
   CONSTRAINT `cafeteria_pedidoproducto_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,6 +182,7 @@ CREATE TABLE `cafeteria_pedidoproducto` (
 
 LOCK TABLES `cafeteria_pedidoproducto` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` DISABLE KEYS */;
+INSERT INTO `cafeteria_pedidoproducto` VALUES (1,1,'Administrativa',1,'vcvvc',2),(2,1,'Administrativa',1,'sdfsd',3),(3,1,'Administrativa',1,'dfsd',4);
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +219,7 @@ CREATE TABLE `cafeteria_productos` (
 
 LOCK TABLES `cafeteria_productos` WRITE;
 /*!40000 ALTER TABLE `cafeteria_productos` DISABLE KEYS */;
-INSERT INTO `cafeteria_productos` VALUES (1,'Vasos desechables','No aplica',500,55,'javerina','2025-06-06','Onzas',1,'paquete');
+INSERT INTO `cafeteria_productos` VALUES (1,'dfdg','dfsf',43344,32,'sdfsdf','2025-06-10','Kilogramos',1,'sdf');
 /*!40000 ALTER TABLE `cafeteria_productos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,7 +279,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(11,'backup','backup'),(12,'cafeteria','pedido'),(13,'cafeteria','pedidoproducto'),(10,'cafeteria','productos'),(4,'contenttypes','contenttype'),(6,'libreria','customuser'),(7,'papeleria','articulo'),(9,'papeleria','pedido'),(8,'papeleria','pedidoarticulo'),(5,'sessions','session');
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(13,'backup','backup'),(11,'cafeteria','pedido'),(12,'cafeteria','pedidoproducto'),(10,'cafeteria','productos'),(4,'contenttypes','contenttype'),(6,'libreria','customuser'),(7,'papeleria','articulo'),(9,'papeleria','pedido'),(8,'papeleria','pedidoarticulo'),(5,'sessions','session');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +296,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,7 +305,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2025-06-06 14:49:03.070975'),(2,'contenttypes','0002_remove_content_type_name','2025-06-06 14:49:03.234009'),(3,'auth','0001_initial','2025-06-06 14:49:03.737502'),(4,'auth','0002_alter_permission_name_max_length','2025-06-06 14:49:03.869232'),(5,'auth','0003_alter_user_email_max_length','2025-06-06 14:49:03.885241'),(6,'auth','0004_alter_user_username_opts','2025-06-06 14:49:03.906118'),(7,'auth','0005_alter_user_last_login_null','2025-06-06 14:49:03.927287'),(8,'auth','0006_require_contenttypes_0002','2025-06-06 14:49:03.932591'),(9,'auth','0007_alter_validators_add_error_messages','2025-06-06 14:49:03.948164'),(10,'auth','0008_alter_user_username_max_length','2025-06-06 14:49:03.972530'),(11,'auth','0009_alter_user_last_name_max_length','2025-06-06 14:49:03.989500'),(12,'auth','0010_alter_group_name_max_length','2025-06-06 14:49:04.058918'),(13,'auth','0011_update_proxy_permissions','2025-06-06 14:49:04.086507'),(14,'auth','0012_alter_user_first_name_max_length','2025-06-06 14:49:04.156204'),(15,'libreria','0001_initial','2025-06-06 14:49:04.799874'),(16,'admin','0001_initial','2025-06-06 14:49:05.072646'),(17,'admin','0002_logentry_remove_auto_add','2025-06-06 14:49:05.098536'),(18,'admin','0003_logentry_add_action_flag_choices','2025-06-06 14:49:05.125088'),(19,'backup','0001_initial','2025-06-06 14:49:05.180973'),(20,'backup','0002_backup_creado_por_alter_backup_modelos_incluidos_and_more','2025-06-06 14:49:05.456853'),(21,'cafeteria','0001_initial','2025-06-06 14:49:05.637681'),(22,'cafeteria','0002_remove_productos_observacion_productos_presentacion','2025-06-06 14:49:05.772821'),(23,'cafeteria','0003_alter_productos_unidad_medida','2025-06-06 14:49:05.798463'),(24,'libreria','0002_alter_customuser_cargo','2025-06-06 14:49:05.905270'),(25,'libreria','0003_customuser_area','2025-06-06 14:49:06.090950'),(26,'libreria','0004_customuser_fecha_registro','2025-06-06 14:49:06.269304'),(27,'libreria','0005_remove_customuser_module_customuser_acceso_caf_and_more','2025-06-06 14:49:06.907317'),(28,'libreria','0006_alter_customuser_area','2025-06-06 14:49:06.931897'),(29,'papeleria','0001_initial','2025-06-06 14:49:07.145292'),(30,'papeleria','0002_alter_articulo_tipo','2025-06-06 14:49:07.269893'),(31,'papeleria','0003_pedido_articulo','2025-06-06 14:49:07.662362'),(32,'papeleria','0004_rename_pedido_articulo_pedidoarticulo','2025-06-06 14:49:07.782473'),(33,'papeleria','0005_alter_pedidoarticulo_tipo','2025-06-06 14:49:08.391852'),(34,'papeleria','0006_alter_pedidoarticulo_articulo_and_more','2025-06-06 14:49:08.735342'),(35,'papeleria','0007_alter_pedidoarticulo_tipo','2025-06-06 14:49:09.030646'),(36,'papeleria','0008_remove_pedidoarticulo_cliente_and_more','2025-06-06 14:49:09.904628'),(37,'papeleria','0009_alter_articulo_observacion','2025-06-06 14:49:09.934512'),(38,'papeleria','0010_articulo_proveedor_pedidoarticulo_area','2025-06-06 14:49:10.125781'),(39,'papeleria','0011_alter_pedido_estado','2025-06-06 14:49:10.154095'),(40,'papeleria','0012_alter_pedidoarticulo_tipo','2025-06-06 14:49:10.560783'),(41,'papeleria','0013_alter_pedidoarticulo_tipo','2025-06-06 14:49:10.843423'),(42,'sessions','0001_initial','2025-06-06 14:49:10.929918'),(43,'cafeteria','0003_alter_productos_unidad_medida_pedido_pedidoproducto','2025-06-06 20:28:26.035927');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2025-06-11 02:44:42.577229'),(2,'contenttypes','0002_remove_content_type_name','2025-06-11 02:44:42.729626'),(3,'auth','0001_initial','2025-06-11 02:44:43.577773'),(4,'auth','0002_alter_permission_name_max_length','2025-06-11 02:44:43.713397'),(5,'auth','0003_alter_user_email_max_length','2025-06-11 02:44:43.725249'),(6,'auth','0004_alter_user_username_opts','2025-06-11 02:44:43.739494'),(7,'auth','0005_alter_user_last_login_null','2025-06-11 02:44:43.750469'),(8,'auth','0006_require_contenttypes_0002','2025-06-11 02:44:43.756454'),(9,'auth','0007_alter_validators_add_error_messages','2025-06-11 02:44:43.768440'),(10,'auth','0008_alter_user_username_max_length','2025-06-11 02:44:43.789589'),(11,'auth','0009_alter_user_last_name_max_length','2025-06-11 02:44:43.803432'),(12,'auth','0010_alter_group_name_max_length','2025-06-11 02:44:43.847996'),(13,'auth','0011_update_proxy_permissions','2025-06-11 02:44:43.861278'),(14,'auth','0012_alter_user_first_name_max_length','2025-06-11 02:44:43.874515'),(15,'libreria','0001_initial','2025-06-11 02:44:44.930857'),(16,'admin','0001_initial','2025-06-11 02:44:45.440973'),(17,'admin','0002_logentry_remove_auto_add','2025-06-11 02:44:45.455763'),(18,'admin','0003_logentry_add_action_flag_choices','2025-06-11 02:44:45.468754'),(19,'backup','0001_initial','2025-06-11 02:44:45.545385'),(20,'backup','0002_backup_creado_por_alter_backup_modelos_incluidos_and_more','2025-06-11 02:44:46.043253'),(21,'cafeteria','0001_initial','2025-06-11 02:44:46.363099'),(22,'cafeteria','0002_remove_productos_observacion_productos_presentacion','2025-06-11 02:44:46.501459'),(23,'cafeteria','0003_alter_productos_unidad_medida_pedido_pedidoproducto','2025-06-11 02:44:47.063481'),(24,'cafeteria','0004_pedidoproducto_lugar','2025-06-11 02:44:47.152815'),(25,'cafeteria','0005_remove_pedidoproducto_tipo_pedidoproducto_pedido','2025-06-11 02:44:47.445840'),(26,'libreria','0002_alter_customuser_cargo','2025-06-11 02:44:47.512867'),(27,'libreria','0003_customuser_area','2025-06-11 02:44:47.635503'),(28,'libreria','0004_customuser_fecha_registro','2025-06-11 02:44:47.757058'),(29,'libreria','0005_remove_customuser_module_customuser_acceso_caf_and_more','2025-06-11 02:44:48.471705'),(30,'libreria','0006_alter_customuser_area','2025-06-11 02:44:48.488620'),(31,'papeleria','0001_initial','2025-06-11 02:44:48.798700'),(32,'papeleria','0002_alter_articulo_tipo','2025-06-11 02:44:49.000238'),(33,'papeleria','0003_pedido_articulo','2025-06-11 02:44:49.814700'),(34,'papeleria','0004_rename_pedido_articulo_pedidoarticulo','2025-06-11 02:44:49.964630'),(35,'papeleria','0005_alter_pedidoarticulo_tipo','2025-06-11 02:44:50.606834'),(36,'papeleria','0006_alter_pedidoarticulo_articulo_and_more','2025-06-11 02:44:51.176675'),(37,'papeleria','0007_alter_pedidoarticulo_tipo','2025-06-11 02:44:51.517454'),(38,'papeleria','0008_remove_pedidoarticulo_cliente_and_more','2025-06-11 02:44:53.163396'),(39,'papeleria','0009_alter_articulo_observacion','2025-06-11 02:44:53.193055'),(40,'papeleria','0010_articulo_proveedor_pedidoarticulo_area','2025-06-11 02:44:53.447445'),(41,'papeleria','0011_alter_pedido_estado','2025-06-11 02:44:53.463245'),(42,'papeleria','0012_alter_pedidoarticulo_tipo','2025-06-11 02:44:54.021122'),(43,'papeleria','0013_alter_pedidoarticulo_tipo','2025-06-11 02:44:54.443678'),(44,'sessions','0001_initial','2025-06-11 02:44:54.563351');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -327,7 +331,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('ovwxpt2r8zw6j6pkymmtacllyu8ryyqq','.eJxVjDsOwjAQBe_iGkVe_xKnROIc1nq9JBYhSHZcIe5OQCmgnfdmniJg2-bQKpeQkxhFL06_LCLdeP0MS46FS8buQLW73DEv5-PwZ81Y512hK2rrUnReOnCDNc56DYRGIQMYNRCx8uBNBKuS1NpIihp60gxk5bBHv7nlMU2cQl7FuJXGrzfQ-zrN:1uNaRM:SjhajFJEPjvF11cPlyRQIBCk765pbfAsQlOroWI8F3k','2025-06-06 17:11:12.730829'),('p5vv4scm2bew7m0dp2oj6xr6ea60y9ql','.eJxVjcsOgjAQRf-layV9TGnL0sQ_cN8MZYDGCkkpK-O_Ww0LTe7q3NeTedzL7PeNso8D65hgp1_WY7jT8jFS7DPliM2Btub6wJguR-CvNeM21wo3JjgDBgWAChqCGELLDVgYAZCPKIXVCGCVGa1SXAs-kguOyAKHQdbR71xap4kGHxfWlbxTpanEB3pMlAv6razhXu8kl_rM26qbgE67TovGSa3AstcbCuxI5g:1uNdEF:l-rbYrz-_uS7YHnyxRukahaeiFJDzlfYXPjsBD98eOI','2025-06-06 20:09:51.929320'),('zww351mzp5r2evbgz6vphqqxvqn3iz73','.eJxVjU0OwiAQhe_CWpsBhkK7NPEG7slIpy0Ra0Lpynh30XShyVt97-8pPG1l9tvK2cdB9EKKwy-7Urjx8jFSvGbOkZodrc35TjGd9sBfa6Z1rhWwNnQWLUlEHQwGOYQWLDocEQlGUtIZQnTajk5rMBJG7kLH7BBwUHX0O5ce08SDj4voS9640lTinTwlzoX8Wh7hVu8UKHOEtuoisQfslWla5TrtxOsNCoBI4g:1uNcy8:ja0_ijJuu6XAlM5nET392ZeeZseKkTrnqJN3zYxzMG4','2025-06-06 19:53:12.586994');
+INSERT INTO `django_session` VALUES ('ngb150j4pl7cc42mmc2lxsf514yk3xjg','.eJxVjMsOgjAQRf-la0Po9M3ShO9opu0UGhGTFlbGfxcNC92ee895Mo_7Nvu9UfUlsYEBu_yygPFG62dYSqhUC3Ynat14x7Jcz8OfNWObD0Vy5bIktJEbcgmEBQegshS2V6AV9tEEMMKgzgJ6p6yUmecsXdAGEz-i39zymCZKvqxs2OpOrzfAjjrC:1uPBr2:8jf5jb42vwK32vccICTsNsOLzuym91orIfJBHkq9dqM','2025-06-11 03:20:20.837590');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +360,7 @@ CREATE TABLE `libreria_customuser` (
   `acceso_pap` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +369,7 @@ CREATE TABLE `libreria_customuser` (
 
 LOCK TABLES `libreria_customuser` WRITE;
 /*!40000 ALTER TABLE `libreria_customuser` DISABLE KEYS */;
-INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$1000000$cqtbd48bFVZ5dcSBOFCxcW$o1viHZO77b6aKvBww1Z8Enob3/CmsZVhdmrq02aOZe4=','2025-06-06 21:36:10.883001',0,'Viviana Rodriguez','viviana@gmail.com','Administrador','Asistente en gestion documental',1,0,'Administrativa','2025-06-06',1,1,1),(2,'pbkdf2_sha256$870000$baPohXfqKA2lFww8b1qUyk$CrrKWf85fbzpbS/Jqneft0962SJMiIy7XJgikc9yOxk=',NULL,0,'Sonia Marcela','sonia@gmail.com','Empleado','Supernumeraria en archivo',1,0,'Administrativa','2025-06-06',0,0,0),(3,'pbkdf2_sha256$870000$UOEQBUnz1URJOuMdDTYajc$otOHJE67nD4YoYbaCcgyr6GEqGW0DzYaO7QIHBQT6DQ=',NULL,0,'Paola tarazona','paola@gmail.com','Empleado','Directora juridica y rues',1,0,'Registros públicos','2025-06-06',0,0,0),(4,'pbkdf2_sha256$870000$JtYgC8buBLQ6DI5sNmJJfR$I7GKmPWYtqPNBE81kZzCvh8nnXEwG24dRMkMVhnvUrk=',NULL,0,'Vannessa Malpica','vannessa@gmail.com','Empleado','Supernumeraria en telemercadeo',1,0,'Registros públicos','2025-06-06',0,0,0),(5,'pbkdf2_sha256$870000$hVA3GYwEy6lqfPHVYwxhZp$0mPaLTEM2KPSQKUyRpW1KsB9KD7InAH5SdasM1X4SBc=',NULL,0,'Diana','diana@gmail.com','Empleado','Asistente en gestion empresarial',1,0,'Gestión empresarial','2025-06-06',0,0,0),(6,'pbkdf2_sha256$870000$BB6WNTsPndK7Fzp5o8u3VZ$41DJguFt18SRcBAapJQOHWcatH0O6VOuFIB7NNfYTHo=',NULL,0,'Fabian','fabian@gmail.com','Empleado','Director de gestion empresarial',1,0,'Gestión empresarial','2025-06-06',0,0,0),(7,'pbkdf2_sha256$870000$HPHIaUmeC6JcH5OTPv6aJW$B1iSyep/gDVWUnIdbe8MSCPyHXcAYc1YIPgsDtQGMa0=','2025-06-06 16:59:59.230625',0,'Brayan Cerón','brayan@gmail.com','Empleado','Auxiliar de competitividad',1,0,'Competitividad','2025-06-06',0,0,1),(8,'pbkdf2_sha256$870000$Ea1zqWAmoD7ymLSSedUx55$uqRisVW/Pp2pN+ZUMU1v29T4jYqGTcAdzfhiO1NlYnM=',NULL,0,'Andrés','andres@gmail.com','Empleado','Auxiliar en competitividad',1,0,'Competitividad','2025-06-06',0,0,0),(9,'pbkdf2_sha256$870000$fvi0sAZRtxFr1zWOkGaN8u$KxTAHE6xKD1X4uWC/kk0CP5bG8CMMdZDjrBTLBs4lSY=',NULL,0,'Andrea','andrea@gmail.com','Empleado','Secretaria de presidencia',1,0,'Presidencia','2025-06-06',0,0,0),(10,'pbkdf2_sha256$870000$XlliWkzFBWjOhJvawpGJLC$KjYl08398gTZCbCjEdszZfQw+rZyFysn+88Ct4OBGtE=',NULL,0,'Freddy','freddy@gmail.com','Empleado','Auxiliar contable',1,0,'Financiera','2025-06-06',0,0,0);
+INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$870000$j5QXjBtNWIt6LDN5i4i3uD$kYK50CUUIbkPHJ8UK6PcIt9F9ICZNM2FqFYfVR4ZCNQ=','2025-06-11 03:07:10.219587',0,'Daniel Sanchez','jonnathansz73@gmail.com','Administrador','Director ccd',1,0,'Administrativa','2025-06-10',1,1,1),(2,'pbkdf2_sha256$870000$J3YXDMVgWeLBkUXMq5fCa6$yk1qTGxjEeXHrhCErhxUmTfbI8kHyWhvLPlMZUV4ThY=','2025-06-11 03:10:18.725430',0,'Diego','diego@gmail.com','Empleado','Aprendiz',1,0,'Administrativa','2025-06-10',1,0,0);
 /*!40000 ALTER TABLE `libreria_customuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -449,7 +453,7 @@ CREATE TABLE `papeleria_articulo` (
   CONSTRAINT `papeleria_articulo_registrado_por_id_0c2be10e_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`),
   CONSTRAINT `papeleria_articulo_chk_1` CHECK ((`precio` >= 0)),
   CONSTRAINT `papeleria_articulo_chk_2` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -458,7 +462,6 @@ CREATE TABLE `papeleria_articulo` (
 
 LOCK TABLES `papeleria_articulo` WRITE;
 /*!40000 ALTER TABLE `papeleria_articulo` DISABLE KEYS */;
-INSERT INTO `papeleria_articulo` VALUES (1,'Resma de papel','Norma','No tiene','Oficio',2000,19,'2025-06-06',1,'Javeriana'),(2,'Resma de papel membreateado','Norma','no tiene','Oficio',3000,33,'2025-06-06',1,'Haverian'),(3,'Post - it','offi-esco','wewr','Mediana',2000,2,'2025-06-06',1,'offi-esco'),(4,'Esferos','offi-esco','No tiene','negro',1000,22,'2025-06-06',1,'offi-esco'),(5,'Banderitas','Offi-esco','No tiene','No tiene',1000,33,'2025-06-06',1,'Javeriaa');
 /*!40000 ALTER TABLE `papeleria_articulo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -477,7 +480,7 @@ CREATE TABLE `papeleria_pedido` (
   PRIMARY KEY (`id`),
   KEY `papeleria_pedido_registrado_por_id_b6a945d7_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `papeleria_pedido_registrado_por_id_b6a945d7_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -486,7 +489,6 @@ CREATE TABLE `papeleria_pedido` (
 
 LOCK TABLES `papeleria_pedido` WRITE;
 /*!40000 ALTER TABLE `papeleria_pedido` DISABLE KEYS */;
-INSERT INTO `papeleria_pedido` VALUES (1,'2025-06-06 16:54:16.176644','Confirmado',1),(2,'2025-06-06 16:55:11.109348','Confirmado',1),(3,'2025-06-06 17:00:29.301709','Pendiente',7),(4,'2025-06-06 17:01:08.600553','Pendiente',7),(5,'2025-06-06 20:37:38.716019','Confirmado',1);
 /*!40000 ALTER TABLE `papeleria_pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,7 +512,7 @@ CREATE TABLE `papeleria_pedidoarticulo` (
   CONSTRAINT `papeleria_pedido_art_articulo_id_e54f5ecb_fk_papeleria` FOREIGN KEY (`articulo_id`) REFERENCES `papeleria_articulo` (`id`),
   CONSTRAINT `papeleria_pedidoarti_pedido_id_636b9164_fk_papeleria` FOREIGN KEY (`pedido_id`) REFERENCES `papeleria_pedido` (`id`),
   CONSTRAINT `papeleria_pedidoarticulo_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -519,7 +521,6 @@ CREATE TABLE `papeleria_pedidoarticulo` (
 
 LOCK TABLES `papeleria_pedidoarticulo` WRITE;
 /*!40000 ALTER TABLE `papeleria_pedidoarticulo` DISABLE KEYS */;
-INSERT INTO `papeleria_pedidoarticulo` VALUES (1,1,1,'Oficio',1,'Administrativa'),(2,1,1,'Oficio',2,'Administrativa'),(3,1,3,'Mediana',3,'Competitividad'),(4,1,5,'No tiene',3,'Competitividad'),(5,1,2,'Oficio',4,'Competitividad'),(6,1,1,'Oficio',5,'Administrativa');
 /*!40000 ALTER TABLE `papeleria_pedidoarticulo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -532,4 +533,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-06 16:56:01
+-- Dump completed on 2025-06-10 22:12:32

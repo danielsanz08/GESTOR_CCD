@@ -2,9 +2,9 @@
     max-width: 550px;
     margin: 60px auto;
     top: 17vh;
-    border: none;
+    border: 2px solid rgba(2, 47, 90, 0.63);
     border-radius: 15px;
-    background: linear-gradient(135deg, #f0f0f04f, #cde0f7e8);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     position: relative;
     overflow: hidden;

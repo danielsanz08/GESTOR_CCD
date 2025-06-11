@@ -31,7 +31,15 @@ from django.contrib.auth.decorators import login_required
 from .models import Productos  # Asegúrate de que la ruta sea correcta
 @login_required(login_url='/acceso_denegado/')
 def index_caf(request):
-    return render(request, 'index_caf/index_caf.html')
+    es_cafeteria = True  # Puedes mantener esto si lo necesitas
+
+    context = {
+        'es_cafeteria': es_cafeteria,
+    }
+
+    return render(request, 'index_caf/index_caf.html', context)
+
+
 # Create your views here.
 def ver_usuario_caf(request, id):
     breadcrumbs = [
@@ -548,7 +556,7 @@ def crear_pedido_caf(request):
                     )
 
             # Redirigir a la vista de pedidos pendientes para todos los roles
-            return redirect('cafeteria:pedidos_pendientes')
+            return redirect('cafeteria:mis_pedidos')
 
         except Exception as e:
             print(f"Error al crear pedido: {e}")

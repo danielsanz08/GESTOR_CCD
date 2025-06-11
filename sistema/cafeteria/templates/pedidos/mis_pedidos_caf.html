@@ -1,100 +1,15 @@
 {% extends 'navbar.html' %}
 {% load static %}
 
-{% block titulo %}Lista{% endblock %}
+{% block titulo %}Mis pedidos{% endblock %}
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido.css' %}?v={% now 'U' %}">
-<style>
-    .paginacion {
-        text-align: center;
-        margin-top: 50vh;
-    }
 
-    .paginacion a {
-        margin: 0 5px;
-        padding: 8px 12px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
-
-    .paginacion a:hover {
-        background-color: #0056b3;
-    }
-
-    .paginacion span {
-        margin: 0 10px;
-    }
-
-    /* Modal */
-    #modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        max-width: 500px;
-        width: 90%;
-    }
-
-    #modal-backdrop {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-    }
-
-    #modal button {
-        margin-top: 15px;
-        padding: 8px 12px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #modal button:hover {
-        background-color: #0056b3;
-    }
-
-    .detalles-ocultos {
-        display: none;
-    }
-
-    .btn-accion {
-        margin: 5px;
-        padding: 6px 10px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .btn-accion.cancelar {
-        background-color: #dc3545;
-    }
-
-    .btn-accion:hover {
-        opacity: 0.9;
-    }
-</style>
 
 <section class="pedido">
-    <h1>Mis Pedidos</h1>
-    <form method="GET" action="{% url 'cafeteria:mis_pedidos' %}">
+    <h1>Mis pedidos</h1>
+    <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
         <div>
             <!-- Input de búsqueda general -->
             <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
@@ -120,7 +35,7 @@
                 </button>
             </div>
             <!-- Botón para limpiar filtros -->
-            <a href="{% url 'cafeteria:mis_pedidos' %}">
+            <a href="{% url 'papeleria:listado_pedidos' %}">
                 <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
                         title="Eliminar"></i>
                 </button>
@@ -143,19 +58,22 @@
             <tr>
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
-                <td>{{ pedido.fecha_formateada }}</p>
-                </td>
+                <td class="fecha_td">{{ pedido.fecha_formateada }}</p></td>
                 <td>{{ pedido.get_estado_display }}</td>
                 <td>
-                    <button type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i data-feather="eye"
-                            class="icono"></i></button>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i class="fas fa-eye"></i></button>
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
-                        <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                        <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                        <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                        <p class="estado_d"><strong >Estado:</strong> {{ pedido.get_estado_display }}</p>
                         <p><strong>Artículos:</strong></p>
+                        <ul>
+                            {% for producto in pedido.productos.all %}
+                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
+                            {% endfor %}
+                        </ul>
                         <p><strong>Áreas:</strong>
                             {% for producto in pedido.productos.all %}
                             {{ producto.area }}{% if not forloop.last %}, {% endif %}
@@ -164,11 +82,6 @@
                             {% endfor %}
                         </p>
 
-                        <ul>
-                            {% for producto in pedido.productos.all %}
-                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
-                            {% endfor %}
-                        </ul>
                     </div>
                 </td>
 
@@ -242,7 +155,7 @@
         <div class="fondo">
             <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
         </div>
-    `;
+    `
 
         const estiloImpresion = `
         <style>
@@ -291,6 +204,9 @@
             .td_acciones, .editar {
                 display: none;
             }
+            #detalles, .fecha_pedido, .registrado, .estado_d{
+                display: none;
+    }
         </style>
     `;
 

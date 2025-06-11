@@ -215,7 +215,7 @@
     }
      #toggle-accessibility-menu {
       color: black;
-      margin-bottom: 20px;
+      margin-bottom: 70px;
     }
      #accessibility-menu {
       margin-bottom:100px;
@@ -233,6 +233,11 @@
     }
     #name{
       display: none;
+    }
+    #menu_Acc{
+      color: #ff0303;
+      font-size: 30px;
+      margin-bottom: 20%;
     }
   }
   /* Tablets (768px — 1024px) */
@@ -320,46 +325,48 @@
     
   </div>
 <!-- Alerta de Papelería -->
-{% if mostrar_alerta %}
-<div id="stock-alert" class="alert-overlay">
-  <div class="alert-box">
-    <p style="font-weight: bold; color: #000;">
-      ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
-    </p>
-    <button onclick="cerrarAlerta()">Aceptar</button>
-    <a href="{% url 'papeleria:lista_bajo_stock' %}">
-      <button>Ver</button>
-    </a>
-  </div>
-</div>
-
-<script>
-function cerrarAlerta() {
-  document.getElementById('stock-alert').style.display = 'none';
-}
-</script>
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_pap %}
+  {% if es_papeleria and mostrar_alerta and bajo_stock %}
+    <div id="stock-alert" class="alert-overlay">
+      <div class="alert-box">
+        <p style="font-weight: bold; color: #000;">
+          ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
+        </p>
+        <button onclick="cerrarAlerta()">Aceptar</button>
+        <a href="{% url 'papeleria:lista_bajo_stock' %}">
+          <button>Ver</button>
+        </a>
+      </div>
+    </div>
+  {% endif %}
 {% endif %}
 
+
+
 <!-- Alerta de Cafetería -->
-{% if mostrar_alerta_caf and bajo_stock_caf %}
-<div id="stock-alert-caf" class="alert-overlay">
-  <div class="alert-box">
-    <p style="font-weight: bold; color: #000;">
-      ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
-    </p>
-    <button onclick="cerrarAlertaCaf()">Aceptar</button>
-    <a href="{% url 'cafeteria:lista_bajo_stock' %}">
-      <button>Ver Productos</button>
-    </a>
-  </div>
-</div>
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf %}
+  {% if mostrar_alerta_caf and bajo_stock_caf %}
+    <div id="stock-alert-caf" class="alert-overlay">
+      <div class="alert-box">
+        <p style="font-weight: bold; color: #000;">
+          ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
+        </p>
+        <button onclick="cerrarAlertaCaf()">Aceptar</button>
+        <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+          <button>Ver Productos</button>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
 
 <script>
 function cerrarAlertaCaf() {
   document.getElementById('stock-alert-caf').style.display = 'none';
 }
 </script>
-{% endif %}
+
 <script>
 
 </script>

@@ -107,14 +107,11 @@
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Nombre</th>
-                <th>Unidad de medida</th>
                 <th class="marca">Marca</th>
                 <th class="precio">Precio</th>
                 <th class="cantidad">Cantidad</th>
-                <th>Provedor</th>
-                <th class="observacion">Presentación</th>
                 <th class="estado">Registrado por</th>
-                <th class="actividad">Fecha de registro</th>
+                
                 <th class="editar">Acciones</th>
             </tr>
         </thead>
@@ -126,11 +123,9 @@
                 <td>{{ producto.marca }}</td>
                 <td>${{ producto.precio_formateado }}</td>
                 <td>{{ producto.cantidad }}</td>
-                <td>{{ producto.unidad_medida }}</td>
-                <td>{{ producto.proveedor }}</td>
-                <td>{{ producto.presentacion_formateada }}</td>
+                
                 <td>{{ producto.registrado_por }}</td>
-                <td>{{ producto.fecha_formateada }}</td>
+                
                 <td class="td_acciones">
                     <a href="{% url 'cafeteria:editar_producto' producto.id %}">
                         <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>
@@ -138,7 +133,15 @@
                     <button class="eliminar-btn" onclick="mostrarModal('{{ producto.id }}')">
                         <i class="bi bi-trash"></i>
                     </button>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i class="fas fa-eye"></i></button>
+                                        <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
+                        <p class="registrado"><strong>Fecha de registro:</strong> {{ producto.fecha_formateada }}</p>
+                        <p class="fecha_pedido"><strong>Proveedor:</strong> {{ producto.proveedor }}</p>
+                        <p class="estado_d"><strong >Unidad de medida:</strong> {{ producto.unidad_medida }}</p>
+                        <p class="estado_d"><strong >Presentación:</strong> {{ producto.presentacion_formateada }}</p>
+                    </div>
                 </td>
+
             </tr>
             {% empty %}
             <tr>
@@ -176,6 +179,16 @@
             </form>
         </div>
     </div>
+<!-- Modal -->
+<div id="modal">
+    <div id="modal-content"></div>
+    <button onclick="cerrarModal()">Cerrar</button>
+</div>
+
+<!-- Fondo oscuro detrás del modal -->
+<div id="modal-backdrop" onclick="cerrarModal()"></div>
+
+
 
     <script>
         function mostrarModal(id) {
@@ -263,5 +276,16 @@
             ventanaImpresion.print();
             ventanaImpresion.close();
         });
+          function mostrarDetalles(id) {
+        var contenido = document.getElementById("detalles-" + id).innerHTML;
+        document.getElementById("modal-content").innerHTML = contenido;
+        document.getElementById("modal").style.display = "block";
+        document.getElementById("modal-backdrop").style.display = "block";
+    }
+
+    function cerrarModal() {
+        document.getElementById("modal").style.display = "none";
+        document.getElementById("modal-backdrop").style.display = "none";
+    }
     </script>
     {% endblock %}

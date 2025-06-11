@@ -3,9 +3,12 @@ html {
   justify-content: center;
   align-items: center;
 }
- html, body{
-      background-color: #1c96bb1c;
-    }
+
+html,
+body {
+  background-color: #1c96bb1c;
+}
+
 section {
   background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
@@ -17,7 +20,6 @@ section {
   width: 190vh;
   height: 60vh;
   border-radius: 20px;
-
 }
 
 table {
@@ -26,7 +28,6 @@ table {
   position: absolute;
   top: 20vh;
   left: 8vh;
-
 }
 
 .id,
@@ -39,27 +40,30 @@ table {
   border-radius: 10px;
   background-color: rgba(43, 116, 226, 0.616);
 }
-.usuario, .fecha, .estado{
+
+.usuario,
+.fecha,
+.estado {
   width: 200px;
   text-align: center;
 }
-.detalle{
+
+.detalle {
   width: 90px;
 }
-.id{
+
+.id {
   width: 30px;
 }
+
 td {
   background-color: rgba(255, 255, 255, 0.384);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
-  height: 1vh;
+  height: 3px;
 }
-.fecha_td{
-  padding: 15px 0 0 0;
-  
-}
+
 .icono {
   height: 3vh;
   padding: 2px 2px 2px 2px;
@@ -75,7 +79,6 @@ td {
   position: absolute;
   left: 20vh;
 }
-
 
 #filtro-fechas {
 
@@ -169,27 +172,25 @@ td {
   justify-content: center;
   align-items: center;
 }
-#detalles{
-   width: 10vh;
-   height: 25px;
-   background-color: yellow;
-   border-radius: 20px;
+
+#detalles {
+  width: 50px;
+  height: 20px;
+  background-color: yellow;
+  border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3px 0 0 0;
 }
-#detalles:hover{
+
+#detalles:hover {
   background-color: rgb(190, 190, 3);
+  cursor: pointer;
 }
 .clean:hover {
   background-color: #8a0101;
   cursor: pointer;
   color: black;
 }
-
 .Botones {
   display: flex;
   justify-content: center;
@@ -249,7 +250,6 @@ td {
   background-color: rgb(4, 187, 13);
   cursor: pointer;
 }
-
 /* PAGINACION */
 .paginacion {
   display: flex;
@@ -269,12 +269,13 @@ td {
   border: 1px solid transparent;
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
- 
+  position: relative; 
+  top: 45vh; 
 }
 
 .paginacion a:hover {
-  background-color: #004288;
-  color: rgb(0, 0, 0);
+  background-color: #015cbd;
+  color: white;
   border-color: #007bff;
 }
 
@@ -282,77 +283,71 @@ td {
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
-  cursor: default;
+  cursor: pointer;
   font-weight: bold;
 }
 .paginacion .current:hover{
-  background-color: #004288;
-  color: rgb(0, 0, 0);
-  border: 1px solid #007bff;
-  cursor: pointer;
-  font-weight: bold;
+  background-color: #015cbd;
 }
+ /* Modal */
+    #modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+    }
 
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
 
-/* Modal */
-#modal {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  max-width: 500px;
-  width: 90%;
-}
+    #modal button {
+        margin-top: 15px;
+        padding: 8px 12px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 
-#modal-backdrop {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
+    #modal button:hover {
+        background-color: #0056b3;
+    }
 
-#modal button {
-  margin-top: 15px;
-  padding: 8px 12px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    .detalles-ocultos {
+        display: none;
+    }
 
-#modal button:hover {
-  background-color: #0056b3;
-}
+    .btn-accion {
+        margin: 5px;
+        padding: 6px 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-.detalles-ocultos {
-  display: none;
-}
+    .btn-accion.cancelar {
+        background-color: #dc3545;
+    }
 
-.btn-accion {
-  margin: 5px;
-  padding: 6px 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-accion.cancelar {
-  background-color: #dc3545;
-}
-
-.btn-accion:hover {
-  opacity: 0.9;
-}
+    .btn-accion:hover {
+        opacity: 0.9;
+    }

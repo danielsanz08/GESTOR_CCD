@@ -165,7 +165,7 @@ Crear usuario papelería
             const value = password.value;
 
             if (value.length < 6) {
-                errorPassword.textContent = 'Debe tener al menos 6 caracteres, 1 mayúscula,\n 1 minúscula, signos de puntuación y números';
+                errorPassword.textContent = 'Formato invalido';
             } else if (repeatedCharRegex.test(value)) {
                 errorPassword.textContent = 'No se permiten 3 caracteres iguales seguidos';
             } else {

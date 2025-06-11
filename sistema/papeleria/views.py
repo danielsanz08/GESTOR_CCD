@@ -37,7 +37,19 @@ User = get_user_model()
 @login_required(login_url='/acceso_denegado/')
 def index_pap(request):
     breadcrumbs = [{'name': 'Inicio', 'url': '/index_pap'}]
-    return render(request, 'index_pap/index_pap.html', {'breadcrumbs': breadcrumbs})
+
+    # Aquí defines las condiciones para mostrar la alerta
+    mostrar_alerta = True  # o alguna lógica
+    bajo_stock = True      # o algún cálculo real
+    es_papeleria = True    # esta variable ayuda a limitarlo al módulo
+
+    context = {
+        'breadcrumbs': breadcrumbs,
+        'es_papeleria': es_papeleria,
+    }
+
+    return render(request, 'index_pap/index_pap.html', context)
+
 
 #LOGIN  Y LOGOUT DE PAPELERIA
 # Ejemplo para el login de papelería

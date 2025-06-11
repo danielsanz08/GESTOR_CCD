@@ -31,12 +31,7 @@
             <span>Pedidos</span>
         </div>
     </a>
-    <a id="a" href="{% url 'cafeteria:pedidos_pendientes' %}">
-        <div class="opcion">
-            <i data-feather="clock" class="icono"></i>
-            <span>Pedidos Pendientes</span>
-        </div>
-    </a>
+    
     
     <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
         <div class="opcion">
@@ -44,12 +39,7 @@
             <span>Mis Pedidos</span>
         </div>
     </a>
-    <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Mis Pedidos</span>
-        </div>
-    </a>
+    
         <a id="a" href="{% url 'cafeteria:lista_pedidos_caf' %}">
         <div class="opcion">
             <i data-feather="user" class="icono"></i>
@@ -90,28 +80,22 @@
             <span>Pedidos</span>
         </div>
     </a>
-    <a id="a" href="{% url 'cafeteria:mis_pedidos_pendientes' %}">
-        <div class="opcion">
-            <i data-feather="list" class="icono"></i>
-            <span>Mis Pedidos Pendientes</span>
-        </div>
-    </a>
     <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
         <div class="opcion">
             <i data-feather="user" class="icono"></i>
             <span>Mis Pedidos</span>
         </div>
     </a>
-    <a id="a" href="{% url 'papeleria:logout_view' %}">
-        <div class="opcion">
-            <i data-feather="log-out" class="icono"></i>
-            <span>Salir</span>
-        </div>
-    </a>
     <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
         <div class="opcion">
             <i data-feather="book-open" class="icono"></i>
             <span>Manual de usuario</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'papeleria:logout_view' %}">
+        <div class="opcion">
+            <i data-feather="log-out" class="icono"></i>
+            <span>Salir</span>
         </div>
     </a>
 </div>

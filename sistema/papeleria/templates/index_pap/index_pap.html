@@ -118,11 +118,11 @@
         </div>
     </a>
     <a href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
-    <div class="opcion">
-        <i data-feather="book-open" class="icono"></i>
-        <span>Manual de usuario</span>
-    </div>
-</a>
+        <div class="opcion">
+            <i data-feather="book-open" class="icono"></i>
+            <span>Manual de usuario</span>
+        </div>
+    </a>
     <a href="{% url 'papeleria:logout_view' %}" title="Cerrar sesión">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>
@@ -148,13 +148,6 @@
             <span>Pedidos</span>
         </div>
     </a>
-
-    <a href="{% url 'libreria:cambiar_contraseña'  %}">
-        <div class="opcion">
-            <i data-feather="lock" class="icono"></i>
-            <span>Cambiar contraseña</span>
-        </div>
-    </a>
     <a href="{% url 'papeleria:pedidos_pendientes' %}">
         <div class="opcion">
             <i data-feather="list" class="icono"></i>
@@ -166,6 +159,18 @@
         <div class="opcion">
             <i data-feather="list" class="icono"></i>
             <span>Mis Pedidos</span>
+        </div>
+    </a>
+    <a href="{% url 'libreria:cambiar_contraseña'  %}">
+        <div class="opcion">
+            <i data-feather="lock" class="icono"></i>
+            <span>Cambiar contraseña</span>
+        </div>
+    </a>
+    <a href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+        <div class="opcion">
+            <i data-feather="book-open" class="icono"></i>
+            <span>Manual de usuario</span>
         </div>
     </a>
     <a href="{% url 'papeleria:logout_view' %}">

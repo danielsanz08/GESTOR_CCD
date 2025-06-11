@@ -319,38 +319,49 @@
     <h2 class="gestor">GESTOR CCD</h2>
     
   </div>
-
+<!-- Alerta de Papelería -->
 {% if mostrar_alerta %}
-  <div id="stock-alert" class="alert-overlay">
-    <div class="alert-box">
-      <p style="font-weight: bold; color: #000;">
-        ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
-      </p>
-      <button onclick="cerrarAlerta()">Aceptar</button>
-      <a href="{% url 'papeleria:lista_bajo_stock' %}">
-        <button>Ver</button>
-      </a>
-    </div>
+<div id="stock-alert" class="alert-overlay">
+  <div class="alert-box">
+    <p style="font-weight: bold; color: #000;">
+      ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
+    </p>
+    <button onclick="cerrarAlerta()">Aceptar</button>
+    <a href="{% url 'papeleria:lista_bajo_stock' %}">
+      <button>Ver</button>
+    </a>
   </div>
+</div>
+
+<script>
+function cerrarAlerta() {
+  document.getElementById('stock-alert').style.display = 'none';
+}
+</script>
 {% endif %}
 
+<!-- Alerta de Cafetería -->
 {% if mostrar_alerta_caf and bajo_stock_caf %}
-  <div id="stock-alert-caf" class="alert-overlay">
-    <div class="alert-box">
-      <p style="font-weight: bold; color: #000;">
-        ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
-      </p>
-      <button onclick="cerrarAlertaCaf()">Aceptar</button>
-      <a href="{% url 'cafeteria:lista_bajo_stock' %}">
-        <button>Ver Productos</button>
-      </a>
-    </div>
+<div id="stock-alert-caf" class="alert-overlay">
+  <div class="alert-box">
+    <p style="font-weight: bold; color: #000;">
+      ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
+    </p>
+    <button onclick="cerrarAlertaCaf()">Aceptar</button>
+    <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+      <button>Ver Productos</button>
+    </a>
   </div>
-{% endif %}
+</div>
+
 <script>
 function cerrarAlertaCaf() {
-    document.getElementById('stock-alert-caf').style.display = 'none';
+  document.getElementById('stock-alert-caf').style.display = 'none';
 }
+</script>
+{% endif %}
+<script>
+
 </script>
 
 

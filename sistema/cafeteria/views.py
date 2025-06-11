@@ -479,11 +479,10 @@ def crear_pedido_caf(request):
             productos_ids = request.POST.getlist('producto')
             cantidades = request.POST.getlist('cantidad')
             lugares = request.POST.getlist('lugar')
-            tipos = request.POST.getlist('tipo')
 
             area_usuario = getattr(request.user, 'area', 'No establecido')
 
-            for producto_id, cantidad, lugar, tipo in zip(productos_ids, cantidades, lugares, tipos):
+            for producto_id, cantidad, lugar in zip(productos_ids, cantidades, lugares):
                 try:
                     if not producto_id or not cantidad or not lugar:
                         continue
@@ -508,7 +507,6 @@ def crear_pedido_caf(request):
                         producto=producto,
                         cantidad=cantidad,
                         lugar=lugar,
-                        tipo=tipo if tipo else 'No especificado',
                         area=area_usuario,
                     )
 
@@ -549,9 +547,8 @@ def crear_pedido_caf(request):
                         fail_silently=False,
                     )
 
-            if request.user.role == 'Empleado':
-                return redirect('cafeteria:pedidos_pendientes')
-            return redirect('cafeteria:listado_pedidos')
+            # Redirigir a la vista de pedidos pendientes para todos los roles
+            return redirect('cafeteria:pedidos_pendientes')
 
         except Exception as e:
             print(f"Error al crear pedido: {e}")
@@ -566,7 +563,6 @@ def crear_pedido_caf(request):
         'productos': productos,
         'breadcrumbs': breadcrumbs
     })
-
 
 @login_required
 def mis_pedidos(request):
@@ -616,41 +612,10 @@ def cambiar_estado_pedido(request, pedido_id):
 
     if request.method == 'POST':
         nuevo_estado = request.POST.get('estado')
-        
-        if nuevo_estado:
-            if nuevo_estado == 'confirmado':
-                productos_del_pedido = pedido.articulos.all()
-                for producto_pedido in productos_del_pedido:
-                    producto = producto_pedido.producto
-                    cantidad_pedida = producto_pedido.cantidad
-
-                    if producto.cantidad >= cantidad_pedida:
-                        producto.cantidad -= cantidad_pedida
-                        producto.save()
-                    else:
-                        messages.error(request, f"No hay suficiente stock de {producto.nombre}.")
-                        return redirect('cafeteria:pedidos_pendientes')
-
+        if nuevo_estado in ['Confirmado', 'Cancelado']:
             pedido.estado = nuevo_estado
             pedido.save()
-
-            usuario = pedido.registrado_por
-            if usuario and usuario.email:
-                estado_legible = nuevo_estado.capitalize()
-                send_mail(
-                    'Actualización de tu pedido',
-                    f"Hola {usuario.username}, este correo es para avisarte que tu pedido fue {estado_legible.lower()}.",
-                    settings.DEFAULT_FROM_EMAIL,
-                    [usuario.email],
-                    fail_silently=False,
-                )
-
-            messages.success(request, 'Estado del pedido actualizado correctamente.')
-            return redirect('cafeteria:pedidos_pendientes')
-
-    messages.error(request, 'No se pudo actualizar el estado' \
-    ' del pedido.')
-    return redirect('cafeteria:pedidos_pendientes')
+    return redirect('papeleria:pedidos_pendientes')
 
 def pedidos_pendientes(request):
     breadcrumbs = [

@@ -9,20 +9,14 @@
 {% if request.user.role == 'Administrador' %}
 <section>
     <h1>Pedidos Pendientes de cafeteria y aseo</h1>
-    <table>
-        <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
+    <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
         <div>
-            <!-- Input de búsqueda general -->
             <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
                 value="{{ request.GET.q }}">
             <button type="submit" class="btn-search" title="Buscar texto">
                 <i class="fas fa-search text-white"></i>
-
             </button>
 
-
-
-            <!-- Inputs de fecha (inicialmente ocultos) -->
             <div id="filtro-fechas">
                 <label for="fecha_inicio">Desde:</label>
                 <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
@@ -32,17 +26,18 @@
 
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
-
                 </button>
             </div>
-            <!-- Botón para limpiar filtros -->
-            <a href="{% url 'papeleria:pedidos_pendientes' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
-                        title="Eliminar"></i>
+
+            <a href="{% url 'cafeteria:pedidos_pendientes' %}">
+                <button type="button" class="clean" title="Limpiar búsqueda">
+                    <i class="fas fa-trash text-white" title="Eliminar"></i>
                 </button>
             </a>
         </div>
     </form>
+
+    <table>
         <thead>
             <tr>
                 <th class="id">ID</th>
@@ -66,24 +61,25 @@
                 </td>
                 <td>{{ pedido.estado }}</td>
                 <td class="botones">
-                    <!-- Formulario para confirmar -->
+                    <!-- Botón confirmar -->
                     <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
-                        action="{% url 'papeleria:cambiar_estado_pedido' pedido.id %}">
+                        action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="estado" value="Confirmado">
-                        <button type="submit" class="btn-confirmar"><i data-feather="check-square" class="icono"></i>
+                        <button type="submit" class="btn-confirmar">
+                            <i data-feather="check-square" class="icono"></i>
                         </button>
-                         <!-- Formulario para cancelar -->
+                    </form>
+
+                    <!-- Botón cancelar -->
                     <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
-                        action="{% url 'papeleria:cambiar_estado_pedido' pedido.id %}">
+                        action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="estado" value="Cancelado">
-                        <button type="submit" class="btn-cancelar"><i data-feather="x-square" class="icono"></i>
+                        <button type="submit" class="btn-cancelar">
+                            <i data-feather="x-square" class="icono"></i>
                         </button>
                     </form>
-                    </form>
-                    
-                    
                 </td>
             </tr>
             {% empty %}
@@ -93,7 +89,8 @@
             {% endfor %}
         </tbody>
     </table>
-     <div class="paginacion" id="pag">
+
+    <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
         {% endif %}
@@ -110,23 +107,18 @@
     </div>
 </section>
 {% endif %}
+
 {% if request.user.role == 'Empleado' %}
 <section>
     <h1>Pedidos Pendientes de cafeteria y aseo</h1>
-    <table>
-        <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
+    <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
         <div>
-            <!-- Input de búsqueda general -->
             <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
                 value="{{ request.GET.q }}">
             <button type="submit" class="btn-search" title="Buscar texto">
                 <i class="fas fa-search text-white"></i>
-
             </button>
 
-
-
-            <!-- Inputs de fecha (inicialmente ocultos) -->
             <div id="filtro-fechas">
                 <label for="fecha_inicio">Desde:</label>
                 <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
@@ -136,24 +128,25 @@
 
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
-
                 </button>
             </div>
-            <!-- Botón para limpiar filtros -->
-            <a href="{% url 'papeleria:pedidos_pendientes' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
-                        title="Eliminar"></i>
+
+            <a href="{% url 'cafeteria:pedidos_pendientes' %}">
+                <button type="button" class="clean" title="Limpiar búsqueda">
+                    <i class="fas fa-trash text-white" title="Eliminar"></i>
                 </button>
             </a>
         </div>
     </form>
+
+    <table>
         <thead>
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Usuario</th>
                 <th class="pedido">Pedido</th>
                 <th class="estado">Estado</th>
-                <th class="accion">Acciones</th>
+                <th class="accion">Fecha</th>
             </tr>
         </thead>
         <tbody id="tabla-pedidos">
@@ -169,9 +162,7 @@
                     {% endfor %}
                 </td>
                 <td>{{ pedido.estado }}</td>
-                <td>
-                    {{ pedido.fecha_pedido }}
-                </td>
+                <td>{{ pedido.fecha_pedido }}</td>
             </tr>
             {% empty %}
             <tr>
@@ -180,7 +171,8 @@
             {% endfor %}
         </tbody>
     </table>
-     <div class="paginacion" id="pag">
+
+    <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
         {% endif %}

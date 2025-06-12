@@ -39,7 +39,12 @@
             <span>Mis Pedidos</span>
         </div>
     </a>
-    
+    <a id="a" href="{% url 'cafeteria:pedidos_pendientes' %}">
+        <div class="opcion">
+            <i data-feather="clock" class="icono"></i>
+            <span>Pedidos Pendientes</span>
+        </div>
+    </a>
         <a id="a" href="{% url 'cafeteria:lista_pedidos_caf' %}">
         <div class="opcion">
             <i data-feather="user" class="icono"></i>

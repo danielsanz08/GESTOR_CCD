@@ -140,7 +140,7 @@ CREATE TABLE `cafeteria_pedido` (
   PRIMARY KEY (`id`),
   KEY `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +149,7 @@ CREATE TABLE `cafeteria_pedido` (
 
 LOCK TABLES `cafeteria_pedido` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedido` DISABLE KEYS */;
-INSERT INTO `cafeteria_pedido` VALUES (1,'2025-06-11 02:47:54.759239','Confirmado',1),(2,'2025-06-11 02:55:56.729033','Confirmado',1),(3,'2025-06-11 03:00:13.695758','Confirmado',1),(4,'2025-06-11 03:06:50.071129','Confirmado',2);
+INSERT INTO `cafeteria_pedido` VALUES (1,'2025-06-11 02:47:54.759239','Confirmado',1),(2,'2025-06-11 02:55:56.729033','Confirmado',1),(3,'2025-06-11 03:00:13.695758','Confirmado',1),(4,'2025-06-11 03:06:50.071129','Confirmado',2),(5,'2025-06-12 01:43:12.806595','Confirmado',1),(6,'2025-06-12 01:44:35.772526','Pendiente',2),(7,'2025-06-12 01:50:55.355009','Confirmado',3),(8,'2025-06-12 01:59:04.922381','Pendiente',3);
 /*!40000 ALTER TABLE `cafeteria_pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,7 +173,7 @@ CREATE TABLE `cafeteria_pedidoproducto` (
   CONSTRAINT `cafeteria_pedidoprod_pedido_id_cf5da2ef_fk_cafeteria` FOREIGN KEY (`pedido_id`) REFERENCES `cafeteria_pedido` (`id`),
   CONSTRAINT `cafeteria_pedidoprod_producto_id_53398573_fk_cafeteria` FOREIGN KEY (`producto_id`) REFERENCES `cafeteria_productos` (`id`),
   CONSTRAINT `cafeteria_pedidoproducto_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -182,7 +182,7 @@ CREATE TABLE `cafeteria_pedidoproducto` (
 
 LOCK TABLES `cafeteria_pedidoproducto` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` DISABLE KEYS */;
-INSERT INTO `cafeteria_pedidoproducto` VALUES (1,1,'Administrativa',1,'vcvvc',2),(2,1,'Administrativa',1,'sdfsd',3),(3,1,'Administrativa',1,'dfsd',4);
+INSERT INTO `cafeteria_pedidoproducto` VALUES (1,1,'Administrativa',1,'vcvvc',2),(2,1,'Administrativa',1,'sdfsd',3),(3,1,'Administrativa',1,'dfsd',4),(4,1,'Administrativa',1,'dfgdf',5),(5,1,'Administrativa',2,'fdgfdg',5),(6,1,'Administrativa',2,'ffgfg',6),(7,1,'Administrativa',1,'fghgfh',6),(8,1,'Administrativa',1,'rtrtret',7),(9,1,'Administrativa',2,'dfgdfg',7),(10,1,'Administrativa',1,'fgfdgdf',8),(11,14,'Administrativa',2,'sdfdsf',8);
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +210,7 @@ CREATE TABLE `cafeteria_productos` (
   CONSTRAINT `cafeteria_productos_registrado_por_id_26864eb8_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`),
   CONSTRAINT `cafeteria_productos_chk_1` CHECK ((`precio` >= 0)),
   CONSTRAINT `cafeteria_productos_chk_2` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +219,7 @@ CREATE TABLE `cafeteria_productos` (
 
 LOCK TABLES `cafeteria_productos` WRITE;
 /*!40000 ALTER TABLE `cafeteria_productos` DISABLE KEYS */;
-INSERT INTO `cafeteria_productos` VALUES (1,'dfdg','dfsf',43344,32,'sdfsdf','2025-06-10','Kilogramos',1,'sdf');
+INSERT INTO `cafeteria_productos` VALUES (1,'dfdg','dfsf',43344,31,'sdfsdf','2025-06-11','Kilogramos',1,'sdf'),(2,'fgfgh','dfgdf',4444,443,'dfgdfg','2025-06-11','Kilogramos',1,'ertger');
 /*!40000 ALTER TABLE `cafeteria_productos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,7 +360,7 @@ CREATE TABLE `libreria_customuser` (
   `acceso_pap` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,7 +369,7 @@ CREATE TABLE `libreria_customuser` (
 
 LOCK TABLES `libreria_customuser` WRITE;
 /*!40000 ALTER TABLE `libreria_customuser` DISABLE KEYS */;
-INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$870000$j5QXjBtNWIt6LDN5i4i3uD$kYK50CUUIbkPHJ8UK6PcIt9F9ICZNM2FqFYfVR4ZCNQ=','2025-06-11 03:07:10.219587',0,'Daniel Sanchez','jonnathansz73@gmail.com','Administrador','Director ccd',1,0,'Administrativa','2025-06-10',1,1,1),(2,'pbkdf2_sha256$870000$J3YXDMVgWeLBkUXMq5fCa6$yk1qTGxjEeXHrhCErhxUmTfbI8kHyWhvLPlMZUV4ThY=','2025-06-11 03:10:18.725430',0,'Diego','diego@gmail.com','Empleado','Aprendiz',1,0,'Administrativa','2025-06-10',1,0,0);
+INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$870000$j5QXjBtNWIt6LDN5i4i3uD$kYK50CUUIbkPHJ8UK6PcIt9F9ICZNM2FqFYfVR4ZCNQ=','2025-06-12 01:55:06.906864',0,'Daniel Sanchez','jonnathansz73@gmail.com','Administrador','Director ccd',1,0,'Administrativa','2025-06-10',1,1,1),(2,'pbkdf2_sha256$870000$J3YXDMVgWeLBkUXMq5fCa6$yk1qTGxjEeXHrhCErhxUmTfbI8kHyWhvLPlMZUV4ThY=','2025-06-12 01:43:57.662268',0,'Diego','diego@gmail.com','Empleado','Aprendiz',1,0,'Administrativa','2025-06-11',0,0,0),(3,'pbkdf2_sha256$870000$ZtY9eftU12EnA9brWd1uz2$JHvKGgKkAL6YIWgEQW5Sal0X6jt39ujAMo7J7YDrdHw=','2025-06-12 01:58:40.892928',0,'Viviana','viviana@gmail.com','Empleado','Asistente en gestion documental',1,0,'Administrativa','2025-06-11',1,0,0);
 /*!40000 ALTER TABLE `libreria_customuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -453,7 +453,7 @@ CREATE TABLE `papeleria_articulo` (
   CONSTRAINT `papeleria_articulo_registrado_por_id_0c2be10e_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`),
   CONSTRAINT `papeleria_articulo_chk_1` CHECK ((`precio` >= 0)),
   CONSTRAINT `papeleria_articulo_chk_2` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,6 +462,7 @@ CREATE TABLE `papeleria_articulo` (
 
 LOCK TABLES `papeleria_articulo` WRITE;
 /*!40000 ALTER TABLE `papeleria_articulo` DISABLE KEYS */;
+INSERT INTO `papeleria_articulo` VALUES (1,'Resma','sdfdsf','sdfsdf','dfdfsd',4444,443,'2025-06-11',1,'sdfsdf'),(2,'sdffs','asdyt','fdgdg','dfd',3333,32,'2025-06-11',1,'rthtgrf');
 /*!40000 ALTER TABLE `papeleria_articulo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,7 +481,7 @@ CREATE TABLE `papeleria_pedido` (
   PRIMARY KEY (`id`),
   KEY `papeleria_pedido_registrado_por_id_b6a945d7_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `papeleria_pedido_registrado_por_id_b6a945d7_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -489,6 +490,7 @@ CREATE TABLE `papeleria_pedido` (
 
 LOCK TABLES `papeleria_pedido` WRITE;
 /*!40000 ALTER TABLE `papeleria_pedido` DISABLE KEYS */;
+INSERT INTO `papeleria_pedido` VALUES (1,'2025-06-12 01:40:36.461152','Confirmado',1);
 /*!40000 ALTER TABLE `papeleria_pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -512,7 +514,7 @@ CREATE TABLE `papeleria_pedidoarticulo` (
   CONSTRAINT `papeleria_pedido_art_articulo_id_e54f5ecb_fk_papeleria` FOREIGN KEY (`articulo_id`) REFERENCES `papeleria_articulo` (`id`),
   CONSTRAINT `papeleria_pedidoarti_pedido_id_636b9164_fk_papeleria` FOREIGN KEY (`pedido_id`) REFERENCES `papeleria_pedido` (`id`),
   CONSTRAINT `papeleria_pedidoarticulo_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,6 +523,7 @@ CREATE TABLE `papeleria_pedidoarticulo` (
 
 LOCK TABLES `papeleria_pedidoarticulo` WRITE;
 /*!40000 ALTER TABLE `papeleria_pedidoarticulo` DISABLE KEYS */;
+INSERT INTO `papeleria_pedidoarticulo` VALUES (1,1,1,'dfdfsd',1,'Administrativa'),(2,1,2,'dfd',1,'Administrativa');
 /*!40000 ALTER TABLE `papeleria_pedidoarticulo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -533,4 +536,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-10 22:12:32
+-- Dump completed on 2025-06-11 21:50:23

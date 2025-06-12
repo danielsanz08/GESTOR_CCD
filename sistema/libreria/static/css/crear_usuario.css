@@ -18,9 +18,60 @@ body {
     background-color: #86cfe61c;
 }
 
-/* Móviles (hasta 767px) */
-@media (max-width: 767px) {}
 
+/* Móviles (hasta 767px) */
+@media (max-width: 767px) {
+    .formulario {
+        margin-top: 20%;
+        padding: 10px;
+        border-radius: 10px;
+        width: 95%;
+        min-height: 73vh;
+        background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    }
+    #userForm {
+        padding: 10px;
+        max-height: 60vh; /* Set a maximum height for the form */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+    input,
+    .form-select {
+        height: 6vh;
+        width: 100%;
+        margin: 8px 0;
+        border-radius: 10px;
+    }
+
+    label {
+        margin: 5px 0;
+        font-size: 0.85rem;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .btn {
+        height: 7vh;
+        width: 100%;
+        margin: 15px 0;
+        border-radius: 10px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .error-nombre,
+    .error-cargo,
+    .error-email,
+    .error-password {
+        font-size: 0.75rem;
+        margin-top: -0.5vh;
+        font-weight: bold;
+        color: red;
+    }
+    
+}
 /* Escritorio (1025px en adelante) */
 @media (min-width: 1025px) {
     body {
@@ -130,4 +181,56 @@ body {
         font-size: 0.9rem !important;
     }
 
+}
+/* Tablets (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .formulario {
+        margin-top: -2%;
+        padding: 10px;
+        border-radius: 10px;
+        width: 95%;
+        min-height: 63vh;
+        background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    }
+    #userForm {
+        padding: 10px;
+        max-height: 50vh; /* Set a maximum height for the form */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+    input,
+    .form-select {
+        height: 6vh;
+        width: 100%;
+        margin: 8px 0;
+        border-radius: 10px;
+    }
+
+    label {
+        margin: 5px 0;
+        font-size: 0.85rem;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .btn {
+        height: 7vh;
+        width: 100%;
+        margin: 15px 0;
+        border-radius: 10px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .error-nombre,
+    .error-cargo,
+    .error-email,
+    .error-password {
+        font-size: 0.75rem;
+        margin-top: -0.5vh;
+        font-weight: bold;
+        color: red;
+    }
 }

@@ -4,6 +4,7 @@
 {% block titulo %}Inicio{% endblock %}
 
 {% block contenido %}
+{% if user.is_authenticated %}
 <link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
 {% if request.user.role == 'Administrador' %}
 <div class="uno">
@@ -103,6 +104,11 @@
             <span>Salir</span>
         </div>
     </a>
+</div>
+{% endif %}
+{% else %}
+<div class="mensaje-sesion-cerrada">
+    <p>Se ha cerrado tu sesión</p>
 </div>
 {% endif %}
 <script>

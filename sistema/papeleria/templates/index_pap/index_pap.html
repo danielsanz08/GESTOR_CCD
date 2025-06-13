@@ -12,7 +12,6 @@
         left: 10vh;
         top: 10vh;
         padding: 10vh 10vh 10vh 10vh;
-
     }
 
     .card-uno {
@@ -21,7 +20,6 @@
         align-items: center;
         text-align: center;
         background: linear-gradient(to bottom, rgba(10, 91, 196, 0.596), rgba(4, 45, 97, 0.596));
-
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -36,11 +34,23 @@
         transform: scale(1.05);
         border: 10px white;
     }
+    
+    .mensaje-sesion-cerrada {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 24px;
+        color: #d9534f;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 </style>
+
+{% if user.is_authenticated %}
 <link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
 
 {% if request.user.role == 'Administrador' %}
-
 <div class="uno">
     <a href="{% url 'libreria:crear_usuario' %}" title="Crear usuario">
         <div class="opcion">
@@ -179,12 +189,14 @@
             <span>Salir</span>
         </div>
     </a>
-
 </div>
-
 {% endif %}
 
-
+{% else %}
+<div class="mensaje-sesion-cerrada">
+    <p>Se ha cerrado tu sesión</p>
+</div>
+{% endif %}
 
 <script>
     feather.replace();

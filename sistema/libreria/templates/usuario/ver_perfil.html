@@ -22,10 +22,12 @@
                 <span>{{ user.cargo }}</span>
             </div>
         </div>
+        {% if user.is_authenticated %}
         <div class="botones">
             <a href="{% url 'libreria:editar_usuario' user.id %}"><button class="editar">Editar usuario</button></a>
             <a href="{% url 'papeleria:index_pap' %}"><button class="atras">Atrás</button></a>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/ver_perfil.css' %}?v={% now 'U' %}">
 <div class="card">
-    <h2 class="info"><i class="fas fa-user"></i>Información caf</h2><br>
+    <h2 class="info"><i class="fas fa-user"></i>Información</h2><br>
     <div class="card-body">
         <div class="labels-data-container">
             <div class="labels">
@@ -22,9 +22,12 @@
                 <span>{{ user.cargo }}</span>
             </div>
         </div>
+        {% if user.is_authenticated %}
         <div class="botones">
-            <a href="{% url 'cafeteria:index_caf' %}"><button class="atras">Atrás</button></a>
+            <a href="{% url 'libreria:editar_usuario' user.id %}"><button class="editar">Editar usuario</button></a>
+            <a href="{% url 'papeleria:index_pap' %}"><button class="atras">Atrás</button></a>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

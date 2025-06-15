@@ -623,7 +623,7 @@ def cambiar_estado_pedido(request, pedido_id):
         if nuevo_estado in ['Confirmado', 'Cancelado']:
             pedido.estado = nuevo_estado
             pedido.save()
-    return redirect('papeleria:pedidos_pendientes')
+    return redirect('cafeteria:pedidos_pendientes')
 
 def pedidos_pendientes(request):
     breadcrumbs = [

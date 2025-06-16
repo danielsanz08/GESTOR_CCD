@@ -56,7 +56,7 @@ section {
 }
 .search-date {
   background-color: #0056b3;
-  color: white;
+  color: rgb(0, 0, 0);
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
@@ -71,10 +71,11 @@ section {
 .search-date:hover {
   background-color: #044080;
   cursor: pointer;
+  color: white;
 }
 .btn-search {
   background-color: #0056b3;
-  color: white;
+  color: rgb(0, 0, 0);
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
@@ -94,7 +95,7 @@ section {
 .btn-search:hover {
   background-color: #044080;
   cursor: pointer;
-  color: black;
+  color: rgb(255, 255, 255);
 }
 .icono {
   height: 3vh;
@@ -105,7 +106,7 @@ section {
 }
 .clean {
   background-color: #b30000;
-  color: white;
+  color: rgb(0, 0, 0);
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
@@ -123,7 +124,7 @@ section {
 .clean:hover {
   background-color: #8a0101;
   cursor: pointer;
-  color: black;
+  color: rgb(255, 255, 255);
 }
 .pdf {
   background-color: rgb(255, 0, 0);
@@ -135,11 +136,13 @@ section {
   top: 5vh;
   right: 30vh;
   font-weight: bold;
+  color: #000;
 }
 
 .pdf:hover {
   background-color: rgb(187, 3, 3);
   cursor: pointer;
+  color: white;
 }
 
 .excel {
@@ -152,11 +155,13 @@ section {
   top: 5vh;
   right: 18vh;
   font-weight: bold;
+  color: #000;
 }
 
 .excel:hover {
   background-color: rgb(4, 187, 13);
   cursor: pointer;
+  color: white;
 }
 .print {
   background-color: yellow;
@@ -169,9 +174,11 @@ section {
   top: 5vh;
   right: 40vh;
   cursor: pointer;
+  color: #000;
 }
 .print:hover {
   background-color: rgb(190, 190, 3);
+  color: white;
 }
 table {
   width: 180vh;
@@ -265,6 +272,7 @@ td {
   background-color: #fff;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   transition: background-color 0.2s, transform 0.2s;
+  cursor: pointer;
 }
 
 /* Checked State */
@@ -332,18 +340,37 @@ td {
 }
 
 .editar-btn {
-  background-color: rgb(233, 200, 12);
+ background-color: rgb(190, 164, 11);
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   width: 10vh;
   height: 25px;
   border-radius: 20px;
   margin-right: 1vh;
+  cursor: pointer;
+  color: rgb(0, 0, 0);
 }
 
 .editar-btn:hover {
   background-color: rgb(159, 170, 11);
   cursor: pointer;
+  color: #f7f7f7;
+}
+.permisos-btn{
+  background-color: #0056b3;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  margin-right: 1vh;
+  cursor: pointer;
+  color: rgb(2, 2, 2);
+}
+.permisos-btn:hover {
+  background-color: #044080;
+  cursor: pointer;
+  color: #ffffff;
 }
 /* PAGINACION */
 .paginacion {
@@ -473,13 +500,31 @@ td {
     .btn-guardar:hover {
         background-color: #0b5ed7;
     }
-/* 📱 Teléfono pequeño (ej. 360x640) */
-        @media (min-width: 360px) and (max-width: 374px) {
-          table{
-            background-color: red;
-            
-          }
-          section{
-            overflow-x: auto;
-          };
-        }
+.tooltip-custom {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip-custom .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: -35px; /* más arriba para despejar el switch */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #222;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 100;
+    font-size: 12px;
+    box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
+    transition: opacity 0.3s;
+}
+
+.tooltip-custom:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

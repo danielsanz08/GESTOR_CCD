@@ -111,6 +111,90 @@
     <p>Se ha cerrado tu sesión</p>
 </div>
 {% endif %}
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf and mostrar_alerta %}
+  {% if bajo_stock_caf %}
+    <div id="stock-alert-caf" class="alert-overlay">
+      <div class="alert-box">
+        <p style="font-weight: bold; color: #000;">
+          ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
+        </p>
+        <button onclick="cerrarAlertaCaf()">Aceptar</button>
+        <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+          <button>Ver Productos</button>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+<style>
+  /* Overlay que cubre toda la pantalla */
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;  /* Valor altísimo para garantizar que esté encima */
+    backdrop-filter: blur(2px);  /* Efecto de desenfoque opcional */
+  }
+
+  /* Caja de la alerta */
+  .alert-box {
+    background: white;
+    padding: 25px 35px;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    z-index: 10000;  /* Mayor que el overlay por si acaso */
+    max-width: 90%;  /* Adaptabilidad en móviles */
+  }
+
+  /* Botones */
+  .alert-box button {
+    margin: 15px 10px 0;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+
+  .alert-box button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Bloquear scroll y clics detrás de la alerta */
+  body.alert-active {
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  body.alert-active .alert-overlay {
+    pointer-events: auto;  /* Solo la alerta es clickeable */
+  }
+</style>
+<script>
+  function cerrarAlertaCaf() {
+    const alerta = document.getElementById('stock-alert-caf');
+    alerta.style.display = 'none';
+    document.body.classList.remove('alert-active');  // Restaura el scroll
+  }
+
+  // Activar bloqueo al cargar la alerta
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('stock-alert-caf')) {
+      document.body.classList.add('alert-active');
+    }
+  });
+</script>
+
 <script>
     feather.replace();
 </script>

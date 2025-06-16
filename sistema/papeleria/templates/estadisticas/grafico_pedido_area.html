@@ -1,5 +1,5 @@
 {% extends 'navbar.html' %}
-{% block titulo %}Gráfica de pedidos por área y artículo{% endblock %}
+{% block titulo %}Gráfica de pedidos Administrativa{% endblock %}
 {% block contenido %}
 <style>
     #grafica {
@@ -16,6 +16,7 @@
         width: 80%;
         max-width: 800px;
         background-color: rgb(255, 255, 255);
+        border: 1px solid black;
         position: absolute;
         top: 29vh;
         left: 35vh;
@@ -50,23 +51,26 @@
         font-size: 22px;
     }
 
-    .btn-fecha {
-        background-color: #007bff;
-        color: white;
-        margin-left: 1vh;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        margin-top: 20vh;
-    }
+ .btn-fecha {
+    position: absolute; /* o fixed, dependiendo de tu necesidad */
+    background-color: #ffffff00;
+    color: rgb(0, 0, 0);
+    margin-left: 135vh;
+    margin-top: 30vh;
+    padding: 10px 20px;
+    border: 1px solid rgba(153, 134, 134, 0);
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 2000;
+}
 
-    .btn-fecha:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
-    }
+   .btn-fecha:hover {
+    transform: scale(1.05);
+    color: #007bff;
+}
+
 
     .form-fechas {
         display: flex;
@@ -101,10 +105,23 @@
     .form-fechas button,
     .form-fechas a {
         flex: 1;
+        color: black;
         padding: 8px 12px;
         border-radius: 6px;
         font-weight: bold;
         text-align: center;
+        border: 1px solid black;
+        background-color: white;
+    }
+    #btn-filtrar:hover{
+        background-color: #044080;
+        cursor: pointer;
+        color: white;
+    }
+    #btn-clean:hover{
+        background-color: #8a0101;
+        cursor: pointer;
+        color: white;
     }
 </style>
 
@@ -126,8 +143,8 @@
                     <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
                 </div>
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                    <a href="{% url 'papeleria:pedidos_administrativa' %}" class="btn btn-secondary">Limpiar</a>
+                    <button type="submit" id="btn-filtrar">Filtrar</button>
+                    <a href="{% url 'papeleria:pedidos_administrativa' %}" id="btn-clean">Limpiar</a>
                 </div>
             </form>
         </div>

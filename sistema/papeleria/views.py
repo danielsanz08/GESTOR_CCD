@@ -571,7 +571,7 @@ def grafica_pedidos_administrativa(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
-        {'name': 'Gráfico de pedidos por áreas', 'url': reverse('papeleria:pedidos_administrativa')},
+        {'name': 'Gráfico de pedidos Administrativa', 'url': reverse('papeleria:pedidos_administrativa')},
     ]
 
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -605,7 +605,7 @@ def grafica_pedidos_rues(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
-        {'name': 'Pedidos REGISTROS PÜBLICOS', 'url': reverse('papeleria:pedidos_rues')},
+        {'name': 'Pedidos RUES', 'url': reverse('papeleria:pedidos_rues')},
     ]
 
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -639,7 +639,7 @@ def grafica_pedidos_presidencia(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
-        {'name': 'Pedidos presidencia', 'url': reverse('papeleria:pedidos_presidencia')},
+        {'name': 'Pedidos Presidencia', 'url': reverse('papeleria:pedidos_presidencia')},
     ]
 
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -669,7 +669,8 @@ def grafica_pedidos_presidencia(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
-def grafica_pedidos_presidencia(request):
+@never_cache
+def grafica_pedidos_financiera(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
         {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},

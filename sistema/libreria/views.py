@@ -129,7 +129,7 @@ def crear_usuario(request):
                         messages.error(request, f"No se pudo enviar el correo: {e}")
 
                 messages.success(request, f"Usuario '{user.username}' creado exitosamente.")
-                return redirect('libreria:crear_usuario')
+                return redirect('libreria:inicio')
 
             except Exception as e:
                 messages.error(request, f"Hubo un error al crear el usuario: {e}")
@@ -170,7 +170,7 @@ def editar_usuario(request, user_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario actualizado correctamente.")
-            return redirect('libreria:ver_usuario', user_id=usuario.id)  # Aquí está el fix
+            return redirect('papeleria:index_pap')  # Aquí está el fix
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -252,12 +252,29 @@ def lista_usuarios(request):
         'usuarios': usuarios,
         'breadcrumbs': breadcrumbs
     })
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from .models import CustomUser
+
 def cambiar_estado_usuario(request, user_id):
     if request.method == 'POST':
         user = get_object_or_404(CustomUser, id=user_id)
-        user.is_active = 'is_active' in request.POST
-        user.save()
-        return redirect(reverse("libreria:lista_usuarios"))  # Redirige a la página de login
+        estado_anterior = user.is_active
+        nuevo_estado = 'is_active' in request.POST
+
+        if estado_anterior != nuevo_estado:
+            user.is_active = nuevo_estado
+            user.save()
+            
+            if nuevo_estado:
+                messages.success(request, f"El usuario '{user.username}' ha sido activado correctamente.")
+            else:
+                messages.error(request, f"El usuario '{user.username}' ha sido desactivado.")
+        else:
+            messages.info(request, f"El estado del usuario '{user.username}' no cambió.")
+
+        return redirect(reverse("libreria:lista_usuarios"))
 
 def cambiar_contraseña(request):
     breadcrumbs = [

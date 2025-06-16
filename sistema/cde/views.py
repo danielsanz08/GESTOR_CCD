@@ -41,15 +41,18 @@ def logout_cde(request):
 User = get_user_model()
 def ver_usuario_cde(request, id):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_caf'},
-        {'name': 'Ver usuario', 'url': reverse('cafeteria:ver_usuario_caf', kwargs={'id': id})},
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+        {'name': 'Ver usuario CDE', 'url': reverse('cde:ver_usuario_cde', kwargs={'id': id})},
     ]
     usuario = get_object_or_404(CustomUser, id=id)
     return render(request, 'usuario_cde/ver_perfil_cde.html', {'usuario': usuario, 'breadcrumbs': breadcrumbs})
 
 
 def index_cde(request):
-    return render(request, 'index_cde/index_cde.html')
+    breadcrumbs = [
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+    ]
+    return render(request, 'index_cde/index_cde.html',{'breadcrumbs': breadcrumbs})
 
 def crear_pedido_cde(request):
     breadcrumbs = [
@@ -157,8 +160,8 @@ def crear_pedido_cde(request):
 @login_required
 def mis_pedidos_cde(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-        {'name': 'Mis pedidos', 'url': reverse('cafeteria:mis_pedidos')},
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+        {'name': 'Mis pedidos cde', 'url': reverse('cde:mis_pedidos_cde')},
     ]
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
@@ -209,8 +212,8 @@ def cambiar_estado_pedido_cde(request, pedido_id):
 
 def pedidos_pendientes_cde(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-        {'name': 'Pedidos pendientes', 'url': reverse('cafeteria:pedidos_pendientes')},
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+        {'name': 'Pedidos pendientes cde', 'url': reverse('cde:pedidos_pendientes_cde')},
     ]
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
@@ -253,8 +256,8 @@ def pedidos_pendientes_cde(request):
 
 def mis_pedidos_pendientes_cde(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-         {'name': ' Mis Pedidos pendientes', 'url': reverse('cafeteria:mis_pedidos_pendientes')},
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+         {'name': ' Mis Pedidos pendientes cde', 'url': reverse('cde:mis_pedidos_pendientes_cde')},
         
     ]
     query = request.GET.get('q', '').strip()
@@ -295,8 +298,8 @@ def mis_pedidos_pendientes_cde(request):
 
 def listado_pedidos_cde(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_caf'},
-        {'name': 'Listado de pedidos', 'url': reverse('cafeteria:lista_pedidos_caf')},
+        {'name': 'Inicio CDE', 'url': '/index_cde'},
+        {'name': 'Listado de pedidos cde', 'url': reverse('cde:lista_pedidos_cde')},
     ]
 
     query = request.GET.get('q', '').strip()

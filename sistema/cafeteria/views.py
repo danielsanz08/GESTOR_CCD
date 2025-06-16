@@ -31,14 +31,15 @@ from django.contrib.auth.decorators import login_required
 from .models import Productos  # Asegúrate de que la ruta sea correcta
 @login_required(login_url='/acceso_denegado/')
 def index_caf(request):
-    es_cafeteria = True  # Puedes mantener esto si lo necesitas
+    es_cafeteria = True
+    mostrar_alerta = True  # Nueva variable
 
     context = {
         'es_cafeteria': es_cafeteria,
+        'mostrar_alerta': mostrar_alerta,
     }
 
     return render(request, 'index_caf/index_caf.html', context)
-
 
 # Create your views here.
 def ver_usuario_caf(request, id):

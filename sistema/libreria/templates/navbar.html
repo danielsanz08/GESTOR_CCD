@@ -348,97 +348,21 @@
     <h2 class="gestor">GESTOR CCD</h2>
     
   </div>
-<!-- Alerta de Papelería -->
-{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_pap %}
-  {% if es_papeleria and mostrar_alerta and bajo_stock %}
-    <div id="stock-alert" class="alert-overlay">
-      <div class="alert-box">
-        <p style="font-weight: bold; color: #000;">
-          ⚠️ ¡Atención! Hay artículos con stock menor a 10 unidades.
-        </p>
-        <button onclick="cerrarAlerta()">Aceptar</button>
-        <a href="{% url 'papeleria:lista_bajo_stock' %}">
-          <button>Ver</button>
-        </a>
-      </div>
-    </div>
-  {% endif %}
-{% endif %}
+
 
 
 
 <!-- Alerta de Cafetería -->
-{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf %}
-  {% if mostrar_alerta_caf and bajo_stock_caf %}
-    <div id="stock-alert-caf" class="alert-overlay">
-      <div class="alert-box">
-        <p style="font-weight: bold; color: #000;">
-          ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
-        </p>
-        <button onclick="cerrarAlertaCaf()">Aceptar</button>
-        <a href="{% url 'cafeteria:lista_bajo_stock' %}">
-          <button>Ver Productos</button>
-        </a>
-      </div>
-    </div>
-  {% endif %}
-{% endif %}
 
 
-<script>
-function cerrarAlertaCaf() {
-  document.getElementById('stock-alert-caf').style.display = 'none';
-}
-</script>
 
 <script>
 
 </script>
 
 
-  <style>
-    .alert-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
 
-    .alert-box {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-
-    .alert-box button {
-      margin-top: 15px;
-      padding: 8px 15px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .alert-box button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-
-  <script>
-    function cerrarAlerta() {
-      document.getElementById("stock-alert").style.display = "none";
-    }
-  </script>
-
+ 
 
   <div class="container">
     {% block contenido %}

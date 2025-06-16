@@ -129,7 +129,7 @@ def crear_usuario(request):
                         messages.error(request, f"No se pudo enviar el correo: {e}")
 
                 messages.success(request, f"Usuario '{user.username}' creado exitosamente.")
-                return redirect('libreria:inicio')
+                return redirect('libreria:crear_usuario')
 
             except Exception as e:
                 messages.error(request, f"Hubo un error al crear el usuario: {e}")

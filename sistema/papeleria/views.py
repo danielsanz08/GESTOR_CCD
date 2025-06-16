@@ -63,6 +63,7 @@ def login_papeleria(request):
         if user is not None:
             if user.is_active and getattr(user, 'acceso_pap', False):
                 login(request, user)
+                messages.success(request, "¡Inicio de sesión exitoso!")
                 return redirect('papeleria:index_pap')
             else:
                 messages.error(request, "No tienes permiso para acceder a este módulo.")
@@ -75,6 +76,7 @@ def login_papeleria(request):
 @login_required(login_url='/acceso_denegado/')
 def logout_view(request):
     request.session.flush()  # borra toda la sesión y regenera session_key
+    messages.success(request, "Has cerrado sesión correctamente.")
     response = redirect('libreria:inicio')
     response.delete_cookie('sessionid')
     return response

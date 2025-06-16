@@ -23,35 +23,120 @@
         z-index: 0;
     }
 
+    .modal-fechas {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        min-width: 320px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    .close-modal {
+        float: right;
+        cursor: pointer;
+        font-weight: bold;
+        color: red;
+        font-size: 22px;
+    }
+
+    .btn-fecha {
+        background-color: #007bff;
+        color: white;
+        margin-left: 1vh;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 20vh;
+    }
+
+    .btn-fecha:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
     .form-fechas {
-        position: absolute;
-        top: 10vh;
-        left: 10vh;
-        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .form-fechas label {
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    .form-fechas input[type="date"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border-color 0.3s;
+    }
+
+    .form-fechas input[type="date"]:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    .form-fechas .mt-3 {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .form-fechas button,
+    .form-fechas a {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
     }
 </style>
 
 <div class="estadisticas-container">
-    <!-- Formulario de fechas -->
-    <form method="get" class="form-fechas">
-        <div>
-            <label for="fecha_inicio">Fecha inicio:</label>
-            <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ fecha_inicio }}">
+    <!-- Botón para mostrar modal -->
+    <button class="btn-fecha" onclick="mostrarModal()">Buscar por fecha</button>
+
+    <!-- Modal -->
+    <div id="modalFechas" class="modal-fechas">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            <form method="get" class="form-fechas">
+                <div>
+                    <label for="fecha_inicio">Fecha inicio:</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ fecha_inicio }}">
+                </div>
+                <div>
+                    <label for="fecha_fin">Fecha fin:</label>
+                    <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <a href="{% url 'papeleria:pedidos_administrativa' %}" class="btn btn-secondary">Limpiar</a>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="fecha_fin">Fecha fin:</label>
-            <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-            <a href="{% url 'papeleria:pedidos_administrativa' %}" class="btn btn-secondary">Limpiar</a>
-        </div>
-    </form>
+    </div>
 
     <!-- Gráfica -->
     <div class="cuadradoFondo">
         <div id="grafica">
-            <h2>Gráfica de pedidos por área y artículo</h2>
+            <h2>Gráfica de pedidos Administrativa</h2>
             <canvas id="graficaPedidos"></canvas>
         </div>
     </div>
@@ -64,9 +149,11 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Obtener datos desde el HTML
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
 
+    // Crear gráfica de barras
     const ctx = document.getElementById('graficaPedidos').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -87,9 +174,9 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        stepSize: 10,  // Puedes ajustar esto según tus datos
+                        stepSize: 10,
                         callback: function(value) {
-                            return value; // No mostrar decimales
+                            return value;
                         }
                     },
                     title: {
@@ -109,5 +196,21 @@
             }
         }
     });
+
+    // Funciones para el modal
+    function mostrarModal() {
+        document.getElementById('modalFechas').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalFechas').style.display = 'none';
+    }
+
+    // (Opcional) Cerrar con la tecla ESC
+    // document.addEventListener('keydown', function(e) {
+    //     if (e.key === 'Escape') {
+    //         cerrarModal();
+    //     }
+    // });
 </script>
 {% endblock %}

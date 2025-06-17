@@ -23,7 +23,8 @@ DEBUG = True
 #DEBUG = False
 
 
-ALLOWED_HOSTS = ['192.168.1.8', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.10', 'localhost', '127.0.0.1']
+
 
 
 

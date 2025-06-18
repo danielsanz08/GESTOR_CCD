@@ -10,85 +10,126 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  /* 2 tarjetas por fila */
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  /* Alinear verticalmente */
-  padding: 20px;
-  text-align: center;
-}
-
-.card {
-  position: relative;
-  width: 500px;
-  /* Más rectangulares */
-  height: 150px;
-  /* Menos altas */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  left: 23vh;
-  cursor: pointer;
-  background: linear-gradient(to bottom, #1791b68e, #157d9cbd);
-  border: 1px solid rgba(0, 0, 0, 0.199);
-}
-
-.card:hover {
-  transform: scale(1.05);
-  background: linear-gradient(to bottom, #1cabd6, #1791b68e);
-  border: 2px solid rgba(14, 79, 133, 0.192);
-}
-
-
-
-.card h2 {
-  top: 10px;
-  font-size: 18px;
-}
-
-h2{
-  color: white;
-  
-}
 /* Móviles (hasta 767px) */
 @media (max-width: 767px) {
   .container {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  text-align: center;
-  margin-top: -3vh;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+    margin-top: 2vh;
+  }
+
+  .card {
+    position: relative;
+    width: 300px;
+    /* Más rectangulares */
+    height: 100px;
+    /* Menos altas */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    left: 23vh;
+    cursor: pointer;
+    background: linear-gradient(to bottom, #1791b68e, #157d9cbd);
+    border: 1px solid rgba(0, 0, 0, 0.199);
+    margin-right: 47vh;
+  }
 }
-.card {
-  position: relative;
-  width: 300px;
-  /* Más rectangulares */
-  height: 100px;
-  /* Menos altas */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  left: 23vh;
-  cursor: pointer;
-  background: linear-gradient(to bottom, #1791b68e, #157d9cbd);
-  border: 1px solid rgba(0, 0, 0, 0.199);
-  margin-right: 47vh;
+
+/* Tablets (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+   .container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+    margin-top: 2vh;
+  }
+  .card {
+    position: relative;
+    width: 50vh;
+    /* Más rectangulares */
+    height: 150px;
+    /* Menos altas */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    left: 23vh;
+    cursor: pointer;
+    background: linear-gradient(to bottom, #1791b68e, #157d9cbd);
+    border: 1px solid rgba(0, 0, 0, 0.199);
+    margin-right: 47vh;
+  }
 }
+
+/* Escritorio (1025px en adelante) */
+@media (min-width: 1025px) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 tarjetas por fila */
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    /* Alinear verticalmente */
+    padding: 20px;
+    text-align: center;
+  }
+
+  .card {
+    width: 500px;
+    /* Más rectangulares */
+    height: 150px;
+    /* Menos altas */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 10px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    cursor: pointer;
+    background: linear-gradient(to bottom, #1791b68e, #157d9cbd);
+    border: 1px solid rgba(0, 0, 0, 0.199);
+    margin-left: 11vh;
+    margin-right: 5vh;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to bottom, #1cabd6, #1791b68e);
+    border: 2px solid rgba(14, 79, 133, 0.192);
+  }
+
+
+
+  .card h2 {
+    top: 10px;
+    font-size: 18px;
+  }
+
+  h2 {
+    color: white;
+
+  }
 }

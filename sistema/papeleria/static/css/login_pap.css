@@ -154,10 +154,9 @@ html {
   }
 }
 
-/* Escritorio (1025px en adelante) */
-@media (min-width: 1025px) {
-.login {
-    background: rgba(255, 255, 255, 0.747); /* Fondo blanco con transparencia */
+@media (min-width: 768px) {
+  .login {
+    background: rgba(255, 255, 255, 0.747);
     padding: 30px 30px 30px 30px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -165,21 +164,24 @@ html {
     text-align: center;
     position: absolute;
     top: 27vh;
-    right: 75vh;
+    left: 50%;
+    transform: translateX(-50%);
   }
-   .password-label, .email-label{
+  .password-label, .email-label {
     font-weight: bold;
   }
-   h3 {
+  h3 {
     margin-bottom: 20px;
     color: #333;
     font-weight: bold;
   }
-    input {
+  input {
     width: 52vh;
+    max-width: 97%; /* Añadido max-width para limitar el ancho */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
+    
     border-radius: 20px;
     font-size: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -195,22 +197,19 @@ html {
     font-size: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
-  
   #btn:hover {
     background: #0056b3;
   }
-   /* Enlace de contraseña */
   a {
     display: block;
     margin-top: 10px;
     color: #000000;
     text-decoration: none;
   }
-  
   a:hover {
     text-decoration: underline;
   }
-.op{
-  color: rgb(0, 0, 0);
-}
+  .op {
+    color: rgb(0, 0, 0);
+  }
 }

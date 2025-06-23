@@ -29,6 +29,20 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 
 from .models import Productos  # Asegúrate de que la ruta sea correcta
+def error_404_view(request, exception):
+    return render(request, 'acceso_denegado.html', status=404)
+def timeouterror(request):
+    try:
+        # Simulación de una operación que puede causar un TimeoutError
+        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
+        raise TimeoutError("Error de tiempo de espera")  # Simulación
+
+        # Si no ocurre error, puedes devolver otro template si lo deseas
+        return render(request, 'exito.html')
+
+    except TimeoutError:
+        # Solo captura TimeoutError y redirige a lan_error.html
+        return render(request, 'lan_error.html')
 @login_required(login_url='/acceso_denegado/')
 def index_caf(request):
     es_cafeteria = True
@@ -70,23 +84,26 @@ def login_cafeteria(request):
 def crear_producto(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-         {'name': 'Crear producto', 'url': reverse('cafeteria:crear_producto')},
-        
+        {'name': 'Crear producto', 'url': reverse('cafeteria:crear_producto')},
     ]
+
     if request.method == 'POST':
         form = ProductoForm(request.POST)
-        if form.is_valid():  # Si el formulario es válido
-            producto = form.save(commit=False)  # Crear objeto pero no guardar aún
-            producto.registrado_por = request.user  # Asignar el usuario que lo registra
-            producto.save()  # Guardar el artículo
+        if form.is_valid():
+            producto = form.save(commit=False)
+            producto.registrado_por = request.user
+            producto.save()
+            messages.success(request, '¡Producto creado exitosamente!')
             return redirect('cafeteria:listar_productos')
-
-  # Redirigir al listado de artículos
+        else:
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
     else:
-        form = ProductoForm()  # Crear un formulario vacío si es un GET
-    
-    return render(request, 'productos/crear_producto.html', {'form': form, 'breadcrumbs': breadcrumbs})
+        form = ProductoForm()
 
+    return render(request, 'productos/crear_producto.html', {
+        'form': form,
+        'breadcrumbs': breadcrumbs
+    })
 def listar_productos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
@@ -479,38 +496,43 @@ def crear_pedido_caf(request):
         try:
             estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
 
-            # Crear el pedido principal
-            pedido = Pedido.objects.create(
-                registrado_por=request.user,
-                estado=estado,
-            )
-
             productos_ids = request.POST.getlist('producto')
             cantidades = request.POST.getlist('cantidad')
             lugares = request.POST.getlist('lugar')
 
             area_usuario = getattr(request.user, 'area', 'No establecido')
 
+            # Validar stock antes de crear el pedido
+            for producto_id, cantidad in zip(productos_ids, cantidades):
+                if not producto_id or not cantidad:
+                    continue
+                try:
+                    producto_id = int(producto_id)
+                    cantidad = int(cantidad)
+                    producto = Productos.objects.get(id=producto_id)
+                    if estado == 'Confirmado' and producto.cantidad < cantidad:
+                        messages.error(request, f"No hay suficiente stock para el producto: {producto.nombre}. Stock disponible: {producto.cantidad}.")
+                        return redirect('cafeteria:crear_pedido_caf')
+                except (ValueError, Productos.DoesNotExist):
+                    messages.error(request, "Producto inválido o cantidad no válida.")
+                    return redirect('cafeteria:crear_pedido_caf')
+
+            # Crear el pedido principal
+            pedido = Pedido.objects.create(
+                registrado_por=request.user,
+                estado=estado,
+            )
+
             for producto_id, cantidad, lugar in zip(productos_ids, cantidades, lugares):
                 try:
                     if not producto_id or not cantidad or not lugar:
                         continue
 
-                    # Validar que el ID y cantidad sean numéricos
                     producto_id = int(producto_id)
                     cantidad = int(cantidad)
 
                     producto = Productos.objects.get(id=producto_id)
 
-                    if estado == 'Confirmado' and producto.cantidad < cantidad:
-                        pedido.delete()
-                        return render(request, 'pedidos/pedidos.html', {
-                            'productos': Productos.objects.all(),
-                            'error': f"No hay suficiente stock para el producto: {producto.nombre}",
-                            'breadcrumbs': breadcrumbs
-                        })
-
-                    # Crear el producto del pedido
                     PedidoProducto.objects.create(
                         pedido=pedido,
                         producto=producto,
@@ -527,7 +549,7 @@ def crear_pedido_caf(request):
                     print(f"Error al procesar producto: {e}")
                     continue
 
-            # Notificar a administradores para pedidos de Empleados y Administradores
+            # Notificar a administradores
             if request.user.role in ['Empleado', 'Administrador']:
                 admin_users = User.objects.filter(role='Administrador', is_active=True)
                 admin_emails = [admin.email for admin in admin_users if admin.email]
@@ -556,23 +578,19 @@ def crear_pedido_caf(request):
                         fail_silently=False,
                     )
 
-            # Redirigir a la vista de pedidos pendientes para todos los roles
+            messages.success(request, f"Pedido creado exitosamente con estado: {estado}.")
             return redirect('cafeteria:mis_pedidos')
 
         except Exception as e:
             print(f"Error al crear pedido: {e}")
-            return render(request, 'pedidos/pedidos_caf.html', {
-                'productos': Productos.objects.all(),
-                'error': "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.",
-                'breadcrumbs': breadcrumbs
-            })
+            messages.error(request, "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.")
+            return redirect('cafeteria:crear_pedido_caf')
 
     productos = Productos.objects.all()
     return render(request, 'pedidos/pedidos_caf.html', {
         'productos': productos,
         'breadcrumbs': breadcrumbs
     })
-
 @login_required
 def mis_pedidos(request):
     breadcrumbs = [

@@ -33,7 +33,21 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 User = get_user_model()
 def acceso_denegado(request):
     return render(request, 'acceso_denegado.html')
+def error_404_view(request, exception):
+    return render(request, 'acceso_denegado.html', status=404)
+def timeouterror(request):
+    try:
+        # Simulación de una operación que puede causar un TimeoutError
+        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
+        raise TimeoutError("Error de tiempo de espera")  # Simulación
 
+        # Si no ocurre error, puedes devolver otro template si lo deseas
+        return render(request, 'exito.html')
+
+    except TimeoutError:
+        # Solo captura TimeoutError y redirige a lan_error.html
+        return render(request, 'lan_error.html')
+    
 def inicio(request):
     return render(request, 'index/index.html')
 
@@ -72,9 +86,10 @@ def crear_usuario(request):
                     if admin_count >= limit:
                         messages.error(
                             request,
-                            f"Ya existen {limit} administradores activos en el sistema."
+                            f"No puedes registrarte como administrador. Inténtalo como empleado."
                         )
-                        return redirect('crear_usuario')
+                        return redirect('libreria:crear_usuario')
+
 
                     # Asignar todos los permisos a los administradores
                     user.acceso_pap = True
@@ -113,9 +128,9 @@ def crear_usuario(request):
                         f"  - Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
                         f"  - Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
                         f"  - Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
-                        f"Si algún administrador desea desactivar este usuario, puede hacerlo desde el panel.\n\n"
+                        f"Si  desea desactivar este usuario, puede hacerlo desde el panel.\n\n"
                         f"Saludos,\n"
-                        f"Equipo de Gestor CCD"
+                        f"El equipo de Gestor CCD le desea un feliz día"
                     )
                     try:
                         send_mail(
@@ -157,25 +172,37 @@ def ver_usuario(request, user_id):
 
 
 def editar_usuario(request, user_id):
+    usuario = get_object_or_404(CustomUser, id=user_id)
+
+    # Intentar generar las URLs del breadcrumb de forma segura
+    try:
+        ver_usuario_url = reverse('libreria:ver_usuario', kwargs={'user_id': user_id})
+    except NoReverseMatch:
+        ver_usuario_url = '#'
+        messages.warning(request, "No se pudo generar el enlace a 'Ver usuario'.")
+
+    try:
+        editar_usuario_url = reverse('libreria:editar_usuario', kwargs={'user_id': user_id})
+    except NoReverseMatch:
+        editar_usuario_url = '#'
+        messages.warning(request, "No se pudo generar el enlace a 'Editar usuario'.")
 
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Ver usuario', 'url': reverse('libreria:ver_usuario', kwargs={'user_id': user_id})},
-        {'name': 'Editar usuario', 'url': reverse('libreria:editar_usuario', kwargs={'user_id': user_id})},
+        {'name': 'Ver usuario', 'url': ver_usuario_url},
+        {'name': 'Editar usuario', 'url': editar_usuario_url},
     ]
-    usuario = get_object_or_404(CustomUser, id=user_id)
 
     if request.method == 'POST':
         form = CustomUserEditForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario actualizado correctamente.")
-            return redirect('papeleria:index_pap')  # Aquí está el fix
+            return redirect('libreria:inicio')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field}: {error}")
-
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
         form = CustomUserEditForm(instance=usuario)
 
@@ -184,9 +211,6 @@ def editar_usuario(request, user_id):
         'usuario': usuario,
         'breadcrumbs': breadcrumbs
     })
-
-
-
 def lista_usuarios(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

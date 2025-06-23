@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 # Create your models here.
 class Articulo(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
+    nombre = models.CharField(max_length=100)
     marca = models.CharField(max_length=50, null=False, blank=False)
     observacion = models.TextField(max_length=30,blank=True, null=True)
     tipo = models.CharField(max_length=50, null=True, blank=True, default='No establecido')

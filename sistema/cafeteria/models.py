@@ -10,7 +10,7 @@ class Productos(models.Model):
         ('Onzas', 'Onzas'),
         ('Unidad', 'Unidad'),
     ]
-    nombre = models.CharField(max_length=100, unique=True)
+    nombre = models.CharField(max_length=100)
     marca = models.CharField(max_length=50, null=False, blank=False)
     precio = models.PositiveBigIntegerField(null=False, blank=False)
     cantidad = models.PositiveIntegerField()

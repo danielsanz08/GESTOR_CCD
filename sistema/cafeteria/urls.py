@@ -25,7 +25,9 @@ urlpatterns = [
     path('pedidos_caf/lista_pedidos/', views.listado_pedidos_caf, name='lista_pedidos_caf'),
     path("reporte_productos_pdf_caf", views.reporte_pedidos_pdf_caf, name="reporte_pedidos_caf_pdf"),
     path("reporte_productos_excel_caf", views.reporte_pedidos_excel_caf, name="reporte_pedidos_caf_xsls"),
+     path('timeout/', views.timeouterror, name='timeouterror'),
 ]
+handler404 = 'cafeteria.views.error_404_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

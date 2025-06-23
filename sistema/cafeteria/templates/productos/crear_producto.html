@@ -3,10 +3,6 @@
 {% block titulo %}Crear producto{% endblock %}
 
 {% block contenido %}
-<style>
-
-</style>
-
 <link rel="stylesheet" href="{% static 'css/crear_producto.css' %}?v={% now 'U' %}">
 
 <div class="formulario">
@@ -38,7 +34,7 @@
             <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Digite la marca del producto">
             <div class="error-msg error-marca"></div>
         </div>
-        
+
         <div class="mb-3">
             <label for="id_precio" class="form-label">Digite el precio</label>
             <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del producto">
@@ -62,7 +58,7 @@
             <input type="text" name="presentacion" id="id_presentacion" class="form-control" placeholder="Digite una presentación del producto">
             <div class="error-msg error-presentacion"></div>
         </div>
-        
+
         <button type="submit" class="btn" id="submit_btn">Registrar</button>
     </form>
 </div>
@@ -91,7 +87,7 @@
 
         function validarTexto(valor) {
             if (valor.trim().length > 0 && valor.length < 3) return "Debe tener más de 3 caracteres.";
-            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?"'()\-]*$/.test(valor)) return "Solo letras y signos permitidos.";
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?"'()\/\-]*$/.test(valor)) return "Solo letras y signos permitidos.";
             if (/(.)\1{2,}/.test(valor)) return "No repita caracteres más de 2 veces.";
             return "";
         }
@@ -123,20 +119,27 @@
             return entero + decimal;
         }
 
-        function bloquearNumeros(input, campo) {
+        function capitalizar(valor) {
+            return valor
+                .toLowerCase()
+                .replace(/\b\w/g, letra => letra.toUpperCase());
+        }
+
+        function manejarCampoTexto(input, campo) {
             input.addEventListener("input", function () {
-                this.value = this.value.replace(/[0-9]/g, "");
+                let valor = this.value.replace(/[0-9]/g, "");
+                this.value = capitalizar(valor);
                 const mensaje = validarTexto(this.value);
                 mostrarError(campo, this.value.trim() ? mensaje : "");
             });
         }
 
-        bloquearNumeros(campos.nombre, "nombre");
-        bloquearNumeros(campos.marca, "marca");
-        bloquearNumeros(campos.proveedor, "proveedor");
+        manejarCampoTexto(campos.nombre, "nombre");
+        manejarCampoTexto(campos.marca, "marca");
+        manejarCampoTexto(campos.proveedor, "proveedor");
 
         campos.presentacion.addEventListener("input", function () {
-            this.value = this.value.replace(/[0-9]/g, "");
+            this.value = capitalizar(this.value.replace(/[0-9]/g, ""));
             const mensaje = validarPresentacion(this.value);
             mostrarError("presentacion", this.value.trim() ? mensaje : "");
         });
@@ -162,6 +165,12 @@
 
         document.querySelector("form").addEventListener("submit", function (e) {
             campos.precio.value = campos.precio.value.replace(/,/g, "");
+
+            // Capitalizar todos los campos antes de enviar
+            campos.nombre.value = capitalizar(campos.nombre.value);
+            campos.marca.value = capitalizar(campos.marca.value);
+            campos.proveedor.value = capitalizar(campos.proveedor.value);
+            campos.presentacion.value = capitalizar(campos.presentacion.value);
 
             let valid = true;
 

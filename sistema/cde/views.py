@@ -18,6 +18,20 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 # Create your views here.
 # Ejemplo para el login de papelería
+def timeouterror(request):
+    try:
+        # Simulación de una operación que puede causar un TimeoutError
+        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
+        raise TimeoutError("Error de tiempo de espera")  # Simulación
+
+        # Si no ocurre error, puedes devolver otro template si lo deseas
+        return render(request, 'exito.html')
+
+    except TimeoutError:
+        # Solo captura TimeoutError y redirige a lan_error.html
+        return render(request, 'lan_error.html')
+def error_404_view(request, exception):
+    return render(request, 'acceso_denegado.html', status=404)
 def login_cde(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -121,7 +135,7 @@ def crear_pedido_cde(request):
                     subject = "Nuevo pedido registrado por un usuario"
                     message = (
                         f"Hola querido administrador,\n\n"
-                        f"Desde el módulo de Papelería te informamos que el usuario '{request.user.username}' "
+                        f"Desde el módulo de Centro de eventos te informamos que el usuario '{request.user.username}' "
                         f"ha realizado un nuevo pedido.\n\n"
                         f"Información del pedido:\n"
                         f"Usuario: {request.user.username}\n"

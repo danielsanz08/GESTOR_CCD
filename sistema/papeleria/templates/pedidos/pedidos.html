@@ -12,7 +12,6 @@
     <form method="post">
         {% csrf_token %}
 
-        <!-- Campo área oculto -->
         <div class="mb-3">
             <label class="form-label">Área:</label>
             <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
@@ -23,7 +22,12 @@
                 <select name="articulo" required>
                     <option value="">-- Seleccionar Artículo --</option>
                     {% for articulo in articulos %}
-                        <option value="{{ articulo.id }}">{{ articulo.nombre }} ({{ articulo.cantidad }})</option>
+                        {% if articulo.cantidad > 0 %}
+                            <option value="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}"
+                                {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
+                                {{ articulo.nombre }} ({{ articulo.cantidad }})
+                            </option>
+                        {% endif %}
                     {% endfor %}
                 </select>
 
@@ -31,9 +35,14 @@
                     <select name="tipo_articulo" required>
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
-                            <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}" >
-                                {{ articulo.tipo }} ({{ articulo.nombre }})
-                            </option>
+                            {% if articulo.cantidad > 0 %}
+                                <option value="{{ articulo.tipo }}"
+                                        data-articulo="{{ articulo.id }}"
+                                        data-cantidad="{{ articulo.cantidad }}"
+                                        {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
+                                    {{ articulo.tipo }} ({{ articulo.nombre }})
+                                </option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -48,9 +57,8 @@
 </section>
 
 <style>
-    option.no-allowed {
+    .rojo {
         color: red;
-        cursor: not-allowed;
     }
 
     .btn-eliminar-articulo {
@@ -77,14 +85,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (let i = 0; i < selectTipo.options.length; i++) {
             const option = selectTipo.options[i];
+            const idRelacionado = option.getAttribute('data-articulo');
+            const cantidad = parseInt(option.getAttribute('data-cantidad')) || 0;
+
             if (option.value === "") {
                 option.disabled = false;
+                option.hidden = false;
                 option.classList.remove('no-allowed');
-            } else if (option.getAttribute('data-articulo') === articuloSeleccionado) {
+            } else if (idRelacionado === articuloSeleccionado) {
                 option.disabled = false;
+                option.hidden = false;
                 option.classList.remove('no-allowed');
+                if (cantidad < 10) {
+                    option.classList.add('rojo');
+                } else {
+                    option.classList.remove('rojo');
+                }
             } else {
                 option.disabled = true;
+                option.hidden = true;
                 option.classList.add('no-allowed');
             }
         }
@@ -92,6 +111,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex].getAttribute('data-articulo') !== articuloSeleccionado) {
             selectTipo.value = "";
         }
+
+        actualizarValidacionCantidad(form); // actualiza validación al cambiar artículo
+    }
+
+    function actualizarValidacionCantidad(form) {
+        const selectArticulo = form.querySelector('select[name="articulo"]');
+        const inputCantidad = form.querySelector('input[name="cantidad"]');
+
+        inputCantidad.addEventListener('input', function () {
+            const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+            const valorIngresado = parseInt(this.value);
+
+            if (valorIngresado > cantidadDisponible) {
+                this.value = "";
+            }
+        });
     }
 
     function inicializarFormulario(form, incluirEliminar = false) {
@@ -113,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         actualizarTipos(form);
+        actualizarValidacionCantidad(form);
     }
 
     const defaultForm = document.querySelector('.articulo-form.default-form');

@@ -33,6 +33,21 @@ from xhtml2pdf import pisa
 User = get_user_model()
 #ACCESO DENEGADO
 #INDEX DE PAPELERIA
+def error_404_view(request, exception):
+    return render(request, 'acceso_denegado.html', status=404)
+def timeouterror(request):
+    try:
+        # Simulación de una operación que puede causar un TimeoutError
+        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
+        raise TimeoutError("Error de tiempo de espera")  # Simulación
+
+        # Si no ocurre error, puedes devolver otro template si lo deseas
+        return render(request, 'exito.html')
+
+    except TimeoutError:
+        # Solo captura TimeoutError y redirige a lan_error.html
+        return render(request, 'lan_error.html')
+    
 @never_cache
 @login_required(login_url='/acceso_denegado/')
 def index_pap(request):
@@ -85,20 +100,27 @@ def logout_view(request):
 def crear_articulo(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-         {'name': 'Crear artículo', 'url': reverse('papeleria:crear_articulo')},
-        
+        {'name': 'Crear artículo', 'url': reverse('papeleria:crear_articulo')},
     ]
+
     if request.method == 'POST':
         form = ArticuloForm(request.POST)
-        if form.is_valid():  # Si el formulario es válido
-            articulo = form.save(commit=False)  # Crear objeto pero no guardar aún
-            articulo.registrado_por = request.user  # Asignar el usuario que lo registra
-            articulo.save()  # Guardar el artículo
-            return redirect('papeleria:listar_articulo')  # Redirigir al listado de artículos
+        if form.is_valid():
+            articulo = form.save(commit=False)
+            articulo.registrado_por = request.user
+            articulo.save()
+            messages.success(request, 'Artículo creado exitosamente.')
+            return redirect('papeleria:listar_articulo')
+        else:
+            messages.error(request, 'Hubo errores en el formulario. Por favor verifica los campos.')
+
     else:
-        form = ArticuloForm()  # Crear un formulario vacío si es un GET
-    
-    return render(request, 'articulo/crear_articulo.html', {'form': form, 'breadcrumbs': breadcrumbs})
+        form = ArticuloForm()
+
+    return render(request, 'articulo/crear_articulo.html', {
+        'form': form,
+        'breadcrumbs': breadcrumbs
+    })
 
 def editar_articulo(request, articulo_id):
     breadcrumbs = [
@@ -253,11 +275,8 @@ def crear_pedido(request):
 
                 if estado == 'Confirmado' and articulo.cantidad < cantidad:
                     pedido.delete()
-                    return render(request, 'pedidos/pedidos.html', {
-                        'articulos': Articulo.objects.all(),
-                        'breadcrumbs': breadcrumbs,
-                        'error': f"No hay suficiente stock para el artículo: {articulo.nombre}"
-                    })
+                    messages.error(request, f"No hay suficiente stock para el artículo: {articulo.nombre} (disponible: {articulo.cantidad}, solicitado: {cantidad})")
+                    return redirect('papeleria:crear_pedido')
 
                 if estado == 'Confirmado':
                     articulo.cantidad -= cantidad
@@ -297,6 +316,8 @@ def crear_pedido(request):
                 fail_silently=False,
             )
 
+        messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
+
         if request.user.role == 'Empleado':
             return redirect('papeleria:pedidos_pendientes')
         else:
@@ -307,7 +328,6 @@ def crear_pedido(request):
         'articulos': articulos,
         'breadcrumbs': breadcrumbs,
     })
-
 def mis_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -549,18 +569,34 @@ def graficas_usuario(request):
 def grafica_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Estadisticas', 'url': reverse('papeleria:index_estadistica')}, 
-        {'name': 'Grafico de estado de pedidos', 'url': reverse('papeleria:grafica_pedidos')}, 
+        {'name': 'Estadísticas', 'url': reverse('papeleria:index_estadistica')},
+        {'name': 'Gráfico de estado de pedidos', 'url': reverse('papeleria:grafica_pedidos')},
     ]
-    pendientes = Pedido.objects.filter(estado='Pendiente').count()
-    confirmados = Pedido.objects.filter(estado='Confirmado').count()
-    cancelados = Pedido.objects.filter(estado= 'Cancelado').count()
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = Pedido.objects.all()
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+
+    pendientes = pedidos.filter(estado='Pendiente').count()
+    confirmados = pedidos.filter(estado='Confirmado').count()
+    cancelados = pedidos.filter(estado='Cancelado').count()
 
     nombres = ['Pendiente', 'Confirmado', 'Cancelado']
     cantidades = [pendientes, confirmados, cancelados]
-    return render(request, 'estadisticas/grafica_estado_pendiente.html',{'nombres':nombres,
-                                                                         'cantidades':cantidades,
-                                                                'breadcrumbs': breadcrumbs} )
+
+    return render(request, 'estadisticas/grafica_estado_pendiente.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
 
 from django.shortcuts import render
 from django.db.models import Sum

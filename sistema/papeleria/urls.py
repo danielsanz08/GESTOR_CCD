@@ -46,6 +46,9 @@ urlpatterns = [
      path('reporte_pedidos_excel/', views.reporte_pedidos_excel, name='reporte_pedidos_excel'),
      path('reporte_bajo_stock_pdf/', views.reporte_articulo_bajo_stock_pdf, name='reporte_articulo_bajo_stock_pdf'),
      path('reporte_articulo_bajo_stock_excel/', views.reporte_articulo_bajo_stock_excel, name='reporte_articulo_bajo_stock_excel'),
+      path('timeout/', views.timeouterror, name='timeouterror'),
 ]
+handler404 = 'papeleria.views.error_404_view'
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

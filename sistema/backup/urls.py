@@ -12,7 +12,10 @@ urlpatterns = [
     path('descargar/<int:id>/', views.descargar_backup, name='descargar_backup'),
     path('eliminar/<int:id>/', views.eliminar_backup, name='eliminar_backup'),
     path('importar/', views.importar_backup_view, name='importar'),
+     path('timeout/', views.timeouterror, name='timeouterror'),
 
     # ✅ CORRECTO: apunta a la vista que maneja el request
     path('exportar/', views.exportar, name='exportar_backup'),
 ]
+handler404 = 'backup.views.error_404_view'
+

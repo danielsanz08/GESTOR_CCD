@@ -15,7 +15,9 @@ urlpatterns = [
     path('pedidos_cde/mis_pedidos_pendientes_cde/', views.mis_pedidos_pendientes_cde, name='mis_pedidos_pendientes_cde'),
     path('pedidos_caf/lista_pedidos_cde/', views.listado_pedidos_cde, name='lista_pedidos_cde'),
     path('ver_perfil_cde/<int:id>/', views.ver_usuario_cde, name='ver_usuario_cde'),
+     path('timeout/', views.timeouterror, name='timeouterror'),
 ]
+handler404 = 'cde.views.error_404_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

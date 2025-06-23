@@ -30,8 +30,10 @@ urlpatterns = [
     #estadisticas
   path('sesion_expirada/', views.sesion_expirada, name='sesion_expirada'),
   path('manual de usuario/', views.manual_usuario_view, name='manual_usuario'),
+   path('timeout/', views.timeouterror, name='timeouterror'),
 
 ]
+handler404 = 'libreria.views.error_404_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

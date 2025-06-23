@@ -19,7 +19,20 @@ import logging
 
 # Configuración de logging
 logger = logging.getLogger(__name__)
+def error_404_view(request, exception):
+    return render(request, 'acceso_denegado.html', status=404)
+def timeouterror(request):
+    try:
+        # Simulación de una operación que puede causar un TimeoutError
+        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
+        raise TimeoutError("Error de tiempo de espera")  # Simulación
 
+        # Si no ocurre error, puedes devolver otro template si lo deseas
+        return render(request, 'exito.html')
+
+    except TimeoutError:
+        # Solo captura TimeoutError y redirige a lan_error.html
+        return render(request, 'lan_error.html')
 @login_required(login_url='/acceso_denegado/')
 def index_backup(request):
     breadcrumbs = [
@@ -28,7 +41,7 @@ def index_backup(request):
     ]
     return render(request, 'backup/index.html', {'breadcrumbs': breadcrumbs})
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def lista_backups(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -72,7 +85,7 @@ def lista_backups(request):
         'fecha_fin': fecha_fin_str
     })
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def crear_nuevo_backup(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -107,8 +120,16 @@ def crear_nuevo_backup(request):
 
     return render(request, 'backup/crear.html', {'breadcrumbs': breadcrumbs})
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def restaurar_backup_view(request, id):
+    # Guardar información del usuario antes de la restauración (para mensajes de error)
+    user_id = request.user.id
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Backup', 'url': reverse('backup:index_backup')},
+        {'name': 'Restaurar backup', 'url': reverse('backup:restaurar_backup', kwargs={'id': id})},
+    ]
+
     backup = get_object_or_404(Backup, id=id)
     
     try:
@@ -118,8 +139,6 @@ def restaurar_backup_view(request, id):
             messages.error(request, f"El archivo de backup no existe en {ruta_absoluta}")
             return redirect('backup:lista_backups')
 
-        user_id = request.user.id
-        
         # Cerrar todas las conexiones existentes
         db.connections.close_all()
         
@@ -129,34 +148,34 @@ def restaurar_backup_view(request, id):
                 cursor.execute("SET SESSION wait_timeout = 28800;")  # 8 horas
                 cursor.execute("SET SESSION interactive_timeout = 28800;")
             
-            # Desactivar las verificaciones de clave foránea temporalmente
+            # Desactivar verificaciones de clave foránea temporalmente
             with transaction.atomic():
                 with connections['default'].cursor() as cursor:
                     cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
                 
+                # Realizar la restauración
                 restaurar_backup(ruta_absoluta)
                 
                 with connections['default'].cursor() as cursor:
                     cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+                    
         except Exception as e:
             logger.error(f"Error durante la restauración: {str(e)}", exc_info=True)
             messages.error(request, f'Error técnico al restaurar: {str(e)}')
             return redirect('backup:lista_backups')
 
-        # Restaurar la sesión del usuario
-        User = get_user_model()
-        request.user = User.objects.get(id=user_id)
-        request.session.modified = True
-
-        messages.success(request, 'Copia de seguridad restaurada exitosamente.')
-        return redirect('backup:lista_backups')
+        # Redirigir al inicio para cerrar sesión
+        from django.contrib.auth import logout
+        logout(request)
+        messages.success(request, 'Copia de seguridad restaurada exitosamente. Por favor inicie sesión nuevamente.')
+        return redirect('libreria:inicio')  # Cambia 'libreria:inicio' por tu URL de inicio
 
     except Exception as e:
         logger.error(f"Error al restaurar backup: {str(e)}", exc_info=True)
         messages.error(request, f'Error al restaurar copia de seguridad: {str(e)}')
         return redirect('backup:lista_backups')
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def descargar_backup(request, id):
     try:
         backup = get_object_or_404(Backup, id=id)
@@ -168,7 +187,7 @@ def descargar_backup(request, id):
         messages.error(request, f'Error al descargar archivo: {str(e)}')
         return redirect('backup:lista_backups')
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def eliminar_backup(request, id):
     try:
         backup = get_object_or_404(Backup, id=id)
@@ -196,7 +215,7 @@ def exportar_bd(nombre_archivo=None):
         logger.error(f"Error al exportar BD: {str(e)}", exc_info=True)
         raise Exception(f"Error al exportar la base de datos: {str(e)}")
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def exportar(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -235,7 +254,7 @@ def exportar(request):
         messages.error(request, f'Error al exportar la base de datos: {str(e)}')
         return redirect('backup:lista_backups')
 
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def importar_backup_view(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

@@ -27,8 +27,9 @@ body {
         border-radius: 10px;
         width: 95%;
         min-height: 73vh;
-        background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+        background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
     }
     #userForm {
         padding: 10px;
@@ -79,8 +80,9 @@ input{
 @media (min-width: 1025px) {
 
     .formulario {
-        background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+         background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
         margin-top: 7%;
         padding: 20px 20px 20px 20px;
         border-radius: 20px;
@@ -191,8 +193,9 @@ input{
         width: 195%;
         margin-left: -50%;
         min-height: 65vh;
-        background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+         background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
         position: relative;
     }
 

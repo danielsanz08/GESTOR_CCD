@@ -58,7 +58,7 @@
             <tr>
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.username }}</td>
-                <td>{{ usuario.role }}</td>
+                <td>{{ usuario.fecha_formateada }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.area }}</td>
                 <td>{{ usuario.cargo }}</td>
@@ -133,7 +133,7 @@
                     </div>
                 </div>
                 <div class="modal-footer-custom">
-                    <button type="button" onclick="cerrarModal('{{ usuario.id|escapejs }}')" class="btn-cancelar">Cerrar</button>
+                    <button style="display: none;" type="button" onclick="cerrarModal('{{ usuario.id|escapejs }}')" class="btn-guardar">Guardar cambios</button>
                     <button type="submit" class="btn-guardar">Guardar cambios</button>
                 </div>
             </form>

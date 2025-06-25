@@ -21,8 +21,9 @@ body, html {
     }
 }
 section{
-    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
     position: absolute;
     top: 20vh;
     left: 25vh;
@@ -109,24 +110,7 @@ button {
 
 /* Escritorio (1025px en adelante) */
 @media (min-width: 1025px) {
-    body{
-        background-color: violet;
-    }
-    body{
-        body, html {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden; /* Sin scroll horizontal ni vertical */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-}
- html, body{
-      background-color: #1c96bb1c;
-    }
+
 /* Animación de entrada */
 @keyframes fadeInUp {
     to {
@@ -135,8 +119,9 @@ button {
     }
 }
 section{
-    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
     position: absolute;
     top: 20vh;
     left: 25vh;

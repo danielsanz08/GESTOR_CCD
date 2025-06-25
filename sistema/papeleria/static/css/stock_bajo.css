@@ -5,8 +5,9 @@ html {
 }
 
 section {
-  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+ background: linear-gradient(110deg, #c7def893, #ffffffe8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
   position: relative;
   top: 23vh;
   left: 9vh;

@@ -5,8 +5,9 @@ html {
 }
 
 section {
-  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+   background: linear-gradient(110deg, #c7def893, #ffffffe8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -209,7 +210,7 @@ td {
   background-color: rgba(255, 255, 255, 0.384);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.178);
   height: 5vh;
   align-items: center;
 

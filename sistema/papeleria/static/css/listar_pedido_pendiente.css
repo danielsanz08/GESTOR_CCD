@@ -3,12 +3,16 @@ html {
   justify-content: center;
   align-items: center;
 }
- html, body{
-      background-color: #1c96bb1c;
-    }
+
+html,
+body {
+  background-color: #1c96bb1c;
+}
+
 section {
-  background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
+  background: linear-gradient(110deg, #c7def893, #ffffffe8);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+  border: 2px solid rgba(2, 47, 90, 0.63);
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -34,7 +38,9 @@ table {
 .nombre,
 .pedido,
 .estado,
-.accion {
+.accion,
+.fecha,
+.acciones {
   left: 20vh;
   background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
@@ -55,29 +61,36 @@ td {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   cursor: pointer;
-  height: 5vh; padding: 5px;
+  height: 5vh;
+  padding: 5px;
 }
+
 .btn-confirmar:hover {
-   background-color: rgb(6, 148, 13);
-   color: black;
+  background-color: rgb(6, 148, 13);
+  color: black;
 }
+
 .btn-cancelar {
   background-color: rgb(233, 12, 12);
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   cursor: pointer;
-  height: 5vh; padding: 5px;
+  height: 5vh;
+  padding: 5px;
 }
+
 .btn-cancelar:hover {
-   background-color: rgb(148, 6, 6);
-   color: black;
+  background-color: rgb(148, 6, 6);
+  color: black;
 }
+
 .icono {
   height: 3vh;
- 
+
 }
- .buscador {
+
+.buscador {
   background-color: #ffffff;
   border: none;
   border-radius: 20px;
@@ -138,6 +151,7 @@ td {
   background-color: #044080;
   cursor: pointer;
 }
+
 .btn-search {
   background-color: #0056b3;
   color: white;
@@ -162,6 +176,7 @@ td {
   cursor: pointer;
   color: black;
 }
+
 .clean {
   background-color: #b30000;
   color: white;
@@ -185,6 +200,7 @@ td {
   cursor: pointer;
   color: black;
 }
+
 .Botones {
   display: flex;
   justify-content: center;
@@ -244,24 +260,135 @@ td {
   background-color: rgb(4, 187, 13);
   cursor: pointer;
 }
+
 .paginacion {
-        text-align: center;
-        margin-top: 50vh;
-    }
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
+}
 
-    .paginacion a {
-        margin: 0 5px;
-        padding: 8px 12px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+.paginacion a,
+.paginacion span {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  position: relative;
+  top: 45vh;
+}
 
-    .paginacion a:hover {
-        background-color: #0056b3;
-    }
+.paginacion a:hover {
+  background-color: #015cbd;
+  color: white;
+  border-color: #007bff;
+}
 
-    .paginacion span {
-        margin: 0 10px;
-    }
+.paginacion .current {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.paginacion .current:hover {
+  background-color: #015cbd;
+}
+
+.context-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  min-width: 180px;
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 4px 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.context-menu button:hover {
+  background-color: #f8f9fa;
+}
+
+.context-menu button i {
+  margin-right: 8px;
+  width: 20px;
+  text-align: center;
+}
+
+.context-menu .aprobar {
+  color: #28a745;
+}
+
+.context-menu .aprobar:hover {
+  color: #28a745;
+  background-color: #81eb99;
+}
+
+.context-menu .rechazar {
+  color: #dc3545;
+}
+
+.context-menu .rechazar:hover {
+  color: #dc3545;
+  background-color: #eb8181;
+}
+
+.context-menu .cerrar {
+  color: #6c757d;
+}
+
+.context-menu .cerrar:hover {
+  color: #6c757d;
+  background-color: #b1bfcc;
+}
+
+#detalles {
+  width: 10vh;
+  height: 25px;
+  background-color: yellow;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+#detalles:hover {
+  background-color: rgb(190, 190, 3);
+  cursor: pointer;
+  color: white;
+}
+
+.btn-accion {
+  width: 10vh;
+  height: 25px;
+  background-color: rgb(12, 179, 67);
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+.btn-accion:hover {
+  background-color: rgb(5, 117, 42);
+  cursor: pointer;
+  color: white;
+}

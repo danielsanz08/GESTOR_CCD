@@ -1,5 +1,7 @@
 .card-confirm {
-    background: rgba(19, 104, 161, 0.664);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
     text-align: center;
     position: relative;
     top: 26vh;
@@ -8,14 +10,16 @@
     border-radius: 20px;
     height: 57vh;
 }
-.form-label0{
+
+.form-label0 {
     position: absolute;
     display: block;
     top: -4vh;
     left: 17vh;
     font-weight: bold;
 }
-.form-input0{
+
+.form-input0 {
     background-color: rgb(253, 253, 253);
     height: 30px;
     border-radius: 20px;
@@ -27,14 +31,16 @@
     position: absolute;
     bottom: 42vh;
 }
-.form-label1{
+
+.form-label1 {
     position: absolute;
     display: block;
     top: 7vh;
     left: 17vh;
     font-weight: bold;
 }
-.form-control1{
+
+.form-control1 {
     background-color: rgb(255, 255, 255);
     height: 30px;
     border-radius: 20px;
@@ -47,14 +53,16 @@
     bottom: 31vh;
 
 }
-.form-label2{
+
+.form-label2 {
     position: absolute;
     display: block;
     top: 18vh;
     left: 14vh;
     font-weight: bold;
 }
-.form-control2{
+
+.form-control2 {
     background-color: rgb(253, 253, 253);
     height: 30px;
     border-radius: 20px;
@@ -69,14 +77,28 @@
 }
 
 @keyframes shake-slow {
-    0% { transform: translateX(-3px); }
-    25% { transform: translateX(3px); }
-    50% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
-    100% { transform: translateX(0); }
-  }
+    0% {
+        transform: translateX(-3px);
+    }
 
-  .error-card {
+    25% {
+        transform: translateX(3px);
+    }
+
+    50% {
+        transform: translateX(-2px);
+    }
+
+    75% {
+        transform: translateX(2px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.error-card {
     position: relative;
     margin: 20px auto;
     max-width: 500px;
@@ -89,9 +111,9 @@
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
     border: 2px solid #ff4d4d;
     animation: shake-slow 2.5s infinite ease-in-out;
-  }
+}
 
-  .expirado {
+.expirado {
     font-size: 1.3em;
     font-weight: bold;
     margin: 0;
@@ -99,20 +121,21 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-  }
-form{
+}
+
+form {
     background: rgba(19, 104, 161, 0);
     width: 50vh;
     position: relative;
     left: 6vh;
     height: 50vh;
     top: 2vh;
-    
+
 }
 
 
 
-.btn{
+.btn {
     background-color: rgb(51, 104, 248);
     color: white;
     font-weight: bold;
@@ -125,7 +148,8 @@ form{
     top: 32vh;
     transition: opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
-.btn:hover{
+
+.btn:hover {
     background-color: rgb(33, 74, 187);
     color: rgb(0, 0, 0);
     font-weight: bold;

@@ -3,8 +3,6 @@
 {% block titulo %}Crear backup{% endblock %}
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_backup.css' %}?v={% now 'U' %}">
-
-
 <section>
     <h1>Crear nueva copia de seguridad</h1>
     <form method="post">
@@ -19,7 +17,7 @@
 
         <div class="botones">
             <button type="submit" class="btn btn-primary" id="crear">Crear copia</button>
-            <a href="{% url 'backup:lista_backups' %}"><button class="cancelar">Cancelar</button></a>
+            
         </div>
     </form>
 </section>

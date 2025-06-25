@@ -2,14 +2,19 @@ from django.db import models
 from django.conf import settings
 # Create your models here.
 class Articulo(models.Model):
-    nombre = models.CharField(max_length=100)
-    marca = models.CharField(max_length=50, null=False, blank=False)
-    observacion = models.TextField(max_length=30,blank=True, null=True)
-    tipo = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
-    precio = models.PositiveBigIntegerField(null=False, blank=False)
-    cantidad = models.PositiveIntegerField()
-    proveedor = models.CharField(max_length=100, null=False, blank=False, default='No establecido')
-    registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,blank=True)
+    nombre = models.CharField(max_length=100, blank=False, null=False)
+    marca = models.CharField(max_length=50, blank=False, null=False)
+    observacion = models.TextField(max_length=30, blank=True, null=True)
+    tipo = models.CharField(max_length=50, blank=True, null=True, default='No establecido')
+    precio = models.PositiveBigIntegerField(blank=False, null=False)
+    cantidad = models.PositiveIntegerField(blank=False, null=False)
+    proveedor = models.CharField(max_length=100, blank=False, null=False, default='No establecido')
+    registrado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     fecha_registro = models.DateField(auto_now=True)
 
     def fecha_formateada(self):
@@ -40,6 +45,7 @@ class Pedido(models.Model):
         return self.fecha_pedido.strftime('%d-%m-%Y')
     def __str__(self):
         return f"Pedido {self.id} - {self.get_estado_display()}"
+    
 
 class PedidoArticulo(models.Model):
     pedido = models.ForeignKey(Pedido, related_name='articulos', on_delete=models.CASCADE, null=True)  # Make nullable
@@ -47,7 +53,8 @@ class PedidoArticulo(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
     tipo = models.CharField(max_length=50, null=True, blank=True)
     area = models.CharField(max_length=50, null=True, blank=True, default='No establecido')
-
+    def areas_unicas(self):
+        return ", ".join(sorted(set(articulo.area.nombre for articulo in self.articulos.all() if articulo.area)))
     def __str__(self):
         return f"{self.articulo.nombre} x {self.cantidad} - {self.tipo}"
 

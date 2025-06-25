@@ -319,7 +319,7 @@ def crear_pedido(request):
         messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
 
         if request.user.role == 'Empleado':
-            return redirect('papeleria:pedidos_pendientes')
+            return redirect('papeleria:mis_pedidos')
         else:
             return redirect('papeleria:listado_pedidos')
 
@@ -339,7 +339,8 @@ def mis_pedidos(request):
     fecha_fin_str = request.GET.get('fecha_fin')
 
     # Obtiene pedidos del usuario actual ordenados por fecha_pedido descendente
-    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+    pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
+
 
 
     if query:
@@ -372,48 +373,7 @@ def mis_pedidos(request):
         'breadcrumbs': breadcrumbs
     })
 
-def listado_pedidos(request):
-    breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Listado de pedidos', 'url': reverse('papeleria:listado_pedidos')},
-    ]
 
-    query = request.GET.get('q', '').strip()
-    fecha_inicio_str = request.GET.get('fecha_inicio')
-    fecha_fin_str = request.GET.get('fecha_fin')
-
-    # Filtrar solo pedidos del usuario actual
-    pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
-
-    if query:
-        pedidos = pedidos.filter(
-            Q(registrado_por__username__icontains=query) |
-            Q(estado__icontains=query) |
-            Q(articulos__area__icontains=query)
-        ).distinct()
-
-    if fecha_inicio_str:
-        try:
-            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
-        except ValueError:
-            pedidos = Pedido.objects.none()
-
-    if fecha_fin_str:
-        try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
-        except ValueError:
-            pedidos = Pedido.objects.none()
-
-    paginator = Paginator(pedidos, 4)
-    page_number = request.GET.get('page')
-    pedidos_page = paginator.get_page(page_number)
-
-    return render(request, 'pedidos/lista_pedidos.html', {
-        'pedidos': pedidos_page,
-        'breadcrumbs': breadcrumbs
-    })
 
 @csrf_exempt
 @require_POST
@@ -458,10 +418,10 @@ def cambiar_estado_pedido(request, pedido_id):
     ' del pedido.')
     return redirect('papeleria:pedidos_pendientes')
 
-def pedidos_pendientes(request):
+def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Pedidos pendientes', 'url': reverse('papeleria:pedidos_pendientes')},
+        {'name': 'Listado de pedidos', 'url': reverse('papeleria:listado_pedidos')},
     ]
 
     query = request.GET.get('q', '').strip()
@@ -469,14 +429,60 @@ def pedidos_pendientes(request):
     fecha_fin_str = request.GET.get('fecha_fin')
 
     # Filtrar solo pedidos pendientes
-    pedidos = Pedido.objects.filter(estado='pendiente').order_by('-fecha_pedido')
-
+    pedidos = Pedido.objects.filter(estado='Confirmado').order_by('-fecha_pedido')
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
+            Q(articulos__articulo__nombre__icontains=query) |
+            Q(articulos__cantidad__icontains=query) |
+            Q(articulos__tipo__icontains=query) |
             Q(articulos__area__icontains=query)
-        ).distinct()
+        )
+
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+        except ValueError:
+            pedidos = Pedido.objects.none()
+
+    paginator = Paginator(pedidos, 4)
+    page_number = request.GET.get('page')
+    pedidos_page = paginator.get_page(page_number)
+
+    return render(request, 'pedidos/lista_pedidos.html', {
+        'pedidos': pedidos_page,
+        'breadcrumbs': breadcrumbs,
+    })
+def pedidos_pendientes(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Listado de pedidos', 'url': reverse('papeleria:listado_pedidos')},
+    ]
+
+    query = request.GET.get('q', '').strip()
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
+
+    # Filtrar solo pedidos pendientes
+    pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
+    if query:
+        pedidos = pedidos.filter(
+            Q(registrado_por__username__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(articulos__articulo__nombre__icontains=query) |
+            Q(articulos__cantidad__icontains=query) |
+            Q(articulos__tipo__icontains=query) |
+            Q(articulos__area__icontains=query)
+        )
 
     if fecha_inicio_str:
         try:
@@ -500,6 +506,7 @@ def pedidos_pendientes(request):
         'pedidos': pedidos_page,
         'breadcrumbs': breadcrumbs,
     })
+
 #VALIDAR DATOS
 def validar_datos(request):
     email = request.GET.get('email', None)

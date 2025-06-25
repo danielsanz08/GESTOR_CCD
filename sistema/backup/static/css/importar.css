@@ -15,8 +15,9 @@ html {
 
 /* Section styling for the form container */
 section {
-    background: linear-gradient(135deg, #f0f0f0f3, #cde0f7e8);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(110deg, #c7def893, #ffffffa8);
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+        border: 2px solid rgba(2, 47, 90, 0.63);
     width: 400px;
     max-width: 90%;
     padding: 2.5rem;

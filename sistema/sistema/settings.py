@@ -28,6 +28,8 @@ ALLOWED_HOSTS = ['192.168.1.10', 'localhost', '127.0.0.1']
 
 
 
+
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # asegúrate de importar os
 AUTH_USER_MODEL = 'libreria.CustomUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

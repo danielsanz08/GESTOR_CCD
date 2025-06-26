@@ -5,10 +5,12 @@ from django.contrib.sessions.models import Session
 from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 from django.utils.dateparse import parse_date
 from django.db.models import Q, Sum, Count
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import get_template
+from django.db import transaction
 from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
@@ -125,10 +127,11 @@ def crear_articulo(request):
 def editar_articulo(request, articulo_id):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_caf'},
-         {'name': 'Crear productos', 'url': reverse('papeleria:listar_articulo')}, 
+         {'name': 'Lista de articulos', 'url': reverse('papeleria:listar_articulo')}, 
          {'name': 'Editar artículo', 'url': reverse('papeleria:editar_articulo', kwargs={'articulo_id': articulo_id})},
         
     ]
+    print("ARTICULO ID:", articulo_id)  # DEBUG
     articulo = get_object_or_404(Articulo, id=articulo_id)
     if request.method== 'POST':
         form = ArticuloEditForm(request.POST, instance=articulo)
@@ -149,11 +152,13 @@ def listar_articulo(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    articulos = Articulo.objects.select_related('registrado_por').all()
+    articulos = Articulo.objects.select_related('registrado_por').order_by('nombre')
+
 
     # Búsqueda por texto
     if query:
         articulos = articulos.filter(
+            Q(id__icontains=query) |
             Q(nombre__icontains=query) |
             Q(marca__icontains=query) |
             Q(observacion__icontains=query) |
@@ -373,10 +378,9 @@ def mis_pedidos(request):
         'breadcrumbs': breadcrumbs
     })
 
-
-
 @csrf_exempt
 @require_POST
+
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
@@ -385,37 +389,78 @@ def cambiar_estado_pedido(request, pedido_id):
         
         if nuevo_estado:
             if nuevo_estado == 'confirmado':
-                articulos_del_pedido = pedido.articulos.all()
-                for articulo_pedido in articulos_del_pedido:
-                    articulo = articulo_pedido.articulo
-                    cantidad_pedida = articulo_pedido.cantidad
-
-                    if articulo.cantidad >= cantidad_pedida:
-                        articulo.cantidad -= cantidad_pedida
-                        articulo.save()
-                    else:
-                        messages.error(request, f"No hay suficiente stock de {articulo.nombre}.")
-                        return redirect('papeleria:pedidos_pendientes')
-
-            pedido.estado = nuevo_estado
-            pedido.save()
-
+                try:
+                    with transaction.atomic():
+                        articulos_pedido = pedido.articulos.select_related('articulo').all()
+                        productos_sin_stock = []
+                        
+                        # Primera pasada: Verificar stock para todos los artículos
+                        for articulo_pedido in articulos_pedido:
+                            articulo = articulo_pedido.articulo
+                            cantidad_pedida = articulo_pedido.cantidad
+                            
+                            if articulo.cantidad < cantidad_pedida:
+                                productos_sin_stock.append(
+                                    f"{articulo.nombre} (Solicitados: {cantidad_pedida}, Disponibles: {articulo.cantidad})"
+                                )
+                        
+                        # Si hay productos sin stock suficiente, cancelar el pedido
+                        if productos_sin_stock:
+                            pedido.estado = 'cancelado'
+                            pedido.fecha_cancelacion = datetime.now()
+                            pedido.motivo_cancelacion = f"Stock insuficiente para: {', '.join(productos_sin_stock)}"
+                            pedido.save()
+                            
+                            messages.error(
+                                request,
+                                f"Pedido cancelado automáticamente. Stock insuficiente para: {', '.join(productos_sin_stock)}"
+                            )
+                            return redirect('papeleria:pedidos_pendientes')
+                        
+                        # Si todo está bien, actualizar el stock
+                        for articulo_pedido in articulos_pedido:
+                            articulo = articulo_pedido.articulo
+                            cantidad_pedida = articulo_pedido.cantidad
+                            articulo.cantidad -= cantidad_pedida
+                            articulo.save()
+                        
+                        # Confirmar el pedido
+                        pedido.estado = 'confirmado'
+                        pedido.fecha_confirmacion = datetime.now()
+                        pedido.save()
+                        
+                        messages.success(request, 'Pedido confirmado correctamente.')
+                
+                except Exception as e:
+                    messages.error(request, f'Error al procesar el pedido: {str(e)}')
+                    return redirect('papeleria:pedidos_pendientes')
+            
+            else:
+                # Lógica para otros estados (no confirmado)
+                pedido.estado = nuevo_estado
+                pedido.save()
+                messages.success(request, f'Estado del pedido actualizado a {nuevo_estado}.')
+            
+            # Enviar notificación por email
             usuario = pedido.registrado_por
             if usuario and usuario.email:
-                estado_legible = nuevo_estado.capitalize()
-                send_mail(
-                    'Actualización de tu pedido',
-                    f"Hola {usuario.username}, este correo es para avisarte que tu pedido fue {estado_legible.lower()}.",
-                    settings.DEFAULT_FROM_EMAIL,
-                    [usuario.email],
-                    fail_silently=False,
-                )
-
-            messages.success(request, 'Estado del pedido actualizado correctamente.')
+                try:
+                    estado_legible = dict(Pedido.ESTADO_CHOICES).get(pedido.estado, pedido.estado)
+                    send_mail(
+                        f'Actualización de tu pedido #{pedido.id}',
+                        f'Hola {usuario.username},\n\nEl estado de tu pedido #{pedido.id} ha cambiado a {estado_legible}.\n\n'
+                        f'{"Motivo: " + pedido.motivo_cancelacion if pedido.estado == "cancelado" else ""}\n\n'
+                        'Gracias por tu compra.',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [usuario.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error enviando email: {str(e)}")
+            
             return redirect('papeleria:pedidos_pendientes')
 
-    messages.error(request, 'No se pudo actualizar el estado' \
-    ' del pedido.')
+    messages.error(request, 'No se pudo actualizar el estado del pedido.')
     return redirect('papeleria:pedidos_pendientes')
 
 def listado_pedidos(request):
@@ -430,6 +475,7 @@ def listado_pedidos(request):
 
     # Filtrar solo pedidos pendientes
     pedidos = Pedido.objects.filter(estado='Confirmado').order_by('-fecha_pedido')
+    
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
@@ -440,19 +486,32 @@ def listado_pedidos(request):
             Q(articulos__area__icontains=query)
         )
 
-    if fecha_inicio_str:
+    # Manejo de fechas - versión corregida
+    if fecha_inicio_str and fecha_fin_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio, fecha_pedido__lt=fecha_fin)
+        except ValueError:
+            pass  # O manejar el error como prefieras
+            
+    elif fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pedidos = Pedido.objects.none()
-
-    if fecha_fin_str:
+            pass
+            
+    elif fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pedidos = Pedido.objects.none()
+            pass
 
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
@@ -465,7 +524,7 @@ def listado_pedidos(request):
 def pedidos_pendientes(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Listado de pedidos', 'url': reverse('papeleria:listado_pedidos')},
+        {'name': 'Pedidos pendientes', 'url': reverse('papeleria:pedidos_pendientes')},
     ]
 
     query = request.GET.get('q', '').strip()
@@ -474,6 +533,7 @@ def pedidos_pendientes(request):
 
     # Filtrar solo pedidos pendientes
     pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
+    
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
@@ -484,19 +544,32 @@ def pedidos_pendientes(request):
             Q(articulos__area__icontains=query)
         )
 
-    if fecha_inicio_str:
+    # Manejo de fechas - versión corregida
+    if fecha_inicio_str and fecha_fin_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio, fecha_pedido__lt=fecha_fin)
+        except ValueError:
+            pass  # O manejar el error como prefieras
+            
+    elif fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pedidos = Pedido.objects.none()
-
-    if fecha_fin_str:
+            pass
+            
+    elif fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pedidos = Pedido.objects.none()
+            pass
 
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
@@ -506,7 +579,6 @@ def pedidos_pendientes(request):
         'pedidos': pedidos_page,
         'breadcrumbs': breadcrumbs,
     })
-
 #VALIDAR DATOS
 def validar_datos(request):
     email = request.GET.get('email', None)
@@ -863,13 +935,19 @@ def get_articulos_filtrados(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    articulos = Articulo.objects.all()
+    articulos = Articulo.objects.select_related('registrado_por').order_by('nombre')
+
 
     if query:
         articulos = articulos.filter(
-            Q(nombre__icontains=query) |
+           Q(nombre__icontains=query) |
             Q(marca__icontains=query) |
-            Q(tipo__icontains=query)
+            Q(observacion__icontains=query) |
+            Q(tipo__icontains=query) |
+            Q(precio__icontains=query) |
+            Q(proveedor__icontains=query) |
+            Q(cantidad__icontains=query) |
+            Q(registrado_por__username__icontains=query)
         )
 
     if fecha_inicio and fecha_fin:
@@ -955,7 +1033,7 @@ def reporte_articulo_pdf(request):
             wrap_text(str(articulo.cantidad)),
             wrap_text( articulo.observacion),
         ])
-    tabla_articulos = Table(data_articulos, colWidths=[20, 140, 100, 90, 100, 90, 180])
+    tabla_articulos = Table(data_articulos, colWidths=[20, 140, 120, 110, 100, 80, 150])
     style_articulos = TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # <-- CENTRAR
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # CENTRAR VERTICALMENTE
@@ -982,31 +1060,15 @@ def reporte_articulo_pdf(request):
     return response
 
 def reporte_articulo_excel(request):
-    # Parámetros de búsqueda
-    q = request.GET.get('q', '').strip()
-    fecha_inicio = request.GET.get('fecha_inicio', '').strip()
-    fecha_fin = request.GET.get('fecha_fin', '').strip()
-    marca = request.GET.get('marca', '').strip()
-
-    # Queryset base
+    
     articulos = Articulo.objects.all()
 
     # Aplicar filtros
-    if q:
-        articulos = articulos.filter(nombre__icontains=q)
-    if fecha_inicio:
-        try:
-            articulos = articulos.filter(fecha_registro__gte=datetime.strptime(fecha_inicio, '%Y-%m-%d'))
-        except ValueError:
-            pass
-    if fecha_fin:
-        try:
-            articulos = articulos.filter(fecha_registro__lte=datetime.strptime(fecha_fin, '%Y-%m-%d'))
-        except ValueError:
-            pass
+    articulos = get_articulos_filtrados(request)
+    # Si necesitas aplicar filtros adicionales específicos para el Excel
+    marca = request.GET.get('marca', '').strip()
     if marca:
         articulos = articulos.filter(marca__icontains=marca)
-
     # Crear Excel
     wb = Workbook()
     ws = wb.active
@@ -1180,24 +1242,8 @@ def reporte_pedidos_pdf(request):
     table_usuario.setStyle(style_usuario)
     elements.append(table_usuario)
 
-    # Obtener filtros
-    q = request.GET.get('q', '')
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
-
-    pedidos = Pedido.objects.prefetch_related('articulos__articulo').all()
-
-    if q:
-        pedidos = pedidos.filter(
-            Q(id__icontains=q) |
-            Q(articulos__articulo__nombre__icontains=q) |
-            Q(registrado_por__username__icontains=q)
-        ).distinct()
-
-    if fecha_inicio:
-        pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
-    if fecha_fin:
-        pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+    # Obtener pedidos filtrados usando la función get_pedidos_filtrados
+    pedidos = get_pedidos_filtrados(request).prefetch_related('articulos__articulo')
 
     # Encabezado de la tabla
     data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
@@ -1218,10 +1264,9 @@ def reporte_pedidos_pdf(request):
             wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
             wrap_text_p(pedido.get_estado_display()),
             wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
-            wrap_text_p(articulos_raw),  # Ya lo tenías como wrap_text_p(articulos_raw), pero lo aclaramos aquí
+            wrap_text_p(articulos_raw),
             wrap_text_p(area_raw)
         ])
-
 
     # Crear la tabla de pedidos
     tabla_articulos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
@@ -1240,7 +1285,7 @@ def reporte_pedidos_pdf(request):
     tabla_articulos.setStyle(style_articulos)
     elements.append(tabla_articulos)
 
-    # Construir el PDF con la función watermark en todas las páginas
+    # Construir el PDF
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
 
     buffer.seek(0)

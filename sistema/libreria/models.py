@@ -43,7 +43,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('Presidencia', 'Presidencia'),
         ('Financiera', 'Financiera'),
     ]
-    username = models.CharField(max_length=100, unique=False, blank=False, null=False)
+    username = models.CharField(max_length=50, unique=False, blank=False, null=False)
     email = models.EmailField(unique=True, blank=False, null=False)
     role = models.CharField(max_length=13, choices=ROLES, default='Empleado', blank=False, null=False)
     area = models.CharField(max_length=30, choices=AREA, default='Administrativa', blank=False, null=False)

@@ -170,6 +170,7 @@ def ver_usuario(request, user_id):
     usuario = get_object_or_404(CustomUser, id=user_id)
     return render(request, 'usuario/ver_perfil.html', {'usuario': usuario, 'breadcrumbs': breadcrumbs})
 
+from django.urls import NoReverseMatch
 
 def editar_usuario(request, user_id):
     usuario = get_object_or_404(CustomUser, id=user_id)
@@ -444,7 +445,7 @@ def obtener_usuarios(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    usuarios = CustomUser.objects.filter(acceso_pap=True)  # mejor nombrar 'usuarios' para que coincida
+    usuarios = CustomUser.objects.all()  # mejor nombrar 'usuarios' para que coincida
 
     if query:
         usuarios = usuarios.filter(

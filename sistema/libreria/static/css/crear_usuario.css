@@ -87,6 +87,7 @@ input{
         padding: 20px 20px 20px 20px;
         border-radius: 20px;
         height: 60vh;
+        
     }
 
     #userForm {
@@ -102,6 +103,7 @@ input{
     input,
     .form-select {
         margin-bottom: 15vh;
+        min-width: 0;
         margin-right: 5px;
         border: none;
         border-radius: 20px;

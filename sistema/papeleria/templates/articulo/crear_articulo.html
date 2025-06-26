@@ -42,19 +42,19 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="id_nombre" class="form-label">Nombre del artículo</label>
-            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Digite el nombre del artículo">
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Maximo 40 caracteres" maxlength="40" >
             <div class="error-msg error-nombre"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_tipo" class="form-label">Digite el tipo de artículo</label>
-            <input type="text" name="tipo" id="id_tipo" placeholder="Digite el tipo del artículo">
+            <input type="text" name="tipo" id="id_tipo" placeholder="Maximo 30 caracteres" value="No establecido" maxlength="30">
             <div class="error-msg error-tipo"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_marca" class="form-label">Marca del artículo</label>
-            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Digite la marca del artículo">
+            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Maximo 30 caracteres" maxlength="30">
             <div class="error-msg error-marca"></div>
         </div>
 
@@ -66,26 +66,25 @@
 
         <div class="mb-3">
             <label for="id_cantidad" class="form-label">Digite la cantidad</label>
-            <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad del artículo">
+            <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad del artículo" maxlength="9">
             <div class="error-msg error-cantidad"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_proveedor" class="form-label">Digite el proveedor</label>
-            <input type="text" id="id_proveedor" name="proveedor" placeholder="Digite el proveedor del artículo">
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Maximo 40 caracteres" maxlength="40">
             <div class="error-msg error-proveedor"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_observacion" class="form-label">Observación del artículo:</label>
-            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Digite una observación del artículo">
+            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 30 caracteres" maxlength="30">
             <div class="error-msg error-observacion"></div>
         </div>
 
         <button type="submit" class="btn" id="submit_btn">Registrar artículo</button>
     </form>
 </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const campos = {
@@ -135,34 +134,22 @@
                 ? "Debe ser un número positivo con hasta 2 decimales." : "";
         }
 
-        function validarObservacion(valor) {
-            if (valor.length > 30) {
-                return "Máximo 30 caracteres.";
-            }
-            return validarTexto(valor);
-        }
-
-        function formatearConComas(valor) {
-            const partes = valor.split(".");
-            let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            let decimal = partes[1] ? "." + partes[1] : "";
-            return entero + decimal;
-        }
-
         function aplicarEventosCampoTexto(nombreCampo, validarFn) {
             const input = campos[nombreCampo];
             const errorDiv = errores[nombreCampo];
 
             input.addEventListener("input", function () {
-                // Capitalizar
                 const pos = input.selectionStart;
                 input.value = capitalizarPrimeraLetra(input.value);
                 input.setSelectionRange(pos, pos);
 
-                // Validación
                 const msg = validarFn(input.value);
                 errorDiv.textContent = input.value.trim() ? msg : "";
             });
+        }
+
+        function validarObservacion(valor) {
+            return validarTexto(valor);
         }
 
         aplicarEventosCampoTexto("nombre", validarTexto);
@@ -172,23 +159,34 @@
         aplicarEventosCampoTexto("observacion", validarObservacion);
 
         campos.precio.addEventListener("input", function () {
-            let valor = campos.precio.value.replace(/[^\d.]/g, "");
+            let valor = campos.precio.value;
+
+            // Elimina caracteres que no sean números o un solo punto
+            valor = valor.replace(/[^\d.]/g, "");
+
+            // Permite solo un punto decimal
             const partes = valor.split(".");
             if (partes.length > 2) {
                 valor = partes[0] + "." + partes.slice(1).join("");
             }
-            let entero = partes[0];
-            let decimal = partes[1] ? partes[1].slice(0, 2) : "";
-            let reconstruido = entero + (decimal ? "." + decimal : "");
-            campos.precio.value = formatearConComas(reconstruido);
-            errores.precio.textContent = validarPrecio(reconstruido);
+
+            const entero = partes[0];
+            const decimal = partes[1] ? partes[1].slice(0, 2) : "";
+
+            // Formatea el entero con comas
+            const enteroConComas = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // Resultado final
+            const valorFormateado = decimal ? `${enteroConComas}.${decimal}` : enteroConComas;
+
+            campos.precio.value = valorFormateado;
+            errores.precio.textContent = validarPrecio(entero + (decimal ? "." + decimal : ""));
         });
 
         campos.cantidad.addEventListener("input", function () {
             errores.cantidad.textContent = validarCantidad(campos.cantidad.value);
         });
 
-        // Asegura formato limpio al enviar
         document.getElementById("form_articulo").addEventListener("submit", function () {
             campos.precio.value = campos.precio.value.replace(/,/g, "");
 
@@ -198,4 +196,5 @@
         });
     });
 </script>
+
 {% endblock %}

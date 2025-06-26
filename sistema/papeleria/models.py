@@ -2,13 +2,13 @@ from django.db import models
 from django.conf import settings
 # Create your models here.
 class Articulo(models.Model):
-    nombre = models.CharField(max_length=100, blank=False, null=False)
-    marca = models.CharField(max_length=50, blank=False, null=False)
-    observacion = models.TextField(max_length=30, blank=True, null=True)
-    tipo = models.CharField(max_length=50, blank=True, null=True, default='No establecido')
+    nombre = models.CharField(max_length=40, blank=False, null=False)
+    marca = models.CharField(max_length=30, blank=False, null=False)
+    observacion = models.CharField(max_length=30, blank=True, null=True)
+    tipo = models.CharField(max_length=30, blank=True, null=True, default='No establecido')
     precio = models.PositiveBigIntegerField(blank=False, null=False)
-    cantidad = models.PositiveIntegerField(blank=False, null=False)
-    proveedor = models.CharField(max_length=100, blank=False, null=False, default='No establecido')
+    cantidad = models.PositiveIntegerField( max_length=9,blank=False, null=False)
+    proveedor = models.CharField(max_length=40, blank=False, null=False, default='No establecido')
     registrado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -16,16 +16,18 @@ class Articulo(models.Model):
         blank=True
     )
     fecha_registro = models.DateField(auto_now=True)
-
+    def nombre_formateado(self):
+        """
+        Inserta un salto de línea en el nombre si tiene más de 10 caracteres.
+        """
+        if len(self.nombre) > 10:
+            # Inserta un salto de línea después de los primeros 10 caracteres
+            return self.nombre[:10] + '\n' + self.nombre[10:]
+        return self.nombre
     def fecha_formateada(self):
         return self.fecha_registro.strftime('%d-%m-%Y')
     def __str__(self):
         return self.nombre
-    def observacion_formateada(self, longitud=10):
-        if not self.observacion:
-            return ""
-        texto = self.observacion.strip()
-        return '\n'.join(texto[i:i + longitud] for i in range(0, len(texto), longitud))
 
     def precio_formateado(self):
         """

@@ -24,31 +24,80 @@ class ArticuloForm(forms.ModelForm):
             except ValueError:
                 raise forms.ValidationError('El precio debe ser un número válido.')
         return precio
+from django import forms
+from papeleria.models import Articulo
+from django import forms
+from papeleria.models import Articulo
+
 class ArticuloEditForm(forms.ModelForm):    
     class Meta:
         model = Articulo
-        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo', 'proveedor']
-    def __init__(self, *args,**kwargs):
-        super(ArticuloEditForm, self).__init__(*args, **kwargs)
-        # Hace que los campos sean opcionales
-        self.fields['nombre'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nombre del articulo'})
-        self.fields['marca'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Marca del articulo'})
-        self.fields['observacion'].widget.attrs.update({'class':'form-control', 'placeholder': 'Observación' })
-        self.fields['precio'].widget.attrs.update({'class':'form-control', 'placeholder': 'Precio del  articulo'})
-        self.fields['cantidad'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cantidad de articulo'})
-        self.fields['tipo'].widget.attrs.update({'class':'form-control', 'placeholder': 'Tipo de articulo'})
-        self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
-
-    def clean(self):
-        cleaned_data = super().clean()
-        
-        # Mantener valores anteriores si no se proporciona un nuevo valor
-        for field in self.fields:
-            if not cleaned_data.get(field):
-                cleaned_data[field] = getattr(self.instance, field)
-
-        return cleaned_data
-
+        fields = [
+            'nombre',
+            'marca',
+            'observacion',
+            'precio',
+            'cantidad',
+            'tipo',
+            'proveedor'
+        ]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Añadimos class y placeholder + maxlength en HTML
+        self.fields['nombre'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Nombre del artículo',
+            'maxlength': '40'
+        })
+        self.fields['marca'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Marca del artículo',
+            'maxlength': '30'
+        })
+        self.fields['observacion'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Observación',
+            'maxlength': '30'
+        })
+        self.fields['precio'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Precio del artículo'
+        })
+        self.fields['cantidad'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Cantidad del artículo'
+        })
+        self.fields['tipo'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Tipo del artículo',
+            'maxlength': '30'
+        })
+        self.fields['proveedor'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Proveedor',
+            'maxlength': '40'
+        })
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '') or ''
+        return nombre[:40]  # Trunca a 40 caracteres
+    
+    def clean_marca(self):
+        marca = self.cleaned_data.get('marca', '') or ''
+        return marca[:30]  # Trunca a 30 caracteres
+    
+    def clean_observacion(self):
+        observacion = self.cleaned_data.get('observacion', '') or ''
+        return observacion[:30]  # Trunca a 30 caracteres
+    
+    def clean_tipo(self):
+        tipo = self.cleaned_data.get('tipo', '') or ''
+        return tipo[:30]  # Trunca a 30 caracteres
+    
+    def clean_proveedor(self):
+        proveedor = self.cleaned_data.get('proveedor', '') or ''
+        return proveedor[:40]  # Trunca a 40 caracteres
 class PedidoArticuloForm(forms.ModelForm):
     class Meta:
         model = PedidoArticulo

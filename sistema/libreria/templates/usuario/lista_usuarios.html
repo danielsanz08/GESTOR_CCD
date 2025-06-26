@@ -57,7 +57,7 @@
             {% for usuario in usuarios %}
             <tr>
                 <td>{{ usuario.id }}</td>
-                <td>{{ usuario.username }}</td>
+                <td data-tooltip="{{ usuario.role }}">{{ usuario.username }}</td>
                 <td>{{ usuario.fecha_formateada }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.area }}</td>

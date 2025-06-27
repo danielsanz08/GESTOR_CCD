@@ -71,6 +71,7 @@
       text-align: center;
     }
   </style>
+
   <!-- ============= SECCIÓN BREADCRUMBS ============= -->
   {% if user.is_authenticated and breadcrumbs %}
   <div class="breadcrumbs-container" title="Breadcrumb">
@@ -144,6 +145,7 @@
       font-weight: bold;
     }
   </style>
+
   <!-- ============= SECCIÓN MENSAJES DE ALERTA ============= -->
   {% if messages %}
   {% for message in messages %}
@@ -215,6 +217,7 @@
       }
     }
   </style>
+
   <!-- ============= SECCIÓN CONTENIDO PRINCIPAL ============= -->
   <div class="container">
     {% block contenido %}
@@ -239,32 +242,9 @@
       align-items: center;
       padding: 10px;
       font-weight: bold;
-
     }
   </style>
-  <!-- ============= SECCIÓN BOTÓN ACCESIBILIDAD ============= -->
-  <button id="toggle-accessibility-menu" title="Botón de accesibilidad">
-    <i class="bi bi-person-gear" id="menu_Acc"></i>
-  </button>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggleButton = document.getElementById("toggle-accessibility-menu");
-      const menu = document.getElementById("accessibility-menu");
 
-      toggleButton.addEventListener("click", function (event) {
-        event.stopPropagation();
-        menu.classList.toggle("visible");
-      });
-
-      menu.addEventListener("click", function (event) {
-        event.stopPropagation();
-      });
-
-      document.addEventListener("click", function () {
-        menu.classList.remove("visible");
-      });
-    });
-  </script>
   <!-- ============= MODAL DE ALERTA============= -->
   <style>
     .modal {
@@ -320,6 +300,8 @@
       border-radius: 5px;
     }
   </style>
+
+  <!-- ============= MENÚ DE ACCESIBILIDAD ============= -->
   <div id="accessibility-menu" class="hidden">
     <div class="accessibility-grid">
       <!-- Fila 1 -->
@@ -362,27 +344,15 @@
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
-  </div>
-  <style>
-    /* BOTÓN DE ACCESIBILIDAD (ahora con mayor z-index que el modal) */
-    #toggle-accessibility-menu {
-      background-color: #ffffff00;
-      color: rgb(0, 0, 0);
-      border: none;
-      padding: 12px 20px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 1em;
-      font-weight: bold;
-      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-      position: fixed;
-      bottom: 535px;
-      right: 10px;
-      z-index: 3000;
-      /* Mayor que el modal (2000) */
-    }
 
-    /* Menú de accesibilidad - ahora con mayor prioridad */
+    <!-- Indicador de atajo de teclado -->
+    <div class="keyboard-shortcut-info">
+      <small>Atajo: Alt + A + X</small>
+    </div>
+  </div>
+
+  <style>
+    /* Menú de accesibilidad */
     #accessibility-menu {
       background-color: rgba(255, 255, 255, 0.95);
       border: 1px solid rgba(0, 0, 0, 0.15);
@@ -395,7 +365,6 @@
       width: 260px;
       max-width: 90vw;
       z-index: 3000;
-      /* Mayor que el modal */
       backdrop-filter: blur(10px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -448,6 +417,7 @@
     .zoom-section {
       border-top: 1px solid rgba(0, 0, 0, 0.1);
       padding-top: 16px;
+      margin-bottom: 12px;
     }
 
     .zoom-controls {
@@ -505,7 +475,16 @@
       box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
     }
 
-    /* Tooltips - ahora con mayor z-index que el menú */
+    /* Información del atajo de teclado */
+    .keyboard-shortcut-info {
+      text-align: center;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      color: #666;
+      font-size: 11px;
+    }
+
+    /* Tooltips */
     [data-tooltip] {
       position: relative;
     }
@@ -527,7 +506,6 @@
       transition: all 0.3s ease;
       pointer-events: none;
       z-index: 3001;
-      /* Mayor que el menú de accesibilidad */
       margin-bottom: 8px;
     }
 
@@ -544,7 +522,6 @@
       transition: all 0.3s ease;
       pointer-events: none;
       z-index: 3001;
-      /* Mayor que el menú de accesibilidad */
       margin-bottom: 3px;
     }
 
@@ -553,8 +530,84 @@
       opacity: 1;
       visibility: visible;
     }
+
+    /* Móviles (hasta 767px) */
+    @media (max-width: 767px) {
+      
+    }
   </style>
+
   <script>
+    // ============= CONTROL DE ATAJO DE TECLADO PARA MENÚ DE ACCESIBILIDAD =============
+    let altPressed = false;
+    let aPressed = false;
+    let sequenceComplete = false;
+    let sequenceTimeout;
+
+    document.addEventListener('keydown', function (event) {
+      // Resetear timeout si existe
+      if (sequenceTimeout) {
+        clearTimeout(sequenceTimeout);
+      }
+
+      // Detectar Alt + A + X en secuencia
+      if (event.code === 'AltLeft' || event.code === 'AltRight') {
+        altPressed = true;
+        aPressed = false;
+        sequenceComplete = false;
+      } else if (altPressed && event.code === 'KeyA') {
+        aPressed = true;
+        event.preventDefault();
+      } else if (altPressed && aPressed && event.code === 'KeyX') {
+        event.preventDefault();
+        toggleAccessibilityMenu();
+        // Resetear estado
+        altPressed = false;
+        aPressed = false;
+        sequenceComplete = true;
+        return;
+      } else {
+        // Si se presiona otra tecla, resetear
+        altPressed = false;
+        aPressed = false;
+        sequenceComplete = false;
+      }
+
+      // Limpiar el estado después de 2 segundos
+      sequenceTimeout = setTimeout(() => {
+        altPressed = false;
+        aPressed = false;
+        sequenceComplete = false;
+      }, 2000);
+    });
+
+    document.addEventListener('keyup', function (event) {
+      // Resetear cuando se suelta Alt (pero no si ya se completó la secuencia)
+      if ((event.code === 'AltLeft' || event.code === 'AltRight') && !sequenceComplete) {
+        altPressed = false;
+        aPressed = false;
+      }
+    });
+
+    // Función para alternar el menú de accesibilidad
+    function toggleAccessibilityMenu() {
+      const menu = document.getElementById("accessibility-menu");
+      menu.classList.toggle("visible");
+    }
+
+    // Cerrar menú al hacer clic fuera de él
+    document.addEventListener("click", function (event) {
+      const menu = document.getElementById("accessibility-menu");
+      if (!menu.contains(event.target)) {
+        menu.classList.remove("visible");
+      }
+    });
+
+    // Prevenir que el menú se cierre al hacer clic dentro de él
+    document.getElementById("accessibility-menu").addEventListener("click", function (event) {
+      event.stopPropagation();
+    });
+
     // ============= SCRIPTS PARA FUNCIONALIDADES DE ACCESIBILIDAD =============
 
     // Función para modo oscuro

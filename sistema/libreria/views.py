@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from libreria.forms import CustomUserForm, CustomUserEditForm, CustomPasswordChangeForm
@@ -74,8 +76,7 @@ def crear_usuario(request):
                 user = form.save(commit=False)
                 role = user.role
 
-                # Si el nuevo usuario es administrador, validamos el límite y le damos permisos,
-                # si es empleado, dejamos todos los accesos en False.
+                # Validación para administradores
                 if role == 'Administrador':
                     admin_count = CustomUser.objects.filter(
                         role='Administrador',
@@ -86,51 +87,46 @@ def crear_usuario(request):
                     if admin_count >= limit:
                         messages.error(
                             request,
-                            f"No puedes registrarte como administrador. Inténtalo como empleado."
+                            "Límite de administradores alcanzado. Solo puede haber un administrador activo en el sistema."
                         )
                         return redirect('libreria:crear_usuario')
 
-
-                    # Asignar todos los permisos a los administradores
+                    # Asignar permisos a administradores
                     user.acceso_pap = True
                     user.acceso_caf = True
                     user.acceso_cde = True
                 else:
-                    # Para empleados, asegurarse que los permisos queden en False
+                    # Restringir permisos para empleados
                     user.acceso_pap = False
                     user.acceso_caf = False
                     user.acceso_cde = False
 
-                # Guardamos el usuario (aún no envía correo)
                 user.save()
 
-                # Recogemos las direcciones de correo de todos los administradores activos,
-                # excluyendo al usuario recién creado (por si él mismo es Admin).
+                # Notificación a administradores
                 admin_emails = CustomUser.objects.filter(
                     role='Administrador',
                     is_active=True
                 ).exclude(pk=user.pk).values_list('email', flat=True)
 
-                # Información adicional que venías viendo (cargo, email del nuevo usuario, etc.)
                 cargo = request.POST.get("cargo", "").strip()
                 email_nuevo = user.email
 
                 if admin_emails:
-                    subject = "Nuevo usuario creado"
+                    subject = "Nuevo usuario registrado en Gestor CCD"
                     message = (
-                        f"Hola,\n\n"
-                        f"Se ha registrado un nuevo usuario en Gestor CCD:\n\n"
+                        f"Detalles del nuevo usuario:\n\n"
                         f"• Nombre de usuario: {user.username}\n"
                         f"• Rol: {role}\n"
                         f"• Cargo: {cargo}\n"
                         f"• Email: {email_nuevo}\n\n"
                         f"Permisos asignados:\n"
-                        f"  - Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
-                        f"  - Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
-                        f"  - Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
-                        f"Si  desea desactivar este usuario, puede hacerlo desde el panel.\n\n"
-                        f"Saludos,\n"
-                        f"El equipo de Gestor CCD le desea un feliz día"
+                        f"• Papelería: {'Sí' if user.acceso_pap else 'No'}\n"
+                        f"• Cafetería: {'Sí' if user.acceso_caf else 'No'}\n"
+                        f"• Centro de Eventos: {'Sí' if user.acceso_cde else 'No'}\n\n"
+                        f"Este usuario requiere su aprobación para acceder al sistema.\n\n"
+                        f"Saludos cordiales,\n"
+                        f"Equipo de Gestor CCD"
                     )
                     try:
                         send_mail(
@@ -141,18 +137,50 @@ def crear_usuario(request):
                             fail_silently=False,
                         )
                     except Exception as e:
-                        messages.error(request, f"No se pudo enviar el correo: {e}")
+                        messages.warning(request, "El usuario se creó correctamente, pero no se pudo enviar la notificación a los administradores.")
 
-                messages.success(request, f"Usuario '{user.username}' creado exitosamente.")
+                messages.success(request, f"Usuario '{user.username}' registrado exitosamente.")
                 return redirect('libreria:inicio')
 
+            except IntegrityError:
+                messages.error(request, "Error: El nombre de usuario o correo electrónico ya existe en el sistema.")
+            except ValidationError as e:
+                messages.error(request, f"Error de validación: {', '.join(e.messages)}")
             except Exception as e:
-                messages.error(request, f"Hubo un error al crear el usuario: {e}")
+                messages.error(request, f"Error inesperado al crear el usuario: {str(e)}")
         else:
-            # Si el formulario no es válido, mostramos los errores
+            # Mensajes de error específicos por campo
             for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
+                field_label = form.fields[field].label if field in form.fields else field
+                
+                if 'username' in field:
+                    for error in errors:
+                        if 'unique' in error:
+                            messages.error(request, "Este nombre de usuario ya está en uso. Por favor elija otro.")
+                        else:
+                            messages.error(request, f"Nombre de usuario: {error}")
+                
+                elif 'email' in field:
+                    for error in errors:
+                        if 'unique' in error:
+                            messages.error(request, "Este correo electrónico ya está registrado.")
+                        elif 'invalid' in error:
+                            messages.error(request, "Ingrese una dirección de correo electrónico válida.")
+                        else:
+                            messages.error(request, f"Correo electrónico: {error}")
+                
+                elif 'password' in field:
+                    for error in errors:
+                        if 'too short' in error.lower():
+                            messages.error(request, "La contraseña debe tener al menos 8 caracteres.")
+                        elif 'too common' in error.lower():
+                            messages.error(request, "La contraseña es demasiado común o insegura.")
+                        else:
+                            messages.error(request, f"Contraseña: {error}")
+                
+                else:
+                    for error in errors:
+                        messages.error(request, f"{field_label}: {error}")
     else:
         form = CustomUserForm()
 

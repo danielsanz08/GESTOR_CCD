@@ -1,13 +1,18 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 # Create your models here.
 class Articulo(models.Model):
     nombre = models.CharField(max_length=40, blank=False, null=False)
     marca = models.CharField(max_length=30, blank=False, null=False)
-    observacion = models.CharField(max_length=30, blank=True, null=True)
+    observacion = models.CharField(max_length=50, blank=True, null=True)
     tipo = models.CharField(max_length=30, blank=True, null=True, default='No establecido')
     precio = models.PositiveBigIntegerField(blank=False, null=False)
-    cantidad = models.PositiveIntegerField( max_length=9,blank=False, null=False)
+    cantidad = models.PositiveIntegerField(
+        validators=[MaxValueValidator(9999999999)],  # Límite de 10 dígitos
+        blank=False,
+        null=False
+    )
     proveedor = models.CharField(max_length=40, blank=False, null=False, default='No establecido')
     registrado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,

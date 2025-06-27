@@ -130,7 +130,7 @@
     <!-- Modal para eliminar -->
     <div id="modoEliminar" class="modal" style="display: none;">
         <div class="modal-contenido">
-            <h2>¿Estás seguro de eliminar este artículo?</h2>
+            <h4>¿Estás seguro de eliminar este artículo?</h4>
             <form id="formEliminar" method="POST" action="{% url 'papeleria:eliminar_articulo' 0 %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-delete">Eliminar</button>

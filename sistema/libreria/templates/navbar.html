@@ -2,33 +2,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <link href="{% static 'css/navbar.css' %}?v={% now 'U' %}" rel="stylesheet">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block titulo %}GESTOR CCD{% endblock %}</title>
   <link rel="icon" type="image/x-icon" href="{% static 'imagen/LOGO.png' %}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css ">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
   <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:ital,wght@0,400;0,700;1,400;1,700&display=swap"
     rel="stylesheet">
 </head>
-
 <body>
   <!-- ============= SECCIÓN LOGO DE FONDO ============= -->
   <div class="fondo">
     <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
   </div>
+
   <!-- ============= SECCIÓN NAVBAR ============= -->
   <div class="navbar">
     <h2 class="gestor">GESTOR CCD</h2>
+    
+    <!-- Botones dentro del navbar -->
+    <div class="navbar-buttons">
+      <button id="toggle-accessibility-menu" title="Opciones de accesibilidad">
+        <i class="bi bi-gear-fill"></i>
+      </button>
+      
+      <!-- Botón de cerrar sesión -->
+      {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="btn-logout" title="Cerrar Sesión">
+        <i class="bi bi-box-arrow-right"></i>
+      </a>
+      {% endif %}
+    </div>
   </div>
+
   <style>
     .tooltip-container {
       position: relative;
       display: inline-block;
     }
-
     .tooltip-text {
       visibility: hidden;
       background-color: #333;
@@ -39,7 +52,6 @@
       position: absolute;
       z-index: 1;
       bottom: 125%;
-      /* Posición arriba del botón */
       left: 50%;
       transform: translateX(-50%);
       opacity: 0;
@@ -47,7 +59,6 @@
       white-space: nowrap;
       font-size: 12px;
     }
-
     .tooltip-container:hover .tooltip-text {
       visibility: visible;
       opacity: 1;
@@ -61,14 +72,44 @@
       width: 100%;
       background-color: #1c96bb;
       color: white;
-      padding: 15px;
-      text-align: center;
+      padding: 0 15px;
       font-weight: bold;
       z-index: 1000;
       height: 65px;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       text-align: center;
+    }
+
+    .gestor {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .navbar-buttons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .navbar-buttons button,
+    .navbar-buttons a {
+      background-color: transparent;
+      color: white;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .navbar-buttons button:hover,
+    .navbar-buttons a:hover {
+      transform: scale(1.1);
+    }
+
+    .navbar-buttons i {
+      vertical-align: middle;
     }
   </style>
 
@@ -105,7 +146,6 @@
       justify-content: flex-start;
       margin-left: 0;
     }
-
     .breadcrumb {
       list-style: none;
       padding-left: 0;
@@ -116,11 +156,9 @@
       align-items: center;
       text-align: center;
     }
-
     .breadcrumb-item {
       display: inline;
     }
-
     .breadcrumb-item a {
       color: #000;
       text-decoration: none;
@@ -131,12 +169,10 @@
       display: inline-block;
       transition: background-color 0.3s ease;
     }
-
     .breadcrumb-item a:hover {
       background-color: #1c96bb;
       color: white;
     }
-
     .breadcrumb-item.active {
       color: #ffffff;
       background-color: #1c96bb;
@@ -176,41 +212,34 @@
       backdrop-filter: blur(5px);
       animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
     }
-
     .alert-success {
       background-color: rgba(144, 238, 144, 0.527);
       border-color: rgba(0, 128, 0, 0.473);
       color: rgb(0, 100, 0);
     }
-
     .alert-error {
       background-color: rgba(255, 99, 71, 0.699);
       border-color: rgba(139, 0, 0, 0.473);
       color: rgb(139, 0, 0);
     }
-
     .icon {
       margin-right: 10px;
     }
-
     @keyframes fadeIn {
       from {
         opacity: 0;
         transform: translate(-50%, -10px);
       }
-
       to {
         opacity: 1;
         transform: translate(-50%, 0);
       }
     }
-
     @keyframes fadeOut {
       from {
         opacity: 1;
         transform: translate(-50%, 0);
       }
-
       to {
         opacity: 0;
         transform: translate(-50%, -10px);
@@ -234,70 +263,17 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 20px;
+      height: 40px;
       background-color: #1c96bb;
-      color: rgb(255, 255, 255);
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 10px;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
       font-weight: bold;
-    }
-  </style>
-
-  <!-- ============= MODAL DE ALERTA============= -->
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
       z-index: 1000;
-      padding-top: 100px;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 2000;
-    }
-
-    .modal-content {
-      background-color: white;
-      margin: auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 400px;
-      max-width: 90%;
-      text-align: center;
-      position: relative;
-      z-index: 2000;
-    }
-
-    .close {
-      color: #aaa;
-      font-size: 28px;
-      position: absolute;
-      top: 5px;
-      right: 15px;
-      cursor: pointer;
-    }
-
-    .btn-confirmar {
-      background-color: red;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      margin-right: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .btn-cancelar {
-      background-color: gray;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
     }
   </style>
 
@@ -311,7 +287,6 @@
       <button class="accessibility-btn monocromo" data-tooltip="Modo Monocromo">
         <i class="bi bi-circle-half"></i>
       </button>
-
       <!-- Fila 2 -->
       <button class="accessibility-btn titulos" data-tooltip="Resaltar Títulos">
         <i class="bi bi-type-h1"></i>
@@ -319,7 +294,6 @@
       <button class="accessibility-btn enlaces" data-tooltip="Resaltar Enlaces">
         <i class="bi bi-link-45deg"></i>
       </button>
-
       <!-- Fila 3 -->
       <button class="accessibility-btn alta-saturacion" data-tooltip="Alta Saturación">
         <i class="bi bi-palette-fill"></i>
@@ -328,7 +302,6 @@
         <i class="bi bi-eye-slash"></i>
       </button>
     </div>
-
     <!-- Controles de Zoom separados -->
     <div class="zoom-section">
       <div class="zoom-controls">
@@ -344,11 +317,6 @@
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
-
-    <!-- Indicador de atajo de teclado -->
-    <div class="keyboard-shortcut-info">
-      <small>Atajo: Alt + A + X</small>
-    </div>
   </div>
 
   <style>
@@ -359,34 +327,28 @@
       padding: 20px;
       border-radius: 16px;
       display: none;
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
+      position: absolute;
+      top: 65px;
+      right: 10px;
       width: 260px;
       max-width: 90vw;
       z-index: 3000;
       backdrop-filter: blur(10px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      transform: translateY(20px);
-      opacity: 0;
     }
 
     #accessibility-menu.visible {
       display: block;
-      transform: translateY(0);
-      opacity: 1;
     }
 
-    /* Grid de 2x3 para los botones principales */
     .accessibility-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin-bottom: 16px;
     }
 
-    /* Botones de accesibilidad */
     .accessibility-btn {
       background: linear-gradient(135deg, #1c96bb 0%, #80adf0 100%);
       color: white;
@@ -400,24 +362,12 @@
       font-size: 24px;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
       box-shadow: 0 4px 15px rgba(180, 204, 241, 0.4);
     }
 
-    .accessibility-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-    }
-
-    .accessibility-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Sección de zoom */
     .zoom-section {
       border-top: 1px solid rgba(0, 0, 0, 0.1);
       padding-top: 16px;
-      margin-bottom: 12px;
     }
 
     .zoom-controls {
@@ -443,11 +393,6 @@
       box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
     }
 
-    .zoom-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(33, 150, 243, 0.6);
-    }
-
     #zoom-percentage {
       font-size: 16px;
       font-weight: 600;
@@ -470,193 +415,93 @@
       box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
     }
 
-    .zoom-reset-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
-    }
-
-    /* Información del atajo de teclado */
-    .keyboard-shortcut-info {
-      text-align: center;
-      padding-top: 12px;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      color: #666;
-      font-size: 11px;
-    }
-
-    /* Tooltips */
-    [data-tooltip] {
-      position: relative;
-    }
-
-    [data-tooltip]:before {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      pointer-events: none;
-      z-index: 3001;
-      margin-bottom: 8px;
-    }
-
+    [data-tooltip]:before,
     [data-tooltip]:after {
-      content: '';
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: rgba(0, 0, 0, 0.9);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      pointer-events: none;
       z-index: 3001;
-      margin-bottom: 3px;
     }
 
-    [data-tooltip]:hover:before,
-    [data-tooltip]:hover:after {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Móviles (hasta 767px) */
     @media (max-width: 767px) {
-      
+      .accessibility-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      #accessibility-menu {
+        width: 90%;
+        right: 5%;
+        top: 70px;
+      }
+      .zoom-controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .accessibility-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      #accessibility-menu {
+        width: 90%;
+        right: 5%;
+        top: 70px;
+      }
     }
   </style>
 
+  <!-- ============= SCRIPTS PARA FUNCIONALIDADES DE ACCESIBILIDAD ============= -->
   <script>
-    // ============= CONTROL DE ATAJO DE TECLADO PARA MENÚ DE ACCESIBILIDAD =============
-    let altPressed = false;
-    let aPressed = false;
-    let sequenceComplete = false;
-    let sequenceTimeout;
-
-    document.addEventListener('keydown', function (event) {
-      // Resetear timeout si existe
-      if (sequenceTimeout) {
-        clearTimeout(sequenceTimeout);
-      }
-
-      // Detectar Alt + A + X en secuencia
-      if (event.code === 'AltLeft' || event.code === 'AltRight') {
-        altPressed = true;
-        aPressed = false;
-        sequenceComplete = false;
-      } else if (altPressed && event.code === 'KeyA') {
-        aPressed = true;
-        event.preventDefault();
-      } else if (altPressed && aPressed && event.code === 'KeyX') {
-        event.preventDefault();
-        toggleAccessibilityMenu();
-        // Resetear estado
-        altPressed = false;
-        aPressed = false;
-        sequenceComplete = true;
-        return;
-      } else {
-        // Si se presiona otra tecla, resetear
-        altPressed = false;
-        aPressed = false;
-        sequenceComplete = false;
-      }
-
-      // Limpiar el estado después de 2 segundos
-      sequenceTimeout = setTimeout(() => {
-        altPressed = false;
-        aPressed = false;
-        sequenceComplete = false;
-      }, 2000);
-    });
-
-    document.addEventListener('keyup', function (event) {
-      // Resetear cuando se suelta Alt (pero no si ya se completó la secuencia)
-      if ((event.code === 'AltLeft' || event.code === 'AltRight') && !sequenceComplete) {
-        altPressed = false;
-        aPressed = false;
-      }
-    });
-
-    // Función para alternar el menú de accesibilidad
-    function toggleAccessibilityMenu() {
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleButton = document.getElementById("toggle-accessibility-menu");
       const menu = document.getElementById("accessibility-menu");
-      menu.classList.toggle("visible");
-    }
 
-    // Cerrar menú al hacer clic fuera de él
-    document.addEventListener("click", function (event) {
-      const menu = document.getElementById("accessibility-menu");
-      if (!menu.contains(event.target)) {
+      toggleButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menu.classList.toggle("visible");
+      });
+
+      menu.addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
+
+      document.addEventListener("click", function () {
         menu.classList.remove("visible");
-      }
+      });
     });
 
-    // Prevenir que el menú se cierre al hacer clic dentro de él
-    document.getElementById("accessibility-menu").addEventListener("click", function (event) {
-      event.stopPropagation();
-    });
-
-    // ============= SCRIPTS PARA FUNCIONALIDADES DE ACCESIBILIDAD =============
-
-    // Función para modo oscuro
+    // Funciones de accesibilidad
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
-      const isDark = document.body.classList.contains('dark');
-      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'enabled' : 'disabled');
     }
-
     document.querySelector('.dark-mode').addEventListener('click', toggleDarkMode);
 
-    // Función para modo monocromo
     function toggleMonocromo() {
       document.body.classList.toggle('monocromo-activo');
-      const isMonocromo = document.body.classList.contains('monocromo-activo');
-      localStorage.setItem('monocromo', isMonocromo ? 'enabled' : 'disabled');
+      localStorage.setItem('monocromo', document.body.classList.contains('monocromo-activo') ? 'enabled' : 'disabled');
     }
-
     document.querySelector('.monocromo').addEventListener('click', toggleMonocromo);
 
-    // Función para resaltar títulos
     function toggleResaltarTitulos() {
       document.body.classList.toggle('resaltar-titulos');
-      const resaltado = document.body.classList.contains('resaltar-titulos');
-      localStorage.setItem('resaltarTitulos', resaltado ? 'enabled' : 'disabled');
+      localStorage.setItem('resaltarTitulos', document.body.classList.contains('resaltar-titulos') ? 'enabled' : 'disabled');
     }
-
     document.querySelector('.titulos').addEventListener('click', toggleResaltarTitulos);
 
-    // Función para resaltar enlaces
     function toggleResaltarEnlaces() {
       document.body.classList.toggle('resaltar-enlaces');
-      const resaltado = document.body.classList.contains('resaltar-enlaces');
-      localStorage.setItem('resaltarEnlaces', resaltado ? 'enabled' : 'disabled');
+      localStorage.setItem('resaltarEnlaces', document.body.classList.contains('resaltar-enlaces') ? 'enabled' : 'disabled');
     }
-
     document.querySelector('.enlaces').addEventListener('click', toggleResaltarEnlaces);
 
-    // Alta saturación 
     document.querySelector('.alta-saturacion').addEventListener('click', () => {
       document.body.classList.toggle('alta-saturacion');
     });
 
-    // Bajo contraste 
     document.querySelector('.bajo-contraste').addEventListener('click', () => {
       document.body.classList.toggle('bajo-contraste');
     });
 
-    // Control de zoom
     const zoomStep = 10;
     const minZoom = 50;
     const maxZoom = 200;
@@ -684,38 +529,23 @@
       setZoom(100);
     });
 
-    // ============= CARGAR CONFIGURACIONES GUARDADAS =============
     window.addEventListener('DOMContentLoaded', () => {
-      // Cargar modo oscuro
       const darkMode = localStorage.getItem('darkMode');
-      if (darkMode === 'enabled') {
-        document.body.classList.add('dark');
-      }
+      if (darkMode === 'enabled') document.body.classList.add('dark');
 
-      // Cargar modo monocromo
       const estadoMonocromo = localStorage.getItem('monocromo');
-      if (estadoMonocromo === 'enabled') {
-        document.body.classList.add('monocromo-activo');
-      }
+      if (estadoMonocromo === 'enabled') document.body.classList.add('monocromo-activo');
 
-      // Cargar resaltado de títulos
-      if (localStorage.getItem('resaltarTitulos') === 'enabled') {
-        document.body.classList.add('resaltar-titulos');
-      }
+      if (localStorage.getItem('resaltarTitulos') === 'enabled') document.body.classList.add('resaltar-titulos');
+      if (localStorage.getItem('resaltarEnlaces') === 'enabled') document.body.classList.add('resaltar-enlaces');
 
-      // Cargar resaltado de enlaces
-      if (localStorage.getItem('resaltarEnlaces') === 'enabled') {
-        document.body.classList.add('resaltar-enlaces');
-      }
-
-      // Cargar nivel de zoom
       const savedZoom = parseInt(localStorage.getItem("zoomLevel")) || 100;
       setZoom(savedZoom);
     });
   </script>
 
   <!-- ============= SCRIPTS ADICIONALES ============= -->
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script src=" https://unpkg.com/feather-icons "></script>
   <script>
     feather.replace();
   </script>
@@ -725,5 +555,4 @@
     }
   </style>
 </body>
-
 </html>

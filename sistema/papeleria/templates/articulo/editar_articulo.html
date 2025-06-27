@@ -2,6 +2,61 @@
 {% load static %}
 {% block titulo %}Editar artículos{% endblock %}
 {% block contenido %}
+<style>
+    .error-msg {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .error-nombre,
+    .error-tipo,
+    .error-marca,
+    .error-precio,
+    .error-cantidad,
+    .error-proveedor,
+    .error-observacion {
+        color: #ff0101;
+        font-weight: bold;
+        position: absolute;
+    }
+
+    .error-nombre {
+        top: 27vh;
+        left: 13vh;
+    }
+
+    .error-tipo {
+        top: 27vh;
+        left: 58vh;
+    }
+
+    .error-marca {
+        top: 27vh;
+        left: 102vh;
+    }
+
+    .error-precio {
+        top: 42vh;
+        left: 13vh;
+        display: block;
+    }
+
+    .error-cantidad {
+        top: 42vh;
+        left: 58vh;
+    }
+
+    .error-proveedor {
+        top: 42vh;
+        left: 102vh;
+    }
+
+    .error-observacion {
+        top: 59vh;
+        left: 11vh;
+    }
+</style>
+
 <link rel="stylesheet" href="{% static 'css/editar_articulo.css' %}?v={% now 'U' %}">
 <div class="fondo">
     <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
@@ -11,34 +66,46 @@
     <form method="POST" id="form_articulo" action="{% url 'papeleria:editar_articulo' articulo.id %}">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre del artículo</label>
-            {{ form.nombre }}
+            <label for="id_nombre" class="form-label">Nombre del artículo</label>
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off"
+                placeholder="Maximo 40 caracteres" maxlength="40" value="{{ form.nombre.value|default:'' }}">
+            <div class="error-msg error-nombre"></div>
         </div>
         <div class="mb-3">
-            <label for="tipo" class="form-label">Digite el tipo de articulo</label>
-            {{ form.tipo }}
+            <label for="id_tipo" class="form-label">Digite el tipo de articulo</label>
+            <input type="text" name="tipo" id="id_tipo" placeholder="Maximo 30 caracteres" maxlength="30"
+                value="{{ form.tipo.value|default:'No establecido' }}">
+            <div class="error-msg error-tipo"></div>
         </div>
         <div class="mb-3">
-            <label for="marca" class="form-label">Marca del artículo</label>
-            {{ form.marca }}
+            <label for="id_marca" class="form-label">Marca del artículo</label>
+            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off"
+                placeholder="Maximo 30 caracteres" maxlength="30" value="{{ form.marca.value|default:'' }}">
+            <div class="error-msg error-marca"></div>
         </div>
         <div class="mb-3">
-            <label for="precio" class="form-label">Digite el precio</label>
-            <input type="text" name="precio" id="id_precio" 
-                value="{{ form.precio.value|default:'' }}" class="form-control">
+            <label for="id_precio" class="form-label">Digite el precio</label>
+            <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del artículo"
+                value="{{ form.precio.value|default:'' }}">
             <div class="error-msg error-precio"></div>
         </div>
         <div class="mb-3">
-            <label for="cantidad" class="form-label">Digite la cantidad</label>
-            {{ form.cantidad }}
+            <label for="id_cantidad" class="form-label">Digite la cantidad</label>
+            <input type="text" id="id_cantidad" name="cantidad" placeholder="Máximo 10 dígitos" maxlength="13"
+                value="{{ form.cantidad.value|default:'' }}">
+            <div class="error-msg error-cantidad"></div>
         </div>
         <div class="mb-3">
-            <label for="proveedor" class="form-label">Digite el proveedor</label>
-            {{ form.proveedor }}
+            <label for="id_proveedor" class="form-label">Digite el proveedor</label>
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Maximo 40 caracteres" maxlength="40"
+                value="{{ form.proveedor.value|default:'' }}">
+            <div class="error-msg error-proveedor"></div>
         </div>
         <div class="mb-3">
-            <label for="observacion" class="form-label">Observación del artículo</label>
-            {{ form.observacion }}
+            <label for="id_observacion" class="form-label">Observación del artículo</label>
+            <input type="text" name="observacion" id="id_observacion" class="form-control"
+                placeholder="Maximo 30 caracteres" maxlength="50" value="{{ form.observacion.value|default:'' }}">
+            <div class="error-msg error-observacion"></div>
         </div>
         <button type="submit" id="submitBtn">Editar artículo</button>
     </form>
@@ -46,43 +113,149 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const precioInput = document.getElementById("id_precio");
-        const formArticulo = document.getElementById("form_articulo");
+        const campos = {
+            nombre: document.getElementById("id_nombre"),
+            tipo: document.getElementById("id_tipo"),
+            marca: document.getElementById("id_marca"),
+            precio: document.getElementById("id_precio"),
+            cantidad: document.getElementById("id_cantidad"),
+            proveedor: document.getElementById("id_proveedor"),
+            observacion: document.getElementById("id_observacion"),
+        };
 
-        function formatearConComas(valor) {
-            const partes = valor.split(".");
-            let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            let decimal = partes[1] ? "." + partes[1] : "";
-            return entero + decimal;
+        const errores = {
+            nombre: document.querySelector(".error-nombre"),
+            tipo: document.querySelector(".error-tipo"),
+            marca: document.querySelector(".error-marca"),
+            precio: document.querySelector(".error-precio"),
+            cantidad: document.querySelector(".error-cantidad"),
+            proveedor: document.querySelector(".error-proveedor"),
+            observacion: document.querySelector(".error-observacion"),
+        };
+
+        function capitalizarPrimeraLetra(texto) {
+            if (!texto) return texto;
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
         }
 
-        function limpiarValor(valor) {
-            return valor.replace(/[^\d.]/g, "");
+        function validarTexto(valor) {
+            if (valor.trim().length > 0 && valor.length < 3) {
+                return "Debe tener al menos 3 caracteres.";
+            }
+            // Expresión regular mejorada para aceptar más caracteres especiales
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
+                return "Contiene caracteres inválidos.";
+            }
+            if (/(.)\1{2,}/.test(valor)) {
+                return "No repita un mismo carácter más de 2 veces.";
+            }
+            return "";
         }
 
-        precioInput.addEventListener("input", function () {
-            let valor = precioInput.value;
-            valor = limpiarValor(valor);
-
-            const partes = valor.split(".");
-            if (partes.length > 2) {
-                valor = partes[0] + "." + partes.slice(1).join("");
-            }
-            if (partes[1]) {
-                partes[1] = partes[1].slice(0, 2);
-            }
-
-            const formateado = formatearConComas(valor);
-            precioInput.value = formateado;
+        // Formateador de cantidad (máximo 10 dígitos)
+        const cantidadInput = document.getElementById('id_cantidad');
+        cantidadInput.addEventListener('input', function () {
+            let value = this.value.replace(/[^\d]/g, '');
+            if (value.length > 10) value = value.substring(0, 10);
+            this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         });
 
-        if (precioInput.value) {
-            precioInput.value = formatearConComas(precioInput.value);
+        function validarPrecio(valor) {
+            const limpio = valor.replace(/[.,]/g, "");
+            if (!/^\d{1,14}(\.\d{0,2})?$/.test(valor.replace(/,/g, ""))) {
+                return "Máximo 14 dígitos antes del punto y 2 decimales.";
+            }
+            return "";
         }
 
-        formArticulo.addEventListener("submit", function () {
-            precioInput.value = limpiarValor(precioInput.value);
+        function aplicarEventosCampoTexto(nombreCampo, validarFn) {
+            const input = campos[nombreCampo];
+            const errorDiv = errores[nombreCampo];
+
+            input.addEventListener("input", function () {
+                const pos = input.selectionStart;
+                input.value = capitalizarPrimeraLetra(input.value);
+                input.setSelectionRange(pos, pos);
+
+                const msg = validarFn(input.value);
+                errorDiv.textContent = input.value.trim() ? msg : "";
+            });
+        }
+
+        function validarObservacion(valor) {
+            return validarTexto(valor);
+        }
+
+        aplicarEventosCampoTexto("nombre", validarTexto);
+        aplicarEventosCampoTexto("tipo", validarTexto);
+        aplicarEventosCampoTexto("marca", validarTexto);
+        aplicarEventosCampoTexto("proveedor", validarTexto);
+        aplicarEventosCampoTexto("observacion", validarObservacion);
+
+        campos.precio.addEventListener("input", function () {
+            let valor = campos.precio.value.replace(/[^0-9.]/g, "");
+            const partes = valor.split(".");
+            const entero = partes[0].slice(0, 14); // Limitar a 14 dígitos
+            const decimal = partes[1] ? partes[1].slice(0, 2) : "";
+
+            const enteroFormateado = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            campos.precio.value = decimal ? `${enteroFormateado}.${decimal}` : enteroFormateado;
+
+            errores.precio.textContent = validarPrecio(entero + (decimal ? "." + decimal : ""));
         });
+
+        campos.cantidad.addEventListener("input", function () {
+            let valor = campos.cantidad.value.replace(/\D/g, ""); // solo números
+            valor = valor.slice(0, 10); // máximo 10 dígitos reales
+
+            // Aplicar puntos de derecha a izquierda
+            let formateado = "";
+            let contador = 0;
+            for (let i = valor.length - 1; i >= 0; i--) {
+                formateado = valor[i] + formateado;
+                contador++;
+                if (contador === 3 && i !== 0) {
+                    formateado = "." + formateado;
+                    contador = 0;
+                }
+            }
+            campos.cantidad.value = formateado;
+            errores.cantidad.textContent = validarCantidad(formateado);
+        });
+
+        document.getElementById("form_articulo").addEventListener("submit", function () {
+            campos.precio.value = campos.precio.value.replace(/,/g, "");
+            campos.cantidad.value = campos.cantidad.value.replace(/\./g, "");
+            ["nombre", "tipo", "marca", "proveedor", "observacion"].forEach(campo => {
+                campos[campo].value = capitalizarPrimeraLetra(campos[campo].value);
+            });
+        });
+
+        // Inicializar valores formateados al cargar la página
+        if (campos.precio.value) {
+            let valor = campos.precio.value.replace(/[^0-9.]/g, "");
+            const partes = valor.split(".");
+            const entero = partes[0].slice(0, 14);
+            const decimal = partes[1] ? partes[1].slice(0, 2) : "";
+            const enteroFormateado = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            campos.precio.value = decimal ? `${enteroFormateado}.${decimal}` : enteroFormateado;
+        }
+
+        if (campos.cantidad.value) {
+            let valor = campos.cantidad.value.replace(/\D/g, "");
+            valor = valor.slice(0, 10);
+            let formateado = "";
+            let contador = 0;
+            for (let i = valor.length - 1; i >= 0; i--) {
+                formateado = valor[i] + formateado;
+                contador++;
+                if (contador === 3 && i !== 0) {
+                    formateado = "." + formateado;
+                    contador = 0;
+                }
+            }
+            campos.cantidad.value = formateado;
+        }
     });
 </script>
 

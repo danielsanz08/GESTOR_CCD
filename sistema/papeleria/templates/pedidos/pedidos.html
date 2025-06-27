@@ -12,14 +12,14 @@
     <form method="post">
         {% csrf_token %}
 
-        <div class="mb-3">
+        <div class="mb-3" style="display: none;">
             <label class="form-label">Área:</label>
             <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
         </div>
 
         <div id="articulos-container">
             <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
-                <select name="articulo" required>
+                <select name="articulo" required class="select-articulo">
                     <option value="">-- Seleccionar Artículo --</option>
                     {% for articulo in articulos %}
                         {% if articulo.cantidad > 0 %}
@@ -32,7 +32,7 @@
                 </select>
 
                 <div>
-                    <select name="tipo_articulo" required>
+                    <select name="tipo_articulo" required class="select-tipo">
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
                             {% if articulo.cantidad > 0 %}
@@ -40,14 +40,14 @@
                                         data-articulo="{{ articulo.id }}"
                                         data-cantidad="{{ articulo.cantidad }}"
                                         {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
-                                    {{ articulo.tipo }} ({{ articulo.nombre }})
+                                    {{ articulo.tipo }} 
                                 </option>
                             {% endif %}
                         {% endfor %}
                     </select>
                 </div>
 
-                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
+                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad" class="input-cantidad">
             </div>
         </div>
 
@@ -74,17 +74,46 @@
     .btn-eliminar-articulo:hover {
         background-color: #c82333;
     }
+
+    .articulo-deshabilitado {
+        color: #999;
+        text-decoration: line-through;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Array global para almacenar TODOS los artículos seleccionados en este pedido
+    let articulosSeleccionadosEnPedido = [];
+
+    function actualizarOpcionesDisponibles() {
+        const selectsArticulos = document.querySelectorAll('.select-articulo');
+        
+        selectsArticulos.forEach(select => {
+            const currentSelected = select.value;
+            
+            // Iterar sobre todas las opciones de cada select
+            Array.from(select.options).forEach(option => {
+                if (option.value) {
+                    // Habilitar si no está seleccionado en otro lado o es el valor actual
+                    if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
+                        option.disabled = false;
+                        option.classList.remove('articulo-deshabilitado');
+                    } else {
+                        option.disabled = true;
+                        option.classList.add('articulo-deshabilitado');
+                    }
+                }
+            });
+        });
+    }
+
     function actualizarTipos(form) {
-        const selectArticulo = form.querySelector('select[name="articulo"]');
-        const selectTipo = form.querySelector('select[name="tipo_articulo"]');
+        const selectArticulo = form.querySelector('.select-articulo');
+        const selectTipo = form.querySelector('.select-tipo');
         const articuloSeleccionado = selectArticulo.value;
 
-        for (let i = 0; i < selectTipo.options.length; i++) {
-            const option = selectTipo.options[i];
+        Array.from(selectTipo.options).forEach(option => {
             const idRelacionado = option.getAttribute('data-articulo');
             const cantidad = parseInt(option.getAttribute('data-cantidad')) || 0;
 
@@ -106,18 +135,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 option.hidden = true;
                 option.classList.add('no-allowed');
             }
-        }
+        });
 
-        if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex].getAttribute('data-articulo') !== articuloSeleccionado) {
+        // Resetear tipo si no coincide con el artículo seleccionado
+        if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex]?.getAttribute('data-articulo') !== articuloSeleccionado) {
             selectTipo.value = "";
         }
 
-        actualizarValidacionCantidad(form); // actualiza validación al cambiar artículo
+        actualizarValidacionCantidad(form);
     }
 
     function actualizarValidacionCantidad(form) {
-        const selectArticulo = form.querySelector('select[name="articulo"]');
-        const inputCantidad = form.querySelector('input[name="cantidad"]');
+        const selectArticulo = form.querySelector('.select-articulo');
+        const inputCantidad = form.querySelector('.input-cantidad');
 
         inputCantidad.addEventListener('input', function () {
             const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
@@ -125,13 +155,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (valorIngresado > cantidadDisponible) {
                 this.value = "";
+                alert("No puedes pedir más cantidad de la disponible");
             }
         });
     }
 
     function inicializarFormulario(form, incluirEliminar = false) {
-        const selectArticulo = form.querySelector('select[name="articulo"]');
+        const selectArticulo = form.querySelector('.select-articulo');
+        
         selectArticulo.addEventListener('change', function () {
+            // Remover el valor anterior de la lista si existe
+            const prevValue = form.getAttribute('data-selected-articulo');
+            if (prevValue) {
+                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
+            }
+            
+            // Agregar el nuevo valor si se seleccionó algo
+            if (this.value) {
+                articulosSeleccionadosEnPedido.push(this.value);
+                form.setAttribute('data-selected-articulo', this.value);
+            } else {
+                form.removeAttribute('data-selected-articulo');
+            }
+            
+            // Actualizar todas las opciones disponibles
+            actualizarOpcionesDisponibles();
             actualizarTipos(form);
         });
 
@@ -151,9 +199,10 @@ document.addEventListener('DOMContentLoaded', function () {
         actualizarValidacionCantidad(form);
     }
 
+    // Inicializar el formulario por defecto
     const defaultForm = document.querySelector('.articulo-form.default-form');
     if (defaultForm) {
-        inicializarFormulario(defaultForm);  // No incluye botón de eliminar
+        inicializarFormulario(defaultForm);
     }
 
     window.agregarArticulo = function () {
@@ -165,15 +214,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // Limpiar valores
         const selects = nuevoFormulario.querySelectorAll('select');
         selects.forEach(select => select.selectedIndex = 0);
-        nuevoFormulario.querySelector('input[name="cantidad"]').value = 1;
+        nuevoFormulario.querySelector('.input-cantidad').value = 1;
+        nuevoFormulario.removeAttribute('data-selected-articulo');
 
-        inicializarFormulario(nuevoFormulario, true);  // Incluir botón de eliminar
+        inicializarFormulario(nuevoFormulario, true);
         container.appendChild(nuevoFormulario);
+        
+        // Actualizar las opciones disponibles
+        actualizarOpcionesDisponibles();
     };
 
     window.eliminarArticulo = function (form) {
         if (!form.classList.contains('default-form')) {
+            const articuloId = form.getAttribute('data-selected-articulo');
+            if (articuloId) {
+                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+            }
             form.remove();
+            actualizarOpcionesDisponibles();
         }
     };
 });

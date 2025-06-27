@@ -108,14 +108,19 @@ def crear_articulo(request):
     if request.method == 'POST':
         form = ArticuloForm(request.POST)
         if form.is_valid():
-            articulo = form.save(commit=False)
-            articulo.registrado_por = request.user
-            articulo.save()
-            messages.success(request, 'Artículo creado exitosamente.')
-            return redirect('papeleria:listar_articulo')
+            try:
+                articulo = form.save(commit=False)
+                articulo.registrado_por = request.user
+                articulo.save()
+                messages.success(request, '¡Artículo creado exitosamente!')
+                return redirect('papeleria:listar_articulo')
+            except Exception as e:
+                messages.error(request, f'Error al crear el artículo: {str(e)}')
         else:
-            messages.error(request, 'Hubo errores en el formulario. Por favor verifica los campos.')
-
+            # Mostrar errores específicos del formulario
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error en {field}: {error}')
     else:
         form = ArticuloForm()
 
@@ -126,21 +131,39 @@ def crear_articulo(request):
 
 def editar_articulo(request, articulo_id):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_caf'},
-         {'name': 'Lista de articulos', 'url': reverse('papeleria:listar_articulo')}, 
-         {'name': 'Editar artículo', 'url': reverse('papeleria:editar_articulo', kwargs={'articulo_id': articulo_id})},
-        
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Lista de articulos', 'url': reverse('papeleria:listar_articulo')}, 
+        {'name': 'Editar artículo', 'url': reverse('papeleria:editar_articulo', kwargs={'articulo_id': articulo_id})},
     ]
-    print("ARTICULO ID:", articulo_id)  # DEBUG
+
     articulo = get_object_or_404(Articulo, id=articulo_id)
-    if request.method== 'POST':
+
+    if request.method == 'POST':
         form = ArticuloEditForm(request.POST, instance=articulo)
         if form.is_valid():
-            form.save()
-            return redirect('papeleria:listar_articulo')
+            try:
+                # Guardar el artículo y registrar quién lo editó
+                articulo_editado = form.save(commit=False)
+                articulo_editado.registrado_por = request.user
+                articulo_editado.save()
+                
+                messages.success(request, f'¡El artículo "{articulo.nombre}" actualizado correctamente!')
+                return redirect('papeleria:listar_articulo')
+            except Exception as e:
+                messages.error(request, f'Error al guardar los cambios: {str(e)}')
+        else:
+            # Mostrar errores específicos del formulario
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error en {field}: {error}')
     else:
-            form = ArticuloEditForm(instance=articulo)
-    return render(request, 'articulo/editar_articulo.html', {'form': form, 'articulo': articulo, 'breadcrumbs': breadcrumbs})
+        form = ArticuloEditForm(instance=articulo)
+
+    return render(request, 'articulo/editar_articulo.html', {
+        'form': form,
+        'articulo': articulo,
+        'breadcrumbs': breadcrumbs
+    })
 
 def listar_articulo(request):
     breadcrumbs = [

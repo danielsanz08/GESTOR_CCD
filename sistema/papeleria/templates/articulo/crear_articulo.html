@@ -24,8 +24,8 @@
     .error-nombre { top: 27vh; left: 13vh; }
     .error-tipo { top: 27vh; left: 58vh; }
     .error-marca { top: 27vh; left: 102vh; }
-    .error-precio { top: 39vh; left: 13vh; }
-    .error-cantidad { top: 23.5vh; left: 58vh; }
+    .error-precio { top: 42vh; left: 13vh; display: block; }
+    .error-cantidad { top: 42vh; left: 58vh; }
     .error-proveedor { top: 42vh; left: 102vh; }
     .error-observacion { top: 59vh; left: 11vh; }
 </style>
@@ -42,7 +42,7 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="id_nombre" class="form-label">Nombre del artículo</label>
-            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Maximo 40 caracteres" maxlength="40" >
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Maximo 40 caracteres" maxlength="40">
             <div class="error-msg error-nombre"></div>
         </div>
 
@@ -66,7 +66,7 @@
 
         <div class="mb-3">
             <label for="id_cantidad" class="form-label">Digite la cantidad</label>
-            <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad del artículo" maxlength="9">
+            <input type="text" id="id_cantidad" name="cantidad" placeholder="Máximo 10 dígitos" maxlength="13">
             <div class="error-msg error-cantidad"></div>
         </div>
 
@@ -78,13 +78,14 @@
 
         <div class="mb-3">
             <label for="id_observacion" class="form-label">Observación del artículo:</label>
-            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 30 caracteres" maxlength="30">
+            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 50 caracteres" maxlength="50">
             <div class="error-msg error-observacion"></div>
         </div>
 
         <button type="submit" class="btn" id="submit_btn">Registrar artículo</button>
     </form>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const campos = {
@@ -108,6 +109,7 @@
         };
 
         function capitalizarPrimeraLetra(texto) {
+            if (!texto) return texto;
             return texto.charAt(0).toUpperCase() + texto.slice(1);
         }
 
@@ -115,7 +117,8 @@
             if (valor.trim().length > 0 && valor.length < 3) {
                 return "Debe tener al menos 3 caracteres.";
             }
-            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s.,;:¡!¿?"'()\/\-]*$/.test(valor)) {
+            // Expresión regular mejorada para aceptar más caracteres especiales
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
                 return "Contiene caracteres inválidos.";
             }
             if (/(.)\1{2,}/.test(valor)) {
@@ -125,13 +128,16 @@
         }
 
         function validarCantidad(valor) {
-            return (!/^\d*$/.test(valor) || parseInt(valor) < 0) ? "Debe ser un número entero positivo." : "";
+            const soloNumeros = valor.replace(/\./g, "");
+            return (!/^\d{1,10}$/.test(soloNumeros)) ? "Debe ser un número de hasta 10 dígitos." : "";
         }
 
         function validarPrecio(valor) {
-            valor = valor.replace(/,/g, "");
-            return (!/^\d+(\.\d{0,2})?$/.test(valor) || parseFloat(valor) < 0)
-                ? "Debe ser un número positivo con hasta 2 decimales." : "";
+            const limpio = valor.replace(/[.,]/g, "");
+            if (!/^\d{1,14}(\.\d{0,2})?$/.test(valor.replace(/,/g, ""))) {
+                return "Máximo 14 dígitos antes del punto y 2 decimales.";
+            }
+            return "";
         }
 
         function aplicarEventosCampoTexto(nombreCampo, validarFn) {
@@ -148,48 +154,45 @@
             });
         }
 
-        function validarObservacion(valor) {
-            return validarTexto(valor);
-        }
-
         aplicarEventosCampoTexto("nombre", validarTexto);
         aplicarEventosCampoTexto("tipo", validarTexto);
         aplicarEventosCampoTexto("marca", validarTexto);
         aplicarEventosCampoTexto("proveedor", validarTexto);
-        aplicarEventosCampoTexto("observacion", validarObservacion);
+        aplicarEventosCampoTexto("observacion", validarTexto);
 
         campos.precio.addEventListener("input", function () {
-            let valor = campos.precio.value;
-
-            // Elimina caracteres que no sean números o un solo punto
-            valor = valor.replace(/[^\d.]/g, "");
-
-            // Permite solo un punto decimal
+            let valor = campos.precio.value.replace(/[^0-9.]/g, "");
             const partes = valor.split(".");
-            if (partes.length > 2) {
-                valor = partes[0] + "." + partes.slice(1).join("");
-            }
-
-            const entero = partes[0];
+            const entero = partes[0].slice(0, 14);
             const decimal = partes[1] ? partes[1].slice(0, 2) : "";
 
-            // Formatea el entero con comas
-            const enteroConComas = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            const enteroFormateado = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            campos.precio.value = decimal ? `${enteroFormateado}.${decimal}` : enteroFormateado;
 
-            // Resultado final
-            const valorFormateado = decimal ? `${enteroConComas}.${decimal}` : enteroConComas;
-
-            campos.precio.value = valorFormateado;
             errores.precio.textContent = validarPrecio(entero + (decimal ? "." + decimal : ""));
         });
 
         campos.cantidad.addEventListener("input", function () {
-            errores.cantidad.textContent = validarCantidad(campos.cantidad.value);
+            let valor = campos.cantidad.value.replace(/\D/g, "");
+            valor = valor.slice(0, 10);
+
+            let formateado = "";
+            let contador = 0;
+            for (let i = valor.length - 1; i >= 0; i--) {
+                formateado = valor[i] + formateado;
+                contador++;
+                if (contador === 3 && i !== 0) {
+                    formateado = "." + formateado;
+                    contador = 0;
+                }
+            }
+            campos.cantidad.value = formateado;
+            errores.cantidad.textContent = validarCantidad(formateado);
         });
 
         document.getElementById("form_articulo").addEventListener("submit", function () {
             campos.precio.value = campos.precio.value.replace(/,/g, "");
-
+            campos.cantidad.value = campos.cantidad.value.replace(/\./g, "");
             ["nombre", "tipo", "marca", "proveedor", "observacion"].forEach(campo => {
                 campos[campo].value = capitalizarPrimeraLetra(campos[campo].value);
             });

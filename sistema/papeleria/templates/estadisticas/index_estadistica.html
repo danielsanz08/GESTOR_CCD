@@ -4,7 +4,41 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
 <section>
-
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+   
+    <a href="{% url 'papeleria:graficas_usuarios' %}">
+        <div class="card">
+        <p>Usuarios Activos/inactivos</p>
+    </div>
+    </a>
+    <a href="{% url 'papeleria:graficas_articulos' %}">
+        <div class="card">
+        <p>Cantidad de articulos</p>
+    </div>
+    </a>
+    <a href="{% url 'papeleria:grafica_bajoStock' %}">
+        <div class="card">
+        <p>Bajo stock </p>
+    </div>
+    </a>
+    <a href="{% url 'papeleria:grafica_pedidos' %}">
+        <div class="card">
+        <p>Estado de pedidos</p>
+    </div>
+    </a>
+    <a href="{% url 'papeleria:pedidos_area' %}">
+        <div class="card">
+            <p>Pedidos por areas</p>
+        </div>
+    </a>
+   </div>
+</section>
+<<<<<<< HEAD
+=======
+=======
     <a href="{% url 'papeleria:graficas_usuarios' %}">
         <div class="card">
             <i data-feather="user" class="icono"></i>
@@ -20,52 +54,81 @@
     <a href="{% url 'papeleria:grafica_bajoStock' %}">
         <div class="card">
             <i data-feather="alert-triangle" class="icono"></i>
-            <p class="name">Bajo stock </p>
+            <p class="name">Bajo stock</p>
         </div>
     </a>
-    <a href="{% url 'papeleria:grafica_pedidos' %}">
-        <div class="card">
-            <i data-feather="clock" class="icono"></i>
-            <p class="name">Estado de pedidos</p>
-        </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_administrativa' %}">
+    <a href="#" id="pedidosAreasBtn">
         <div class="card">
             <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos administrativa</p>
+            <p class="name">Pedidos por áreas</p>
         </div>
     </a>
-    <a href="{% url 'papeleria:pedidos_rues' %}">
-        <div class="card">
-            <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos RUES</p>
-        </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_presidencia' %}">
-        <div class="card">
-            <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos presidencia</p>
-        </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_financiera' %}">
-
-        <div class="card">
-            <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos financiera</p>
-        </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_gestion_empresarial' %}">
-        <div class="card">
-            <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos gestión empresarial</p>
-        </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_competitividad' %}">
-        <div class="card">
-            <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos competitividad</p>
-        </div>
-    </a>
-    </div>
 </section>
+
+<!-- Ventana Emergente -->
+<div id="modalPedidos" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Pedidos por Áreas</h2>
+        <div class="modal-grid">
+            <a href="{% url 'papeleria:pedidos_administrativa' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="clipboard" class="modal-icono"></i> Pedidos Administrativa</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_rues' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="book" class="modal-icono"></i> Pedidos RUES</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_presidencia' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="flag" class="modal-icono"></i> Pedidos presidencia</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_financiera' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="dollar-sign" class="modal-icono"></i> Pedidos financiera</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_gestion_empresarial' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="users" class="modal-icono"></i> Pedidos gestión empresarial</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_competitividad' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="trending-up" class="modal-icono"></i>Pedidos competitividad</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Obtener elementos
+    const modal = document.getElementById("modalPedidos");
+    const btn = document.getElementById("pedidosAreasBtn");
+    const span = document.getElementsByClassName("close")[0];
+
+    // Abrir modal al hacer clic en el botón
+    btn.onclick = function(event) {
+        event.preventDefault();
+        modal.style.display = "block";
+    }
+
+    // Cerrar modal al hacer clic en la X
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 {% endblock %}

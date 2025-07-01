@@ -28,12 +28,24 @@ urlpatterns = [
     path('reporte_usuario_pdf/', views.reporte_usuario_pdf, name='reporte_usuario_pdf'),
     path('reporte_usuario_excel/', views.reporte_usuario_excel, name='reporte_usuario_excel'),
     #estadisticas
+<<<<<<< HEAD
+    path('graficas_usuarios_activos/', views.graficas_usuarios_activos, name='graficas_usuarios_activos'),
+
+]
+=======
+<<<<<<< HEAD
+    path('graficas_usuarios_activos/', views.graficas_usuarios_activos, name='graficas_usuarios_activos'),
+
+]
+=======
   path('sesion_expirada/', views.sesion_expirada, name='sesion_expirada'),
   path('manual de usuario/', views.manual_usuario_view, name='manual_usuario'),
    path('timeout/', views.timeouterror, name='timeouterror'),
 
 ]
 handler404 = 'libreria.views.error_404_view'
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

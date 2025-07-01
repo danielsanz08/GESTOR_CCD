@@ -8,6 +8,12 @@ urlpatterns = [
     path('index_caf/', views.index_caf, name='index_caf'),
     path('login/cafeteria/', views.login_cafeteria, name='login_cafeteria'),
     path('logout_caf/', views.logout_caf, name='logout_caf'),
+<<<<<<< HEAD
+]
+=======
+<<<<<<< HEAD
+]
+=======
     path('crear_productos/', views.crear_producto, name='crear_producto'),
     path('ver_perfil/<int:id>/', views.ver_usuario_caf, name='ver_usuario_caf'),
     path('listar_productos/', views.listar_productos, name='listar_productos'),
@@ -26,8 +32,16 @@ urlpatterns = [
     path("reporte_productos_pdf_caf", views.reporte_pedidos_pdf_caf, name="reporte_pedidos_caf_pdf"),
     path("reporte_productos_excel_caf", views.reporte_pedidos_excel_caf, name="reporte_pedidos_caf_xsls"),
      path('timeout/', views.timeouterror, name='timeouterror'),
+     path('index_estadistica_caf/', views.index_estadistica_caf, name='index_estadistica_caf'),
+      path('graficas_productos/', views.graficas_productos, name='graficas_productos'),
+      path('graficas_usuarios_caf/', views.graficas_usuario_caf, name='graficas_usuarios_caf'),
+      path('grafica_pedidos_caf/', views.grafica_pedidos_caf, name='grafica_pedidos_caf'),
+      path('grafica_estado_pedido_caf/', views.grafica_estado_pedido_caf, name='grafica_estado_pedido_caf'),
+       path('grafica_bajoStock_caf/', views.grafica_bajo_Stock_caf, name='grafica_bajoStock_caf'),
 ]
 handler404 = 'cafeteria.views.error_404_view'
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

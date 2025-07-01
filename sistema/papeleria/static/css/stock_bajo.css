@@ -5,9 +5,17 @@ html {
 }
 
 section {
+<<<<<<< HEAD
+  background: rgba(19, 104, 161, 0.664);
+=======
+<<<<<<< HEAD
+  background: rgba(19, 104, 161, 0.664);
+=======
  background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
         border: 2px solid rgba(2, 47, 90, 0.63);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -15,6 +23,14 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
+<<<<<<< HEAD
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+=======
+<<<<<<< HEAD
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+=======
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   border-radius: 20px;
 
 }
@@ -38,16 +54,38 @@ table {
 .estado,
 .editar {
   left: 20vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+  background-color: rgba(61, 43, 226, 0.411);
+  border-radius: 10px;
+}
+td {
+  background-color: rgba(46, 151, 151, 0.384);
+<<<<<<< HEAD
+=======
+=======
   background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
 }
 td {
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
   height: 5vh;
   align-items: center;
+<<<<<<< HEAD
+  
+=======
+<<<<<<< HEAD
+  
+=======
   background-color: rgba(255, 255, 255, 0.384);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 
 }
 .buscador {

@@ -46,22 +46,15 @@ section {
     height: 4vh;
 }
 
-.error-limite {
-    color: red;
-    font-size: 0.9em;
-    margin-left: 8px;
-    font-weight: bold;
-    position: absolute;
-}
-
+.error-limite,
 .error-repetido {
     color: red;
     font-size: 0.9em;
     margin-left: 8px;
-    display: none;
     font-weight: bold;
-    position: absolute;
+    display: none;
 }
+
 
 .botones {
     background-color: aqua;

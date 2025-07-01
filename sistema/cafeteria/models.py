@@ -1,4 +1,12 @@
 from django.db import models
+<<<<<<< HEAD
+
+# Create your models here.
+=======
+<<<<<<< HEAD
+
+# Create your models here.
+=======
 from django.conf import settings
 
 class Productos(models.Model):
@@ -109,3 +117,5 @@ class PedidoProducto(models.Model):
 
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

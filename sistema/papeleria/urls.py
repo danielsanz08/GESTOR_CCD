@@ -26,7 +26,13 @@ urlpatterns = [
     
      path('pedidos/crear/', views.crear_pedido, name='crear_pedido'),
     path('pedidos/lista/', views.listado_pedidos, name='listado_pedidos'),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
     path('pedidos/mis_pedidos', views.mis_pedidos, name='mis_pedidos'),
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
     path('pedidos/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('pedidos/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
     path('pedidos/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
@@ -36,6 +42,20 @@ urlpatterns = [
      path('graficas_usuarios/', views.graficas_usuario, name='graficas_usuarios'),
      path('grafica_bajoStock/', views.grafica_bajo_Stock, name='grafica_bajoStock'),
      path('grafica_pedidos/', views.grafica_pedidos, name='grafica_pedidos'),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+     path('pedidos_area/', views.grafica_pedidos_area, name='pedidos_area'),
+     path('reporte_pedidos_pdf/', views.reporte_pedidos_pdf, name='reporte_pedidos_pdf'),
+     path('reporte_pedidos_excel/', views.reporte_pedidos_excel, name='reporte_pedidos_excel'),
+     path('reporte_bajo_stock_pdf/', views.reporte_articulo_bajo_stock_pdf, name='reporte_articulo_bajo_stock_pdf'),
+
+
+]
+<<<<<<< HEAD
+=======
+=======
      path('pedidos_administrativa/', views.grafica_pedidos_administrativa, name='pedidos_administrativa'),
      path('pedidos_rues/', views.grafica_pedidos_rues, name='pedidos_rues'),
      path('pedidos_presidencia/', views.grafica_pedidos_presidencia, name='pedidos_presidencia'),
@@ -49,6 +69,8 @@ urlpatterns = [
       path('timeout/', views.timeouterror, name='timeouterror'),
 ]
 handler404 = 'papeleria.views.error_404_view'
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -4,16 +4,40 @@ import smtplib
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+
+# Media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'imagenes')
+MEDIA_URL = '/imagenes/'
+<<<<<<< HEAD
+=======
+=======
 DEBUG = True
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-w=vb@dyxyk30)xbk52m@kx1q9)aj5s685fma)a+zh9jc0!1jy2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+DEBUG = True
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.10.151']
+
+<<<<<<< HEAD
+=======
+=======
 # Durante el desarrollo:
 DEBUG = True
 # DEBUG = False  # ← lo dejas comentado
@@ -24,18 +48,22 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ['192.168.1.10', 'localhost', '127.0.0.1']
-
-
-
-
-
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # asegúrate de importar os
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 AUTH_USER_MODEL = 'libreria.CustomUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600  # La sesión expira después de 10 minutos
 
+<<<<<<< HEAD
 SESSION_SAVE_EVERY_REQUEST = True
+=======
+<<<<<<< HEAD
+SESSION_SAVE_EVERY_REQUEST = True
+=======
+SESSION_SAVE_EVERY_REQUEST = False
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -62,7 +90,13 @@ INSTALLED_APPS = [
     'cafeteria',
     'cde',
     'django.contrib.humanize',
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
      'backup',
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
     
     
 ]
@@ -75,7 +109,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
     'libreria.middleware.SessionExpiryMiddleware',
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 ]
 
 ROOT_URLCONF = 'sistema.urls'
@@ -92,7 +132,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'papeleria.context_processors.bajo_stock_alert',
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
                 'cafeteria.context_processors.bajo_stock_alert_caf',
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
             ],
         },
     },
@@ -116,11 +162,23 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
+<<<<<<< HEAD
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+=======
+<<<<<<< HEAD
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+=======
     'libreria.backends.EmailBackend',              # Tu backend personalizado
-    'django.contrib.auth.backends.ModelBackend',   # El backend por defecto de Django
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -142,12 +200,27 @@ LANGUAGE_CODE = 'es'
 TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+# settings.py
+LOGIN_REDIRECT_URL = 'papeleria:login_view'  # Nombre de la vista en lugar de una ruta directa
+
+# Static files
+STATIC_URL = '/static/'  # URL donde se accederán los archivos estáticos en el navegador
+
+<<<<<<< HEAD
+=======
+=======
  # Nombre de la vista en lugar de una ruta directa
 LOGIN_URL = '/accounts/login/'
 
 # Static files
 STATIC_URL = '/static/'  # URL donde se accederán los archivos estáticos en el navegador
 STATICFILES_DIRS = [BASE_DIR/'static']
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -170,8 +243,14 @@ LOGGING = {
         },
     },
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 BACKUP_ROOT = os.path.join(BASE_DIR, 'backups')
 
 # Asegúrate de que el directorio exista
 if not os.path.exists(BACKUP_ROOT):
     os.makedirs(BACKUP_ROOT)
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

@@ -1,0 +1,97 @@
+{% extends 'navbar.html' %}
+{% block titulo %} Grafica bajo stock {% endblock %}
+{% block contenido %} 
+<style>
+    #grafica {
+        width: 80%;
+        max-width: 800px;
+        position: absolute;
+        top: 20vh;
+        left: 40vh;
+        height: 55vh;
+        z-index: 1; /* Asegura que la gráfica esté encima del cuadrado */
+    }
+
+    #cuadradoFondo {
+        width: 80%;
+        max-width: 800px;
+        background-color: rgb(255, 255, 255); /* Color de fondo, ajustable */
+        position: absolute;
+        top: 29vh; /* Ajustado para centrar detrás de la gráfica */
+        left: 35vh;
+        height: 58vh;
+        z-index: 0; /* Asegura que esté detrás de la gráfica */
+    }
+</style>
+<div class="estadisticas-container">
+    <div id="cuadradoFondo"></div>
+    <div id="grafica">
+        <h2>Grafica de articulos con bajo stock</h2>
+        <canvas id="graficaBajoStock"></canvas>
+    </div>
+</div>
+
+<!-- JSON OCULTO-->
+ {{ nombres|json_script:"labels-data" }}
+{{ cantidades|json_script:"cantidades-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    //obtener datos desde json
+    const nombres = JSON.parse(document.getElementById('labels-data').textContent);
+    const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent)
+    // definir maximo 
+    const maxCantidad = 100;
+    //Calcular el porcentaje basada en maxCantidad
+    const cantidadesPorcentaje = cantidades.map(c =>{
+        let porcentaje = (c / maxCantidad) * 100;
+        return porcentaje > 100 ? 100 : porcentaje.toFixed(2);
+
+    });
+    //configuracion de la grafica
+    const ctx = document.getElementById('graficaBajoStock').getContext('2d');
+    new Chart(ctx,{
+        type:'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label : 'Porcentaje',
+                data: cantidadesPorcentaje,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                barThickness: 'flex',
+                maxBarThickness: 30,
+                categoryPercentage: 0.4,
+                barPercentage: 1.0
+            }]
+        },
+        options: {
+            responsive : true,
+            scales: {
+                y: {
+                    beginAtZero : true,
+                    max:10,
+                    title: {
+                        display : true,
+                        text : 'Cantidad (%)'
+                    },
+                    ticks: {
+                        callback : function(value){
+                            return value + '%';// Agrega el símbolo de porcentaje en los ticks
+                        }
+                    }
+                }
+            },
+            plugins : {
+                tooltip:{
+                    callbacks:{
+                        label: function (context){
+                            return context.parsed.y + '%';// Muestra porcentaje en el tooltip
+                        }
+                    }
+                }
+            }
+        }
+    })
+</script>
+{% endblock %}

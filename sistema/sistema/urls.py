@@ -16,13 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+
+=======
 from django.conf import settings
 from django.conf.urls.static import static
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('libreria.urls')),
     path('', include('papeleria.urls')),
     path('', include('cafeteria.urls')),
     path('', include('cde.urls')),
+<<<<<<< HEAD
+]
+=======
+<<<<<<< HEAD
+]
+=======
     path('', include('backup.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

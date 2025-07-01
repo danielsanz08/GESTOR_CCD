@@ -5,9 +5,19 @@ html {
 }
 
 section {
+<<<<<<< HEAD
+  background: rgba(19, 104, 161, 0.664);
+
+=======
+<<<<<<< HEAD
+  background: rgba(19, 104, 161, 0.664);
+
+=======
    background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
         border: 2px solid rgba(2, 47, 90, 0.63);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -15,6 +25,18 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+
+}
+
+<<<<<<< HEAD
+=======
+=======
   border-radius: 20px;
 }
 
@@ -181,6 +203,8 @@ section {
   background-color: rgb(190, 190, 3);
   color: white;
 }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 table {
   width: 180vh;
   border-spacing: 10px;
@@ -201,20 +225,44 @@ table {
 .actividad,
 .editar {
   left: 20vh;
+<<<<<<< HEAD
+  background-color: rgba(61, 43, 226, 0.411);
+  
+=======
+<<<<<<< HEAD
+  background-color: rgba(61, 43, 226, 0.411);
+  
+=======
   background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 td {
   background-color: rgba(255, 255, 255, 0.384);
   margin: 20vh 0 20vh 0;
   border-radius: 10px;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+  height: 5vh;
+  align-items: center;
+  
+}
+
+<<<<<<< HEAD
+=======
+=======
   box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.178);
   height: 5vh;
   align-items: center;
 
 }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 /* Toggle Switch Container */
 .cl-toggle-switch {
   position: relative;
@@ -273,15 +321,27 @@ td {
   background-color: #fff;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   transition: background-color 0.2s, transform 0.2s;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
   cursor: pointer;
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 /* Checked State */
 .cl-switch>input:checked {
   right: -10px;
   background-color: #85b8b7;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 .cl-switch>input:checked+span::before {
@@ -291,8 +351,14 @@ td {
 .cl-switch>input:checked+span::after {
   background-color: #018786;
   transform: translateX(16px);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 /* Hover, Focus */
@@ -341,19 +407,76 @@ td {
 }
 
 .editar-btn {
+<<<<<<< HEAD
+  background-color: rgb(233, 200, 12);
+=======
+<<<<<<< HEAD
+  background-color: rgb(233, 200, 12);
+=======
  background-color: rgb(190, 164, 11);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   width: 10vh;
   height: 25px;
   border-radius: 20px;
   margin-right: 1vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
   cursor: pointer;
   color: rgb(0, 0, 0);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 .editar-btn:hover {
   background-color: rgb(159, 170, 11);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+
+}
+
+.icono {
+  height: 3vh;
+}
+
+#icono {
+  height: 3vh;
+}
+
+#fecha {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  color: #333;
+  width: 200px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 10px;
+}
+
+.Botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 205vh;
+  top: 8vh;
+}
+
+.print {
+  background-color: yellow;
+  border: none;
+<<<<<<< HEAD
+=======
+=======
   cursor: pointer;
   color: #f7f7f7;
 }
@@ -361,10 +484,97 @@ td {
   background-color: #0056b3;
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   width: 10vh;
   height: 25px;
   border-radius: 20px;
   margin-right: 1vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+  position: absolute;
+  top: 5vh;
+  right: 40vh;
+  cursor: pointer;
+}
+
+.print:hover {
+  background-color: rgb(190, 190, 3);
+}
+
+.pdf {
+  background-color: rgb(255, 0, 0);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  position: absolute;
+  top: 5vh;
+  right: 30vh;
+  font-weight: bold;
+}
+
+.pdf:hover {
+  background-color: rgb(187, 3, 3);
+  cursor: pointer;
+}
+
+.excel {
+  background-color: rgb(0, 255, 13);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 20px;
+  position: absolute;
+  top: 5vh;
+  right: 18vh;
+  font-weight: bold;
+}
+
+.excel:hover {
+  background-color: rgb(4, 187, 13);
+  cursor: pointer;
+}
+
+.buscador {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  height: 5vh;
+  width: 50vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-search {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: relative;
+  top: 1vh;
+  width: 50px;
+  text-align: center;
+}
+
+.btn-search:hover {
+  background-color: #044080;
+
+}
+
+.paginacion {
+  text-align: center;
+  position: absolute;
+  top: 55vh;
+  left: 90vh;
+  color: white;
+<<<<<<< HEAD
+}
+=======
+}
+=======
   cursor: pointer;
   color: rgb(2, 2, 2);
 }
@@ -529,3 +739,5 @@ td {
     visibility: visible;
     opacity: 1;
 }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

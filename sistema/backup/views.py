@@ -313,41 +313,11 @@ def importar_backup_view(request):
             backup.save()
 
             if 'restaurar' in request.POST:
-                try:
-                    # 1. Cerrar sesión ANTES de la restauración
-                    from django.contrib.auth import logout
-                    logout(request)
-                    request.session.flush()
-                    
-                    # 2. Cerrar conexiones antes de restaurar
-                    db.connections.close_all()
-                    
-                    # 3. Configurar timeout mayor y deshabilitar FKs temporalmente
-                    with connections['default'].cursor() as cursor:
-                        cursor.execute("SET SESSION wait_timeout = 28800;")
-                        cursor.execute("SET SESSION interactive_timeout = 28800;")
-                        cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
-                    
-                    # 4. Restauración en transacción atómica
-                    with transaction.atomic():
-                        management.call_command('flush', interactive=False)
-                        restaurar_backup(backup.archivo.path)
-                        
-                        with connections['default'].cursor() as cursor:
-                            cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
-                            cursor.execute("ANALYZE TABLE;")
+                # En lugar de implementar la restauración aquí, redirigimos a la vista de restauración
+                return redirect('backup:restaurar_backup', id=backup.id)
 
-                    # 5. Redirigir con mensaje de éxito
-                    messages.success(request, 'Backup importado y restaurado exitosamente. Por favor inicie sesión nuevamente.')
-                    return redirect('libreria:inicio')
-                    
-                except Exception as e:
-                    logger.error(f"Error al restaurar backup importado: {str(e)}", exc_info=True)
-                    messages.warning(request, f'Backup importado pero error al restaurar: {str(e)}')
-                    return redirect('libreria:inicio')
-            else:
-                messages.success(request, 'Backup importado exitosamente.')
-                return redirect('backup:lista_backups')
+            messages.success(request, 'Backup importado exitosamente.')
+            return redirect('backup:lista_backups')
 
         except Exception as e:
             logger.error(f"Error en importar_backup_view: {str(e)}", exc_info=True)

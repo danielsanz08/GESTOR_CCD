@@ -4,6 +4,14 @@ html {
   align-items: center;
 }
 
+<<<<<<< HEAD
+section {
+  background: rgba(19, 104, 161, 0.664);
+=======
+<<<<<<< HEAD
+section {
+  background: rgba(19, 104, 161, 0.664);
+=======
 html,
 body {
   background-color: #1c96bb1c;
@@ -13,6 +21,8 @@ section {
   background: linear-gradient(110deg, #c7def893, #ffffffe8);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
   border: 2px solid rgba(2, 47, 90, 0.63);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -20,15 +30,55 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+
+}
+<<<<<<< HEAD
+=======
+=======
   border-radius: 20px;
 }
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 table {
   width: 180vh;
   border-spacing: 10px;
   position: absolute;
   top: 20vh;
   left: 8vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+
+}
+.id, .usuario, .fecha, .estado, .detalle, .acciones{
+    left: 20vh;
+    background-color: rgba(61, 43, 226, 0.411);
+    border-radius: 10px;
+}
+td{
+    background-color: rgba(46, 151, 151, 0.384);
+    margin: 20vh 0 20vh 0;
+    border-radius: 10px;
+    height: 5vh;
+    align-items: center;
+    
+}
+.icono{
+    height: 3vh;
+    padding: 2px 2px 2px 2px;
+  }
+   .buscador {
+<<<<<<< HEAD
+=======
+=======
 }
 
 .id,
@@ -71,6 +121,8 @@ td {
 }
 
 .buscador {
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
   background-color: #ffffff;
   border: none;
   border-radius: 20px;
@@ -81,6 +133,14 @@ td {
   left: 20vh;
 }
 
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 #filtro-fechas {
 
   position: absolute;
@@ -130,7 +190,13 @@ td {
   background-color: #044080;
   cursor: pointer;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 .btn-search {
   background-color: #0056b3;
   color: white;
@@ -155,7 +221,13 @@ td {
   cursor: pointer;
   color: black;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 .clean {
   background-color: #b30000;
   color: white;
@@ -174,6 +246,10 @@ td {
   align-items: center;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 #detalles {
   width: 50px;
   height: 20px;
@@ -188,12 +264,20 @@ td {
   cursor: pointer;
 }
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 .clean:hover {
   background-color: #8a0101;
   cursor: pointer;
   color: black;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 .Botones {
   display: flex;
   justify-content: center;
@@ -253,6 +337,98 @@ td {
   background-color: rgb(4, 187, 13);
   cursor: pointer;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+ .paginacion {
+        text-align: center;
+        margin-top: 50vh;
+    }
+
+    .paginacion a {
+        margin: 0 5px;
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .paginacion a:hover {
+        background-color: #0056b3;
+    }
+
+    .paginacion span {
+        margin: 0 10px;
+    }
+
+    /* Modal */
+    #modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+    }
+
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #modal button {
+        margin-top: 15px;
+        padding: 8px 12px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #modal button:hover {
+        background-color: #0056b3;
+    }
+
+    .detalles-ocultos {
+        display: none;
+    }
+
+    .btn-accion {
+        margin: 5px;
+        padding: 6px 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-accion.cancelar {
+        background-color: #dc3545;
+    }
+
+    .btn-accion:hover {
+        opacity: 0.9;
+<<<<<<< HEAD
+    }
+=======
+    }
+=======
 
 /* PAGINACION */
 .paginacion {
@@ -357,3 +533,5 @@ td {
 .btn-accion:hover {
   opacity: 0.9;
 }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

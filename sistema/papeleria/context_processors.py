@@ -1,6 +1,14 @@
 from .models import Articulo
 
 def bajo_stock_alert(request):
+<<<<<<< HEAD
+    bajo_stock = Articulo.objects.filter(cantidad__lt=10).exists()
+    return {'bajo_stock': bajo_stock}
+=======
+<<<<<<< HEAD
+    bajo_stock = Articulo.objects.filter(cantidad__lt=10).exists()
+    return {'bajo_stock': bajo_stock}
+=======
     """
     Context processor para mostrar alerta si hay artículos con stock bajo (cantidad < 10).
     La alerta se muestra UNA VEZ por sesión al iniciar sesión, solo para Administradores.
@@ -19,3 +27,5 @@ def bajo_stock_alert(request):
         'bajo_stock': bajo_stock,
         'mostrar_alerta': mostrar_alerta  # Nombre simplificado para el template
     }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

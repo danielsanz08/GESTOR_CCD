@@ -1,6 +1,6 @@
 from PIL import Image as PilImage
 
-img_path = r"D:\Users\WILLIAME\Documents\DANIEL SANCHEZ\GESTOR_CCD\sistema\papeleria\static\imagen"  # Cambia esta ruta a la ruta correcta de tu imagen
+img_path = r"GESTOR_CCD\sistema\papeleria\static\imagen"  # Cambia esta ruta a la ruta correcta de tu imagen
 
 try:
     img = PilImage.open(img_path)

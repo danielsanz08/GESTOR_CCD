@@ -16,6 +16,14 @@
         position: absolute;
         top: 5vh;
         left: 5vh;
+<<<<<<< HEAD
+        
+=======
+<<<<<<< HEAD
+        
+=======
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
     }
 
     .error-new1 {
@@ -35,7 +43,15 @@
     }
 
     .success-match {
+<<<<<<< HEAD
+        color: rgb(0, 255, 98);
+=======
+<<<<<<< HEAD
+        color: rgb(0, 255, 98);
+=======
         color: rgb(6, 163, 66);
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
         font-size: 0.9rem;
         position: absolute;
         top: 27vh;
@@ -47,7 +63,13 @@
         position: absolute;
         left: 10vh;
         bottom: 32vh;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
         /* Quitado el cursor y colores de disabled */
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
     }
 
     button[type="submit"]:hover {
@@ -55,7 +77,24 @@
         color: black;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+    button[type="submit"]:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+        position: absolute;
+        left: 10vh;
+        bottom: 32vh;
+    }
+<<<<<<< HEAD
+=======
+=======
     /* Quité el estilo para button[type="submit"]:disabled */
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 </style>
 
 <link rel="stylesheet" href="{% static 'css/cambiar_contraseña.css' %}?v={% now 'U' %}">
@@ -87,8 +126,16 @@
             <div class="error-new2"></div>
         </div>
 
+<<<<<<< HEAD
+        <button type="submit" class="btn" id="submit-btn" disabled>
+=======
+<<<<<<< HEAD
+        <button type="submit" class="btn" id="submit-btn" disabled>
+=======
         <!-- Botón SIN atributo disabled -->
         <button type="submit" class="btn" id="submit-btn">
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
             Restablecer
         </button>
     </form>
@@ -134,7 +181,15 @@
             showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 6 caracteres.");
             new1Group.style.display = "none";
             new2Group.style.display = "none";
+<<<<<<< HEAD
+            submitBtn.disabled = true;
+=======
+<<<<<<< HEAD
+            submitBtn.disabled = true;
+=======
             // Ya no deshabilita botón
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
         }
     });
 
@@ -142,11 +197,25 @@
         if (!validatePassword(newPassword1.value)) {
             showError(errorNew1, "Debe cumplir con los mismos requisitos de seguridad.");
             new2Group.style.display = "none";
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+            submitBtn.disabled = true;
+        } else if (newPassword1.value === oldPassword.value) {
+            showError(errorNew1, "La nueva contraseña no puede ser igual a la anterior.");
+            new2Group.style.display = "none";
+            submitBtn.disabled = true;
+<<<<<<< HEAD
+=======
+=======
             // Ya no deshabilita botón
         } else if (newPassword1.value === oldPassword.value) {
             showError(errorNew1, "La nueva contraseña no puede ser igual a la anterior.");
             new2Group.style.display = "none";
             // Ya no deshabilita botón
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
         } else {
             clearError(errorNew1);
             new2Group.style.display = "block";
@@ -156,6 +225,28 @@
     newPassword2.addEventListener("input", () => {
         if (!validatePassword(newPassword2.value)) {
             showError(errorNew2, "Debe cumplir con los requisitos de seguridad.");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+            submitBtn.disabled = true;
+        } else if (newPassword2.value !== newPassword1.value) {
+            showError(errorNew2, "Las contraseñas no coinciden.");
+            submitBtn.disabled = true;
+        } else if (newPassword2.value === oldPassword.value) {
+            showError(errorNew2, "La nueva contraseña no puede ser igual a la anterior.");
+            submitBtn.disabled = true;
+        } else {
+            showSuccess(errorNew2, "Las contraseñas coinciden.");
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+<<<<<<< HEAD
+{% endblock %}
+=======
+{% endblock %}
+=======
             // Ya no deshabilita botón
         } else if (newPassword2.value !== newPassword1.value) {
             showError(errorNew2, "Las contraseñas no coinciden.");
@@ -170,3 +261,5 @@
     });
 </script>
 {% endblock %}
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

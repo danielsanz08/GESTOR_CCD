@@ -2,9 +2,45 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+from cafeteria.forms import LoginForm 
+from django.contrib.auth import get_user_model
+def index_caf(request):
+    return render(request, 'index_caf/index_caf.html')
+# Create your views here.
+def login_cafeteria(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=email, password=password)
+
+            if user is not None:
+                if user.module == 'Cafeteria':  # Verifica que el usuario pertenece a Cafetería
+                    login(request, user)
+                    messages.success(request, "Sesión iniciada correctamente en Cafetería.")
+                    return redirect('cafeteria:index_caf')
+                else:
+                    messages.error(request, "No tienes acceso a este módulo.")
+            else:
+                messages.error(request, 'Usuario o contraseña incorrectos.')
+    else:
+        form = LoginForm()
+
+    return render(request, 'login_caf/login_caf.html', {'form': form})
+
+
+# CERRAR SESIÓN
+<<<<<<< HEAD
+=======
+=======
 from cafeteria.forms import LoginForm , ProductoForm, ProductosEditForm, PedidoProductoForm
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q,Sum, Count
 from django.core.paginator import Paginator
 import datetime
 from django.core.mail import send_mail
@@ -67,14 +103,22 @@ def login_cafeteria(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
 
         if user is not None:
-            if user.is_active and getattr(user, 'acceso_caf', False):
-                login(request, user)
-                return redirect('cafeteria:index_caf')
+            if not user.is_active:
+                messages.info(request, "Tu usuario está desactivado. Comunícate con el administrador.")
             else:
-                messages.error(request, "No tienes permiso para acceder a este módulo.")
+                user_auth = authenticate(request, email=email, password=password)
+                if user_auth is not None and getattr(user_auth, 'acceso_caf', False):
+                    login(request, user_auth)
+                    return redirect('cafeteria:index_caf')
+                else:
+                    messages.error(request, "No tienes permiso para acceder a este módulo.")
         else:
             messages.error(request, "Credenciales inválidas.")
 
@@ -171,10 +215,18 @@ def editar_producto(request, producto_id):
             form = ProductosEditForm(instance=producto)
     return render(request, 'productos/editar_producto.html', {'form': form, 'producto': producto})
 @login_required(login_url='/acceso_denegado/')
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 def logout_caf(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
     return redirect(reverse('libreria:inicio'))
+<<<<<<< HEAD
+User = get_user_model()
+=======
+<<<<<<< HEAD
+User = get_user_model()
+=======
 User = get_user_model()
 def wrap_text(text, max_len=20):
     parts = [text[i:i+max_len] for i in range(0, len(text), max_len)]
@@ -556,7 +608,7 @@ def crear_pedido_caf(request):
                     subject = "Nuevo pedido registrado por un usuario"
                     message = (
                         f"Hola querido administrador,\n\n"
-                        f"Desde el módulo de Papelería te informamos que el usuario '{request.user.username}' "
+                        f"Desde el módulo de Cafeteria te informamos que el usuario '{request.user.username}' "
                         f"ha realizado un nuevo pedido.\n\n"
                         f"Información del pedido:\n"
                         f"Usuario: {request.user.username}\n"
@@ -1073,3 +1125,130 @@ def reporte_pedidos_excel_caf(request):
     response['Content-Disposition'] = 'attachment; filename="Reporte_pedidos.xlsx"'
     wb.save(response)
     return response
+
+#ESTADISTICAS 
+def index_estadistica_caf(request):
+    breadcrumbs = [
+    {'name': 'Inicio', 'url': '/index_caf'},
+    {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+]
+
+    return render(request, 'estadisticas_caf/index_estadistica_caf.html', {'breadcrumbs': breadcrumbs})
+#GRAFIC DE CANTIDAD DE ARTICULOS
+def graficas_productos(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Grafico de productos', 'url': reverse('cafeteria:graficas_productos')}, 
+    ]
+    articulos = Productos.objects.all()
+    nombres = [art.nombre for art in articulos]
+    cantidades = [art.cantidad for art in articulos]
+
+    return render(request, 'estadisticas_caf/grafica_productos.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
+    })
+#grafica de usuario
+
+def graficas_usuario_caf(request):
+    breadcrumbs = [
+         {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Grafico de usuarios activos e inactivos', 'url': reverse('cafeteria:graficas_usuarios_caf')}, 
+    ]
+    activos = CustomUser.objects.filter(acceso_caf=True).filter(is_active=True).count()
+    inactivos = CustomUser.objects.filter(acceso_caf=True).filter(is_active=False).count()
+
+    nombres = ['Activos', 'Inactivos']
+    cantidades = [activos, inactivos] 
+    return render(request, 'estadisticas_caf/grafica_usuarios_caf.html', {'nombres':nombres,
+                                                                  'cantidades': cantidades,
+                                                                  'breadcrumbs': breadcrumbs})
+
+def grafica_pedidos_caf(request):
+    breadcrumbs = [
+         {'name': 'Inicio', 'url': '/index_caf'},
+    {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Gráfico de pedidos Administrativa', 'url': reverse('cafeteria:grafica_pedidos_caf')},
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    productos = PedidoProducto.objects.select_related('pedido', 'producto', 'pedido__registrado_por')
+
+    if fecha_inicio:
+        productos = productos.filter(pedido__fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        productos = productos.filter(pedido__fecha_pedido__lte=fecha_fin)
+
+    datos = productos.values(
+        'pedido__registrado_por__username',  # o 'first_name' si prefieres
+        'producto__nombre'
+    ).annotate(
+        total_cantidad=Sum('cantidad')
+    ).order_by('pedido__registrado_por__username', 'producto__nombre')
+
+    # Formato: etiquetas tipo "Juan - Café", "Laura - Jugo"
+    etiquetas = [
+        f"{item['pedido__registrado_por__username']} - {item['producto__nombre']}"
+        for item in datos
+    ]
+    cantidades = [item['total_cantidad'] for item in datos]
+
+    return render(request, 'estadisticas/grafico_pedido_area.html', {
+        'nombres': etiquetas,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+    })
+def grafica_estado_pedido_caf(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Gráfico de estado de pedidos', 'url': reverse('cafeteria:grafica_estado_pedido_caf')},
+    ]
+
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = Pedido.objects.all()
+
+    if fecha_inicio:
+        pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
+    if fecha_fin:
+        pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+
+    pendientes = pedidos.filter(estado='Pendiente').count()
+    confirmados = pedidos.filter(estado='Confirmado').count()
+    cancelados = pedidos.filter(estado='Cancelado').count()
+
+    nombres = ['Pendiente', 'Confirmado', 'Cancelado']
+    cantidades = [pendientes, confirmados, cancelados]
+
+    return render(request, 'estadisticas_caf/grafica_estado_pendiente_caf.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    })
+def grafica_bajo_Stock_caf(request):
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Grafico de bajo stock', 'url': reverse('cafeteria:grafica_bajoStock_caf')}, 
+    ]
+    articulos = Productos.objects.filter(cantidad__lt=10)
+    nombres = [art.nombre for art in articulos]
+    cantidades = [art.cantidad for art in articulos]
+    return render(request, 'estadisticas_caf/grafica_bajoStock_caf.html', {
+        'nombres': nombres,
+        'cantidades': cantidades,
+        'breadcrumbs': breadcrumbs
+    })
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

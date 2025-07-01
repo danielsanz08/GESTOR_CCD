@@ -1,0 +1,38 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Estadisticas Gestor CCD {% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+<section>
+    <a href="{% url 'cafeteria:graficas_usuarios_caf' %}">
+        <div class="card">
+            <i data-feather="user" class="icono"></i>
+            <p class="name">Usuarios Activos e inactivos</p>
+        </div>
+    </a>
+    <a href="{% url 'cafeteria:graficas_productos' %}">
+        <div class="card">
+            <i data-feather="layers" class="icono"></i>
+            <p class="name">Cantidad de productos</p>
+        </div>
+    </a>
+    <a href="{% url 'cafeteria:grafica_bajoStock_caf' %}">
+        <div class="card">
+            <i data-feather="alert-triangle" class="icono"></i>
+            <p class="name">Bajo stock</p>
+        </div>
+    </a>
+    <a href="{% url 'cafeteria:grafica_pedidos_caf' %}" id="pedidosAreasBtn">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos</p>
+        </div>
+    </a>
+    <a href="{% url 'cafeteria:grafica_estado_pedido_caf' %}" id="pedidosAreasBtn">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Estado Pedidos</p>
+        </div>
+    </a>
+</section>
+{% endblock %}

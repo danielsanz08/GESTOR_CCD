@@ -10,6 +10,296 @@ body {
   font-family: Arial, sans-serif;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 2 tarjetas por fila */
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  /* Alinear verticalmente */
+  padding: 20px;
+  text-align: center;
+}
+
+.card {
+  position: relative;
+  width: 500px;
+  /* Más rectangulares */
+  height: 150px;
+  /* Menos altas */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  left: 23vh;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  
+}
+
+.card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease-in-out;
+}
+
+.card:hover img {
+  filter: blur(5px);
+}
+
+.card h2,
+.card p {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+}
+
+.card h2 {
+  top: 10px;
+  font-size: 18px;
+}
+
+.card p {
+  bottom: 10px;
+  font-size: 14px;
+}
+
+/*RESPONSIVE*/
+/* 📱 Teléfono pequeño (ej. 360x640) */
+@media (min-width: 360px) and (max-width: 374px) {
+  body {
+    position: absolute;
+  }
+
+  .container {
+
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10vw 10vw;
+    position: absolute;
+    top: 6.8vh;
+    left: 1VH;
+  }
+
+  .card {
+    transition: transform 0.3s ease-in-out;
+    width: 41vh;
+    position: relative;
+    left: 2.5vh;
+    height: 15vh;
+
+
+  }
+
+  .card:hover img {
+    filter: blur(5px);
+  }
+}
+/* 📱 Teléfono mediano (ej. 375x667 - 414x896) */
+@media (min-width: 375px) and (max-width: 429px) {
+  body {
+    position: absolute;
+  }
+
+  .container {
+
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10vw 10vw;
+    position: absolute;
+    top: 6.8vh;
+    left: 1VH;
+  }
+  .card {
+    transition: transform 0.3s ease-in-out;
+    width: 41vh;
+    position: relative;
+    left: -1.5vh;
+    height: 15vh;
+  }
+
+  .card:hover img {
+    filter: blur(5px);
+  }
+}
+    /* 📱 Teléfono grande (ej. 430x932 - 480x960) */
+    @media (min-width: 430px) and (max-width: 539px) {
+      body {
+        position: absolute;
+      }
+    
+      .container {
+    
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 10vw 10vw;
+        position: absolute;
+        top: 6.8vh;
+        left: 1VH;
+      }
+      .card {
+        transition: transform 0.3s ease-in-out;
+        width: 41vh;
+        position: relative;
+        left: 0.5vh;
+        height: 15vh;
+      }
+    
+      .card:hover img {
+        filter: blur(5px);
+      }
+    }
+    /* 📟 Phablet (600x960) */
+    @media (min-width: 540px) and (max-width: 679px) {
+      body {
+        position: absolute;
+      }
+    
+      .container {
+    
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 10vw 10vw;
+        position: absolute;
+        top: 6vh;
+        left: 1VH;
+      }
+      .card {
+        transition: transform 0.3s ease-in-out;
+        width: 49vh;
+        position: relative;
+        left: 3vh;
+        height: 15vh;
+      }
+    
+      .card:hover img {
+        filter: blur(5px);
+      }
+    }
+     /* 📱 Tablet pequeña (ej. iPad Mini vertical 768x1024) */
+     @media (min-width: 680px) and (max-width: 799px) {
+      body {
+        position: absolute;
+      }
+    
+      .container {
+    
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 10vw 10vw;
+        position: absolute;
+        top: 5vh;
+        left: 1VH;
+      }
+      .card {
+        transition: transform 0.3s ease-in-out;
+        width: 61vh;
+        position: relative;
+        left: 3vh;
+        height: 15vh;
+  
+      }
+    
+      .card:hover img {
+        filter: blur(5px);
+      }
+     }
+      /* 💻 Laptop 11" (1024x600) */
+      @media (min-width: 992px) and (max-width: 1099px) {
+        .card {
+          left: 8vh;
+          width: 70vh;
+        }
+      }
+       /* 💻 Laptop 12" (1152x720) */
+       @media (min-width: 1100px) and (max-width: 1199px) {
+       
+        .card {
+          left: 4vh;
+          width: 70vh;
+          margin-right: 3vh;
+          margin-bottom: 3vh;
+        }
+       }
+       
+      
+       /* 💻 Laptop 15-16" (1440x900) */
+       @media (min-width: 1440px) and (max-width: 1599px) {
+        .card {
+          left: 3.5vh;
+          width: 70vh;
+          height: 23vh;
+          margin-right: 3vh;
+          margin-bottom: 3vh;
+        }
+       }
+        /* 🎯 Ajuste más fino para monitor de 19" (1600x900) */
+      @media (min-width: 1600px) and (max-width: 1600px) and (min-height: 900px) and (max-height: 900px) {
+        .container {
+          position: absolute;
+          top: 12vh;
+          left: 1vh;
+        }
+        .card {
+          left: 7vh;
+          width: 75vh;
+          height: 23vh;
+          margin-right: 3vh;
+          margin-bottom: 3vh;
+        }
+      }
+        /* 🖥️ Monitor 22-24" (1920x1080) */
+        @media (min-width: 1920px) and (max-width: 2559px) {
+          .container {
+            position: absolute;
+            top: 12vh;
+            left: 1vh;
+          }
+          .card {
+            left: 9vh;
+            width: 75vh;
+            height: 23vh;
+            margin-right: 3vh;
+          margin-bottom: 3vh;
+          }
+        }
+         /* 🖥️ Monitor 27-32" (2560x1440 y más) */
+      @media (min-width: 2560px) {
+        .container {
+          position: absolute;
+          top: 12vh;
+          left: 1vh;
+        }
+        .card {
+          left: 8vh;
+          width: 75vh;
+          height: 25vh;
+          margin-right: 3vh;
+          margin-bottom: 3vh;
+        }
+<<<<<<< HEAD
+      }
+=======
+      }
+=======
 /* Móviles (hasta 767px) */
 @media (max-width: 767px) {
   .container {
@@ -133,3 +423,5 @@ body {
 
   }
 }
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

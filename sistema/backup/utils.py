@@ -13,7 +13,13 @@ def crear_backup():
         'libreria.CustomUser',
         'papeleria.Articulo',
         'papeleria.Pedido',
-        'papeleria.PedidoArticulo'
+        'papeleria.PedidoArticulo',
+        'cafeteria.Productos',
+        'cafeteria.Pedido',
+        'cafeteria.PedidoProducto',
+        'cde.PedidoCde',
+        'PedidoProductoCde',
+        
     ]
     
     data = {}

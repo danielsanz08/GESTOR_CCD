@@ -2,7 +2,15 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from libreria.models import CustomUser
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+
+=======
 from .models import Productos, PedidoProducto, Pedido
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
@@ -25,6 +33,12 @@ class LoginForm(forms.Form):
             if not user.is_active:
                 raise forms.ValidationError("Tu cuenta está inactiva, contacta al administrador.")
         
+<<<<<<< HEAD
+        return cleaned_data
+=======
+<<<<<<< HEAD
+        return cleaned_data
+=======
         return cleaned_data
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -71,3 +85,5 @@ class PedidoProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Aquí no es necesario configurar dinámicamente el campo 'tipo' ya que no lo estamos usando
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)

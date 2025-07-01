@@ -1,7 +1,13 @@
 from django import forms
 from papeleria.models import Articulo, PedidoArticulo
 from django.forms import formset_factory
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
 import re
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
 from django.contrib.auth import authenticate
 class LoginForm(forms.Form):
     email = forms.EmailField(
@@ -25,6 +31,45 @@ class ArticuloForm(forms.ModelForm):
             except ValueError:
                 raise forms.ValidationError('El precio debe ser un número válido.')
         return precio
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b659cb3 (Sexagésimo commit)
+class ArticuloEditForm(forms.ModelForm):    
+    class Meta:
+        model = Articulo
+        fields = ['nombre', 'marca', 'observacion', 'precio', 'cantidad', 'tipo', 'proveedor']
+    def __init__(self, *args,**kwargs):
+        super(ArticuloEditForm, self).__init__(*args, **kwargs)
+        # Hace que los campos sean opcionales
+        self.fields['nombre'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nombre del articulo'})
+        self.fields['marca'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Marca del articulo'})
+        self.fields['observacion'].widget.attrs.update({'class':'form-control', 'placeholder': 'Observación' })
+        self.fields['precio'].widget.attrs.update({'class':'form-control', 'placeholder': 'Precio del  articulo'})
+        self.fields['cantidad'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cantidad de articulo'})
+        self.fields['tipo'].widget.attrs.update({'class':'form-control', 'placeholder': 'Tipo de articulo'})
+        self.fields['proveedor'].widget.attrs.update({'class':'form-control', 'placeholder': 'Proveedor'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # Mantener valores anteriores si no se proporciona un nuevo valor
+        for field in self.fields:
+            if not cleaned_data.get(field):
+                cleaned_data[field] = getattr(self.instance, field)
+
+        return cleaned_data
+
+class PedidoArticuloForm(forms.ModelForm):
+    class Meta:
+        model = PedidoArticulo
+        fields = ['articulo', 'cantidad']  # Elimina el campo 'tipo' del formulario
+        widgets = {
+            'articulo': forms.Select(),
+            'cantidad': forms.NumberInput(attrs={'min': 1, 'step': '1'}),
+<<<<<<< HEAD
+=======
+=======
 from django import forms
 from papeleria.models import Articulo
 from django import forms
@@ -225,6 +270,8 @@ class PedidoArticuloForm(forms.ModelForm):
             'articulo': forms.Select(),
             'cantidad': forms.NumberInput(attrs={'min': 1, 'step': '1'}),
             'area': forms.TextInput(attrs={'readonly': 'readonly'}),  # área es solo lectura porque se asigna desde usuario
+>>>>>>> 3797db6 (Sexagésimo tercer commit)
+>>>>>>> b659cb3 (Sexagésimo commit)
         }
 
     def __init__(self, *args, **kwargs):

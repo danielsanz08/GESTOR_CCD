@@ -8,7 +8,6 @@ Crear usuario papelería
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
 
-
 <div class="fondo">
     <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
 </div>
@@ -25,8 +24,6 @@ Crear usuario papelería
             <div id="error_username" class="error-nombre"></div>
         </div>
 
-
-
         <div class="mb-3" id="rol">
             <label for="id_role" class="form-label">Rol:</label>
             <select id="id_role" name="role" class="form-select" required>
@@ -42,6 +39,7 @@ Crear usuario papelería
                 placeholder="Ingrese su cargo" maxlength="50">
             <div id="error_cargo" class="error-cargo"></div>
         </div>
+
         <div class="mb-3" id="area">
             <label for="id_area" class="form-label">Área:</label>
             <select id="id_area" name="area" class="form-select" required>
@@ -54,6 +52,7 @@ Crear usuario papelería
                 <option value="Financiera">Financiera</option>
             </select>
         </div>
+
         <div class="mb-3">
             <label for="id_email" class="form-label">Correo:</label>
             <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
@@ -104,9 +103,13 @@ Crear usuario papelería
 
         username.addEventListener('input', function () {
             let value = username.value.replace(/[0-9]/g, '');
+
+            // Capitalizar la primera letra de cada palabra
+            value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+
             username.value = value;
 
-            if (value.length < 3) {
+            if (value.trim().length < 3) {
                 errorUsername.textContent = 'Mínimo 3 caracteres';
                 return validateForm();
             }
@@ -125,9 +128,13 @@ Crear usuario papelería
 
         cargo.addEventListener('input', function () {
             let value = cargo.value.replace(/[0-9]/g, '');
+
+            // Solo capitaliza la primera letra de la primera palabra
+            value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+
             cargo.value = value;
 
-            if (value.length < 3) {
+            if (value.trim().length < 3) {
                 errorCargo.textContent = 'Mínimo 3 caracteres';
                 return validateForm();
             }

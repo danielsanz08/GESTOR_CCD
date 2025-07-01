@@ -1,33 +1,73 @@
 {% extends 'navbar.html' %}
-{% load static%}
+{% load static %}
+
 {% block contenido %}
 <style>
- body.dark form{
+  body.dark form {
     background: rgba(112, 112, 112, 0.747);
- }
- body.dark label,
- body.dark h3{
+  }
+
+  body.dark label,
+  body.dark h3 {
     color: white;
- }
+  }
+
+  .orientacion-paisaje {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: brown;
+    color: white;
+    font-weight: bold;
+    font-size: 3vh;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 9999;
+  }
+
+  @media screen and (orientation: landscape) and (max-height: 500px) {
+    body {
+      background-color: brown;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    form,
+    .op {
+      display: none;
+    }
+
+    .orientacion-paisaje {
+      display: flex;
+    }
+  }
 </style>
+
 <link rel="stylesheet" href="{% static 'css/login_pap.css' %}?v={% now 'U' %}">
+
 <form method="POST" action="{% url 'papeleria:login_papeleria' %}" class="login">
-    <h3><i data-feather="user"></i>
-        Iniciar sesión - Módulo papeleria</h3>
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="email" class="email-label">Correo Electrónico</label>
-        <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required>
-    </div>
-    <div class="form-group">
-        <label for="password" class="password-label">Contraseña</label>
-        <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
-    </div>
-    <button type="submit" class="btn btn-primary btn-block" id="btn">Iniciar sesión</button>
-    <div class="op">
-        <a href="{% url 'libreria:password_reset' %}">¿Olvidaste la contraseña?</a>
-    </div>
+  <h3><i data-feather="user"></i> Iniciar sesión - Módulo papeleria</h3>
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="email" class="email-label">Correo Electrónico</label>
+    <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required>
+  </div>
+  <div class="form-group">
+    <label for="password" class="password-label">Contraseña</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+  </div>
+  <button type="submit" class="btn btn-primary btn-block" id="btn">Iniciar sesión</button>
+  <div class="op">
+    <a href="{% url 'libreria:password_reset' %}">¿Olvidaste la contraseña?</a>
+  </div>
 </form>
 
-
+<!-- Mensaje para orientación horizontal con poca altura -->
+<div class="orientacion-paisaje">
+  Por favor, pon tu celular en vertical.
+</div>
 {% endblock %}

@@ -117,6 +117,22 @@
         color: white;
         cursor: pointer;
     }
+    
+    /* Nuevos estilos para centrar la gráfica */
+    .chart-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #graficaPedidos {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 400px;
+    }
 </style>
 
 <div class="estadisticas-container">
@@ -145,7 +161,9 @@
     <div class="cuadradoFondo">
         <div id="grafica">
             <h2>Gráfica de estado de pedidos</h2>
-            <canvas id="graficaPedidos"></canvas>
+            <div class="chart-container">
+                <canvas id="graficaPedidos"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -157,7 +175,7 @@
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = 200;
+    const maxCantidad = 10;
     const porcentajes = cantidades.map(c => {
         let porcentaje = (c / maxCantidad) * 100;
         return porcentaje > 100 ? 100 : parseFloat(porcentaje.toFixed(2));
@@ -167,7 +185,7 @@
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Pendiente', 'Confirmado', 'Cancelado'],
+            labels: ['', '', ''],
             datasets: [
                 {
                     label: 'Pendiente',
@@ -175,7 +193,8 @@
                     backgroundColor: 'rgba(255, 205, 86, 0.6)',
                     borderColor: 'rgba(255, 205, 86, 1)',
                     borderWidth: 1,
-                    maxBarThickness: 40
+                    barPercentage: 0.6, // Controla el ancho de las barras
+                    categoryPercentage: 0.8 // Controla el espacio entre categorías
                 },
                 {
                     label: 'Confirmado',
@@ -183,7 +202,9 @@
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1,
-                    maxBarThickness: 40
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                    
                 },
                 {
                     label: 'Cancelado',
@@ -191,13 +212,23 @@
                     backgroundColor: 'rgba(255, 99, 132, 0.6)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1,
-                    maxBarThickness: 40
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
                 }
             ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        padding: 10 // Añade espacio entre las etiquetas y el eje
+                    }
+                },
                 y: {
                     beginAtZero: true,
                     max: 100,
@@ -213,12 +244,24 @@
                 }
             },
             plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'center'
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             return `${context.dataset.label}: ${context.parsed.y}%`;
                         }
                     }
+                }
+            },
+            layout: {
+                padding: {
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20
                 }
             }
         }

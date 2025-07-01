@@ -310,25 +310,28 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from .models import CustomUser
 
+@login_required
 def cambiar_estado_usuario(request, user_id):
     if request.method == 'POST':
-        user = get_object_or_404(CustomUser, id=user_id)
-        estado_anterior = user.is_active
+        usuario = get_object_or_404(CustomUser, id=user_id)
+        estado_anterior = usuario.is_active
         nuevo_estado = 'is_active' in request.POST
 
-        if estado_anterior != nuevo_estado:
-            user.is_active = nuevo_estado
-            user.save()
-            
+        # Evita que el usuario se desactive a sí mismo
+        if request.user.id == usuario.id and not nuevo_estado:
+            messages.error(request, "Error: No puedes desactivar tu propio usuario mientras estás autenticado.")
+        elif estado_anterior != nuevo_estado:
+            usuario.is_active = nuevo_estado
+            usuario.save()
+
             if nuevo_estado:
-                messages.success(request, f"El usuario '{user.username}' ha sido activado correctamente.")
+                messages.success(request, f"Éxito: El usuario '{usuario.username}' ha sido activado correctamente.")
             else:
-                messages.error(request, f"El usuario '{user.username}' ha sido desactivado.")
+                messages.error(request, f"Advertencia: El usuario '{usuario.username}' ha sido desactivado.")
         else:
-            messages.info(request, f"El estado del usuario '{user.username}' no cambió.")
+            messages.error(request, f"Información: El estado del usuario '{usuario.username}' no cambió.")
 
-        return redirect(reverse("libreria:lista_usuarios"))
-
+    return redirect(reverse("libreria:lista_usuarios"))
 def cambiar_contraseña(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -344,6 +347,21 @@ def cambiar_contraseña(request):
         form = CustomPasswordChangeForm(user=request.user)
 
     return render(request, 'usuario/cambiar_contraseña.html', {'form': form, 'breadcrumbs': breadcrumbs})
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.forms import SetPasswordForm
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.urls import reverse
+from django.conf import settings
+
+# Obtener el modelo de usuario personalizado
+User = get_user_model()
+
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -354,24 +372,67 @@ def password_reset_request(request):
             reset_link = request.build_absolute_uri(
                 reverse("libreria:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
             )
+            
+            # Contexto para el template del email
+            context = {
+                'user': user,
+                'reset_link': reset_link,
+                'site_name': 'Gestor CCD',
+                'company_name': 'Gestor CCD',
+            }
+            
+            subject = "Restablecer tu contraseña - Gestor CCD"
+            html_message = render_to_string("password_reset_email.html", context)
+            
+            # Crear mensaje de texto plano como respaldo
+            text_message = f"""
+Hola {user.username},
 
-            subject = "Restablecer tu contraseña"
-            message = render_to_string("password_reset_email.html", {"reset_link": reset_link})
+Recibimos una solicitud para restablecer la contraseña de tu cuenta en Gestor CCD.
 
-            # Aquí NO capturamos errores de red
-            send_mail(subject, message, "noreply@tuweb.com", [user.email])
+Para restablecer tu contraseña, copia y pega el siguiente enlace en tu navegador:
+{reset_link}
 
-            return redirect(reverse("libreria:password_reset_done") + "?sent=true")
+Si no solicitaste este cambio, puedes ignorar este mensaje.
 
+El enlace será válido por 24 horas.
+
+Saludos,
+El equipo de Gestor CCD
+            """
+            
+            try:
+                # Crear email con HTML y texto plano
+                msg = EmailMultiAlternatives(
+                    subject,
+                    text_message,  # Mensaje de texto plano
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email]
+                )
+                msg.attach_alternative(html_message, "text/html")  # Versión HTML
+                msg.send()
+                
+                return redirect(reverse("libreria:password_reset_done") + "?sent=true")
+            except Exception as e:
+                # Log del error pero no mostrar detalles al usuario por seguridad
+                print(f"Error enviando email: {e}")
+                return redirect(reverse("libreria:password_reset_done") + "?sent=error")
+                
         except User.DoesNotExist:
-            return redirect(reverse("libreria:password_reset_done") + "?sent=false")
-
+            # Por seguridad, redirigir igual pero con parámetro diferente
+            return redirect(reverse("libreria:password_reset_done") + "?sent=notfound")
+    
     return render(request, "password_reset.html")
 
-
 def password_reset_done(request):
-    return render(request, "password_reset_done.html")
-
+    sent_status = request.GET.get('sent', 'unknown')
+    context = {
+        'sent_status': sent_status,
+        'show_success': sent_status == 'true',
+        'show_error': sent_status == 'error',
+        'show_not_found': sent_status == 'notfound'
+    }
+    return render(request, "password_reset_done.html", context)
 
 def password_reset_confirm(request, uidb64, token):
     try:
@@ -379,7 +440,7 @@ def password_reset_confirm(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-
+    
     if user is not None and default_token_generator.check_token(user, token):
         if request.method == "POST":
             form = SetPasswordForm(user, request.POST)
@@ -388,14 +449,19 @@ def password_reset_confirm(request, uidb64, token):
                 return redirect(reverse("libreria:password_reset_complete"))
         else:
             form = SetPasswordForm(user)
-        return render(request, "password_reset_confirm.html", {"form": form})
+        return render(request, "password_reset_confirm.html", {
+            "form": form, 
+            "user": user,
+            "valid_link": True
+        })
     else:
-        return render(request, "password_reset_confirm.html", {"error": "El enlace no es válido o ha expirado."})
-
+        return render(request, "password_reset_confirm.html", {
+            "error": "El enlace no es válido o ha expirado.",
+            "valid_link": False
+        })
 
 def password_reset_complete(request):
     return render(request, "password_reset_complete.html")
-
 #VALIDAR INFORMACION
 
 def validar_datos(request):

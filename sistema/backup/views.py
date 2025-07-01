@@ -19,20 +19,17 @@ import logging
 
 # Configuración de logging
 logger = logging.getLogger(__name__)
+
 def error_404_view(request, exception):
     return render(request, 'acceso_denegado.html', status=404)
+
 def timeouterror(request):
     try:
-        # Simulación de una operación que puede causar un TimeoutError
-        # Aquí va tu lógica real, como una conexión a red, base de datos externa, etc.
-        raise TimeoutError("Error de tiempo de espera")  # Simulación
-
-        # Si no ocurre error, puedes devolver otro template si lo deseas
+        raise TimeoutError("Error de tiempo de espera")
         return render(request, 'exito.html')
-
     except TimeoutError:
-        # Solo captura TimeoutError y redirige a lan_error.html
         return render(request, 'lan_error.html')
+
 @login_required(login_url='/acceso_denegado/')
 def index_backup(request):
     breadcrumbs = [
@@ -95,22 +92,24 @@ def crear_nuevo_backup(request):
 
     if request.method == 'POST':
         try:
+            # Crear backup con manejo de relaciones
             nombre_archivo, ruta_archivo = crear_backup()
             tamano = os.path.getsize(ruta_archivo)
             tamano_mb = round(tamano / (1024 * 1024), 2)
             nombre = request.POST.get('nombre') or f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+            # Incluir información sobre las relaciones en la descripción
             backup = Backup(
                 nombre=nombre,
                 tamano=f"{tamano_mb} MB",
-                modelos_incluidos="libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde",
+                modelos_incluidos="libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)",
                 creado_por=request.user
             )
 
             with open(ruta_archivo, 'rb') as f:
                 backup.archivo.save(nombre_archivo, f)
 
-            messages.success(request, 'Copia de seguridad creada exitosamente.')
+            messages.success(request, 'Copia de seguridad creada exitosamente con todas las relaciones.')
             return redirect('backup:lista_backups')
 
         except Exception as e:
@@ -122,7 +121,6 @@ def crear_nuevo_backup(request):
 
 @login_required(login_url='/acceso_denegado/')
 def restaurar_backup_view(request, id):
-    # Guardar información del usuario antes de la restauración (para mensajes de error)
     user_id = request.user.id
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -139,42 +137,58 @@ def restaurar_backup_view(request, id):
             messages.error(request, f"El archivo de backup no existe en {ruta_absoluta}")
             return redirect('backup:lista_backups')
 
-        # Cerrar todas las conexiones existentes
+        # Cerrar sesión y limpiar
+        from django.contrib.auth import logout
+        logout(request)
+        request.session.flush()
+        
+        # Cerrar conexiones existentes
         db.connections.close_all()
         
         try:
-            # Configurar un timeout mayor para MySQL
-            with connections['default'].cursor() as cursor:
-                cursor.execute("SET SESSION wait_timeout = 28800;")  # 8 horas
-                cursor.execute("SET SESSION interactive_timeout = 28800;")
+            # Obtener conexión a la base de datos
+            connection = connections['default']
             
-            # Desactivar verificaciones de clave foránea temporalmente
-            with transaction.atomic():
-                with connections['default'].cursor() as cursor:
-                    cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+            with connection.cursor() as cursor:
+                # Configurar timeouts (usando parámetros seguros)
+                cursor.execute("SET SESSION wait_timeout = %s", [28800])
+                cursor.execute("SET SESSION interactive_timeout = %s", [28800])
                 
-                # Realizar la restauración
+                # Desactivar FKs de manera segura
+                cursor.execute("SET FOREIGN_KEY_CHECKS = %s", [0])
+                
+                # Limpiar la base de datos
+                management.call_command('flush', interactive=False, verbosity=0)
+                
+                # Restaurar el backup
                 restaurar_backup(ruta_absoluta)
                 
-                with connections['default'].cursor() as cursor:
-                    cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
-                    
-        except Exception as e:
-            logger.error(f"Error durante la restauración: {str(e)}", exc_info=True)
-            messages.error(request, f'Error técnico al restaurar: {str(e)}')
-            return redirect('backup:lista_backups')
+                # Reactivar verificaciones con manejo de errores
+                try:
+                    cursor.execute("SET FOREIGN_KEY_CHECKS = %s", [1])
+                    cursor.execute("ANALYZE TABLE")
+                except Exception as analyze_error:
+                    logger.warning(f"Error al ejecutar ANALYZE TABLE: {str(analyze_error)}")
+                
+                # Confirmar todos los cambios
+                connection.commit()
 
-        # Redirigir al inicio para cerrar sesión
-        from django.contrib.auth import logout
-        logout(request)
+        except db.Error as e:
+            logger.error(f"Error de base de datos durante restauración: {str(e)}", exc_info=True)
+            messages.error(request, f'Error de base de datos al restaurar: {str(e)}')
+            return redirect('libreria:inicio')
+        except Exception as e:
+            logger.error(f"Error inesperado durante restauración: {str(e)}", exc_info=True)
+            messages.error(request, f'Error técnico al restaurar: {str(e)}')
+            return redirect('libreria:inicio')
+
         messages.success(request, 'Copia de seguridad restaurada exitosamente. Por favor inicie sesión nuevamente.')
-        return redirect('libreria:inicio')  # Cambia 'libreria:inicio' por tu URL de inicio
+        return redirect('libreria:inicio')
 
     except Exception as e:
-        logger.error(f"Error al restaurar backup: {str(e)}", exc_info=True)
+        logger.error(f"Error general al restaurar backup: {str(e)}", exc_info=True)
         messages.error(request, f'Error al restaurar copia de seguridad: {str(e)}')
-        return redirect('backup:lista_backups')
-
+        return redirect('libreria:inicio')
 @login_required(login_url='/acceso_denegado/')
 def descargar_backup(request, id):
     try:
@@ -201,15 +215,23 @@ def eliminar_backup(request, id):
     return redirect('backup:lista_backups')
 
 def exportar_bd(nombre_archivo=None):
-    """Función auxiliar para exportar la base de datos completa"""
+    """Función mejorada para exportar la base de datos completa con relaciones"""
     if not nombre_archivo:
         nombre_archivo = f"backup_db_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
     ruta_backup = os.path.join(settings.BACKUP_ROOT, nombre_archivo)
 
     try:
+        # Exportar incluyendo todas las relaciones y usando formato natural
         with open(ruta_backup, 'w', encoding='utf-8') as f:
-            management.call_command('dumpdata', stdout=f, exclude=['contenttypes', 'auth.permission', 'sessions.session'])
+            management.call_command(
+                'dumpdata',
+                stdout=f,
+                use_natural_foreign_keys=True,
+                use_natural_primary_keys=True,
+                indent=4,
+                exclude=['contenttypes', 'auth.permission', 'sessions.session']
+            )
         return nombre_archivo, ruta_backup
     except Exception as e:
         logger.error(f"Error al exportar BD: {str(e)}", exc_info=True)
@@ -236,7 +258,7 @@ def exportar(request):
         backup = Backup(
             nombre=f"export_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             tamano=f"{tamano_mb} MB",
-            modelos_incluidos="Todos (exportación completa)",
+            modelos_incluidos="Todos (exportación completa con relaciones)",
             creado_por=request.user
         )
 
@@ -246,7 +268,7 @@ def exportar(request):
         backup.save()
 
         response = FileResponse(open(ruta_backup, 'rb'), as_attachment=True, filename=nombre_archivo)
-        messages.success(request, 'Base de datos exportada exitosamente.')
+        messages.success(request, 'Base de datos exportada exitosamente con todas las relaciones.')
         return response
 
     except Exception as e:
@@ -267,9 +289,9 @@ def importar_backup_view(request):
             archivo_subido = request.FILES['archivo']
             nombre = request.POST.get('nombre', f"backup_importado_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
 
+            # Guardar el archivo primero
             carpeta_backups = os.path.join(settings.MEDIA_ROOT, 'backups')
             os.makedirs(carpeta_backups, exist_ok=True)
-
             nombre_archivo = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{archivo_subido.name}"
             ruta_completa = os.path.join(carpeta_backups, nombre_archivo)
 
@@ -277,58 +299,59 @@ def importar_backup_view(request):
                 for chunk in archivo_subido.chunks():
                     destino.write(chunk)
 
+            # Crear registro del backup
             tamano = os.path.getsize(ruta_completa)
             tamano_mb = round(tamano / (1024 * 1024), 2)
-
             backup = Backup(
                 nombre=nombre,
                 tamano=f"{tamano_mb} MB",
-                modelos_incluidos="Todos (backup completo)",
+                modelos_incluidos="Todos (backup completo con relaciones)",
                 creado_por=request.user
             )
-
             with open(ruta_completa, 'rb') as f:
                 backup.archivo.save(nombre_archivo, f, save=False)
-
             backup.save()
 
             if 'restaurar' in request.POST:
                 try:
-                    # Cerrar conexiones antes de restaurar
+                    # 1. Cerrar sesión ANTES de la restauración
+                    from django.contrib.auth import logout
+                    logout(request)
+                    request.session.flush()
+                    
+                    # 2. Cerrar conexiones antes de restaurar
                     db.connections.close_all()
                     
-                    # Configurar timeout mayor
+                    # 3. Configurar timeout mayor y deshabilitar FKs temporalmente
                     with connections['default'].cursor() as cursor:
                         cursor.execute("SET SESSION wait_timeout = 28800;")
                         cursor.execute("SET SESSION interactive_timeout = 28800;")
+                        cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
                     
+                    # 4. Restauración en transacción atómica
                     with transaction.atomic():
-                        # Deshabilitar verificaciones de clave foránea
-                        with connections['default'].cursor() as cursor:
-                            cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
-                        
+                        management.call_command('flush', interactive=False)
                         restaurar_backup(backup.archivo.path)
                         
-                        # Restaurar verificaciones
                         with connections['default'].cursor() as cursor:
                             cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+                            cursor.execute("ANALYZE TABLE;")
 
-                    # Refrescar usuario
-                    User = get_user_model()
-                    request.user = User.objects.get(id=request.user.id)
-                    request.session.modified = True
-
-                    messages.success(request, 'Backup importado y restaurado exitosamente.')
+                    # 5. Redirigir con mensaje de éxito
+                    messages.success(request, 'Backup importado y restaurado exitosamente. Por favor inicie sesión nuevamente.')
+                    return redirect('libreria:inicio')
+                    
                 except Exception as e:
                     logger.error(f"Error al restaurar backup importado: {str(e)}", exc_info=True)
                     messages.warning(request, f'Backup importado pero error al restaurar: {str(e)}')
+                    return redirect('libreria:inicio')
             else:
                 messages.success(request, 'Backup importado exitosamente.')
-
-            return redirect('backup:lista_backups')
+                return redirect('backup:lista_backups')
 
         except Exception as e:
             logger.error(f"Error en importar_backup_view: {str(e)}", exc_info=True)
             messages.error(request, f'Error al importar el backup: {str(e)}')
+            return redirect('backup:importar')
 
     return render(request, 'backup/importar.html', {'breadcrumbs': breadcrumbs})

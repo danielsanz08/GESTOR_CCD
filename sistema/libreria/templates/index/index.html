@@ -6,20 +6,9 @@ GESTOR CCD
 
 {% block contenido %}
 <style>
-body.dark .card{
-  background: linear-gradient(135deg, #292929, #67707c);
-}
-body.monocromo-activo .card{
-  background: linear-gradient(135deg, #353232, #67707c);
-}
-body.resaltar-enlaces .text_Card{
-  background-color: lightblue;
-}
+  
 </style>
 <link rel="stylesheet" href="{% static 'css/index.css' %}?v={% now 'U' %}">
-<div class="fondo">
-  <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
-</div> <!-- Agregar el fondo al inicio -->
 
 <a href="{% url 'papeleria:login_papeleria' %}  ">
   <div class="container">

@@ -507,7 +507,7 @@ def listado_pedidos(request):
             Q(articulos__cantidad__icontains=query) |
             Q(articulos__tipo__icontains=query) |
             Q(articulos__area__icontains=query)
-        )
+).distinct()
 
     # Manejo de fechas - versión corregida
     if fecha_inicio_str and fecha_fin_str:

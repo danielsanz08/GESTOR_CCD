@@ -9,7 +9,7 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre descriptivo">
+            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre descriptivo" required>
             <span class="error-limite" id="error-limite">Máximo 15 caracteres</span>
             <span class="error-repetido" id="error-repetido">No repitas caracteres consecutivos</span>
         </div>

@@ -1,37 +1,16 @@
-/* Reset y estilos base */
-:root {
-    --primary-color: #2c5282;
-    --secondary-color: #4299e1;
-    --light-color: #ebf8ff;
-    --dark-color: #4a5568;
-    --danger-color: #e53e3e;
-    --white: #ffffff;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-}
-html, body{
-      background-color: #1c96bb1c;
-    }
-* {
+body,
+html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-
-    color: #333;
-    font-family: 'Roboto', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-
-/* Contenedor principal */
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-    margin-top: 15vh;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
 }
 
 /* Título principal */
@@ -39,18 +18,18 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 2rem;
     text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
+    color: #2c5282;
+    
 }
 
 /* Grid de 3 columnas con 3 cards cada una */
 .main-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3 columnas */
-    gap: 1.5rem;
+    gap: 5.5rem;
     justify-content: center;
     padding: 0 1rem;
+    margin-top: 10vh;
 }
 
 /* Cards principales */
@@ -62,9 +41,10 @@ body {
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    transition: var(--transition);
-    border: 1px solid var(--light-color);
-    min-height: 160px;
+    transition: all 0.3s ease;
+    border: 1px solid #ebf8ff;
+    width: 200px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -74,26 +54,26 @@ body {
 .main-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    border-color: var(--secondary-color);
+    border-color: #4299e1;
 }
 
 .main-card-icon {
     width: 48px;
     height: 48px;
     margin-bottom: 0.75rem;
-    color: var(--primary-color);
-    transition: var(--transition);
+    color: #2c5282;
+    transition: all 0.3s ease;
 }
 
 .main-card:hover .main-card-icon {
     transform: scale(1.1);
-    color: var(--secondary-color);
+    color: #4299e1;
 }
 
 .main-card-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: #2c5282;
 }
 
 /* Ventanas emergentes */
@@ -118,7 +98,7 @@ body {
 }
 
 .modal-container {
-    background: var(--white);
+    background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     width: 90%;
@@ -141,12 +121,12 @@ body {
     align-items: center;
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid var(--light-color);
+    border-bottom: 2px solid #ebf8ff;
 }
 
 .modal-title {
     font-size: 1.5rem;
-    color: var(--primary-color);
+    color: #2c5282;
 }
 
 .close-modal {
@@ -154,12 +134,12 @@ body {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--dark-color);
-    transition: var(--transition);
+    color: #4a5568;
+    transition: all 0.3s ease;
 }
 
 .close-modal:hover {
-    color: var(--danger-color);
+    color: #e53e3e;
 }
 
 .modal-content {
@@ -176,15 +156,15 @@ body {
     align-items: center;
     padding: 0.85rem;
     border-radius: 6px;
-    background: var(--light-color);
-    transition: var(--transition);
+    background: #ebf8ff;
+    transition: all 0.3s ease;
     text-decoration: none;
-    color: var(--dark-color);
+    color: #4a5568;
 }
 
 .modal-option:hover {
-    background: var(--secondary-color);
-    color: var(--white);
+    background: #4299e1;
+    color: #ffffff;
     transform: translateX(3px);
 }
 
@@ -197,38 +177,4 @@ body {
 .modal-option-text {
     font-size: 1rem;
     font-weight: 500;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-    .main-cards {
-        grid-template-columns: repeat(2, 1fr);
-        /* 2 columnas en tablets */
-    }
-}
-
-@media (max-width: 767px) {
-    .main-container {
-        margin-top: 5vh;
-        padding: 1rem;
-    }
-
-    .main-cards {
-        grid-template-columns: 1fr;
-        /* 1 columna en móviles */
-    }
-
-    .main-card {
-        padding: 1.25rem;
-        min-height: 140px;
-    }
-
-    .main-card-icon {
-        width: 42px;
-        height: 42px;
-    }
-
-    .main-card-title {
-        font-size: 1.1rem;
-    }
 }

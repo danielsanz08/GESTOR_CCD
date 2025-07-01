@@ -42,43 +42,43 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="id_nombre" class="form-label">Nombre del artículo</label>
-            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Maximo 40 caracteres" maxlength="40">
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required placeholder="Maximo 40 caracteres" maxlength="40">
             <div class="error-msg error-nombre"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_tipo" class="form-label">Digite el tipo de artículo</label>
-            <input type="text" name="tipo" id="id_tipo" placeholder="Maximo 30 caracteres" value="No establecido" maxlength="30">
+            <input type="text" name="tipo" id="id_tipo" placeholder="Maximo 30 caracteres" value="No establecido" maxlength="30" required>
             <div class="error-msg error-tipo"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_marca" class="form-label">Marca del artículo</label>
-            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Maximo 30 caracteres" maxlength="30">
+            <input type="text" name="marca" id="id_marca" class="form-control" required placeholder="Maximo 30 caracteres" maxlength="30">
             <div class="error-msg error-marca"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_precio" class="form-label">Digite el precio</label>
-            <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del artículo">
+            <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del artículo" required>
             <div class="error-msg error-precio"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_cantidad" class="form-label">Digite la cantidad</label>
-            <input type="text" id="id_cantidad" name="cantidad" placeholder="Máximo 10 dígitos" maxlength="13">
+            <input type="text" id="id_cantidad" name="cantidad" placeholder="Máximo 10 dígitos" maxlength="13" required>
             <div class="error-msg error-cantidad"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_proveedor" class="form-label">Digite el proveedor</label>
-            <input type="text" id="id_proveedor" name="proveedor" placeholder="Maximo 40 caracteres" maxlength="40">
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Maximo 40 caracteres" maxlength="40" required>
             <div class="error-msg error-proveedor"></div>
         </div>
 
         <div class="mb-3">
             <label for="id_observacion" class="form-label">Observación del artículo:</label>
-            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 50 caracteres" maxlength="50">
+            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 50 caracteres" maxlength="50" required>
             <div class="error-msg error-observacion"></div>
         </div>
 
@@ -117,9 +117,9 @@
             if (valor.trim().length > 0 && valor.length < 3) {
                 return "Debe tener al menos 3 caracteres.";
             }
-            // Expresión regular mejorada para aceptar más caracteres especiales
-            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
-                return "Contiene caracteres inválidos.";
+            // Expresión regular que acepta cualquier carácter excepto control y algunos específicos
+            if (/[\x00-\x1F\x7F]/.test(valor)) {
+                return "Contiene caracteres de control no permitidos.";
             }
             if (/(.)\1{2,}/.test(valor)) {
                 return "No repita un mismo carácter más de 2 veces.";

@@ -213,3 +213,10 @@ html {
     color: rgb(0, 0, 0);
   }
 }
+ @media screen and (orientation: landscape) and (max-height: 500px) {
+  /* Estilos para modo horizontal en celular */
+   .login{
+    display: none;
+    content: 'no disponible';
+  }
+}

@@ -8,127 +8,121 @@
 <link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
 {% if request.user.role == 'Administrador' %}
 <div class="uno">
-    <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Ver perfil</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:crear_producto' %}">
-        <div class="opcion">
-            <i data-feather="file-plus" class="icono"></i>
-            <span>Crear producto</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:listar_productos' %}">
-        <div class="opcion">
-            <i data-feather="package" class="icono"></i>
-            <span>Listar productos</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
-        <div class="opcion">
-            <i data-feather="shopping-cart" class="icono"></i>
-            <span>Pedidos</span>
-        </div>
-    </a>
-    
-    
-    <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Mis Pedidos</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:pedidos_pendientes' %}">
-        <div class="opcion">
-            <i data-feather="clock" class="icono"></i>
-            <span>Pedidos Pendientes</span>
-        </div>
-    </a>
-        <a id="a" href="{% url 'cafeteria:lista_pedidos_caf' %}">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Listado de pedidos</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:lista_bajo_stock' %}">
-        <div class="opcion">
-            <i data-feather="alert-triangle" class="icono"></i>
-            <span>Bajo stock</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
-        <div class="opcion">
-            <i data-feather="book-open" class="icono"></i>
-            <span>Manual de usuario</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'papeleria:logout_view' %}">
-        <div class="opcion">
-            <i data-feather="log-out" class="icono"></i>
-            <span>Salir</span>
-        </div>
-    </a>
+  <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
+    <div class="opcion">
+      <i data-feather="user" class="icono"></i>
+      <span>Ver perfil</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:crear_producto' %}">
+    <div class="opcion">
+      <i data-feather="file-plus" class="icono"></i>
+      <span>Crear producto</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:listar_productos' %}">
+    <div class="opcion">
+      <i data-feather="package" class="icono"></i>
+      <span>Listar productos</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
+    <div class="opcion">
+      <i data-feather="shopping-cart" class="icono"></i>
+      <span>Pedidos</span>
+    </div>
+  </a>
+
+  <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
+    <div class="opcion">
+      <i data-feather="user" class="icono"></i>
+      <span>Mis Pedidos</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:pedidos_pendientes' %}">
+    <div class="opcion">
+      <i data-feather="clock" class="icono"></i>
+      <span>Pedidos Pendientes</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:lista_pedidos_caf' %}">
+    <div class="opcion">
+      <i data-feather="user" class="icono"></i>
+      <span>Listado de pedidos</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:lista_bajo_stock' %}">
+    <div class="opcion">
+      <i data-feather="alert-triangle" class="icono"></i>
+      <span>Bajo stock</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+    <div class="opcion">
+      <i data-feather="book-open" class="icono"></i>
+      <span>Manual de usuario</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'papeleria:logout_view' %}">
+    <div class="opcion">
+      <i data-feather="log-out" class="icono"></i>
+      <span>Salir</span>
+    </div>
+  </a>
 </div>
 {% endif %}
 {% if request.user.role == 'Empleado' %}
 <div class="uno_e">
-    <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Ver perfil</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
-        <div class="opcion">
-            <i data-feather="shopping-cart" class="icono"></i>
-            <span>Pedidos</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
-        <div class="opcion">
-            <i data-feather="user" class="icono"></i>
-            <span>Mis Pedidos</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
-        <div class="opcion">
-            <i data-feather="book-open" class="icono"></i>
-            <span>Manual de usuario</span>
-        </div>
-    </a>
-    <a id="a" href="{% url 'papeleria:logout_view' %}">
-        <div class="opcion">
-            <i data-feather="log-out" class="icono"></i>
-            <span>Salir</span>
-        </div>
-    </a>
+  <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
+    <div class="opcion">
+      <i data-feather="user" class="icono"></i>
+      <span>Ver perfil</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
+    <div class="opcion">
+      <i data-feather="shopping-cart" class="icono"></i>
+      <span>Pedidos</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
+    <div class="opcion">
+      <i data-feather="user" class="icono"></i>
+      <span>Mis Pedidos</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+    <div class="opcion">
+      <i data-feather="book-open" class="icono"></i>
+      <span>Manual de usuario</span>
+    </div>
+  </a>
+  <a id="a" href="{% url 'papeleria:logout_view' %}">
+    <div class="opcion">
+      <i data-feather="log-out" class="icono"></i>
+      <span>Salir</span>
+    </div>
+  </a>
 </div>
 {% endif %}
 {% else %}
 <div class="mensaje-sesion-cerrada">
-    <p>Se ha cerrado tu sesión</p>
+  <p>Se ha cerrado tu sesión</p>
 </div>
 {% endif %}
-{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf and mostrar_alerta %}
-  {% if bajo_stock_caf %}
-    <div id="stock-alert-caf" class="alert-overlay">
-      <div class="alert-box">
-        <p style="font-weight: bold; color: #000;">
-          ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
-        </p>
-        <button onclick="cerrarAlertaCaf()">Aceptar</button>
-        <a href="{% url 'cafeteria:lista_bajo_stock' %}">
-          <button>Ver Productos</button>
-        </a>
-      </div>
+
+<!-- Alerta de stock bajo -->
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf and mostrar_alerta_caf and bajo_stock_caf %}
+<div id="stock-alert-caf" class="alert-overlay">
+    <div class="alert-box">
+        <button class="close-btn" onclick="cerrarAlertaCaf()">&times;</button>
+        <p>¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.</p>
     </div>
-  {% endif %}
+</div>
 {% endif %}
+
 <style>
-  /* Overlay que cubre toda la pantalla */
-  .alert-overlay {
+   .alert-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -138,64 +132,51 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;  /* Valor altísimo para garantizar que esté encima */
-    backdrop-filter: blur(2px);  /* Efecto de desenfoque opcional */
+    z-index: 9999;
+    backdrop-filter: blur(2px);
   }
 
-  /* Caja de la alerta */
   .alert-box {
     background: white;
     padding: 25px 35px;
     border-radius: 12px;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
     text-align: center;
-    z-index: 10000;  /* Mayor que el overlay por si acaso */
-    max-width: 90%;  /* Adaptabilidad en móviles */
+    z-index: 10000;
+    width: 70vh;
+    margin-left: 70vh;
+    margin-top: 40vh;
+    position: relative;
   }
 
-  /* Botones */
-  .alert-box button {
-    margin: 15px 10px 0;
-    padding: 10px 20px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 6px;
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
+    color: #000;
+    background: none;
+    border: none;
   }
 
-  .alert-box button:hover {
-    background-color: #0056b3;
-  }
-
-  /* Bloquear scroll y clics detrás de la alerta */
-  body.alert-active {
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  body.alert-active .alert-overlay {
-    pointer-events: auto;  /* Solo la alerta es clickeable */
+  .close-btn:hover {
+    color: #555;
   }
 </style>
+
 <script>
   function cerrarAlertaCaf() {
     const alerta = document.getElementById('stock-alert-caf');
-    alerta.style.display = 'none';
-    document.body.classList.remove('alert-active');  // Restaura el scroll
+    if (alerta) {
+      alerta.style.display = 'none';
+    }
   }
 
-  // Activar bloqueo al cargar la alerta
+  // Inicializar Feather Icons
   document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('stock-alert-caf')) {
-      document.body.classList.add('alert-active');
-    }
-  });
-</script>
-
-<script>
     feather.replace();
+  });
 </script>
 {% endblock %}

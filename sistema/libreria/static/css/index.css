@@ -2,36 +2,13 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  justify-content: center;
-  /* Centrar en la pantalla */
-  align-items: center;
-  background-color: #f4f4f4;
-  font-family: Arial, sans-serif;
-}
-
-:root {
-  --primary-color: #128bd6;
-  --secondary-color: #1094ba;
-  --accent-color: #1274b2;
-  --light-color: #f8f9fa;
-  --dark-color: #343a40;
-  --success-color: #28a745;
-  --transition-speed: 0.3s;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--dark-color);
+  color: #343a40;
 }
-
 .contenedor-principal {
   display: flex;
   width: 90%;
@@ -44,9 +21,8 @@ body {
   position: relative;
   top: 4vh;
   overflow: hidden;
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
 }
-
 .contenedor-principal::before {
   content: '';
   position: absolute;
@@ -54,38 +30,31 @@ body {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+  background: linear-gradient(90deg, #128bd6, #1094ba, #1274b2);
 }
-
-/* Div izquierdo (Logo) */
 .div-izquierdo {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  
   animation: entradaLogo 1s ease-out forwards;
   opacity: 0;
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
 }
-
 .div-izquierdo:hover {
   transform: scale(1.03);
 }
-
 .div-izquierdo img {
   max-width: 100%;
   height: auto;
   filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
 }
-
 .div-izquierdo:hover img {
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.15));
 }
 
-/* Div derecho (Secciones) */
 .div-derecho {
   flex: 2;
   display: flex;
@@ -93,53 +62,45 @@ body {
   gap: 1.5rem;
   padding: 0 2rem;
 }
-
 .seccion {
   padding: 1.5rem;
   border-radius: 8px;
   background-color: white;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid #128bd6;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   opacity: 0;
   transform: translateY(20px);
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
   cursor: pointer;
   width: 100vh;
 }
-
 .seccion:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .seccion:nth-child(1) {
-  border-left-color: var(--primary-color);
+  border-left-color: #128bd6;
   animation: entradaSecciones 0.6s ease-out 0.8s forwards;
 }
-
 .seccion:nth-child(2) {
-  border-left-color: var(--secondary-color);
+  border-left-color: #1094ba;
   animation: entradaSecciones 0.6s ease-out 1s forwards;
 }
-
 .seccion:nth-child(3) {
-  border-left-color: var(--accent-color);
+  border-left-color: #1274b2;
   animation: entradaSecciones 0.6s ease-out 1.2s forwards;
 }
-
 .seccion h2 {
   margin: 0 0 0.5rem 0;
-  color: var(--dark-color);
+  color: #343a40;
   font-size: 1.5rem;
 }
-
 .seccion p {
   margin: 0;
   color: #666;
   font-size: 1rem;
 }
-
-/* Botón "Regístrate" en esquina superior derecha */
 .registrate {
   position: absolute;
   top: -1vh;
@@ -152,52 +113,35 @@ body {
   padding: 0.5rem 1rem;
   border-radius: 50px;
   font-size: 0.9rem;
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
   display: inline-block;
 }
-
 
 .registrate:hover {
   color: #1094ba;
 }
-
-/* Animaciones */
 @keyframes entradaLogo {
   from {
     transform: translateX(-50px);
     opacity: 0;
   }
-
   to {
     transform: translateX(0);
     opacity: 1;
   }
 }
 
+
 @keyframes entradaSecciones {
   from {
     transform: translateY(20px);
     opacity: 0;
   }
-
   to {
     transform: translateY(0);
     opacity: 1;
   }
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .contenedor-principal {
@@ -222,7 +166,6 @@ body {
 
   .registrate {
     position: absolute;
-    /* Mantiene en esquina superior derecha */
     top: 1rem;
     right: 1rem;
   }

@@ -1,6 +1,7 @@
 {% extends 'navbar.html' %}
 {% load static %}
 {% block titulo %}Usuarios activos{% endblock %}
+
 {% block contenido %}
 <style>
     #grafica {
@@ -24,24 +25,31 @@
         z-index: 0;
     }
 </style>
-<div class="estadisticas-container" >
-    <div class="cuadradoFondo" ></div>
+
+<div class="estadisticas-container">
+    <div class="cuadradoFondo"></div>
     <div id="grafica">
         <h2 class="text-center">Usuarios Activos e Inactivos</h2>
         <canvas id="graficaUsuarios"></canvas>
     </div>
 </div>
+
 {{ nombres|json_script:"labels-data" }}
 {{ cantidades|json_script:"cantidades-data"}}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = 40;
-    const porcentajes = cantidades.map(c=>{
-        let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : porcentaje.toFixed(2)
-    })
+
+    // Calcular el total de usuarios (activos + inactivos)
+    const totalUsuarios = cantidades.reduce((a, b) => a + b, 0);
+
+    // Calcular porcentajes con base en el total
+    const porcentajes = cantidades.map(c => {
+        let porcentaje = (c / totalUsuarios) * 100;
+        return parseFloat(porcentaje.toFixed(2));
+    });
 
     const ctx = document.getElementById('graficaUsuarios').getContext('2d');
     new Chart(ctx, {
@@ -62,29 +70,29 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 60,
+                    max: 100,
                     title: {
                         display: true,
                         text: 'Porcentaje (%)'
                     },
                     ticks: {
-                        callback : function(value){
+                        callback: function(value) {
                             return value + '%';
                         }
-                        
                     }
                 }
             },
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function (context) {
-                            return context.parsed.y + '%'
+                        label: function(context) {
+                            const porcentaje = context.parsed.y;
+                            const cantidadReal = cantidades[context.dataIndex];
+                            return `${porcentaje}% (${cantidadReal} usuarios)`;
                         }
                     }
                 }
             }
-
         }
     });
 </script>

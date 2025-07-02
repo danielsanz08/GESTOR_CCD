@@ -1,59 +1,44 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% block titulo %}Estadisticas Gestor CCD {% endblock %}
+
+{% block titulo %}Estadísticas Gestor CCD{% endblock %}
+
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+
 <section>
-   
-    <a href="{% url 'papeleria:graficas_usuarios' %}">
-        <div class="card">
-        <p>Usuarios Activos/inactivos</p>
-    </div>
-    </a>
-    <a href="{% url 'papeleria:graficas_articulos' %}">
-        <div class="card">
-        <p>Cantidad de articulos</p>
-    </div>
-    </a>
-    <a href="{% url 'papeleria:grafica_bajoStock' %}">
-        <div class="card">
-        <p>Bajo stock </p>
-    </div>
-    </a>
-    <a href="{% url 'papeleria:grafica_pedidos' %}">
-        <div class="card">
-        <p>Estado de pedidos</p>
-    </div>
-    </a>
-    <a href="{% url 'papeleria:pedidos_area' %}">
-        <div class="card">
-            <p>Pedidos por areas</p>
-        </div>
-    </a>
-   </div>
-</section>
     <a href="{% url 'papeleria:graficas_usuarios' %}">
         <div class="card">
             <i data-feather="user" class="icono"></i>
-            <p class="name">Usuarios Activos e inactivos</p>
+            <p class="name">Activos e Inactivos</p>
         </div>
     </a>
+
     <a href="{% url 'papeleria:graficas_articulos' %}">
         <div class="card">
             <i data-feather="layers" class="icono"></i>
-            <p class="name">Cantidad de articulos</p>
+            <p class="name">Cantidad de Artículos</p>
         </div>
     </a>
+
     <a href="{% url 'papeleria:grafica_bajoStock' %}">
         <div class="card">
             <i data-feather="alert-triangle" class="icono"></i>
-            <p class="name">Bajo stock</p>
+            <p class="name">Bajo Stock</p>
         </div>
     </a>
+
+    <a href="{% url 'papeleria:grafica_pedidos' %}">
+        <div class="card">
+            <i data-feather="file-text" class="icono"></i>
+            <p class="name">Estado de Pedidos</p>
+        </div>
+    </a>
+
     <a href="#" id="pedidosAreasBtn">
         <div class="card">
             <i data-feather="briefcase" class="icono"></i>
-            <p class="name">Pedidos por áreas</p>
+            <p class="name">Pedidos por Áreas</p>
         </div>
     </a>
 </section>
@@ -76,22 +61,22 @@
             </a>
             <a href="{% url 'papeleria:pedidos_presidencia' %}">
                 <div class="modal-card">
-                    <p class="modal-name"><i data-feather="flag" class="modal-icono"></i> Pedidos presidencia</p>
+                    <p class="modal-name"><i data-feather="flag" class="modal-icono"></i> Pedidos Presidencia</p>
                 </div>
             </a>
             <a href="{% url 'papeleria:pedidos_financiera' %}">
                 <div class="modal-card">
-                    <p class="modal-name"><i data-feather="dollar-sign" class="modal-icono"></i> Pedidos financiera</p>
+                    <p class="modal-name"><i data-feather="dollar-sign" class="modal-icono"></i> Pedidos Financiera</p>
                 </div>
             </a>
             <a href="{% url 'papeleria:pedidos_gestion_empresarial' %}">
                 <div class="modal-card">
-                    <p class="modal-name"><i data-feather="users" class="modal-icono"></i> Pedidos gestión empresarial</p>
+                    <p class="modal-name"><i data-feather="users" class="modal-icono"></i> Pedidos Gestión Empresarial</p>
                 </div>
             </a>
             <a href="{% url 'papeleria:pedidos_competitividad' %}">
                 <div class="modal-card">
-                    <p class="modal-name"><i data-feather="trending-up" class="modal-icono"></i>Pedidos competitividad</p>
+                    <p class="modal-name"><i data-feather="trending-up" class="modal-icono"></i> Pedidos Competitividad</p>
                 </div>
             </a>
         </div>
@@ -122,6 +107,5 @@
         }
     }
 </script>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
 {% endblock %}

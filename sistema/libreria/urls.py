@@ -21,7 +21,7 @@ urlpatterns = [
     path("reset_password/", views.password_reset_request, name="password_reset"),
     path("reset_password/done/", views.password_reset_done, name="password_reset_done"),
     path("reset_password/confirm/<uidb64>/<token>/", views.password_reset_confirm, name="password_reset_confirm"),
-    path("reset_password/complete/", views.password_reset_complete, name="password_reset_complete"),
+    path("reset_password/done/", views.password_reset_done, name="password_reset_done"),
 
     path('validar_datos/', views.validar_datos, name='validar_datos'),
     path('api/validate-password/', views.validate_password, name='validate_password'),

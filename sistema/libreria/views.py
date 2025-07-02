@@ -1,30 +1,35 @@
-import os
-from django.conf import settings
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import SetPasswordForm
-from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponse, FileResponse, Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
-from django.urls import reverse
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.decorators.csrf import csrf_exempt
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
-
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.contrib.auth import authenticate, login
+from libreria.forms import CustomUserForm, CustomUserEditForm, CustomPasswordChangeForm
+from django.shortcuts import get_object_or_404
 from .models import CustomUser
-from libreria.forms import (
-    CustomUserForm, CustomUserEditForm, CustomPasswordChangeForm
-)
-
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.template.loader import render_to_string
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+from openpyxl import Workbook
+import os
+from django.http import FileResponse, Http404
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 # Create your views here.
 # Página de inicio
 User = get_user_model()

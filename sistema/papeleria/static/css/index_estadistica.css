@@ -1,16 +1,16 @@
-
-/* Estilos generales */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Elimina el scroll horizontal y vertical */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #80808000; /* Gris de fondo si la imagen no carga */
+    background-color: #80808000;
 }
+
 section {
     display: flex;
     grid-template-columns: repeat(1, 1fr);
@@ -20,74 +20,26 @@ section {
     margin: 0 auto;
 }
 
-
-/* Estilos para las cards principales */
 .card {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: rgb(9, 151, 194);
+     background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     width: 180px;
     color: white;
-    /* Estado inicial para animación */
-    opacity: 0;
-    transform: translateY(20px);
-    /* Animación */
-    animation: fadeInUp 0.6s ease forwards;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease, background 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    padding: 15px;
-    border-radius: 10px;
-    width: 187px;
-    max-height: 30vh;
-    color: white;
-    background: linear-gradient(110deg, #c7def893, #ffffffe8);
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-    border: 2px solid rgba(2, 47, 90, 0.63);
-    transition: all 0.3s ease;
+      transition: all 0.3s ease;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(17, 0, 255, 0.2);
-    border: 2px solid rgb(14, 79, 133);
-    background: linear-gradient(to bottom, #1cabd6, #1791b68e);
-}
-/* Definición de la animación fadeInUp */
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-.icono {
-    width: 48px;
-    height: 28px;
-    margin-bottom: 1rem;
-    color: #000000;
-    transition: transform 0.3s ease;
-    z-index: 1;
-}
-
-.card:hover .icono {
-    transform: scale(1.2);
-    color: #cde0f7;
-}
-
-.name {
-    color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-weight: bold;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-color: #4299e1;
 }
 
 /* Estilos para el modal */
@@ -101,6 +53,27 @@ section {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     overflow: auto;
+}
+.icono {
+    width: 48px;
+    height: 28px;
+    margin-bottom: 1rem;
+    color: #000000;
+    z-index: 1;
+}
+
+.card:hover .icono {
+    transform: scale(1.1);
+    color: #4299e1;
+}
+
+.name {
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
 }
 
 .modal-content {
@@ -142,17 +115,11 @@ section {
     padding: 0 0 20px 0;
     border-radius: 8px;
     background: #ebf8ff;
-    transform: translateY(-5px);
-    transition: transform 0.3s ease;
     height: 4vh;
     width: 84vh;
-    
-    
 }
 
 .modal-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     background: #4299e1;
 }
 
@@ -160,39 +127,15 @@ section {
     width: 28px;
     height: 18px;
     margin-left: 0.85rem;
-    
 }
 
 .modal-name {
     color: #4a5568;
     font-size: 14px;
-    
     text-align: left;
-    margin-top:1vh;
-    
+    margin-top: 1vh;
 }
+
 .modal-name:hover {
     color: #ffffff;
-    
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    section {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .modal-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    section {
-        grid-template-columns: 1fr;
-    }
-    
-    .modal-grid {
-        grid-template-columns: 1fr;
-    }
 }

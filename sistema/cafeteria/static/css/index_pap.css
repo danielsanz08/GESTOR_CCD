@@ -1,7 +1,17 @@
 /* Reset y estilos base */
-html, body {
-    background-color: #1c96bb1c;
+:root {
+    --primary-color: #2c5282;
+    --secondary-color: #4299e1;
+    --light-color: #ebf8ff;
+    --dark-color: #4a5568;
+    --danger-color: #e53e3e;
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
 }
+html, body{
+      background-color: #1c96bb1c;
+    }
 * {
     margin: 0;
     padding: 0;
@@ -9,6 +19,7 @@ html, body {
 }
 
 body {
+
     color: #333;
     font-family: 'Roboto', sans-serif;
     min-height: 100vh;
@@ -20,7 +31,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    margin-top: 20vh;
+    margin-top: 15vh;
 }
 
 /* Título principal */
@@ -28,7 +39,7 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 2rem;
     text-align: center;
-    color: #2c5282;
+    color: var(--primary-color);
     margin-bottom: 2rem;
 }
 
@@ -36,23 +47,23 @@ body {
 .main-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    /* 3 columnas */
     gap: 1.5rem;
     justify-content: center;
     padding: 0 1rem;
-    
-
 }
 
 /* Cards principales */
 .main-card {
-   background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
     padding: 1.5rem;
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition);
+    border: 1px solid var(--light-color);
     min-height: 160px;
     display: flex;
     flex-direction: column;
@@ -63,26 +74,26 @@ body {
 .main-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    border-color: #4299e1;
+    border-color: var(--secondary-color);
 }
 
 .main-card-icon {
     width: 48px;
     height: 48px;
     margin-bottom: 0.75rem;
-    color: #2c5282;
-    transition: all 0.3s ease;
+    color: var(--primary-color);
+    transition: var(--transition);
 }
 
 .main-card:hover .main-card-icon {
     transform: scale(1.1);
-    color: #4299e1;
+    color: var(--secondary-color);
 }
 
 .main-card-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #2c5282;
+    color: var(--primary-color);
 }
 
 /* Ventanas emergentes */
@@ -107,7 +118,7 @@ body {
 }
 
 .modal-container {
-    background: #ffffff;
+    background: var(--white);
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     width: 90%;
@@ -130,12 +141,12 @@ body {
     align-items: center;
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid #ebf8ff;
+    border-bottom: 2px solid var(--light-color);
 }
 
 .modal-title {
     font-size: 1.5rem;
-    color: #2c5282;
+    color: var(--primary-color);
 }
 
 .close-modal {
@@ -143,12 +154,12 @@ body {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #4a5568;
-    transition: all 0.3s ease;
+    color: var(--dark-color);
+    transition: var(--transition);
 }
 
 .close-modal:hover {
-    color: #e53e3e;
+    color: var(--danger-color);
 }
 
 .modal-content {
@@ -165,15 +176,15 @@ body {
     align-items: center;
     padding: 0.85rem;
     border-radius: 6px;
-    background: #ebf8ff;
-    transition: all 0.3s ease;
+    background: var(--light-color);
+    transition: var(--transition);
     text-decoration: none;
-    color: #4a5568;
+    color: var(--dark-color);
 }
 
 .modal-option:hover {
-    background: #4299e1;
-    color: #ffffff;
+    background: var(--secondary-color);
+    color: var(--white);
     transform: translateX(3px);
 }
 
@@ -192,6 +203,7 @@ body {
 @media (max-width: 1024px) {
     .main-cards {
         grid-template-columns: repeat(2, 1fr);
+        /* 2 columnas en tablets */
     }
 }
 
@@ -203,6 +215,7 @@ body {
 
     .main-cards {
         grid-template-columns: 1fr;
+        /* 1 columna en móviles */
     }
 
     .main-card {

@@ -2,15 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from libreria.models import CustomUser
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-
-=======
 from .models import Productos, PedidoProducto, Pedido
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
@@ -33,19 +26,14 @@ class LoginForm(forms.Form):
             if not user.is_active:
                 raise forms.ValidationError("Tu cuenta está inactiva, contacta al administrador.")
         
-<<<<<<< HEAD
         return cleaned_data
-=======
-<<<<<<< HEAD
-        return cleaned_data
-=======
-        return cleaned_data
+
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Productos
         fields = ['nombre', 'marca', 'presentacion', 'precio', 'cantidad', 'unidad_medida', 'proveedor']
 
-def clean_precio(self):
+    def clean_precio(self):
         # Limpiar las comas solo si 'precio' es una cadena
         precio = self.cleaned_data['precio']
         if isinstance(precio, str):  # Asegurarse de que es una cadena
@@ -60,6 +48,7 @@ class ProductosEditForm(forms.ModelForm):
     class Meta:
         model = Productos
         fields = ['nombre', 'marca', 'presentacion', 'precio', 'cantidad', 'unidad_medida', 'proveedor']
+    
     def __init__(self, *args,**kwargs):
         super(ProductosEditForm, self).__init__(*args, **kwargs)
         # Hace que los campos sean opcionales
@@ -85,5 +74,3 @@ class PedidoProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Aquí no es necesario configurar dinámicamente el campo 'tipo' ya que no lo estamos usando
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

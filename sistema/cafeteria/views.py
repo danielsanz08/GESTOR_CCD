@@ -1,13 +1,39 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+# Django imports
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-from cafeteria.forms import LoginForm 
-from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+from django.core.mail import send_mail
+from django.conf import settings
+from django.db.models import Q, Sum, Count
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+from django.contrib.staticfiles import finders
+
+# Forms
+from cafeteria.forms import LoginForm, ProductoForm, ProductosEditForm, PedidoProductoForm
+
+# Models
+from libreria.models import CustomUser
+from .models import Productos, PedidoProducto, Pedido
+
+# Standard libraries
+from datetime import datetime
+from io import BytesIO
+
+# ReportLab for PDF generation
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+
+# OpenPyXL for Excel generation
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+
 def index_caf(request):
     return render(request, 'index_caf/index_caf.html')
 # Create your views here.
@@ -35,34 +61,7 @@ def login_cafeteria(request):
 
 
 # CERRAR SESIÓN
-<<<<<<< HEAD
-=======
-=======
-from cafeteria.forms import LoginForm , ProductoForm, ProductosEditForm, PedidoProductoForm
-from django.contrib.auth import get_user_model
-from django.db.models import Q,Sum, Count
-from django.core.paginator import Paginator
-import datetime
-from django.core.mail import send_mail
-from django.conf import settings
-from libreria.models import CustomUser
-from .models import Productos, PedidoProducto, Pedido
-from django.shortcuts import get_object_or_404, redirect
-from io import BytesIO
-from datetime import datetime
-from django.http import HttpResponse
-from django.contrib.staticfiles import finders
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from datetime import datetime
-from django.http import HttpResponse
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
+
 
 from .models import Productos  # Asegúrate de que la ruta sea correcta
 def error_404_view(request, exception):
@@ -215,18 +214,13 @@ def editar_producto(request, producto_id):
             form = ProductosEditForm(instance=producto)
     return render(request, 'productos/editar_producto.html', {'form': form, 'producto': producto})
 @login_required(login_url='/acceso_denegado/')
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
 def logout_caf(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
     return redirect(reverse('libreria:inicio'))
-<<<<<<< HEAD
-User = get_user_model()
-=======
-<<<<<<< HEAD
-User = get_user_model()
-=======
+
+
 User = get_user_model()
 def wrap_text(text, max_len=20):
     parts = [text[i:i+max_len] for i in range(0, len(text), max_len)]
@@ -1250,5 +1244,3 @@ def grafica_bajo_Stock_caf(request):
         'cantidades': cantidades,
         'breadcrumbs': breadcrumbs
     })
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

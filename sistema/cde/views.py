@@ -1,50 +1,12 @@
-from django.shortcuts import render
-<<<<<<< HEAD
-from cde.forms import LoginForm, CustomUserForm
-=======
-<<<<<<< HEAD
-from cde.forms import LoginForm, CustomUserForm
-=======
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib import messages
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from libreria.models import CustomUser
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
 from django.conf import settings
 from django.core.mail import send_mail
-# Create your views here.
-def login_cde(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
-
-            if user is not None:
-                if user.module == 'Centro de eventos':  # Verifica que el usuario pertenece a CDE
-                    login(request, user)
-                    messages.success(request, "Sesión iniciada correctamente en CDE.")
-                    return redirect('cde:index_cde')  # Redirige a la página de inicio de CDE
-                else:
-                    messages.error(request, "No tienes acceso a este módulo.")
-            else:
-                messages.error(request, 'Usuario o contraseña incorrectos.')
-    else:
-        form = LoginForm()
-
-    return render(request, 'login_cde/login_cde.html', {'form': form})
-
-<<<<<<< HEAD
-=======
-=======
+from cde.forms import LoginForm
+from libreria.forms import CustomUserForm
+from libreria.models import CustomUser
 from cafeteria.models import Productos
 from django.conf import settings
 from django.core.mail import send_mail
@@ -88,17 +50,12 @@ def login_cde(request):
             messages.error(request, "Credenciales inválidas.")
 
     return render(request, 'login_cde/login_cde.html')
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
 def logout_cde(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente.")
     return redirect(reverse('libreria:inicio'))
 User = get_user_model()
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
 
 def index_cde(request):
     return render(request, 'index_cde/index_cde.html')
@@ -188,9 +145,7 @@ def crear_usuario_cde(request):
         'admin_exists': admin_exists,
         'breadcrumbs': breadcrumbs
     })
-<<<<<<< HEAD
-=======
-=======
+
 def ver_usuario_cde(request, id):
     breadcrumbs = [
         {'name': 'Inicio CDE', 'url': '/index_cde'},
@@ -490,5 +445,3 @@ def listado_pedidos_cde(request):
         'pedidos': pedidos_page,
         'breadcrumbs': breadcrumbs
     })
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

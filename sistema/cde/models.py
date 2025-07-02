@@ -1,12 +1,4 @@
 from django.db import models
-<<<<<<< HEAD
-
-# Create your models here.
-=======
-<<<<<<< HEAD
-
-# Create your models here.
-=======
 from cafeteria.models import Productos
 from django.conf import settings
 
@@ -46,8 +38,8 @@ class PedidoProductoCde(models.Model):
         PedidoCde,
         on_delete=models.CASCADE,
         related_name='productos',
-        
-        blank=False
+        blank=False,
+        null=False
     )
     producto = models.ForeignKey(
         Productos,
@@ -61,5 +53,3 @@ class PedidoProductoCde(models.Model):
 
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

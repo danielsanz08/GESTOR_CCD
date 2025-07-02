@@ -8,18 +8,6 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, username, email=None, password=None):
         if not username:
             raise ValueError('El usuario debe tener un nombre de usuario')
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-        username = username.strip()
-        email = self.normalize_email(email) if email else None
-
-        user = self.model(username=username, email=email)
-        user.set_password(password)
-<<<<<<< HEAD
-=======
-=======
         if not email:
             raise ValueError('El usuario debe tener un email válido')
         
@@ -28,8 +16,6 @@ class CustomUserManager(BaseUserManager):
 
         user = self.model(username=username, email=email)
         user.set_password(password)  # ¡Importante! Guarda contraseña hasheada
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         user.save(using=self._db)
         return user
 
@@ -37,16 +23,6 @@ class CustomUserManager(BaseUserManager):
         user = self.create_user(username, email, password)
         user.is_staff = True
         user.is_superuser = True
-<<<<<<< HEAD
-        user.save(using=self._db)
-        return user
-
-=======
-<<<<<<< HEAD
-        user.save(using=self._db)
-        return user
-
-=======
         user.is_active = True
         # Puedes asignar acceso total aquí si quieres
         user.acceso_pap = True
@@ -54,43 +30,11 @@ class CustomUserManager(BaseUserManager):
         user.acceso_cde = True
         user.save(using=self._db)
         return user
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     ROLES = [
         ('Administrador', 'Administrador'),
         ('Empleado', 'Empleado'),
     ]
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    
-    MODULES = [
-        ('Papeleria', 'Papelería'),
-        ('Cafeteria', 'Cafetería'),
-        ('Centro de eventos', 'Centro de eventos')
-    ]
-    AREA = [
-        ('Administrativa', 'Administrativa' ),
-        ('Comunicaciones', 'Comunicaciones' ),
-        ('Registros públicos', 'Registros públicos' ),
-        ('Gestión empresarial', 'Gestión empresarial' ),
-        ('Competitividad', 'Competitividad' ),
-        ('Presidencia', 'Presidencia' ),
-        ('Financiera', 'Financiera' ),
-    ]
-    username = models.CharField(max_length=100, unique=False)
-    email = models.EmailField(unique=True, blank=False, null=False)
-    role = models.CharField(max_length=13, choices=ROLES, default='Empleado')
-    area = models.CharField(max_length=30, choices=AREA,default='Administrativa' )
-    cargo = models.CharField(max_length=50, default='No establecido')
-    module = models.CharField(max_length=30, choices=MODULES, default='papeleria')
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-<<<<<<< HEAD
-=======
-=======
     AREA = [
         ('Administrativa', 'Administrativa'),
         ('Registros públicos', 'Registros públicos'),
@@ -112,8 +56,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     acceso_pap = models.BooleanField(default=False, verbose_name='Acceso Papelería')
     acceso_caf = models.BooleanField(default=False, verbose_name='Acceso Cafetería')
     acceso_cde = models.BooleanField(default=False, verbose_name='Acceso Centro de Eventos')
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 
     groups = models.ManyToManyField(Group, related_name="customuser_groups", blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)
@@ -125,16 +67,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-<<<<<<< HEAD
-    def get_module_display(self):
-        """Devuelve el nombre legible del módulo."""
-        return dict(self.MODULES).get(self.module, self.module)
-=======
-<<<<<<< HEAD
-    def get_module_display(self):
-        """Devuelve el nombre legible del módulo."""
-        return dict(self.MODULES).get(self.module, self.module)
-=======
     
     def save(self, *args, **kwargs):
         # Si el usuario es administrador, se le asignan todos los permisos
@@ -145,5 +77,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
     def fecha_formateada(self):
         return self.fecha_registro.strftime('%d-%m-%Y')
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

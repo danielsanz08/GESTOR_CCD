@@ -1,13 +1,5 @@
 {% extends 'navbar.html' %}
-<<<<<<< HEAD
-{% block titulo %}Grafica estado de pedidos{% endblock %}
-=======
-<<<<<<< HEAD
-{% block titulo %}Grafica estado de pedidos{% endblock %}
-=======
 {% block titulo %}Gráfica de estado de pedidos{% endblock %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 {% block contenido %}
 <style>
     #grafica {
@@ -23,75 +15,14 @@
     .cuadradoFondo {
         width: 80%;
         max-width: 800px;
-<<<<<<< HEAD
-        background-color: rgb(255, 255, 255);
-=======
-<<<<<<< HEAD
-        background-color: rgb(255, 255, 255);
-=======
         background-color: white;
         border: 1px solid black;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         position: absolute;
         top: 29vh;
         left: 35vh;
         height: 61vh;
         z-index: 0;
     }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-</style>
-<div class="estadisticas-container">
-    <div class="cuadradoFondo">
-        <div id="grafica">
-            <h2 >Grafica de estado de pedidos</h2>
-            <canvas id="graficaPedidos"></canvas>
-        </div>
-    </div>
-</div>
-{{ nombres|json_script:"labels-data" }}
-{{ cantidades|json_script:"cantidades-data"}}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const nombres = JSON.parse(document.getElementById('labels-data').textContent);
-    const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent)
-    const maxCantidad = 500;
-    const porcentajes = cantidades.map(c=>{
-        let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : porcentaje.toFixed(2)
-    })
-    const ctx = document.getElementById('graficaPedidos').getContext('2d');
-    new Chart(ctx, {
-        type : 'bar',
-        data: {
-            labels : nombres,
-            dataset : [{
-                label: 'Estado de pedidos',
-                data: porcentajes,
-                backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
-                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                borderWidth: 1,
-                maxBarThickness: 40
-            }]
-        },
-        options: {
-            responsive : true,
-            scales: {
-                y:{
-                    beginAtZero: true,
-                    max:100,
-                    title: {
-                        display:true,
-                        text: 'Porcentaje (%)'
-                    },
-                    ticks: {
-                        callback : function(value){
-<<<<<<< HEAD
-=======
-=======
 
     .btn-fecha {
         position: absolute;
@@ -186,22 +117,6 @@
         color: white;
         cursor: pointer;
     }
-    
-    /* Nuevos estilos para centrar la gráfica */
-    .chart-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    #graficaPedidos {
-        width: 100% !important;
-        height: auto !important;
-        max-height: 400px;
-    }
 </style>
 
 <div class="estadisticas-container">
@@ -230,9 +145,7 @@
     <div class="cuadradoFondo">
         <div id="grafica">
             <h2>Gráfica de estado de pedidos</h2>
-            <div class="chart-container">
-                <canvas id="graficaPedidos"></canvas>
-            </div>
+            <canvas id="graficaPedidos"></canvas>
         </div>
     </div>
 </div>
@@ -244,7 +157,7 @@
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = 10;
+    const maxCantidad = 200;
     const porcentajes = cantidades.map(c => {
         let porcentaje = (c / maxCantidad) * 100;
         return porcentaje > 100 ? 100 : parseFloat(porcentaje.toFixed(2));
@@ -254,7 +167,7 @@
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['', '', ''],
+            labels: ['Pendiente', 'Confirmado', 'Cancelado'],
             datasets: [
                 {
                     label: 'Pendiente',
@@ -262,8 +175,7 @@
                     backgroundColor: 'rgba(255, 205, 86, 0.6)',
                     borderColor: 'rgba(255, 205, 86, 1)',
                     borderWidth: 1,
-                    barPercentage: 0.6, // Controla el ancho de las barras
-                    categoryPercentage: 0.8 // Controla el espacio entre categorías
+                    maxBarThickness: 40
                 },
                 {
                     label: 'Confirmado',
@@ -271,9 +183,7 @@
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.8
-                    
+                    maxBarThickness: 40
                 },
                 {
                     label: 'Cancelado',
@@ -281,23 +191,13 @@
                     backgroundColor: 'rgba(255, 99, 132, 0.6)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.8
+                    maxBarThickness: 40
                 }
             ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        padding: 10 // Añade espacio entre las etiquetas y el eje
-                    }
-                },
                 y: {
                     beginAtZero: true,
                     max: 100,
@@ -307,50 +207,18 @@
                     },
                     ticks: {
                         callback: function(value) {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                             return value + '%';
                         }
                     }
                 }
             },
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-            plugins:{
-                tooltip: {
-                    callbacks:{
-                        label: function (context){
-                            return context.parsed.y + '%'
-                        }
-                    }
-                }
-            }
-        }
-    });
-<<<<<<< HEAD
-=======
-=======
             plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'center'
-                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             return `${context.dataset.label}: ${context.parsed.y}%`;
                         }
                     }
-                }
-            },
-            layout: {
-                padding: {
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 20
                 }
             }
         }
@@ -369,7 +237,5 @@
             cerrarModal();
         }
     });
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 </script>
 {% endblock %}

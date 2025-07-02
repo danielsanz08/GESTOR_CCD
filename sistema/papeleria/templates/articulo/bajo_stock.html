@@ -9,19 +9,6 @@
         <div class="Bototnes">
             <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer"
                     id="icono"></i></button>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-            <a href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}"><button class="pdf" title="Exportar a PDF"><i
-                        class="fas fa-file-pdf text-white"></i></button></a>
-            <a href="{% url 'papeleria:reporte_pedidos_excel' %}"><button class="excel" title="Exportar a Excel"><i
-                        class="fas fa-file-excel text-white"></i></button></a>
-        </div>
-        <form method="GET" action="{% url 'papeleria:pedidos_pendientes' %}">
-<<<<<<< HEAD
-=======
-=======
             <a
                 href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
                 <button class="pdf" title="Exportar a PDF">
@@ -35,8 +22,6 @@
                     class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button></a>
         </div>
         <form method="GET" action="{% url 'papeleria:lista_bajo_stock'  %}">
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
             <div>
                 <!-- Input de búsqueda general -->
                 <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
@@ -62,15 +47,7 @@
                     </button>
                 </div>
                 <!-- Botón para limpiar filtros -->
-<<<<<<< HEAD
-                <a href="{% url 'papeleria:pedidos_pendientes' %}">
-=======
-<<<<<<< HEAD
-                <a href="{% url 'papeleria:pedidos_pendientes' %}">
-=======
                 <a href="{% url 'papeleria:lista_bajo_stock' %}">
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                     <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
                             title="Eliminar"></i>
                     </button>
@@ -110,27 +87,6 @@
         </tbody>
     </table>
     <div class="paginacion" id="pag">
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    {% if articulos.has_previous %}
-        <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
-    {% endif %}
-    {% for num in articulos.paginator.page_range %}
-        {% if articulos.number == num %}
-            <span class="current">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-    {% if articulos.has_next %}
-        <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
-    {% endif %}
-</div>
-<<<<<<< HEAD
-=======
-=======
         {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
         {% endif %}
@@ -145,8 +101,6 @@
         <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
         {% endif %}
     </div>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 
 </section>
 {% endblock %}

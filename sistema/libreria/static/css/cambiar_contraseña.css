@@ -1,15 +1,7 @@
 .card-confirm {
-<<<<<<< HEAD
-    background: rgba(19, 104, 161, 0.664);
-=======
-<<<<<<< HEAD
-    background: rgba(19, 104, 161, 0.664);
-=======
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     text-align: center;
     position: relative;
     top: 26vh;
@@ -18,32 +10,16 @@
     border-radius: 20px;
     height: 57vh;
 }
-<<<<<<< HEAD
-.form-label0{
-=======
-<<<<<<< HEAD
-.form-label0{
-=======
 
 .form-label0 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     position: absolute;
     display: block;
     top: -4vh;
     left: 17vh;
     font-weight: bold;
 }
-<<<<<<< HEAD
-.form-input0{
-=======
-<<<<<<< HEAD
-.form-input0{
-=======
 
 .form-input0 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgb(253, 253, 253);
     height: 30px;
     border-radius: 20px;
@@ -55,32 +31,16 @@
     position: absolute;
     bottom: 42vh;
 }
-<<<<<<< HEAD
-.form-label1{
-=======
-<<<<<<< HEAD
-.form-label1{
-=======
 
 .form-label1 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     position: absolute;
     display: block;
     top: 7vh;
     left: 17vh;
     font-weight: bold;
 }
-<<<<<<< HEAD
-.form-control1{
-=======
-<<<<<<< HEAD
-.form-control1{
-=======
 
 .form-control1 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgb(255, 255, 255);
     height: 30px;
     border-radius: 20px;
@@ -93,32 +53,16 @@
     bottom: 31vh;
 
 }
-<<<<<<< HEAD
-.form-label2{
-=======
-<<<<<<< HEAD
-.form-label2{
-=======
 
 .form-label2 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     position: absolute;
     display: block;
     top: 18vh;
     left: 14vh;
     font-weight: bold;
 }
-<<<<<<< HEAD
-.form-control2{
-=======
-<<<<<<< HEAD
-.form-control2{
-=======
 
 .form-control2 {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgb(253, 253, 253);
     height: 30px;
     border-radius: 20px;
@@ -133,21 +77,6 @@
 }
 
 @keyframes shake-slow {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    0% { transform: translateX(-3px); }
-    25% { transform: translateX(3px); }
-    50% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
-    100% { transform: translateX(0); }
-  }
-
-  .error-card {
-<<<<<<< HEAD
-=======
-=======
     0% {
         transform: translateX(-3px);
     }
@@ -170,8 +99,6 @@
 }
 
 .error-card {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     position: relative;
     margin: 20px auto;
     max-width: 500px;
@@ -184,21 +111,9 @@
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
     border: 2px solid #ff4d4d;
     animation: shake-slow 2.5s infinite ease-in-out;
-<<<<<<< HEAD
-  }
-
-  .expirado {
-=======
-<<<<<<< HEAD
-  }
-
-  .expirado {
-=======
 }
 
 .expirado {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     font-size: 1.3em;
     font-weight: bold;
     margin: 0;
@@ -206,47 +121,21 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-<<<<<<< HEAD
-  }
-form{
-=======
-<<<<<<< HEAD
-  }
-form{
-=======
 }
 
 form {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background: rgba(19, 104, 161, 0);
     width: 50vh;
     position: relative;
     left: 6vh;
     height: 50vh;
     top: 2vh;
-<<<<<<< HEAD
-    
-=======
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 }
 
 
 
-<<<<<<< HEAD
-.btn{
-=======
-<<<<<<< HEAD
-.btn{
-=======
 .btn {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgb(51, 104, 248);
     color: white;
     font-weight: bold;
@@ -259,16 +148,8 @@ form {
     top: 32vh;
     transition: opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
-<<<<<<< HEAD
-.btn:hover{
-=======
-<<<<<<< HEAD
-.btn:hover{
-=======
 
 .btn:hover {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgb(33, 74, 187);
     color: rgb(0, 0, 0);
     font-weight: bold;

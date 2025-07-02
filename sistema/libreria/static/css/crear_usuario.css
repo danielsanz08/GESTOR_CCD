@@ -18,77 +18,6 @@ body {
     background-color: #86cfe61c;
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-.formulario {
-    background: rgba(19, 104, 161, 0.664);
-
-    position: absolute;
-    top: 20vh;
-    left: 32vh;
-    padding: 20px 20px 20px 20px;
-    border-radius: 20px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    height: 60vh;
-}
-
-#userForm {
-    background-color: rgba(255, 255, 255, 0);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, auto);
-    padding: 30px 30px 30px 30px;
-    height: 30vh;
-    margin-top: -2vh;
-
-}
-
-input,
-.form-select {
-    margin-bottom: 15vh;
-    margin-right: 5px;
-    border: none;
-    border-radius: 20px;
-    height: 4vh;
-    width: 35vh;
-    margin: 10px 30px 30px 30px;
-    border: 1px solid black;
-}
-
-label {
-    display: block;
-    margin: 10px 30px 0px 30px;
-}
-
-btn {
-
-    color: white;
-    font-weight: bold;
-    border: none;
-    height: 6vh;
-    width: 35vh;
-    border-radius: 20px;
-    position: absolute;
-    left: 13vh;
-    top: -2vh;
-    cursor: pointer;
-}
-
-h2 {
-    text-align: center;
-}
-
-/* 📱 Teléfono pequeño (ej. 360x640) */
-@media (min-width: 360px) and (max-width: 374px) {
-    .formulario {
-        position: absolute;
-        left: 2vh;
-        width: 46vh;
-<<<<<<< HEAD
-=======
-=======
 
 /* Móviles (hasta 767px) */
 @media (max-width: 767px) {
@@ -159,132 +88,33 @@ input{
         border-radius: 20px;
         height: 60vh;
         
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     }
 
     #userForm {
         display: grid;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-        grid-template-columns: repeat(1, 1fr);
-        overflow-y: auto;
-        /* Permite solo desplazamiento vertical */
-        overflow-x: hidden;
-        /* Impide desplazamiento horizontal */
-<<<<<<< HEAD
-=======
-=======
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(2, auto);
         padding: 30px 30px 30px 30px;
         height: 30vh;
         margin-top: 2%;
 
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     }
 
     input,
     .form-select {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
         margin-bottom: 15vh;
         min-width: 0;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         margin-right: 5px;
         border: none;
         border-radius: 20px;
         height: 4vh;
         width: 35vh;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
         margin: 10px 30px 30px 30px;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         border: 1px solid black;
     }
 
     label {
         display: block;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-        margin: 5px 30px 0px 30px;
-    }
-
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
-        position: absolute;
-        left: 10vh;
-        top: 56vh;
-    }
-
-    button[type="submit"] {
-        position: absolute;
-        left: 10vh;
-        top: 56vh;
-    }
-
-    .btn {
-        position: absolute;
-        left: 10vh;
-        top: 1vh;
-    }
-
-    .error-nombre{
-        display: block !important;
-        position: static !important;
-        margin-top: -2vh !important;
-        margin-left: 10vh !important;
-        color: red !important;
-        font-size: 0.9rem !important;
-    }
-     .error-cargo{
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 10vh !important;
-        color: rgb(8, 128, 58) !important;
-        font-size: 0.9rem !important;
-     }
-     .error-email{
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 10vh !important;
-        color: rgb(34, 8, 128) !important;
-        font-size: 0.9rem !important;
-    }
-    .error-password{
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 10vh !important;
-        color: rgb(128, 8, 128) !important;
-        font-size: 0.9rem !important;
-    }
-    #area, #password, #rol{
-        margin-top: 3vh;
-    }
-    #rol{
-        margin-top: 1vh;
-    }
-<<<<<<< HEAD
-}
-=======
-}
-=======
         margin: 10px 30px 0px 30px;
     }
 
@@ -434,5 +264,3 @@ input{
         margin-left: 10%;
     }
 }
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

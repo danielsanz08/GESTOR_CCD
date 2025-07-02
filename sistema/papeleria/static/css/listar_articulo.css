@@ -4,14 +4,6 @@ html {
   align-items: center;
 }
 
-<<<<<<< HEAD
-section {
-  background: rgba(19, 104, 161, 0.664);
-=======
-<<<<<<< HEAD
-section {
-  background: rgba(19, 104, 161, 0.664);
-=======
 html,
 body {
   background-color: #1c96bb1c;
@@ -21,8 +13,6 @@ section {
   background: linear-gradient(110deg, #c7def893, #ffffffe8);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
   border: 2px solid rgba(2, 47, 90, 0.63);
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
   position: relative;
   top: 23vh;
   left: 9vh;
@@ -35,10 +25,6 @@ section {
 
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
 table {
   width: 180vh;
   border-spacing: 10px;
@@ -159,8 +145,6 @@ td {
 }
 
 /* MODAL DE ELIMINAR ARTICULO*/
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 .modal {
   position: fixed;
   top: 0;
@@ -173,22 +157,6 @@ td {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-  backdrop-filter: blur(4px);
-}
-
-.modal-contenido {
-  background-color: rgb(221, 240, 252);
-  width: 40%;
-  text-align: center;
-  padding: 30px;
-  border-radius: 40px;
-<<<<<<< HEAD
-=======
-=======
   background-color: rgba(0, 0, 0, 0.163);
 }
 
@@ -200,31 +168,12 @@ td {
   text-align: center;
   padding: 30px;
   border-radius: 10px;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
   position: absolute;
   left: 65vh;
   top: 40vh;
 }
 
 .btn-delete {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-  background-color: rgb(252, 6, 6);
-  color: rgb(0, 0, 0);
-  font-weight: bold;
-  border: none;
-  height: 6vh;
-  width: 35vh;
-  border-radius: 20px;
-  margin: 10px;
-}
-
-<<<<<<< HEAD
-=======
-=======
   flex: 1;
   color: black;
   padding: 8px 12px;
@@ -260,8 +209,6 @@ td {
 }
 
 /*BOTONES DE ACCESO RAPIDO*/
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 .crear {
   background-color: rgb(0, 60, 255);
   border: none;
@@ -283,266 +230,6 @@ td {
 
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-.back {
-  background-color: rgb(252, 248, 6);
-  color: rgb(0, 0, 0);
-  font-weight: bold;
-  border: none;
-  height: 6vh;
-  width: 35vh;
-  border-radius: 20px;
-  margin: 10px;
-}
-
-.btn-delete:hover {
-  background-color: rgb(187, 9, 9);
-
-}
-
-.back:hover {
-  background-color: rgb(177, 174, 4);
-}
-
-table {
-  width: 180vh;
-  border-spacing: 10px;
-  position: absolute;
-  top: 20vh;
-  left: 8vh;
-
-}
-
-.id,
-.nombre,
-.cargo,
-.marca,
-.cantidad,
-.precio,
-.observacion,
-.rol,
-.actividad,
-.estado,
-.editar {
-  left: 20vh;
-  background-color: rgba(61, 43, 226, 0.411);
-  border-radius: 10px;
-}
-
-.correo {
-
-  background-color: rgba(61, 43, 226, 0.411);
-  border-radius: 10px;
-  width: 50vh;
-}
-
-td {
-  background-color: rgba(46, 151, 151, 0.384);
-  margin: 20vh 0 20vh 0;
-  border-radius: 10px;
-  height: 5vh;
-  align-items: center;
-
-}
-
-#fecha {
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-  color: #333;
-  width: 200px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  height: 10px;
-}
-
-/* Ensure compatibility with dark mode */
-@media (prefers-color-scheme: dark) {
-  #fecha {
-    background-color: #2c2c2c;
-    color: #ffffff;
-    border-color: #444;
-  }
-
-  #fecha:focus {
-    border-color: #1e90ff;
-    box-shadow: 0 0 8px rgba(30, 144, 255, 0.5);
-  }
-
-  #fecha:hover {
-    border-color: #1e90ff;
-  }
-}
-
-/* Toggle Switch Container */
-.cl-toggle-switch {
-  position: relative;
-}
-
-/* Switch Element */
-.cl-switch {
-  position: relative;
-  display: inline-block;
-}
-
-/* Input */
-.cl-switch>input {
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  z-index: -1;
-  position: absolute;
-  right: 6px;
-  top: -8px;
-  display: block;
-  margin: 0;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background-color: rgb(0, 0, 0, 0.38);
-  outline: none;
-  opacity: 0;
-  transform: scale(1);
-  pointer-events: none;
-  transition: opacity 0.3s 0.1s, transform 0.2s 0.1s;
-}
-
-/* Track */
-.cl-switch>span::before {
-  content: "";
-  display: inline-block;
-  margin: 5px 0 5px 10px;
-  border-radius: 7px;
-  width: 36px;
-  height: 14px;
-  background-color: rgb(0, 0, 0, 0.38);
-  vertical-align: top;
-  transition: background-color 0.2s, opacity 0.2s;
-}
-
-/* Thumb */
-.cl-switch>span::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  right: 16px;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  background-color: #fff;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-/* Checked State */
-.cl-switch>input:checked {
-  right: -10px;
-  background-color: #85b8b7;
-}
-
-.cl-switch>input:checked+span::before {
-  background-color: #85b8b7;
-}
-
-.cl-switch>input:checked+span::after {
-  background-color: #018786;
-  transform: translateX(16px);
-}
-
-/* Hover, Focus */
-.cl-switch:hover>input {
-  opacity: 0.04;
-}
-
-.cl-switch>input:focus {
-  opacity: 0.12;
-}
-
-.cl-switch:hover>input:focus {
-  opacity: 0.16;
-}
-
-/* Active State */
-.cl-switch>input:active {
-  opacity: 1;
-  transform: scale(0);
-  transition: transform 0s, opacity 0s;
-}
-
-.cl-switch>input:active+span::before {
-  background-color: #8f8f8f;
-}
-
-.cl-switch>input:checked:active+span::before {
-  background-color: #85b8b7;
-}
-
-/* Disabled State */
-.cl-switch>input:disabled {
-  opacity: 0;
-}
-
-.cl-switch>input:disabled+span::before {
-  background-color: #ddd;
-}
-
-.cl-switch>input:checked:disabled+span::before {
-  background-color: #bfdbda;
-}
-
-.cl-switch>input:checked:disabled+span::after {
-  background-color: #61b5b4;
-}
-
-.editar-btn {
-  background-color: rgb(233, 200, 12);
-  border: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  width: 10vh;
-  height: 25px;
-  border-radius: 20px;
-  margin-right: 1vh;
-  cursor: pointer;
-}
-
-.editar-btn:hover {
-  background-color: rgb(159, 170, 11);
-
-}
-
-.eliminar-btn {
-  background-color: rgb(233, 12, 12);
-  border: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  cursor: pointer;
-  width: 10vh;
-  height: 25px;
-  margin-right: 1vh;
-}
-
-.eliminar-btn:hover {
-  background-color: rgb(170, 11, 11);
-
-}
-
-.icono {
-  height: 3vh;
-}
-
-#icono {
-  height: 3vh;
-}
-
-
-<<<<<<< HEAD
-=======
-=======
 /*ACCIONES*/
 .por_fecha {
   background-color: #0056b3;
@@ -680,8 +367,6 @@ td {
   cursor: pointer;
 }
 
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 .buscador {
   background-color: #ffffff;
   border: none;
@@ -692,13 +377,7 @@ td {
   position: absolute;
   left: 20vh;
 }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
 
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 .Botones {
   display: flex;
   justify-content: center;
@@ -759,158 +438,6 @@ td {
   cursor: pointer;
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-/*PAGINACION*/
-.paginacion {
-  text-align: center;
-  position: absolute;
-  top: 55vh;
-  left: 80vh;
-}
-
-#pag {
-  color: white;
-}
-
-.por_fecha {
-  background-color: #0056b3;
-  color: white;
-  border: none;
-  width: 10vh;
-  height: 35px;
-  border-radius: 20px;
-  position: absolute;
-  top: 12vh;
-  left: 80vh;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-#filtro-fechas {
-
-  position: absolute;
-  left: 95vh;
-  top: 11vh;
-}
-
-.fecha_inicio,
-.fecha_fin {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  background-color: #fff;
-  color: #000;
-  outline: none;
-  transition: border-color 0.3s ease;
-  width: 100px;
-  height: 7px;
-}
-
-.fecha_inicio:hover,
-.fecha_fin:hover {
-  border-color: #1e90ff;
-}
-
-.fecha_inicio:focus,
-.fecha_fin:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.search-date {
-  background-color: #0056b3;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  left: 58vh;
-  top: -1vh;
-  width: 50px;
-  text-align: center;
-}
-
-.search-date:hover {
-  background-color: #044080;
-  cursor: pointer;
-}
-
-.clean {
-  background-color: #b30000;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  right: 20vh;
-  top: 12.5vh;
-  width: 10vh;
-  text-align: center;
-  margin-right: 1vh;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.clean:hover {
-  background-color: #8a0101;
-  cursor: pointer;
-  color: black;
-}
-.btn-search {
-  background-color: #0056b3;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  left: 72vh;
-  top: 12vh;
-  width: 10vh;
-  height: 25px;
-  text-align: center;
-
-  /* Centrado con Flexbox */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.btn-search:hover {
-  background-color: #044080;
-  cursor: pointer;
-  color: black;
-}
-.search-date {
-  background-color: #0056b3;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  height: 25px;
-  left: 58vh;
-  top: 0vh;
-  width: 10vh;
-  text-align: center;
-
-  /* Centrado con Flexbox */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-date:hover {
-  background-color: #044080;
-  cursor: pointer;
-}
-<<<<<<< HEAD
-=======
-=======
 .editar-btn {
   background-color: rgb(233, 200, 12);
   border: none;
@@ -1126,5 +653,3 @@ td {
   background-color: rgb(190, 190, 3);
   cursor: pointer;
 }
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

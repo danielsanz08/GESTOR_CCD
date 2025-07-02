@@ -4,351 +4,198 @@
 {% block titulo %}Inicio{% endblock %}
 
 {% block contenido %}
+{% if user.is_authenticated %}
 <link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-<div class="fondo">
-    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
-</div>
+{% if request.user.role == 'Administrador' %}
 <div class="uno">
-    <a href="{% url 'libreria:crear_usuario' %}"><div class="opcion">
-        <i data-feather="user-plus" class="icono"></i>
-        <span>Crear usuario</span>
-    </div></a>
-    <a href="#">
+    <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
         <div class="opcion">
-            <i data-feather="plus-square" class="icono"></i>
+            <i data-feather="user" class="icono"></i>
             <span>Ver perfil</span>
         </div>
     </a>
-    
-    <a href="#">
+    <a id="a" href="{% url 'cafeteria:crear_producto' %}">
         <div class="opcion">
-            <i data-feather="users" class="icono"></i>
-            <span>Lista de usuarios</span>
+            <i data-feather="file-plus" class="icono"></i>
+            <span>Crear producto</span>
         </div>
     </a>
-    <a href="#"><div class="opcion">
-        <i data-feather="user-plus" class="icono"></i>
-        <span>Crear articulo</span>
-    </div></a>
-    <a href="#">
+    <a id="a" href="{% url 'cafeteria:listar_productos' %}">
         <div class="opcion">
             <i data-feather="package" class="icono"></i>
-            <span>Listar articulos</span>
+            <span>Listar productos</span>
         </div>
     </a>
-    <div class="opcion">
-        <i data-feather="refresh-ccw" class="icono"></i>
-        <span>Movimientos</span>
-    </div>
-    <div class="opcion">
-        <i data-feather="briefcase" class="icono"></i>
-        <span></span>
-    </div>
-    <div class="opcion">
-        <i data-feather="alert-triangle" class="icono"></i>
-        <span>Articulos con bajo stock</span>
-    </div>
-    <div class="opcion">
-        <i data-feather="bar-chart" class="icono"></i>
-        <span>Estadisticas</span>
-    </div>
-    <div class="opcion">
-        <i data-feather="lock" class="icono"></i>
-        <span>Cambiar contraseña</span>
-    </div>
-    <a href="{% url 'papeleria:logout_view' %}">
+    <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
+        <div class="opcion">
+            <i data-feather="shopping-cart" class="icono"></i>
+            <span>Pedidos</span>
+        </div>
+    </a>
+    
+    
+    <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
+        <div class="opcion">
+            <i data-feather="user" class="icono"></i>
+            <span>Mis Pedidos</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'cafeteria:pedidos_pendientes' %}">
+        <div class="opcion">
+            <i data-feather="clock" class="icono"></i>
+            <span>Pedidos Pendientes</span>
+        </div>
+    </a>
+        <a id="a" href="{% url 'cafeteria:lista_pedidos_caf' %}">
+        <div class="opcion">
+            <i data-feather="user" class="icono"></i>
+            <span>Listado de pedidos</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'cafeteria:lista_bajo_stock' %}">
+        <div class="opcion">
+            <i data-feather="alert-triangle" class="icono"></i>
+            <span>Bajo stock</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+        <div class="opcion">
+            <i data-feather="book-open" class="icono"></i>
+            <span>Manual de usuario</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'papeleria:logout_view' %}">
         <div class="opcion">
             <i data-feather="log-out" class="icono"></i>
             <span>Salir</span>
         </div>
     </a>
 </div>
+{% endif %}
+{% if request.user.role == 'Empleado' %}
+<div class="uno_e">
+    <a id="a" href="{% url 'cafeteria:ver_usuario_caf' user.id %}" title="Ver usuario">
+        <div class="opcion">
+            <i data-feather="user" class="icono"></i>
+            <span>Ver perfil</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'cafeteria:crear_pedido_caf' %}">
+        <div class="opcion">
+            <i data-feather="shopping-cart" class="icono"></i>
+            <span>Pedidos</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'cafeteria:mis_pedidos' %}">
+        <div class="opcion">
+            <i data-feather="user" class="icono"></i>
+            <span>Mis Pedidos</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'libreria:manual_usuario' %}" title="Manual de usuario" target="_blank">
+        <div class="opcion">
+            <i data-feather="book-open" class="icono"></i>
+            <span>Manual de usuario</span>
+        </div>
+    </a>
+    <a id="a" href="{% url 'papeleria:logout_view' %}">
+        <div class="opcion">
+            <i data-feather="log-out" class="icono"></i>
+            <span>Salir</span>
+        </div>
+    </a>
+</div>
+{% endif %}
+{% else %}
+<div class="mensaje-sesion-cerrada">
+    <p>Se ha cerrado tu sesión</p>
+</div>
+{% endif %}
+{% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf and mostrar_alerta %}
+  {% if bajo_stock_caf %}
+    <div id="stock-alert-caf" class="alert-overlay">
+      <div class="alert-box">
+        <p style="font-weight: bold; color: #000;">
+          ⚠️ ¡Atención! Hay productos en Cafetería con stock menor a 10 unidades.
+        </p>
+        <button onclick="cerrarAlertaCaf()">Aceptar</button>
+        <a href="{% url 'cafeteria:lista_bajo_stock' %}">
+          <button>Ver Productos</button>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+<style>
+  /* Overlay que cubre toda la pantalla */
+  .alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;  /* Valor altísimo para garantizar que esté encima */
+    backdrop-filter: blur(2px);  /* Efecto de desenfoque opcional */
+  }
+
+  /* Caja de la alerta */
+  .alert-box {
+    background: white;
+    padding: 25px 35px;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    z-index: 10000;  /* Mayor que el overlay por si acaso */
+    max-width: 90%;  /* Adaptabilidad en móviles */
+  }
+
+  /* Botones */
+  .alert-box button {
+    margin: 15px 10px 0;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+
+  .alert-box button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Bloquear scroll y clics detrás de la alerta */
+  body.alert-active {
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  body.alert-active .alert-overlay {
+    pointer-events: auto;  /* Solo la alerta es clickeable */
+  }
+</style>
+<script>
+  function cerrarAlertaCaf() {
+    const alerta = document.getElementById('stock-alert-caf');
+    alerta.style.display = 'none';
+    document.body.classList.remove('alert-active');  // Restaura el scroll
+  }
+
+  // Activar bloqueo al cargar la alerta
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('stock-alert-caf')) {
+      document.body.classList.add('alert-active');
+    }
+  });
+</script>
 
 <script>
     feather.replace();
 </script>
-
-<<<<<<< HEAD
-=======
-=======
-{% if user.is_authenticated %}
-<div class="main-container">
-    <div class="main-cards">
-        <!-- Card Usuarios -->
-        <div class="main-card" onclick="openModal('usuarios-modal')">
-            <i data-feather="users" class="main-card-icon"></i>
-            <h2 class="main-card-title">Usuarios</h2>
-        </div>
-
-        {% if request.user.role == 'Administrador' %}
-        <!-- Card Artículos -->
-        <div class="main-card" onclick="openModal('articulos-modal')">
-            <i data-feather="package" class="main-card-icon"></i>
-            <h2 class="main-card-title">Productos</h2>
-        </div>
-        {% endif %}
-
-        <!-- Card Pedidos -->
-        <div class="main-card" onclick="openModal('pedidos-modal')">
-            <i data-feather="shopping-cart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Pedidos</h2>
-        </div>
-
-        {% if request.user.role == 'Administrador' %}
-        <!-- Card Estadísticas -->
-        <div class="main-card" onclick="openModal('estadisticas-modal')">
-            <i data-feather="bar-chart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Estadísticas</h2>
-        </div>
-
-       
-        {% endif %}
-
-        <!-- Card Manual -->
-        <div class="main-card" onclick="openModal('manual-modal')">
-            <i data-feather="book-open" class="main-card-icon"></i>
-            <h2 class="main-card-title">Manual</h2>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Usuarios -->
-<div class="modal-overlay" id="usuarios-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Usuarios</h2>
-            <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:ver_usuario' user.id %}" class="modal-option">
-                    <i data-feather="user" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Ver perfil</span>
-                </a>
-                <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
-                    <i data-feather="lock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Cambiar contraseña</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if request.user.role == 'Administrador' %}
-<!-- Modal Artículos -->
-<div class="modal-overlay" id="articulos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Productos</h2>
-            <button class="close-modal" onclick="closeModal('articulos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_producto' %}" class="modal-option">
-                    <i data-feather="file-plus" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Crear productos</span>
-                </a>
-
-                <a href="{% url 'cafeteria:listar_productos' %}" class="modal-option">
-                    <i data-feather="package" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Listar productos</span>
-                </a>
-
-                <a href="{% url 'cafeteria:lista_bajo_stock' %}" class="modal-option">
-                    <i data-feather="alert-triangle" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Bajo stock</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Modal Pedidos -->
-<div class="modal-overlay" id="pedidos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Pedidos</h2>
-            <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
-                    <i data-feather="shopping-cart" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Nuevo pedido</span>
-                </a>
-
-                {% if request.user.role == 'Administrador' %}
-                <a href="{% url 'cafeteria:lista_pedidos_caf' %}" class="modal-option">
-                    <i data-feather="list" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Pedidos confirmados</span>
-                </a>
-                {% endif %}
-
-                <a href="{% url 'cafeteria:pedidos_pendientes' %}" class="modal-option">
-                    <i data-feather="clock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Pedidos pendientes</span>
-                </a>
-
-                <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
-                    <i data-feather="clipboard" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Mis pedidos</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if request.user.role == 'Administrador' %}
-<!-- Modal Estadísticas -->
-<div class="modal-overlay" id="estadisticas-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Estadísticas</h2>
-            <button class="close-modal" onclick="closeModal('estadisticas-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:index_estadistica_caf' %}" class="modal-option">
-                    <i data-feather="bar-chart" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Ver estadísticas</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Backup -->
-<div class="modal-overlay" id="backup-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Copia de Seguridad</h2>
-            <button class="close-modal" onclick="closeModal('backup-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'backup:index_backup' %}" class="modal-option">
-                    <i data-feather="database" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Gestión de Backup</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Modal Manual -->
-<div class="modal-overlay" id="manual-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Manual de Usuario</h2>
-            <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
-                    <i data-feather="book-open" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Abrir manual</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Alerta de stock bajo -->
-{% if request.user.role == 'Administrador' and request.user.acceso_pap and es_papeleria and mostrar_alerta and bajo_stock %}
-<div id="stock-alert" class="alert-overlay">
-    <div class="alert-box">
-        <button class="close-btn" onclick="cerrarAlerta()">&times;</button>
-        <p>¡Atención! Hay artículos con stock menor a 10 unidades.</p>
-    </div>
-</div>
-{% endif %}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        feather.replace();
-    });
-
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.add('active');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
-    }
-
-    document.querySelectorAll('.modal-overlay').forEach(function (modal) {
-        modal.addEventListener('click', function (e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-    });
-
-    function cerrarAlerta() {
-        const alerta = document.getElementById('stock-alert');
-        if (alerta) {
-            alerta.style.display = 'none';
-        }
-    }
-</script>
-
-{% else %}
-<div class="logout-message">
-    <p>Se ha cerrado tu sesión</p>
-</div>
-{% endif %}
-
-<style>
-    .alert-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        backdrop-filter: blur(2px);
-    }
-
-    .alert-box {
-        background: white;
-        padding: 25px 35px;
-        border-radius: 12px;
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
-        text-align: center;
-        z-index: 10000;
-        width: 70vh;
-        margin-left: 7vh;
-        margin-top: -2vh;
-        position: relative;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        color: #000;
-        background: none;
-        border: none;
-    }
-
-    .close-btn:hover {
-        color: #555;
-    }
-</style>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 {% endblock %}

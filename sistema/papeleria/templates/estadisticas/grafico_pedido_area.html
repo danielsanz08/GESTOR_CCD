@@ -1,13 +1,5 @@
 {% extends 'navbar.html' %}
-<<<<<<< HEAD
-{% block titulo %}Gráfica de pedidos por área{% endblock %}
-=======
-<<<<<<< HEAD
-{% block titulo %}Gráfica de pedidos por área{% endblock %}
-=======
 {% block titulo %}Gráfica de pedidos Administrativa{% endblock %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 {% block contenido %}
 <style>
     #grafica {
@@ -24,32 +16,13 @@
         width: 80%;
         max-width: 800px;
         background-color: rgb(255, 255, 255);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
         border: 1px solid black;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         position: absolute;
         top: 29vh;
         left: 35vh;
         height: 61vh;
         z-index: 0;
     }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-</style>
-
-<div class="estadisticas-container">
-    <div class="cuadradoFondo">
-        <div id="grafica">
-            <h2>Gráfica de pedidos por área</h2>
-<<<<<<< HEAD
-=======
-=======
 
     .modal-fechas {
         display: none;
@@ -181,33 +154,11 @@
     <div class="cuadradoFondo">
         <div id="grafica">
             <h2>Gráfica de pedidos Administrativa</h2>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
             <canvas id="graficaPedidos"></canvas>
         </div>
     </div>
 </div>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-{{ nombres|json_script:"labels-data" }}
-{{ cantidades|json_script:"cantidades-data" }}
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const nombres = JSON.parse(document.getElementById('labels-data').textContent);
-    const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = Math.max(...cantidades, 1);
-    const porcentajes = cantidades.map(c => {
-        let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : porcentaje.toFixed(2);
-    });
-
-<<<<<<< HEAD
-=======
-=======
 <!-- Datos desde Django -->
 {{ nombres|json_script:"labels-data" }}
 {{ cantidades|json_script:"cantidades-data" }}
@@ -220,26 +171,14 @@
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
 
     // Crear gráfica de barras
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     const ctx = document.getElementById('graficaPedidos').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: nombres,
             datasets: [{
-<<<<<<< HEAD
-                label: 'Pedidos por área (%)',
-                data: porcentajes,
-=======
-<<<<<<< HEAD
-                label: 'Pedidos por área (%)',
-                data: porcentajes,
-=======
                 label: 'Pedidos por artículo',
                 data: cantidades,
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
@@ -251,22 +190,6 @@
             scales: {
                 y: {
                     beginAtZero: true,
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: 'Porcentaje (%)'
-                    },
-                    ticks: {
-                        callback: function (value) {
-                            return value + '%';
-                        }
-<<<<<<< HEAD
-=======
-=======
                     ticks: {
                         stepSize: 10,
                         callback: function(value) {
@@ -276,8 +199,6 @@
                     title: {
                         display: true,
                         text: 'Cantidad de pedidos'
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                     }
                 }
             },
@@ -285,25 +206,13 @@
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-<<<<<<< HEAD
-                            return context.parsed.y + '%';
-=======
-<<<<<<< HEAD
-                            return context.parsed.y + '%';
-=======
                             return context.parsed.y;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                         }
                     }
                 }
             }
         }
     });
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
 
     // Funciones para el modal
     function mostrarModal() {
@@ -320,7 +229,5 @@
     //         cerrarModal();
     //     }
     // });
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 </script>
 {% endblock %}

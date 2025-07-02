@@ -1,23 +1,10 @@
-<<<<<<< HEAD
-body,
-html {
-=======
-<<<<<<< HEAD
-body,
-html {
-=======
+
 /* Estilos generales */
 body, html {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
     overflow: hidden; /* Elimina el scroll horizontal y vertical */
     display: flex;
     justify-content: center;
@@ -32,36 +19,14 @@ section {
     max-width: 1200px;
     margin: 0 auto;
 }
-<<<<<<< HEAD
-=======
-=======
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #1c96bb1c;
-}
 
-section {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    justify-content: center;
-    padding: 2rem;
-}
 
 /* Estilos para las cards principales */
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
 .card {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
     background: rgb(9, 151, 194);
     padding: 15px;
     border-radius: 10px;
@@ -78,9 +43,6 @@ section {
 
 .card:hover {
     transform: translateY(-10px);
-<<<<<<< HEAD
-=======
-=======
     padding: 15px;
     border-radius: 10px;
     width: 187px;
@@ -94,17 +56,10 @@ section {
 
 .card:hover {
     transform: translateY(-5px);
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     box-shadow: 0 12px 40px rgba(17, 0, 255, 0.2);
     border: 2px solid rgb(14, 79, 133);
     background: linear-gradient(to bottom, #1cabd6, #1791b68e);
 }
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
 /* Definición de la animación fadeInUp */
 @keyframes fadeInUp {
     to {
@@ -112,9 +67,6 @@ section {
         transform: translateY(0);
     }
 }
-<<<<<<< HEAD
-=======
-=======
 .icono {
     width: 48px;
     height: 28px;
@@ -244,5 +196,3 @@ section {
         grid-template-columns: 1fr;
     }
 }
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

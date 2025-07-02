@@ -1,33 +1,9 @@
-<<<<<<< HEAD
-body, html {
-=======
-<<<<<<< HEAD
-body, html {
-=======
 body,
 html {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    overflow: hidden; /* Elimina el scroll horizontal y vertical */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #80808000; /* Gris de fondo si la imagen no carga */
-  }
-.formulario{
-    background: rgba(255, 255, 255, 0.822);
- 
-<<<<<<< HEAD
-=======
-=======
     overflow: hidden;
     /* Elimina el scroll horizontal y vertical */
     display: flex;
@@ -46,53 +22,26 @@ body {
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     position: absolute;
     top: 20vh;
     left: 32vh;
     padding: 20px 20px 20px 20px;
     border-radius: 20px;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    height: 60vh;
-}
-#form_articulo{
-<<<<<<< HEAD
-=======
-=======
     height: 60vh;
 }
 
 #form_articulo {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     background-color: rgba(255, 255, 255, 0);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
     padding: 30px 30px 30px 30px;
     height: 30vh;
-<<<<<<< HEAD
-    margin-top: -2vh;
-}
-input, .form-select{
-=======
-<<<<<<< HEAD
-    margin-top: -2vh;
-}
-input, .form-select{
-=======
     margin-top: -3vh;
 }
 
 input,
 .form-select {
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     margin-bottom: 15vh;
     margin-right: 5px;
     border: none;
@@ -102,45 +51,6 @@ input,
     margin: 10px 30px 30px 30px;
     border: 1px solid black;
 }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-label{
-    display: block;
-    margin: 10px 30px 0px 30px;
-}
-h2{
-    text-align: center;
-}
-
-    button[type="submit"] {
-        background-color: rgb(255, 255, 255);
-        color: rgb(0, 0, 0);
-        font-weight: bold;
-        border: 2px solid black;
-        height: 6vh;
-        width: 35vh;
-        border-radius: 20px;
-        position: absolute;
-        left: 57vh;
-        top: 52vh;
-        cursor: pointer;
-    }
-button[type="submit"]:hover {
-        background-color: rgb(33, 74, 187);
-        color: black;
-    }
-
-    button[type="submit"]:disabled {
-        background-color: #cccccc;
-        color: #666666;
-        cursor: not-allowed;
-<<<<<<< HEAD
-    }
-=======
-    }
-=======
 
 label {
     display: block;
@@ -175,5 +85,3 @@ button[type="submit"]:disabled {
     color: #666666;
     cursor: not-allowed;
 }
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

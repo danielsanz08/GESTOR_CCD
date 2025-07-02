@@ -5,10 +5,7 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido_pendiente.css' %}?v={% now 'U' %}">
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
+
 
 {% if request.user.role == 'Administrador' %}
 <section>
@@ -62,9 +59,7 @@
             </a>
         </div>
     </form>
-<<<<<<< HEAD
-=======
-=======
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
@@ -140,25 +135,16 @@
     </form>
 
     <table>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         <thead>
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Usuario</th>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
                 <th class="pedido">Pedido</th>
                 <th class="estado">Estado</th>
                 <th class="accion">Acciones</th>
             </tr>
         </thead>
         <tbody id="tabla-pedidos">
-<<<<<<< HEAD
-=======
-=======
                 <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
                 <th class="pedido">Pedido</th>
@@ -166,16 +152,11 @@
             </tr>
         </thead>
         <tbody>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
             {% for pedido in pedidos %}
             <tr id="pedido-{{ pedido.id }}">
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
                 <td>
                     {% for articulo_pedido in pedido.articulos.all %}
                     <p>{{ articulo_pedido.articulo.nombre }} ({{ articulo_pedido.cantidad }})</p>
@@ -208,9 +189,6 @@
             {% empty %}
             <tr>
                 <td colspan="8">No hay pedidos pendientes</td>
-<<<<<<< HEAD
-=======
-=======
                 <td>{{ pedido.fecha_formateada }}</td>
                 <td>{{ pedido.estado }}</td>
                 <td>
@@ -283,31 +261,19 @@
                         </button>
                     </div>
                 </td>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
             </tr>
             {% endfor %}
         </tbody>
     </table>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
+
      <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
         {% endif %}
-<<<<<<< HEAD
-=======
-=======
-
     <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
         {% endif %}
-
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         {% for num in pedidos.paginator.page_range %}
         {% if pedidos.number == num %}
         <span class="current">{{ num }}</span>
@@ -315,22 +281,12 @@
         <a href="?page={{ num }}">{{ num }}</a>
         {% endif %}
         {% endfor %}
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
         {% endif %}
     </div>
 </section>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
+
 {% endif %}
 {% if request.user.role == 'Empleado' %}
 <section>
@@ -375,9 +331,8 @@
 
 </section>
 {% endif %}
-<<<<<<< HEAD
 {% endblock %}
-=======
+
 {% endblock %}
 =======
 
@@ -419,5 +374,3 @@
     });
 </script>
 {% endblock %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

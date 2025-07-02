@@ -5,49 +5,24 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
-
-<<<<<<< HEAD
 <div id="container">
-=======
-<<<<<<< HEAD
-<div id="container">
-=======
 <section>
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     <h1>Realizar Pedido</h1>
 
     <form method="post">
         {% csrf_token %}
-<<<<<<< HEAD
-        
-        <!-- Campo área oculto -->
-=======
-<<<<<<< HEAD
-        
-        <!-- Campo área oculto -->
-=======
 
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         <div class="mb-3" style="display: none;">
             <label class="form-label">Área:</label>
             <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
         </div>
 
         <div id="articulos-container">
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
             <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px;">
                 <select name="articulo" required>
                     <option value="">-- Seleccionar Artículo --</option>
                     {% for articulo in articulos %}
                         <option value="{{ articulo.id }}">{{ articulo.nombre }} ({{ articulo.cantidad }})</option>
-<<<<<<< HEAD
-=======
-=======
             <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
                 <select name="articulo" required class="select-articulo">
                     <option value="">-- Seleccionar Artículo --</option>
@@ -58,25 +33,16 @@
                                 {{ articulo.nombre }} ({{ articulo.cantidad }})
                             </option>
                         {% endif %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
                     {% endfor %}
                 </select>
 
                 <div>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
                     <select name="tipo_articulo" required>
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
                             <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}">
                                 {{ articulo.tipo }} ({{ articulo.nombre }})
                             </option>
-<<<<<<< HEAD
-=======
-=======
                     <select name="tipo_articulo" required class="select-tipo">
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
@@ -88,40 +54,21 @@
                                     {{ articulo.tipo }} 
                                 </option>
                             {% endif %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
+
                         {% endfor %}
                     </select>
                 </div>
+                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
 
-<<<<<<< HEAD
-                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
-=======
-<<<<<<< HEAD
-                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
-=======
-                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad" class="input-cantidad">
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
             </div>
         </div>
 
         <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
         <button type="submit">Realizar Pedido</button>
     </form>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
 </div>
 
-<style>
-    option.no-allowed {
-        color: red;
-        cursor: not-allowed;
-<<<<<<< HEAD
-=======
-=======
+
 </section>
 
 <style>
@@ -146,97 +93,22 @@
     .articulo-deshabilitado {
         color: #999;
         text-decoration: line-through;
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> b659cb3 (Sexagésimo commit)
-    function actualizarTipos(form) {
-        var selectArticulo = form.querySelector('select[name="articulo"]');
-        var selectTipo = form.querySelector('select[name="tipo_articulo"]');
-        var articuloSeleccionado = selectArticulo.value;
-
-        for (var i = 0; i < selectTipo.options.length; i++) {
-            var option = selectTipo.options[i];
-            if (option.value === "") {
-                option.disabled = false;
-                option.classList.remove('no-allowed');
-            } else if (option.getAttribute('data-articulo') === articuloSeleccionado) {
-                option.disabled = false;
-                option.classList.remove('no-allowed');
-            } else {
-                option.disabled = true;
-                option.classList.add('no-allowed');
-            }
-        }
-
-        if (selectTipo.value !== articuloSeleccionado) {
-            selectTipo.value = "";
-        }
-    }
-
-    // Inicializar el primer formulario
-    var defaultForm = document.querySelector('.articulo-form.default-form');
-    if (defaultForm) {
-        var selectArticulo = defaultForm.querySelector('select[name="articulo"]');
-        selectArticulo.addEventListener('change', function () {
-            actualizarTipos(defaultForm);
-        });
-        actualizarTipos(defaultForm);
-    }
-
-    window.agregarArticulo = function () {
-        var container = document.getElementById('articulos-container');
-        var nuevoFormulario = document.querySelector('.articulo-form.default-form').cloneNode(true);
-        nuevoFormulario.style.display = 'flex';
-        nuevoFormulario.classList.remove('default-form');
-
-        // Botón eliminar
-        var eliminarBtn = document.createElement('button');
-        eliminarBtn.type = 'button';
-        eliminarBtn.textContent = 'Eliminar';
-        eliminarBtn.onclick = function () {
-            eliminarArticulo(nuevoFormulario);
-        };
-        nuevoFormulario.appendChild(eliminarBtn);
-
-        // Limpiar valores
-        var selects = nuevoFormulario.getElementsByTagName('select');
-        for (var select of selects) {
-            select.selectedIndex = 0;
-        }
-        nuevoFormulario.querySelector('input[name="cantidad"]').value = 1;
-
-        container.appendChild(nuevoFormulario);
-
-        // Añadir listener para filtrar tipos en nuevo formulario
-        var selectArticuloNuevo = nuevoFormulario.querySelector('select[name="articulo"]');
-        selectArticuloNuevo.addEventListener('change', function () {
-            actualizarTipos(nuevoFormulario);
-        });
-        actualizarTipos(nuevoFormulario);
-<<<<<<< HEAD
-=======
-=======
     // Array global para almacenar TODOS los artículos seleccionados en este pedido
     let articulosSeleccionadosEnPedido = [];
 
     function actualizarOpcionesDisponibles() {
         const selectsArticulos = document.querySelectorAll('.select-articulo');
-        
+
         selectsArticulos.forEach(select => {
             const currentSelected = select.value;
-            
-            // Iterar sobre todas las opciones de cada select
+
             Array.from(select.options).forEach(option => {
                 if (option.value) {
-                    // Habilitar si no está seleccionado en otro lado o es el valor actual
                     if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
                         option.disabled = false;
                         option.classList.remove('articulo-deshabilitado');
@@ -278,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Resetear tipo si no coincide con el artículo seleccionado
         if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex]?.getAttribute('data-articulo') !== articuloSeleccionado) {
             selectTipo.value = "";
         }
@@ -303,23 +174,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function inicializarFormulario(form, incluirEliminar = false) {
         const selectArticulo = form.querySelector('.select-articulo');
-        
+
         selectArticulo.addEventListener('change', function () {
-            // Remover el valor anterior de la lista si existe
             const prevValue = form.getAttribute('data-selected-articulo');
             if (prevValue) {
                 articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
             }
-            
-            // Agregar el nuevo valor si se seleccionó algo
+
             if (this.value) {
                 articulosSeleccionadosEnPedido.push(this.value);
                 form.setAttribute('data-selected-articulo', this.value);
             } else {
                 form.removeAttribute('data-selected-articulo');
             }
-            
-            // Actualizar todas las opciones disponibles
+
             actualizarOpcionesDisponibles();
             actualizarTipos(form);
         });
@@ -352,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function () {
         nuevoFormulario.classList.remove('default-form');
         nuevoFormulario.style.display = 'flex';
 
-        // Limpiar valores
         const selects = nuevoFormulario.querySelectorAll('select');
         selects.forEach(select => select.selectedIndex = 0);
         nuevoFormulario.querySelector('.input-cantidad').value = 1;
@@ -360,43 +227,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         inicializarFormulario(nuevoFormulario, true);
         container.appendChild(nuevoFormulario);
-        
-        // Actualizar las opciones disponibles
+
         actualizarOpcionesDisponibles();
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
     };
 
     window.eliminarArticulo = function (form) {
         if (!form.classList.contains('default-form')) {
-<<<<<<< HEAD
-            form.remove();
-=======
-<<<<<<< HEAD
-            form.remove();
-=======
             const articuloId = form.getAttribute('data-selected-articulo');
             if (articuloId) {
                 articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
             }
             form.remove();
             actualizarOpcionesDisponibles();
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)
         }
     };
 });
 </script>
-<<<<<<< HEAD
 
 {% endblock %}
-
-=======
-<<<<<<< HEAD
-
-{% endblock %}
-
-=======
-{% endblock %}
->>>>>>> 3797db6 (Sexagésimo tercer commit)
->>>>>>> b659cb3 (Sexagésimo commit)

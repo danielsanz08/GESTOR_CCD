@@ -253,7 +253,9 @@ def lista_usuarios(request):
     fecha_fin = None
 
     usuarios = CustomUser.objects.all()
-
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('partials/tabla_usuarios.html', {'usuarios': usuarios})
+        return JsonResponse({'html': html})
     # Filtrado por texto
     if q:
         usuarios = usuarios.filter(
@@ -561,6 +563,8 @@ def wrap_text(text, max_len=20):
         parts[i] += '-'  # Agrega guion al final de todas menos la última
     return '\n'.join(parts)
 
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.styles import ParagraphStyle
 def reporte_usuario_pdf(request):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
@@ -575,7 +579,7 @@ def reporte_usuario_pdf(request):
     styles = getSampleStyleSheet()
 
     # Título
-    titulo = Paragraph("REPORTE DE USUARIOS CCD ", styles["Title"])
+    titulo = Paragraph("REPORTE DE USUARIOS CCD", styles["Title"])
     elements.append(titulo)
 
     # Encabezado empresa
@@ -599,7 +603,7 @@ def reporte_usuario_pdf(request):
     tabla_encabezado.setStyle(estilo_encabezado)
     elements.append(tabla_encabezado)
 
-    # Tabla usuario
+    # Tabla usuario autenticado
     usuario = request.user
     data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
 
@@ -628,38 +632,44 @@ def reporte_usuario_pdf(request):
     table_usuario.setStyle(style_usuario)
     elements.append(table_usuario)
 
-    # Aquí asumo que tienes una función para obtener usuarios filtrados
+    # Obtener usuarios filtrados
     usuarios_filtrados = obtener_usuarios(request)
 
-    # Tabla artículos (usuarios)
-    data_usuarios = [["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]]
-    for u in usuarios_filtrados:
-        data_usuarios.append([
-            wrap_text(str(u.id)),
-            wrap_text(u.username),
-            wrap_text(u.role),
-            wrap_text(u.email),
-            wrap_text(u.cargo),
-            wrap_text(getattr(u, 'area', 'No definido')),
-            wrap_text("Activo" if u.is_active else "Inactivo")
-])
+    if not usuarios_filtrados.exists():
+        centered_style = ParagraphStyle(
+        name="CenteredNormal",
+        parent=styles["Normal"],
+        alignment=TA_CENTER,)
+        no_results = Paragraph("No se encontraron usuarios.", centered_style)
+        elements.append(no_results)
+    else:
+        data_usuarios = [["ID", "Usuario", "Rol", "Correo", "Cargo", "Área", "Estado"]]
+        for u in usuarios_filtrados:
+            data_usuarios.append([
+                wrap_text(str(u.id)),
+                wrap_text(u.username),
+                wrap_text(u.role),
+                wrap_text(u.email),
+                wrap_text(u.cargo),
+                wrap_text(getattr(u, 'area', 'No definido')),
+                wrap_text("Activo" if u.is_active else "Inactivo")
+            ])
 
-    tabla_articulos = Table(data_usuarios, colWidths=[30, 100, 100, 160, 160, 100
-                                                      , 70])
-    style_articulos = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
+        tabla_articulos = Table(data_usuarios, colWidths=[30, 100, 100, 160, 160, 100, 70])
+        style_articulos = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ])
+        tabla_articulos.setStyle(style_articulos)
+        elements.append(tabla_articulos)
 
     # Construir el PDF
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
@@ -670,7 +680,7 @@ def reporte_usuario_pdf(request):
     return response
 
 def reporte_usuario_excel(request):
-    # Obtener artículos filtrados usando la función reutilizable
+    # Obtener usuarios filtrados
     usuarios = obtener_usuarios(request)
 
     # Crear archivo Excel
@@ -678,24 +688,21 @@ def reporte_usuario_excel(request):
     ws = wb.active
     ws.title = "Listado de Artículos CCD"
 
-    # Configuración columnas y filas (sin logo)
-    ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 30
-    ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 30
-    ws.column_dimensions['E'].width = 30
-    ws.column_dimensions['F'].width = 20
-    ws.column_dimensions['G'].width = 15
+    # Configurar columnas
+    column_widths = [10, 30, 20, 30, 30, 20, 15]
+    for i, width in enumerate(column_widths, start=1):
+        ws.column_dimensions[chr(64 + i)].width = width
 
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Título principal y subtítulo
+    # Título
     ws.merge_cells('A1:G1')
     ws['A1'] = "GESTOR CCD"
     ws['A1'].font = Font(size=24, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
+    # Subtítulo
     ws.merge_cells('A2:G2')
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
     ws['A2'] = f"Listado de Artículos - {fecha_actual}"
@@ -707,12 +714,13 @@ def reporte_usuario_excel(request):
     ws.append(headers)
 
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
-    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
-        cell = ws[f"{col}3"]
+    for col in range(1, 8):
+        cell = ws.cell(row=3, column=col)
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
+    # Estilo de bordes
     border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -720,32 +728,40 @@ def reporte_usuario_excel(request):
         bottom=Side(style='thin')
     )
 
-    # Agregar datos
-    for usuario in usuarios:
-        estado = "Activo" if usuario.is_active else "Inactivo"
-        ws.append([
-            usuario.id,
-            wrap_text(usuario.username),
-            wrap_text(usuario.role),
-            wrap_text(usuario.email),
-            wrap_text(usuario.cargo),
-            wrap_text(usuario.area),
-            wrap_text(estado)
-        ])
+    # Agregar datos o mensaje de "no encontrados"
+    if not usuarios.exists():
+        ws.merge_cells('A4:G4')
+        cell = ws['A4']
+        cell.value = "No se encontraron usuarios."
+        cell.font = Font(bold=False)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+    else:
+        for usuario in usuarios:
+            estado = "Activo" if usuario.is_active else "Inactivo"
+            ws.append([
+                usuario.id,
+                wrap_text(usuario.username),
+                wrap_text(getattr(usuario, 'role', '')),
+                wrap_text(usuario.email),
+                wrap_text(getattr(usuario, 'cargo', '')),
+                wrap_text(getattr(usuario, 'area', '')),
+                estado
+            ])
 
-    # Aplicar bordes y alineación a filas 1 y 2 (título y subtítulo)
+    # Estilo para títulos y subtítulo
     for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=7):
         for cell in row:
             cell.border = border
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    # Aplicar bordes y alineación a filas 3 hasta el final (encabezados y datos)
+    # Estilo para encabezados y datos
     for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=7):
         for cell in row:
             cell.border = border
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    # Filtros en la fila 3 (encabezados)
+    # Filtro automático
     ws.auto_filter.ref = "A3:G3"
 
     # Preparar respuesta

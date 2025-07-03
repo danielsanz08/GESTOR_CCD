@@ -157,10 +157,13 @@
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = 200;
+
+    // Tomar el valor más alto como 100%
+    const maxCantidad = Math.max(...cantidades);
+
     const porcentajes = cantidades.map(c => {
         let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : parseFloat(porcentaje.toFixed(2));
+        return parseFloat(porcentaje.toFixed(2));
     });
 
     const ctx = document.getElementById('graficaPedidos').getContext('2d');

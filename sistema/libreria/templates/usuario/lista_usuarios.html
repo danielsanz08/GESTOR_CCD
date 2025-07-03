@@ -10,32 +10,37 @@
     <h1>Usuarios de Gestor CCD</h1>
     <div>
         <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
-            <button title="Buscar por texto" type="submit" class="btn-search"><i class="fas fa-search text-white"></i></button>
-            <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
-                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}" title="Fecha inicio">
-                <label for="fecha_fin">Hasta:</label>
-                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}" title="Fecha fin">
-                <button type="submit" class="search-date" title="Buscar por rango de fecha">
-                    <i class="fas fa-search text-white"></i>
-                </button>
-            </div>
-        </form>
+    <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
+    <button type="submit" class="btn-search" data-tooltip="Buscar por texto">
+        <i class="fas fa-search text-white"></i>
+    </button>
+    <div id="filtro-fechas">
+        <label for="fecha_inicio">Desde:</label>
+        <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}" data-tooltip="Fecha de inicio">
+        
+        <label for="fecha_fin">Hasta:</label>
+        <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}" data-tooltip="Fecha fin">
+
+        <button type="submit" class="search-date" data-tooltip="Buscar por rango de fecha">
+            <i class="fas fa-search text-white"></i>
+        </button>
+    </div>
+</form>
+
         <a href="{% url 'libreria:lista_usuarios' %}">
-            <button type="button" class="clean" title="Limpiar búsqueda">
+            <button type="button" class="clean" data-tooltip="limpiar búsqueda">
                 <i class="fas fa-trash text-white"></i>
             </button>
         </a>
     </div>
 
     <div class="Botones">
-        <button class="print" title="Imprimir lista de usuarios"><i class="bi bi-printer" id="icono"></i></button>
+        <button class="print" data-tooltip="Imprimir"><i class="bi bi-printer" id="icono"></i></button>
         <a href="{% url 'libreria:reporte_usuario_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-            <button class="pdf" title="Exportar lista de usuarios en pdf"><i class="fas fa-file-pdf text-white"></i></button>
+            <button class="pdf" data-tooltip="Exportar lista de usuarios en pdf"><i class="fas fa-file-pdf text-white"></i></button>
         </a>
         <a href="{% url 'libreria:reporte_usuario_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-            <button class="excel" title="Exportar lista de usuarios en XLSX"><i class="fas fa-file-excel text-white"></i></button>
+            <button class="excel" data-tooltip="Exportar lista de usuarios en XLSX"><i class="fas fa-file-excel text-white"></i></button>
         </a>
     </div>
 
@@ -44,10 +49,10 @@
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Nombre</th>
-                <th class="rol">Rol</th>
                 <th class="correo">Correo</th>
                 <th class="area">Área</th>
                 <th class="cargo">Cargo</th>
+                <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
                 <th class="actividad">Accesos</th>
                 <th class="editar">Acciones</th>
@@ -58,27 +63,27 @@
             <tr>
                 <td>{{ usuario.id }}</td>
                 <td data-tooltip="{{ usuario.role }}">{{ usuario.username }}</td>
-                <td>{{ usuario.fecha_formateada }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.area }}</td>
                 <td>{{ usuario.cargo }}</td>
+                <td>{{ usuario.fecha_formateada }}</td>
                 <td class="td_btn_estado" id="td_btn_estado">
                     <form action="{% url 'libreria:cambiar_estado_usuario' usuario.id %}" method="POST" style="margin:0;">
                         {% csrf_token %}
-                        <label class="cl-switch" title="{% if usuario.is_active %}Activo{% else %}Inactivo{% endif %}">
+                        <label class="cl-switch" data-tooltip="{% if usuario.is_active %}Activo{% else %}Inactivo{% endif %}">
                             <input type="checkbox" name="is_active" {% if usuario.is_active %}checked{% endif %} onchange="this.form.submit()" aria-label="Estado activo/inactivo de {{ usuario.username }}">
                             <span></span>
                         </label>
                     </form>
                 </td>
                 <td>
-                    <button type="button" class="permisos-btn tooltip-custom" onclick="abrirModal('{{ usuario.id|escapejs }}')" title="Gestionar permisos de {{ usuario.username|escape }}">
+                    <button type="button" class="permisos-btn tooltip-custom" onclick="abrirModal('{{ usuario.id|escapejs }}')" data-tooltip="Gestionar permisos de {{ usuario.username|escape }}">
                         <i class="fas fa-key"></i>
                     </button>
                 </td>
                 <td class="td_editar">
                     <a href="{% url 'libreria:editar_usuario' usuario.id %}" class="tooltip-custom">
-                        <button class="editar-btn" title="Editar usuario">
+                        <button class="editar-btn" data-tooltip="Editar usuario">
                             <i class="fas fa-edit me-2"></i>
                         </button>
                     </a>

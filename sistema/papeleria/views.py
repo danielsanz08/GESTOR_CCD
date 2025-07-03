@@ -497,7 +497,7 @@ def listado_pedidos(request):
     fecha_fin_str = request.GET.get('fecha_fin')
 
     # Filtrar solo pedidos pendientes
-    pedidos = Pedido.objects.filter(estado='Confirmado').order_by('-fecha_pedido')
+    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
     
     if query:
         pedidos = pedidos.filter(
@@ -1181,7 +1181,7 @@ def get_pedidos_filtrados(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    pedidos = Pedido.objects.all()
+    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
 
     if query:
         pedidos = pedidos.filter(
@@ -1217,7 +1217,7 @@ def reporte_pedidos_pdf(request):
     styles = getSampleStyleSheet()
 
     # Título principal
-    titulo = Paragraph("REPORTE DE PEDIDOS", styles["Title"])
+    titulo = Paragraph("REPORTE DE PEDIDOS CONFIRMADOS Y CANCELADOS", styles["Title"])
     elements.append(titulo)
 
     # Encabezado institucional
@@ -1313,11 +1313,149 @@ def reporte_pedidos_pdf(request):
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Lista_de_pedidos_Gestor_CCD.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Lista de pedidos Gestor CCD.pdf"'
+    return response
+def get_pedidos_filtrados_pendientes(request):
+    query = request.GET.get('q')
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
+
+    if query:
+        pedidos = pedidos.filter(
+            Q(id__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(registrado_por__username__icontains=query) |
+            Q(articulos__articulo__nombre__icontains=query)
+        ).distinct()
+
+    if fecha_inicio and fecha_fin:
+        pedidos = pedidos.filter(fecha_pedido__range=[fecha_inicio, fecha_fin])
+
+    return pedidos
+def reporte_pedidos_pendientes_pdf(request):
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=landscape(letter),
+        leftMargin=40,
+        rightMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    doc.title = "Listado de pedidos pendientes CCD"
+    doc.author = "CCD"
+    doc.subject = "Listado de pedidos pendientes"
+    doc.creator = "Sistema de Gestión CCD"
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Título principal
+    titulo = Paragraph("REPORTE DE PEDIDOS PENDIENTES", styles["Title"])
+    elements.append(titulo)
+
+    # Encabezado institucional
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    encabezado_data = [
+        ["GESTOR CCD", "Lista de usuarios", "Correo: gestorccd@gmail.com", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "(Correo de la camara)", "Teléfono: (tel. camara)"],
+    ]
+    tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
+    estilo_encabezado = TableStyle([
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_encabezado.setStyle(estilo_encabezado)
+    elements.append(tabla_encabezado)
+
+    # Datos del usuario
+    usuario = request.user
+    data_usuario = [["Usuario:", "Email:", "Rol:", "Cargo:"]]
+    data_usuario.append([
+        usuario.username,
+        usuario.email,
+        getattr(usuario, 'role', 'No definido'),
+        getattr(usuario, 'cargo', 'No definido'),
+    ])
+    table_usuario = Table(data_usuario, colWidths=[180, 180, 180, 180])
+    style_usuario = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table_usuario.setStyle(style_usuario)
+    elements.append(table_usuario)
+
+    # Obtener pedidos filtrados usando la función get_pedidos_filtrados
+    pedidos = get_pedidos_filtrados_pendientes(request).prefetch_related('articulos__articulo')
+
+    # Encabezado de la tabla
+    data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
+
+    # Filas de pedidos
+    for pedido in pedidos:
+        articulos_raw = ", ".join([
+            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
+            for pa in pedido.articulos.all()
+        ]) or 'Sin artículos'
+        articulos_text = wrap_text_p(articulos_raw)
+
+        area_raw = pedido.articulos.first().area if pedido.articulos.exists() else 'Sin área'
+        areas_text = wrap_text_p(area_raw)
+
+        data_pedidos.append([
+            wrap_text_p(str(pedido.id)),
+            wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
+            wrap_text_p(pedido.get_estado_display()),
+            wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
+            wrap_text_p(articulos_raw),
+            wrap_text_p(area_raw)
+        ])
+
+    # Crear la tabla de pedidos
+    tabla_articulos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
+    style_articulos = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_articulos.setStyle(style_articulos)
+    elements.append(tabla_articulos)
+
+    # Construir el PDF
+    doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
+
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Lista de pedidos pendientes Gestor CCD.pdf"'
     return response
 def reporte_pedidos_excel(request):
     # Obtener todos los pedidos ordenados por fecha descendente
-    pedidos = Pedido.objects.all().order_by('-fecha_pedido')
+    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
 
     # Crear libro Excel
     wb = Workbook()
@@ -1429,11 +1567,127 @@ def reporte_pedidos_excel(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte_pedidos.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes.xlsx"'
     wb.save(response)
     return response
 
+def reporte_pedidos_pendientes_excel(request):
+    # Obtener todos los pedidos ordenados por fecha descendente
+    pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
 
+    # Crear libro Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Pedidos CCD"
+
+    # Ajustar ancho de columnas
+    columnas_anchos = {
+        'A': 10,   # ID
+        'B': 15,   # Fecha
+        'C': 15,   # Estado
+        'D': 25,   # Registrado por
+        'E': 50,   # Artículos
+        'F': 30    # Áreas
+    }
+    for col, width in columnas_anchos.items():
+        ws.column_dimensions[col].width = width
+
+    # Ajustar altura de título y subtítulo
+    ws.row_dimensions[1].height = 50
+    ws.row_dimensions[2].height = 30
+
+    # Título principal
+    ws.merge_cells('A1:F1')
+    ws['A1'] = "GESTOR CCD"
+    ws['A1'].font = Font(size=24, bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Subtítulo
+    ws.merge_cells('A2:F2')
+    ws['A2'] = "Listado de Pedidos"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Bordes para los títulos A1:F1 y A2:F2
+    
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+        )
+    for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=6):
+        for cell in row:
+            cell.border = thin_border
+
+    # Encabezados de tabla
+    headers = ['ID', 'Fecha', 'Estado', 'Registrado Por', 'Artículos', 'Áreas']
+    ws.append(headers)
+
+    # Estilo para encabezados
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+    for cell in ws[3]:
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    # Aplicar filtro
+    ws.auto_filter.ref = "A3:F3"
+
+    # Estilo de bordes
+    thin_border = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'), bottom=Side(style='thin')
+    )
+
+    # Agregar datos de los pedidos
+    for pedido in pedidos:
+        # Artículos en una sola línea, separados por comas
+        articulos_raw = ", ".join([
+            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
+            for pa in pedido.articulos.all()
+        ]) or 'Sin artículos'
+
+        # Áreas únicas, separadas por comas
+        areas_raw = ", ".join(set([
+            str(pa.area) for pa in pedido.articulos.all()
+        ])) or 'Sin área'
+
+        # Usuario
+        usuario = pedido.registrado_por.username if pedido.registrado_por else 'No definido'
+
+        # Añadir fila
+        ws.append([
+            pedido.id,
+            pedido.fecha_pedido.strftime('%Y-%m-%d'),
+            pedido.get_estado_display(),
+            usuario,
+            articulos_raw,
+            areas_raw,
+        ])
+
+    # Aplicar bordes y alineación a todas las celdas de A3:F...
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=6):
+        for i, cell in enumerate(row, start=1):
+            cell.border = thin_border
+            cell.alignment = Alignment(
+                horizontal='center',
+                vertical='center',
+                wrap_text=True if i in [4, 5, 6] else False  # Wrap en usuario, artículos, áreas
+        )
+
+
+    # Ajustar altura de filas para mejor legibilidad
+    for i in range(4, ws.max_row + 1):
+        ws.row_dimensions[i].height = 60
+
+    # Generar y devolver el archivo Excel como descarga
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes.xlsx"'
+    wb.save(response)
+    return response
 #PDF Y XSLS DE BAJO STOCK
 def obtener_articulos_bajo_stock(request):
     query = request.GET.get('q')

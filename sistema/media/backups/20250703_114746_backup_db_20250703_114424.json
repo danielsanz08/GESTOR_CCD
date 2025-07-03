@@ -1,0 +1,558 @@
+[
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$dyKYyngDvZPgoEekVQFeOE$EoNsLb/S5CzM13lh3yVdKn+fH2IlHj4C/oUDkAy7trc=",
+        "last_login": "2025-07-03T16:43:53.556Z",
+        "is_superuser": false,
+        "username": "Daniel Sánchez",
+        "email": "jonnathansz73@gmail.com",
+        "role": "Administrador",
+        "area": "Administrativa",
+        "cargo": "Director Gestor CCD",
+        "fecha_registro": "2025-07-03",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$OG1WMeL0FJdgZwuQZJdVmg$49lh0FVUoRchV5lKsQM/k3DRqgIyLL5445pVq+1BB1k=",
+        "last_login": "2025-07-03T15:51:15.629Z",
+        "is_superuser": false,
+        "username": "Viviana Rodriguez",
+        "email": "viviana@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Asistente en gestion documental",
+        "fecha_registro": "2025-07-03",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$crawIMzP8M3aMK2GbYsIk4$E1v44fOE2yjBKkfN9z1Y1bIiSnaFr758m+gdwxKhaHM=",
+        "last_login": "2025-07-03T15:54:44.689Z",
+        "is_superuser": false,
+        "username": "Carlos Orozco",
+        "email": "carlos@gmail.com",
+        "role": "Empleado",
+        "area": "Administrativa",
+        "cargo": "Auxiliar en gestion documental",
+        "fecha_registro": "2025-07-02",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$CRSHc8aSFvTQujRrGUrfuM$6bOKo1PbFe4f/1UYoq64EGOAmKOjDnMn9huLF+zdpi4=",
+        "last_login": "2025-07-03T15:55:42.152Z",
+        "is_superuser": false,
+        "username": "Alejandro Moreno",
+        "email": "alejandro@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Abogado juridico",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$kRR9dptXrEwMHqKJbW3Pr5$dVwhGBEwsP8a06usfM9KU2ojKFo/SpgHr4jyy+h0lI0=",
+        "last_login": "2025-07-03T15:57:18.899Z",
+        "is_superuser": false,
+        "username": "Diego Herrera",
+        "email": "diegoherrera@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Auxiliar rues",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$7mobXjGlU2AxF7HisDPMk4$wuwWaVelsXWVVUHR/LfH8Tl8NDhVAs1e/VWx8F0r2R8=",
+        "last_login": "2025-07-03T15:58:02.257Z",
+        "is_superuser": false,
+        "username": "Fabian Suarez",
+        "email": "fabian@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Director en gestion empresarial",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$QZHKA1DauxGX29dw9NZ8eL$QvIzVN+wZiXi6o2XyEd9dGMApLqUQ1C5ecbjpn1CHng=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Diana Gomez",
+        "email": "diana@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Asistente en gestion empresarial",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$lBBHsbQ677YnZHYusD0FVP$+cgZWN9+iocbQFGTDlvvWdrPL7yTzMtu/GLK1R1OG4Q=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Fabiola Betancourth",
+        "email": "fabiolab@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Auxiliar de competitividad",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$3epZPtlIMrZYbkz5lprtzg$rMD/oL/8DyLIqSvs5kaxbaN+Xjp8FqJOVWynvjMvOnA=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Brayan Ceron",
+        "email": "brayanceron@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Auxiliar de competitividad",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$DhLZswfgZFIs0luefly2L6$FnnUUSZkdBO0RPBN6af7+3Htj5ON+CFXdSLimxuy4h0=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Camila Ortega",
+        "email": "camila@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Asistente en comunicaciones",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$bK5WPViXmMjUb49XxJ8L31$6H+HVBpEcBb2Co1kPppGKOn5tT/Ryw84/1D5e26u8LI=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Andrea Oliveros",
+        "email": "andrea@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Asistente de presidencia",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$VLIiinTJzMwsxtSqpa35ep$4W64F9/n1eFKvHoTeUurJgLfll1Lu3bIus6fFU0Dcqg=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Freddy Camargo",
+        "email": "freddycamargo@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Auxiliar contable",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$870000$GIsTQPLqzf8rsuyw4yTF9G$Bj3pzRG2/zhWZBKch8lP49SaZJHi1qwqncBAwYvyhdI=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Geraldine Nino",
+        "email": "geraldine@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Auxiliar contable",
+        "fecha_registro": "2025-07-02",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 1,
+    "fields": {
+        "nombre": "Boligrafo azul",
+        "marca": "Bic",
+        "observacion": "Tinta  scea rapido",
+        "tipo": "Punta fina",
+        "precio": 1500,
+        "cantidad": 3,
+        "proveedor": "Papeleria centra s.a",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-03"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 2,
+    "fields": {
+        "nombre": "Cuaderno profesional",
+        "marca": "Norma",
+        "observacion": "100 hojas, rayado universitario",
+        "tipo": "Argollado",
+        "precio": 3000,
+        "cantidad": 21,
+        "proveedor": "Distribuciones XYZ",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-03"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 3,
+    "fields": {
+        "nombre": "Resaltador",
+        "marca": "Faber-castell",
+        "observacion": "Punta biselada",
+        "tipo": "Amarillo",
+        "precio": 3000,
+        "cantidad": 2000,
+        "proveedor": "Ofiexpress ltda",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-02"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 4,
+    "fields": {
+        "nombre": "Carpetas de cartón",
+        "marca": "Pritt",
+        "observacion": "Recicladas",
+        "tipo": "Carta",
+        "precio": 2000,
+        "cantidad": 33,
+        "proveedor": "Suministro educar",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-02"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 5,
+    "fields": {
+        "nombre": "Pegante",
+        "marca": "Office depot",
+        "observacion": "No toxico",
+        "tipo": "En barra",
+        "precio": 2000,
+        "cantidad": 33,
+        "proveedor": "Office depot colombia",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-02"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 1,
+    "fields": {
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:50:01.007Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 2,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:51:27.064Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 3,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:55:01.029Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 4,
+    "fields": {
+        "registrado_por": [
+            "alejandro@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:55:57.251Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 5,
+    "fields": {
+        "registrado_por": [
+            "diegoherrera@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:57:29.137Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 6,
+    "fields": {
+        "registrado_por": [
+            "fabian@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-03T15:58:11.800Z",
+        "estado": "Cancelado"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 1,
+    "fields": {
+        "pedido": 1,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 2,
+    "fields": {
+        "pedido": 2,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 3,
+    "fields": {
+        "pedido": 3,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 4,
+    "fields": {
+        "pedido": 3,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Amarillo",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 5,
+    "fields": {
+        "pedido": 3,
+        "articulo": 4,
+        "cantidad": 1,
+        "tipo": "Carta",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 6,
+    "fields": {
+        "pedido": 4,
+        "articulo": 1,
+        "cantidad": 1,
+        "tipo": "Punta fina",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 7,
+    "fields": {
+        "pedido": 4,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 8,
+    "fields": {
+        "pedido": 4,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Amarillo",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 9,
+    "fields": {
+        "pedido": 5,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 10,
+    "fields": {
+        "pedido": 5,
+        "articulo": 1,
+        "cantidad": 1,
+        "tipo": "Punta fina",
+        "area": "Registros públicos"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 11,
+    "fields": {
+        "pedido": 6,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Amarillo",
+        "area": "Gestión empresarial"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 12,
+    "fields": {
+        "pedido": 6,
+        "articulo": 2,
+        "cantidad": 1,
+        "tipo": "Argollado",
+        "area": "Gestión empresarial"
+    }
+}
+]

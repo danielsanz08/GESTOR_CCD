@@ -3,7 +3,7 @@
 {% block titulo %}Listar articulos{% endblock %}
 {% block contenido %}
 <style>
-   
+
 </style>
 
 <link rel="stylesheet" href="{% static 'css/listar_articulo.css' %}?v={% now 'U' %}">
@@ -15,7 +15,7 @@
 <section>
     <h1>Artículos de papelería</h1>
 
-    <div class="Bototnes">
+    
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
         <a
             href="{% url 'papeleria:reporte_articulo_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
@@ -30,7 +30,7 @@
         <a href="{% url 'papeleria:crear_articulo' %}">
             <button class="crear" title="Crear articulo"><i class="bi bi-plus-circle"></i></button>
         </a>
-    </div>
+    
 
     <form method="GET" action="{% url 'papeleria:listar_articulo' %}">
         <div>
@@ -88,19 +88,7 @@
                         <i data-feather="eye" class="icono"></i>
                     </button>
 
-                    <!-- Contenido oculto para el modal de detalles -->
-                    <div id="detalles-{{ articulo.id }}" style="display: none;">
-                        <h3>Detalles del Artículo</h3>
-                        <p><strong>ID: </strong>{{ articulo.id }}</p>
-                        <p><strong>Articulo: </strong>{{ articulo.nombre }}</p>
-                        <p><strong>Marca: </strong>{{ articulo.marca }}</p>
-                        <p><strong>Cantidad: </strong>{{ articulo.cantidad }}</p>
-                        <p><strong>Tipo: </strong>{{ articulo.tipo }}</p>
-                        <p><strong>Observación:</strong> {{ articulo.observacion }}</p>
-                        <p><strong>Precio:</strong> ${{ articulo.precio_formateado }}</p>
-                        <p><strong>Fecha de registro:</strong> {{ articulo.fecha_formateada }}</p>
-                        <p><strong>Registrado por:</strong> {{ articulo.registrado_por }}</p>
-                    </div>
+                    
                 </td>
             </tr>
             {% empty %}
@@ -236,9 +224,11 @@
                     max-height: 80%;
                     object-fit: contain;
                 }
-                .td_acciones, .editar {
-                    display: none;
-                }
+                
+                th:nth-child(n+6),
+                td:nth-child(n+6) {
+                    display: none !important;
+    }
             </style>
         `;
 

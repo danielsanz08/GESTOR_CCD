@@ -92,13 +92,13 @@ def crear_nuevo_backup(request):
 
     if request.method == 'POST':
         try:
-            # Crear backup con manejo de relaciones
-            nombre_archivo, ruta_archivo = crear_backup()
+            # Usar exportar_bd en lugar de crear_backup (o ajustar crear_backup)
+            nombre_archivo, ruta_archivo = exportar_bd()
+            
             tamano = os.path.getsize(ruta_archivo)
             tamano_mb = round(tamano / (1024 * 1024), 2)
             nombre = request.POST.get('nombre') or f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-            # Incluir información sobre las relaciones en la descripción
             backup = Backup(
                 nombre=nombre,
                 tamano=f"{tamano_mb} MB",

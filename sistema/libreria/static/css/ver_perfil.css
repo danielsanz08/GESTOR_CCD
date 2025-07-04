@@ -1,7 +1,7 @@
 /* Móviles (hasta 767px) */
 @media (max-width: 767px) {
     .card {
-        width: 40vh;
+        width: 50vh;
         margin: 60px auto;
         top: 17vh;
         border: 2px solid rgba(2, 47, 90, 0.63);
@@ -178,7 +178,7 @@
     .botones {
         display: flex;
         justify-content: center;
-        gap: 25px;
+        gap: 45px;
     }
 
     .editar {
@@ -219,24 +219,22 @@
         cursor: pointer;
     }
 }
-
 /* Escritorio (1025px en adelante) */
 @media (min-width: 1025px) {
     .card {
-        max-width: 550px;
+        width: 90%;
+        min-height: 400px;
         margin: 60px auto;
-        top: 17vh;
         border: 2px solid rgba(2, 47, 90, 0.63);
         border-radius: 15px;
         background: linear-gradient(110deg, #c7def893, #ffffffe8);
         box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-        position: relative;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         padding: 20px;
+        box-sizing: border-box;
     }
 
     .info {
@@ -244,7 +242,7 @@
         margin-bottom: 20px;
         font-size: 24px;
         color: #333;
-
+        width: 100%;
     }
 
     .card-body {
@@ -258,6 +256,11 @@
         display: flex;
         align-items: flex-start;
         margin-bottom: 20px;
+        margin-left: 80px;
+        width: 80%;
+        text-align: center;
+
+        flex-wrap: wrap;
     }
 
     .labels,
@@ -271,16 +274,20 @@
         margin-right: 20px;
         font-weight: bold;
         color: #555;
+        min-width: 150px;
+
     }
 
     .data {
         color: #333;
+        min-width: 150px;
     }
 
     .labels label,
     .data span {
         text-align: left;
         margin-bottom: 10px;
+        word-break: break-word;
     }
 
     .labels label {
@@ -290,41 +297,77 @@
     .botones {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 60px;
+        width: 100%;
+        margin-top: 20px;
+        flex-wrap: wrap;
     }
 
-    .editar {
+    .editar,
+    .atras {
         background-color: rgb(255, 255, 255);
-        margin-right: 15px;
         color: rgb(0, 0, 0);
         font-weight: bold;
-        border: 2px solid black;
-        height: 6vh;
-        width: 25vh;
+        border: 1px solid black;
+        height: 40px;
+        min-width: 150px;
         border-radius: 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        padding: 0 10px;
     }
 
     .editar:hover {
         background-color: rgb(33, 74, 187);
         color: rgb(255, 255, 255);
-        cursor: pointer;
-    }
-
-    .atras {
-        background-color: rgb(255, 255, 255);
-        margin-right: 15px;
-        color: rgb(0, 0, 0);
-        font-weight: bold;
-        border: 2px solid black;
-        height: 6vh;
-        width: 25vh;
-        border-radius: 20px;
-        margin-left: 50px;
     }
 
     .atras:hover {
         background-color: rgb(187, 69, 33);
         color: rgb(255, 255, 255);
-        cursor: pointer;
+    }
+
+    /* Tablet (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .card {
+            min-width: 80%;
+            max-width: 90%;
+            margin: 40px auto;
+        }
+
+        .labels-data-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .labels,
+        .data {
+            min-width: 100%;
+        }
+
+        .botones {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    /* Escritorio (1025px en adelante) */
+    @media (min-width: 1025px) {
+        .card {
+            min-width: 450px;
+            max-width: 550px;
+            top: 14vh;
+            position: relative;
+        }
+
+        .labels-data-container {
+            flex-direction: row;
+        }
+
+        .botones {
+            flex-direction: row;
+        }
     }
 }

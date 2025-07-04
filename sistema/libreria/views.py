@@ -240,6 +240,11 @@ def editar_usuario(request, user_id):
         'usuario': usuario,
         'breadcrumbs': breadcrumbs
     })
+def verificar_usuario(request):
+    usuarios = CustomUser.objects.all().order_by('id')
+    context = {
+        'usuarios': usuarios
+    }
 def lista_usuarios(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -360,13 +365,14 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.urls import reverse
 from django.conf import settings
-
+import socket
 # Obtener el modelo de usuario personalizado
 User = get_user_model()
 
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
+
         try:
             user = User.objects.get(email=email)
             token = default_token_generator.make_token(user)
@@ -374,19 +380,18 @@ def password_reset_request(request):
             reset_link = request.build_absolute_uri(
                 reverse("libreria:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
             )
-            
-            # Contexto para el template del email
+
+            # Contexto del correo
             context = {
                 'user': user,
                 'reset_link': reset_link,
                 'site_name': 'Gestor CCD',
                 'company_name': 'Gestor CCD',
             }
-            
+
             subject = "Restablecer tu contraseña - Gestor CCD"
             html_message = render_to_string("password_reset_email.html", context)
-            
-            # Crear mensaje de texto plano como respaldo
+
             text_message = f"""
 Hola {user.username},
 
@@ -401,29 +406,35 @@ El enlace será válido por 24 horas.
 
 Saludos,
 El equipo de Gestor CCD
-            """
-            
+"""
+
             try:
-                # Crear email con HTML y texto plano
+                # Enviar email
                 msg = EmailMultiAlternatives(
                     subject,
-                    text_message,  # Mensaje de texto plano
+                    text_message,
                     settings.DEFAULT_FROM_EMAIL,
                     [user.email]
                 )
-                msg.attach_alternative(html_message, "text/html")  # Versión HTML
+                msg.attach_alternative(html_message, "text/html")
                 msg.send()
-                
+
                 return redirect(reverse("libreria:password_reset_done") + "?sent=true")
+
+            except socket.timeout:
+                # Error por tiempo de espera
+                messages.error(request, "Hubo un problema de conexión al enviar el correo. Intenta nuevamente más tarde.")
+                return render(request, "password_reset.html")
+
             except Exception as e:
-                # Log del error pero no mostrar detalles al usuario por seguridad
+                # Otro error (no se muestra al usuario por seguridad)
                 print(f"Error enviando email: {e}")
                 return redirect(reverse("libreria:password_reset_done") + "?sent=error")
-                
+
         except User.DoesNotExist:
-            # Por seguridad, redirigir igual pero con parámetro diferente
+            # Usuario no encontrado, redirige sin indicar si existe o no
             return redirect(reverse("libreria:password_reset_done") + "?sent=notfound")
-    
+
     return render(request, "password_reset.html")
 
 def password_reset_done(request):

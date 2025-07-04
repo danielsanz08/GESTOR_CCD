@@ -609,18 +609,20 @@ def crear_pedido_caf(request):
                         f"Rol: {request.user.role}\n"
                         f"ID del pedido: {pedido.id}\n"
                         f"Estado inicial del pedido: {estado}\n\n"
-                        f"Por favor revisa y confirma el pedido si corresponde.\n"
-                        "\n"
+                        f"Por favor revisa y confirma el pedido si corresponde.\n\n"
                         f"Gracias por su atención.\n"
                         f"El equipo de Gestor CCD les desea un excelente día."
                     )
-                    send_mail(
-                        subject,
-                        message,
-                        settings.DEFAULT_FROM_EMAIL,
-                        admin_emails,
-                        fail_silently=False,
-                    )
+                    try:
+                        send_mail(
+                            subject,
+                            message,
+                            settings.DEFAULT_FROM_EMAIL,
+                            admin_emails,
+                            fail_silently=False,
+                        )
+                    except TimeoutError:
+                        messages.error(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación (Timeout).")
 
             messages.success(request, f"Pedido creado exitosamente con estado: {estado}.")
             return redirect('cafeteria:mis_pedidos')
@@ -683,9 +685,68 @@ def cambiar_estado_pedido(request, pedido_id):
 
     if request.method == 'POST':
         nuevo_estado = request.POST.get('estado')
-        if nuevo_estado in ['Confirmado', 'Cancelado']:
-            pedido.estado = nuevo_estado
-            pedido.save()
+        
+        if nuevo_estado:
+            if nuevo_estado == 'Confirmado':
+                try:
+                    with transaction.atomic():
+                        productos_pedido = pedido.productos.select_related('producto').all()
+                        productos_sin_stock = []
+
+                        # Verificar stock
+                        for item in productos_pedido:
+                            producto = item.producto
+                            if producto.cantidad < item.cantidad:
+                                productos_sin_stock.append(
+                                    f"{producto.nombre} (Solicitados: {item.cantidad}, Disponibles: {producto.cantidad})"
+                                )
+
+                        if productos_sin_stock:
+                            pedido.estado = 'Cancelado'
+                            pedido.fecha_estado = timezone.now()
+                            pedido.save()
+                            messages.error(request, f"Pedido cancelado. Stock insuficiente: {', '.join(productos_sin_stock)}")
+                            return redirect('cafeteria:pedidos_pendientes')
+
+                        # Descontar del stock
+                        for item in productos_pedido:
+                            producto = item.producto
+                            producto.cantidad -= item.cantidad
+                            producto.save()
+
+                        pedido.estado = 'Confirmado'
+                        pedido.fecha_estado = timezone.now()
+                        pedido.save()
+
+                        messages.success(request, 'Pedido confirmado correctamente.')
+
+                except Exception as e:
+                    messages.error(request, f'Error al confirmar el pedido: {str(e)}')
+                    return redirect('cafeteria:pedidos_pendientes')
+
+            else:  # Cancelado u otro estado
+                pedido.estado = nuevo_estado
+                pedido.fecha_estado = timezone.now()
+                # Aquí podrías guardar un motivo de cancelación si lo agregas al modelo
+                pedido.save()
+                messages.success(request, f'Estado actualizado a {nuevo_estado}.')
+
+            # (Opcional) Enviar correo
+            if pedido.registrado_por and pedido.registrado_por.email:
+                try:
+                    send_mail(
+                        f'Estado de pedido #{pedido.id} actualizado',
+                        f'Tu pedido #{pedido.id} ha sido actualizado a {pedido.estado}.',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [pedido.registrado_por.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error enviando email: {str(e)}")
+
+            return redirect('cafeteria:pedidos_pendientes')
+
+    messages.error(request, 'No se pudo actualizar el estado.')
     return redirect('cafeteria:pedidos_pendientes')
 
 def pedidos_pendientes(request):

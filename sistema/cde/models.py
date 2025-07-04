@@ -17,6 +17,7 @@ class PedidoCde(models.Model):
         related_name='cde_pedidos',
         default=1 
     )
+    fecha_estado = models.DateTimeField(null=True, blank=True) 
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(
         max_length=20,

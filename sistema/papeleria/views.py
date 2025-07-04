@@ -275,6 +275,16 @@ def lista_stock_bajo(request):
         'breadcrumbs': breadcrumbs
     })
 #VIEWS DE PEDIDOS
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
+from .models import Pedido, PedidoArticulo, Articulo
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 @login_required
 def crear_pedido(request):
     breadcrumbs = [
@@ -336,13 +346,17 @@ def crear_pedido(request):
                 f"Gracias por su atención.\n"
                 f"El equipo de Gestor CCD les desea un excelente día."
             )
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                admin_emails,
-                fail_silently=False,
-            )
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    admin_emails,
+                    fail_silently=False,
+                )
+            except TimeoutError:
+                messages.error(request, "El pedido fue creado, pero no se pudo enviar la notificación por correo debido a un problema de conexión (Timeout).")
 
         messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
 
@@ -356,6 +370,7 @@ def crear_pedido(request):
         'articulos': articulos,
         'breadcrumbs': breadcrumbs,
     })
+
 def mis_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -400,7 +415,7 @@ def mis_pedidos(request):
         'pedidos': pedidos_page,
         'breadcrumbs': breadcrumbs
     })
-
+from django.utils import timezone
 @csrf_exempt
 @require_POST
 
@@ -411,45 +426,38 @@ def cambiar_estado_pedido(request, pedido_id):
         nuevo_estado = request.POST.get('estado')
         
         if nuevo_estado:
-            if nuevo_estado == 'confirmado':
+            if nuevo_estado == 'Confirmado':
                 try:
                     with transaction.atomic():
                         articulos_pedido = pedido.articulos.select_related('articulo').all()
                         productos_sin_stock = []
                         
-                        # Primera pasada: Verificar stock para todos los artículos
+                        # Verificar stock
                         for articulo_pedido in articulos_pedido:
                             articulo = articulo_pedido.articulo
-                            cantidad_pedida = articulo_pedido.cantidad
-                            
-                            if articulo.cantidad < cantidad_pedida:
+                            if articulo.cantidad < articulo_pedido.cantidad:
                                 productos_sin_stock.append(
-                                    f"{articulo.nombre} (Solicitados: {cantidad_pedida}, Disponibles: {articulo.cantidad})"
+                                    f"{articulo.nombre} (Solicitados: {articulo_pedido.cantidad}, Disponibles: {articulo.cantidad})"
                                 )
                         
-                        # Si hay productos sin stock suficiente, cancelar el pedido
                         if productos_sin_stock:
-                            pedido.estado = 'cancelado'
-                            pedido.fecha_cancelacion = datetime.now()
-                            pedido.motivo_cancelacion = f"Stock insuficiente para: {', '.join(productos_sin_stock)}"
+                            pedido.estado = 'Cancelado'
+                            pedido.fecha_estado = timezone.now()
+                            pedido.motivo_cancelacion = f"Stock insuficiente: {', '.join(productos_sin_stock)}"
                             pedido.save()
                             
-                            messages.error(
-                                request,
-                                f"Pedido cancelado automáticamente. Stock insuficiente para: {', '.join(productos_sin_stock)}"
-                            )
+                            messages.error(request, f"Pedido cancelado. Stock insuficiente: {', '.join(productos_sin_stock)}")
                             return redirect('papeleria:pedidos_pendientes')
                         
-                        # Si todo está bien, actualizar el stock
+                        # Actualizar stock
                         for articulo_pedido in articulos_pedido:
                             articulo = articulo_pedido.articulo
-                            cantidad_pedida = articulo_pedido.cantidad
-                            articulo.cantidad -= cantidad_pedida
+                            articulo.cantidad -= articulo_pedido.cantidad
                             articulo.save()
                         
-                        # Confirmar el pedido
-                        pedido.estado = 'confirmado'
-                        pedido.fecha_confirmacion = datetime.now()
+                        # Confirmar pedido
+                        pedido.estado = 'Confirmado'
+                        pedido.fecha_estado = timezone.now()
                         pedido.save()
                         
                         messages.success(request, 'Pedido confirmado correctamente.')
@@ -459,23 +467,25 @@ def cambiar_estado_pedido(request, pedido_id):
                     return redirect('papeleria:pedidos_pendientes')
             
             else:
-                # Lógica para otros estados (no confirmado)
+                # Para otros estados (Cancelado)
                 pedido.estado = nuevo_estado
+                pedido.fecha_estado = timezone.now()
+                if nuevo_estado == 'Cancelado':
+                    pedido.motivo_cancelacion = request.POST.get('motivo', 'Sin motivo especificado')
                 pedido.save()
-                messages.success(request, f'Estado del pedido actualizado a {nuevo_estado}.')
+                
+                messages.success(request, f'Estado actualizado a {nuevo_estado}.')
             
-            # Enviar notificación por email
-            usuario = pedido.registrado_por
-            if usuario and usuario.email:
+            # Enviar notificación
+            if pedido.registrado_por and pedido.registrado_por.email:
                 try:
-                    estado_legible = dict(Pedido.ESTADO_CHOICES).get(pedido.estado, pedido.estado)
                     send_mail(
-                        f'Actualización de tu pedido #{pedido.id}',
-                        f'Hola {usuario.username},\n\nEl estado de tu pedido #{pedido.id} ha cambiado a {estado_legible}.\n\n'
-                        f'{"Motivo: " + pedido.motivo_cancelacion if pedido.estado == "cancelado" else ""}\n\n'
-                        'Gracias por tu compra.',
+                        f'Estado pedido #{pedido.id} actualizado',
+                        f'Tu pedido #{pedido.id} cambió a {pedido.estado}.\n\n'
+                        f'Fecha: {pedido.fecha_estado_formateada()}\n'
+                        f'{"Motivo: " + pedido.motivo_cancelacion if pedido.estado == "Cancelado" else ""}',
                         settings.DEFAULT_FROM_EMAIL,
-                        [usuario.email],
+                        [pedido.registrado_por.email],
                         fail_silently=False,
                     )
                 except Exception as e:
@@ -483,9 +493,8 @@ def cambiar_estado_pedido(request, pedido_id):
             
             return redirect('papeleria:pedidos_pendientes')
 
-    messages.error(request, 'No se pudo actualizar el estado del pedido.')
+    messages.error(request, 'No se pudo actualizar el estado.')
     return redirect('papeleria:pedidos_pendientes')
-
 def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

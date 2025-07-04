@@ -28,6 +28,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
+EMAIL_TIMEOUT = 30  # 30 segundos
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "gestorccd@gmail.com"
 EMAIL_HOST_PASSWORD = "utdf dxyn btiz dgjv"  # tu contraseña de aplicación
@@ -121,7 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'es'
-TIME_ZONE = 'America/Mexico_City'
+TIME_ZONE = 'America/Bogota'  # Zona horaria para Colombia
+
 USE_I18N = True
 USE_TZ = True
 

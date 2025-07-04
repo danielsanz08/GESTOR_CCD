@@ -171,7 +171,6 @@ def crear_pedido_cde(request):
         try:
             estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
 
-            # Crear el pedido principal
             pedido_cde = PedidoCde.objects.create(
                 registrado_por=request.user,
                 estado=estado,
@@ -179,7 +178,7 @@ def crear_pedido_cde(request):
 
             productos_ids = request.POST.getlist('producto')
             cantidades = request.POST.getlist('cantidad')
-            eventos = request.POST.getlist('evento')  # Cambié el nombre a plural para reflejar que es una lista
+            eventos = request.POST.getlist('evento')
 
             area_usuario = getattr(request.user, 'area', 'No establecido')
 
@@ -188,7 +187,6 @@ def crear_pedido_cde(request):
                     if not producto_id or not cantidad or not evento:
                         continue
 
-                    # Validar que el ID y cantidad sean numéricos
                     producto_id = int(producto_id)
                     cantidad = int(cantidad)
 
@@ -196,18 +194,14 @@ def crear_pedido_cde(request):
 
                     if estado == 'Confirmado' and producto.cantidad < cantidad:
                         pedido_cde.delete()
-                        return render(request, 'pedidos_cde/pedidos_cde.html', {
-                            'productos': Productos.objects.all(),
-                            'error': f"No hay suficiente stock para el producto: {producto.nombre}",
-                            'breadcrumbs': breadcrumbs
-                        })
+                        messages.error(request, f"No hay suficiente stock para el producto: {producto.nombre} (disponible: {producto.cantidad}, solicitado: {cantidad})")
+                        return redirect('cde:crear_pedido_cde')
 
-                    # Crear el producto del pedido - CORRECCIÓN PRINCIPAL AQUÍ
                     PedidoProductoCde.objects.create(
-                        pedido=pedido_cde,  # El campo en el modelo es 'pedido', no 'pedidoCde'
+                        pedido=pedido_cde,
                         producto=producto,
                         cantidad=cantidad,
-                        evento=evento,  # Usamos la variable evento de la iteración
+                        evento=evento,
                         area=area_usuario,
                     )
 
@@ -219,7 +213,6 @@ def crear_pedido_cde(request):
                     print(f"Error al procesar producto: {e}")
                     continue
 
-            # Notificar a administradores para pedidos de Empleados y Administradores
             if request.user.role in ['Empleado', 'Administrador']:
                 admin_users = User.objects.filter(role='Administrador', is_active=True)
                 admin_emails = [admin.email for admin in admin_users if admin.email]
@@ -235,34 +228,33 @@ def crear_pedido_cde(request):
                         f"Rol: {request.user.role}\n"
                         f"ID del pedido: {pedido_cde.id}\n"
                         f"Estado inicial del pedido: {estado}\n\n"
-                        f"Por favor revisa y confirma el pedido si corresponde.\n"
-                        "\n"
+                        f"Por favor revisa y confirma el pedido si corresponde.\n\n"
                         f"Gracias por su atención.\n"
                         f"El equipo de Gestor CCD les desea un excelente día."
                     )
-                    send_mail(
-                        subject,
-                        message,
-                        settings.DEFAULT_FROM_EMAIL,
-                        admin_emails,
-                        fail_silently=False,
-                    )
+                    try:
+                        send_mail(
+                            subject,
+                            message,
+                            settings.DEFAULT_FROM_EMAIL,
+                            admin_emails,
+                            fail_silently=False,
+                        )
+                    except TimeoutError:
+                        messages.error(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación (Timeout).")
 
-            # Redirigir a la vista de pedidos pendientes para todos los roles
+            messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
             return redirect('cde:mis_pedidos_pendientes_cde')
 
         except Exception as e:
             print(f"Error al crear pedido: {e}")
-            return render(request, 'pedidos_cde/pedidos_cde.html', {
-                'productos': Productos.objects.all(),
-                'error': "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.",
-                'breadcrumbs': breadcrumbs
-            })
+            messages.error(request, "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.")
+            return redirect('cde:crear_pedido_cde')
 
     productos = Productos.objects.all()
     return render(request, 'pedidos_cde/pedidos_cde.html', {
         'productos': productos,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
     })
 @login_required
 def mis_pedidos_cde(request):
@@ -312,11 +304,67 @@ def cambiar_estado_pedido_cde(request, pedido_id):
 
     if request.method == 'POST':
         nuevo_estado = request.POST.get('estado')
-        if nuevo_estado in ['Confirmado', 'Cancelado']:
-            pedido.estado = nuevo_estado
-            pedido.save()
-    return redirect('cde:pedidos_pendientes')
 
+        if nuevo_estado:
+            if nuevo_estado == 'Confirmado':
+                try:
+                    with transaction.atomic():
+                        productos_pedido = pedido.productos.select_related('producto').all()
+                        productos_sin_stock = []
+
+                        # Verificar stock disponible
+                        for item in productos_pedido:
+                            producto = item.producto
+                            if producto.cantidad < item.cantidad:
+                                productos_sin_stock.append(
+                                    f"{producto.nombre} (Solicitados: {item.cantidad}, Disponibles: {producto.cantidad})"
+                                )
+
+                        if productos_sin_stock:
+                            pedido.estado = 'Cancelado'
+                            pedido.fecha_estado = timezone.now()
+                            pedido.save()
+                            messages.error(request, f"Pedido cancelado. Stock insuficiente: {', '.join(productos_sin_stock)}")
+                            return redirect('cde:pedidos_pendientes')
+
+                        # Descontar del stock
+                        for item in productos_pedido:
+                            producto = item.producto
+                            producto.cantidad -= item.cantidad
+                            producto.save()
+
+                        pedido.estado = 'Confirmado'
+                        pedido.fecha_estado = timezone.now()
+                        pedido.save()
+                        messages.success(request, 'Pedido confirmado correctamente.')
+
+                except Exception as e:
+                    messages.error(request, f'Error al confirmar el pedido: {str(e)}')
+                    return redirect('cde:pedidos_pendientes')
+
+            else:  # Cancelado u otro estado
+                pedido.estado = nuevo_estado
+                pedido.fecha_estado = timezone.now()
+                pedido.save()
+                messages.success(request, f'Estado actualizado a {nuevo_estado}.')
+
+            # (Opcional) Enviar notificación al usuario
+            if pedido.registrado_por and pedido.registrado_por.email:
+                try:
+                    send_mail(
+                        f'Estado de tu pedido #{pedido.id} actualizado',
+                        f'Tu pedido #{pedido.id} ha sido actualizado a {pedido.estado}.',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [pedido.registrado_por.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error enviando email: {str(e)}")
+
+            return redirect('cde:pedidos_pendientes')
+
+    messages.error(request, 'No se pudo actualizar el estado.')
+    return redirect('cde:pedidos_pendientes')
 def pedidos_pendientes_cde(request):
     breadcrumbs = [
         {'name': 'Inicio CDE', 'url': '/index_cde'},

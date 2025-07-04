@@ -10,22 +10,24 @@
 <style>
     /* Modal */
     #modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    max-width: 500px;
-    width: 90%;
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
 
-    max-height: 80vh;         /* Limita la altura máxima del modal */
-    overflow-y: auto;         /* Agrega scroll vertical si es necesario */
-}
+        max-height: 80vh;
+        /* Limita la altura máxima del modal */
+        overflow-y: auto;
+        /* Agrega scroll vertical si es necesario */
+    }
 
 
     #modal-backdrop {
@@ -69,7 +71,7 @@
 
 
     </div>
-     <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
+    <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
 
         <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
         <button type="submit" class="btn-search" title="Buscar texto"><i class="fas fa-search"></i></button>
@@ -107,16 +109,31 @@
                 <td>{{ pedido.fecha_formateada }}</td>
                 <td>{{ pedido.estado }}</td>
                 <td>
-                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> 
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
                         <i data-feather="eye" class="icono"></i>
                     </button>
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
-                       <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                        <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
                         <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
                         <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
-
+                        <p>
+                            <strong>
+                                {% if pedido.estado == 'Confirmado' %}
+                                Fecha confirmación:
+                                {% elif pedido.estado == 'Cancelado' %}
+                                Fecha cancelación:
+                                {% else %}
+                                Fecha estado:
+                                {% endif %}
+                            </strong>
+                            {% if pedido.fecha_estado %}
+                            {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
+                            {% else %}
+                            Pendiente
+                            {% endif %}
+                        </p>
                         <p><strong>Áreas:</strong>
                             {% with areas=pedido.articulos.all|dictsort:"area" %}
                             {% for articulo in areas %}
@@ -137,14 +154,14 @@
                         <button onclick="cerrarModal()">Cerrar</button>
                     </div>
                 </td>
-                
-               
+
+
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-   <div class="paginacion" id="pag">
+    <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
         {% endif %}

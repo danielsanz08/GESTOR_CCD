@@ -674,37 +674,48 @@
 </style>
 <!-- ============= SECCIÓN MENSAJES DE ALERTA ============= -->
 {% if messages %}
-{% for message in messages %}
-{% if message.tags == 'success' %}
-<div class="custom-alert alert-success">
-  <span class="icon"></span> {{ message }}
-</div>
-{% elif message.tags == 'error' %}
-<div class="custom-alert alert-error">
-  <span class="icon"></span> {{ message }}
-</div>
-{% elif message.tags == 'info' %}
-<div class="custom-alert alert-info">
-  <span class="icon"></span> {{ message }}
+<div class="alert-container">
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="custom-alert alert-success">
+      <span class="icon"></span> {{ message }}
+    </div>
+    {% elif message.tags == 'error' %}
+    <div class="custom-alert alert-error">
+      <span class="icon"></span> {{ message }}
+    </div>
+    {% elif message.tags == 'info' %}
+    <div class="custom-alert alert-info">
+      <span class="icon"></span> {{ message }}
+    </div>
+    {% endif %}
+  {% endfor %}
 </div>
 {% endif %}
-{% endfor %}
-{% endif %}
+
 <style>
+  .alert-container {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: fit-content;
+    max-width: 90%;
+  }
+
   /* Móviles (hasta 767px) */
   @media (max-width: 767px) {
     .custom-alert {
-      position: fixed;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
       width: 30vh;
       border: solid 1px;
       font-weight: bold;
       padding: 15px 30px;
       border-radius: 5px;
       text-align: center;
-      z-index: 9999;
       backdrop-filter: blur(5px);
       animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
     }
@@ -728,45 +739,18 @@
     }
     .icon {
       margin-right: 10px;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
     }
   }
 
   /* Escritorio (1025px en adelante) */
   @media (min-width: 1025px) {
     .custom-alert {
-      position: fixed;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
       width: 50vh;
       border: solid 1px;
       font-weight: bold;
       padding: 15px 30px;
       border-radius: 5px;
       text-align: center;
-      z-index: 9999;
       backdrop-filter: blur(5px);
       animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
     }
@@ -791,45 +775,18 @@
 
     .icon {
       margin-right: 10px;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
     }
   }
 
   /* Tablets (768px — 1024px) */
   @media (min-width: 768px) and (max-width: 1024px) {
     .custom-alert {
-      position: fixed;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
       width: 40vh;
       border: solid 1px;
       font-weight: bold;
       padding: 15px 30px;
       border-radius: 5px;
       text-align: center;
-      z-index: 9999;
       backdrop-filter: blur(5px);
       animation: fadeIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
     }
@@ -855,27 +812,27 @@
     .icon {
       margin-right: 10px;
     }
+  }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-      }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
     }
   }
 </style>

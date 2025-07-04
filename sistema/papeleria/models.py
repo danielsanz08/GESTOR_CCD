@@ -50,6 +50,7 @@ class Pedido(models.Model):
     ]
     registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     fecha_pedido = models.DateTimeField(auto_now_add=True)
+    fecha_estado = models.DateTimeField(null=True, blank=True) 
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
 
     def fecha_formateada(self):

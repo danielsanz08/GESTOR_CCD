@@ -3,16 +3,22 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.urls import reverse
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.db import transaction
+from django.utils import timezone
 from django.core.mail import send_mail
 from cde.forms import LoginForm
 from libreria.forms import CustomUserForm
+from django.core.mail import EmailMultiAlternatives
 from libreria.models import CustomUser
 from cafeteria.models import Productos
 from django.conf import settings
 from django.core.mail import send_mail
 from cde.models import PedidoCde, PedidoProductoCde
+from cde.forms import PedidoProductoCdeForm, LoginForm
 from django.db.models import Q
 from django.core.paginator import Paginator
+from cafeteria.models import Productos
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -60,92 +66,129 @@ User = get_user_model()
 def index_cde(request):
     return render(request, 'index_cde/index_cde.html')
 
-def crear_usuario_cde(request):
+def crear_pedido_cde(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Crear usuario', 'url': '/crear_usuario'},
+        {'name': 'Inicio', 'url': reverse('cde:index_cde')},
+        {'name': 'Crear pedido CDE', 'url': reverse('cde:crear_pedido_cde')},
     ]
-    admin_exists = CustomUser.objects.exists()
 
     if request.method == 'POST':
-        form = CustomUserForm(request.POST)
+        try:
+            estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
 
-        if form.is_valid():
-            try:
-                user = form.save(commit=False)
-                module = user.module
-                role = user.role
+            pedido_cde = PedidoCde.objects.create(
+                registrado_por=request.user,
+                estado=estado,
+                fecha_estado=timezone.now() if estado == 'Confirmado' else None
+            )
 
-                # Verificar el número de administradores en cada módulo
-                if role == 'Administrador':
-                    admin_count = CustomUser.objects.filter(
-                        role='Administrador', module=module, is_active=True
-                    ).count()
+            productos_ids = request.POST.getlist('producto')
+            cantidades = request.POST.getlist('cantidad')
+            eventos = request.POST.getlist('evento')
 
-                    limits = {'Papeleria': 3, 'Cafeteria': 2, 'Centro de eventos': 1}
-                    if module in limits and admin_count >= limits[module]:
-                        messages.error(
-                            request,
-                            f"Ya existen {limits[module]} administradores en el módulo {module}."
-                        )
-                        return redirect('crear_usuario')
+            area_usuario = getattr(request.user, 'area', 'No establecido')
 
-                # Guardar el usuario
-                user.save()
+            for producto_id, cantidad, evento in zip(productos_ids, cantidades, eventos):
+                try:
+                    if not producto_id or not cantidad or not evento:
+                        continue
 
-                # Enviar correo a los administradores del mismo módulo
-                admin_emails = CustomUser.objects.filter(
-                    role='Administrador', module=module, is_active=True
-                ).values_list('email', flat=True)
+                    producto_id = int(producto_id)
+                    cantidad = int(cantidad)
 
-                cargo = request.POST.get("cargo", "").strip()
-                email = user.email  # Se obtiene directamente del objeto user
+                    if cantidad <= 0:
+                        raise ValueError("Cantidad debe ser mayor a cero")
 
-                if admin_emails:
-                    subject = f"Nuevo usuario creado en {module}"
-                    message = (
-                        f"Hola querido usuario,\n\n"
-                        f"Por parte de Gestor CCD, te informamos que se ha creado un nuevo usuario.\n\n"
-                        f"Información:\n\n"
-                        f"Nombre: {user.username}\n"
-                        f"Rol: {role}\n"
-                        f"Módulo: {module}\n"
-                        f"Cargo: {cargo}\n"
-                        f"Email: {email}\n\n"
-                        f"En caso de ser infiltrado, por favor te invitamos a desactivarlo.\n\n"
-                        f"Muchas gracias por su atención.\n"
-                        f"El director de Gestor CCD te desea un feliz día."
+                    producto = Productos.objects.get(id=producto_id)
+
+                    if estado == 'Confirmado' and producto.cantidad < cantidad:
+                        pedido_cde.delete()
+                        messages.error(request, f"No hay suficiente stock para el producto: {producto.nombre} (disponible: {producto.cantidad}, solicitado: {cantidad})")
+                        return redirect('cde:crear_pedido_cde')
+
+                    PedidoProductoCde.objects.create(
+                        pedido=pedido_cde,
+                        producto=producto,
+                        cantidad=cantidad,
+                        evento=evento,
+                        area=area_usuario,
                     )
-                    try:
-                        send_mail(
-                            subject,
-                            message,
-                            settings.DEFAULT_FROM_EMAIL,
-                            list(admin_emails),
-                            fail_silently=False,
-                        )
-                        print("Correo enviado correctamente.")
-                    except Exception as e:
-                        messages.error(request, f"No se pudo enviar el correo: {e}")
 
-                messages.success(request, f"Usuario '{user.username}' creado exitosamente.")
-                return redirect('libreria:inicio')
+                    if estado == 'Confirmado':
+                        producto.cantidad -= cantidad
+                        producto.save()
 
-            except Exception as e:
-                messages.error(request, f"Hubo un error al crear el usuario: {e}")
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = CustomUserForm()
+                except (ValueError, Productos.DoesNotExist) as e:
+                    print(f"Error al procesar producto: {e}")
+                    continue
 
-    return render(request, 'usuario_cde/crear_usuario_cde.html', {
-        'form': form,
-        'admin_exists': admin_exists,
+            # Notificar a administradores
+            admin_users = CustomUser.objects.filter(role='Administrador', is_active=True)
+            admin_emails = [admin.email for admin in admin_users if admin.email]
+
+            if admin_emails:
+                admin_url = request.build_absolute_uri(reverse('cde:mis_pedidos_pendientes_cde'))
+                context = {
+                    'usuario': request.user,
+                    'pedido': pedido_cde,
+                    'admin_url': admin_url,
+                    'company_name': 'Gestor CCD',
+                    'productos': PedidoProductoCde.objects.filter(pedido=pedido_cde),
+                    'fecha_pedido': pedido_cde.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido_cde.fecha_pedido else '',
+                }
+
+                html_message = render_to_string('pedidos_cde/email_notificacion_pedido.html', context)
+
+                text_message = f"""
+Hola Administrador,
+
+Se ha registrado un nuevo pedido en el sistema del Centro de Eventos:
+
+Usuario: {request.user.username}
+Rol: {request.user.get_role_display()}
+Área: {getattr(request.user, 'area', 'No especificada')}
+ID del Pedido: {pedido_cde.id}
+Estado: {estado}
+Fecha: {pedido_cde.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido_cde.fecha_pedido else 'N/D'}
+
+Detalle de productos:
+{chr(10).join([f"- {pp.producto.nombre} x {pp.cantidad} (Evento: {pp.evento})" for pp in PedidoProductoCde.objects.filter(pedido=pedido_cde)])}
+
+Revisar el pedido: {admin_url}
+
+Este es un mensaje automático, por favor no respondas.
+"""
+
+                try:
+                    subject = f"Nuevo pedido {'confirmado' if estado == 'Confirmado' else 'pendiente'} - ID: {pedido_cde.id}"
+                    msg = EmailMultiAlternatives(
+                        subject,
+                        text_message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        admin_emails
+                    )
+                    msg.attach_alternative(html_message, "text/html")
+                    msg.send()
+                except Exception as e:
+                    print(f"Error enviando correo: {e}")
+                    messages.warning(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación.")
+
+            messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
+            return redirect('cde:mis_pedidos_pendientes_cde')
+
+        except Exception as e:
+            print(f"Error al crear pedido: {e}")
+            messages.error(request, "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.")
+            return render(request, 'pedidos_cde/pedidos_cde.html', {
+                'productos': Productos.objects.all(),
+                'breadcrumbs': breadcrumbs
+            })
+
+    productos = Productos.objects.all()
+    return render(request, 'pedidos_cde/pedidos_cde.html', {
+        'productos': productos,
         'breadcrumbs': breadcrumbs
     })
-
 def ver_usuario_cde(request, id):
     breadcrumbs = [
         {'name': 'Inicio CDE', 'url': '/index_cde'},
@@ -161,54 +204,7 @@ def index_cde(request):
     ]
     return render(request, 'index_cde/index_cde.html',{'breadcrumbs': breadcrumbs})
 
-def crear_pedido_cde(request):
-    breadcrumbs = [
-        {'name': 'Inicio', 'url': reverse('cde:index_cde')},
-        {'name': 'Crear pedido cde', 'url': reverse('cde:crear_pedido_cde')},
-    ]
 
-    if request.method == 'POST':
-        form = PedidoProductoCdeForm(request.POST)
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    pedido = form.save(commit=False)
-                    pedido.usuario = request.user
-                    pedido.fecha_pedido = timezone.now()
-                    pedido.estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
-                    pedido.save()
-
-                    # Enviar correo si el usuario es Empleado
-                    if request.user.role == 'Empleado':
-                        admin_emails = CustomUser.objects.filter(role='Administrador', is_active=True).values_list('email', flat=True)
-                        if admin_emails:
-                            subject = f"📦 Nuevo pedido creado por {request.user.nombre}"
-                            context = {
-                                'usuario': request.user,
-                                'pedido': pedido,
-                                'fecha': timezone.now()
-                            }
-                            html_content = render_to_string('emails/pedido_creado_cde.html', context)
-                            email = EmailMultiAlternatives(subject, '', to=admin_emails)
-                            email.attach_alternative(html_content, "text/html")
-                            email.send()
-
-                    messages.success(request, 'El pedido ha sido creado correctamente.')
-                    return redirect('cde:index_cde')
-
-            except Exception as e:
-                messages.error(request, f'Ocurrió un error al guardar el pedido: {str(e)}')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-    else:
-        form = PedidoProductoCdeForm(initial={'area': request.user.area})
-
-    return render(request, 'cde/crear_pedido.html', {
-        'form': form,
-        'breadcrumbs': breadcrumbs,
-    })
 @login_required
 def mis_pedidos_cde(request):
     breadcrumbs = [

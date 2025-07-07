@@ -56,7 +56,7 @@
     }
 </style>
 <section>
-    <h1>Listado de pedidos</h1>
+    <h1>Listado de pedidos pendientes</h1>
 
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
@@ -65,10 +65,13 @@
             <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
         </a>
 
-        <a
-            href="{% url 'papeleria:reporte_pedidos_pendientes_pdf' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
-            <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
-        </a>
+       <a
+    href="{% url 'papeleria:reporte_pedidos_pendientes_excel' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+    <button class="excel" title="Exportar a Excel">
+        <i class="fas fa-file-excel text-white"></i>
+    </button>
+</a>
+
 
 
     </div>
@@ -255,5 +258,81 @@
             }
         });
     });
+     document.querySelector('.print').addEventListener('click', function () {
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
+
+        const fondo = `
+        <div class="fondo">
+            <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+        </div>
+    `;
+
+        const estiloImpresion = `
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                position: relative;
+            }
+            h1 {
+                margin-bottom: 20px;
+                position: relative;
+                z-index: 2;
+            }
+            table {
+                margin: auto;
+                width: 90%;
+                border-collapse: collapse;
+                position: relative;
+                z-index: 2;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            thead {
+                background-color: rgba(61, 43, 226, 0.411);
+            }
+            .fondo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                opacity: 0.1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .fondo img {
+                max-width: 80%;
+                max-height: 80%;
+                object-fit: contain;
+            }
+           th:nth-child(n+5),
+                td:nth-child(n+5) {
+                    display: none !important;
+                }
+        </style>
+    `;
+
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);
+        ventanaImpresion.document.write(titulo);
+        ventanaImpresion.document.write(tabla);
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+    });
+
 </script>
 {% endblock %}

@@ -118,7 +118,6 @@
         cursor: pointer;
     }
     
-    /* Nuevos estilos para centrar la gráfica */
     .chart-container {
         position: relative;
         width: 100%;
@@ -175,11 +174,10 @@
 <script>
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
-    const maxCantidad = 10;
-    const porcentajes = cantidades.map(c => {
-        let porcentaje = (c / maxCantidad) * 100;
-        return porcentaje > 100 ? 100 : parseFloat(porcentaje.toFixed(2));
-    });
+
+    // La mayor cantidad representa el 100%
+    const maxCantidad = Math.max(...cantidades, 1); // Evita división por cero
+    const porcentajes = cantidades.map(c => parseFloat(((c / maxCantidad) * 100).toFixed(2)));
 
     const ctx = document.getElementById('graficaPedidos').getContext('2d');
     new Chart(ctx, {
@@ -193,8 +191,8 @@
                     backgroundColor: 'rgba(255, 205, 86, 0.6)',
                     borderColor: 'rgba(255, 205, 86, 1)',
                     borderWidth: 1,
-                    barPercentage: 0.6, // Controla el ancho de las barras
-                    categoryPercentage: 0.8 // Controla el espacio entre categorías
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
                 },
                 {
                     label: 'Confirmado',
@@ -204,7 +202,6 @@
                     borderWidth: 1,
                     barPercentage: 0.6,
                     categoryPercentage: 0.8
-                    
                 },
                 {
                     label: 'Cancelado',
@@ -226,7 +223,7 @@
                         display: false
                     },
                     ticks: {
-                        padding: 10 // Añade espacio entre las etiquetas y el eje
+                        padding: 10
                     }
                 },
                 y: {

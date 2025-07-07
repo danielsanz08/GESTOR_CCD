@@ -1,6 +1,6 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% block titulo %}Estadisticas - CCD{% endblock %}
+{% block titulo %}Estadísticas - CCD{% endblock %}
 {% block contenido %}
 <style>
     #grafica {
@@ -25,35 +25,35 @@
     }
 </style>
 
-<div class="estadisticas-container" >
-    <div id="cuadradoFondo"></div> <!-- Nuevo div cuadrado -->
-    <div id="grafica" >
-        <h2 class="text-center">Gráfica de Artículos por Porcentaje</h2>
-        <canvas id="graficaArticulos"></canvas>
+<div class="estadisticas-container">
+    <div id="cuadradoFondo"></div> <!-- Fondo detrás de la gráfica -->
+    <div id="grafica">
+        <h2 class="text-center">Gráfica de productos por Porcentaje</h2>
+        <canvas id="graficaProductos"></canvas>
     </div>
 </div>
 
-<!-- JSON oculto -->
+<!-- Datos ocultos en JSON -->
 {{ nombres|json_script:"labels-data" }}
 {{ cantidades|json_script:"cantidades-data" }}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Obtener datos desde JSON
+    // Obtener datos desde los scripts ocultos
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidadesAbsolutas = JSON.parse(document.getElementById('cantidades-data').textContent);
 
-    // Definir máximo fijo para calcular porcentaje (por ejemplo, 1000 unidades)
+    // Definir máximo para calcular porcentaje
     const maxCantidad = 100;
 
-    // Calcular porcentaje basado en maxCantidad y limitar máximo a 100%
+    // Calcular porcentaje y limitar a 100%
     const cantidadesPorcentaje = cantidadesAbsolutas.map(c => {
         let porcentaje = (c / maxCantidad) * 100;
         return porcentaje > 100 ? 100 : porcentaje.toFixed(2);
     });
 
-    // Configuración de la gráfica
-    const ctx = document.getElementById('graficaArticulos').getContext('2d');
+    // Crear la gráfica
+    const ctx = document.getElementById('graficaProductos').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -82,7 +82,7 @@
                     },
                     ticks: {
                         callback: function (value) {
-                            return value + '%'; // Agrega el símbolo de porcentaje en los ticks
+                            return value + '%';
                         }
                     }
                 }
@@ -91,7 +91,7 @@
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            return context.parsed.y + '%'; // Muestra porcentaje en el tooltip
+                            return context.parsed.y + '%';
                         }
                     }
                 }

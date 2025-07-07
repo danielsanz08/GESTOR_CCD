@@ -340,7 +340,7 @@ def crear_pedido(request):
         admin_emails = [admin.email for admin in admin_users if admin.email]
 
         if admin_emails:
-            admin_url = request.build_absolute_uri(reverse('papeleria:listado_pedidos'))
+            admin_url = request.build_absolute_uri(reverse('papeleria:mis_pedidos'))
             context = {
                 'usuario': request.user,
                 'pedido': pedido,
@@ -391,7 +391,7 @@ Este es un mensaje automático, por favor no respondas a este correo.
                 print(f"Error enviando correo: {e}")
 
         messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
-        return redirect('papeleria:mis_pedidos' if request.user.role == 'Empleado' else 'papeleria:listado_pedidos')
+        return redirect('papeleria:mis_pedidos' if request.user.role == 'Empleado' else 'papeleria:mis_pedidos')
 
     articulos = Articulo.objects.all()
     return render(request, 'pedidos/pedidos.html', {
@@ -413,27 +413,41 @@ def mis_pedidos(request):
     pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
 
 
-
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(articulos__area__icontains=query)  # filtro por area en modelo relacionado
-        ).distinct()  # distinct para evitar duplicados por joins
+            Q(articulos__articulo__nombre__icontains=query) |
+            Q(articulos__cantidad__icontains=query) |
+            Q(articulos__tipo__icontains=query) |
+            Q(articulos__area__icontains=query)
+).distinct()
 
-    if fecha_inicio_str:
+    if fecha_inicio_str and fecha_fin_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio, fecha_pedido__lt=fecha_fin)
+        except ValueError:
+            pass  # O manejar el error como prefieras
+            
+    elif fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pedidos = Pedido.objects.none()
-
-    if fecha_fin_str:
+            pass
+            
+    elif fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            # Ajustamos la fecha_fin para incluir todo el día
+            fecha_fin += timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pedidos = Pedido.objects.none()
+            pass
 
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
@@ -594,6 +608,7 @@ def pedidos_pendientes(request):
     # Filtrar solo pedidos pendientes
     pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
     
+    # Filtrado por búsqueda de texto
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
@@ -602,35 +617,28 @@ def pedidos_pendientes(request):
             Q(articulos__cantidad__icontains=query) |
             Q(articulos__tipo__icontains=query) |
             Q(articulos__area__icontains=query)
-        )
+        ).distinct()
 
-    # Manejo de fechas - versión corregida
-    if fecha_inicio_str and fecha_fin_str:
-        try:
+    # Filtrado por fechas
+    try:
+        if fecha_inicio_str and fecha_fin_str:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            # Ajustamos la fecha_fin para incluir todo el día
-            fecha_fin += timedelta(days=1)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio, fecha_pedido__lt=fecha_fin)
-        except ValueError:
-            pass  # O manejar el error como prefieras
-            
-    elif fecha_inicio_str:
-        try:
+
+        elif fecha_inicio_str:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
-        except ValueError:
-            pass
-            
-    elif fecha_fin_str:
-        try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            # Ajustamos la fecha_fin para incluir todo el día
-            fecha_fin += timedelta(days=1)
-            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
-        except ValueError:
-            pass
 
+        elif fecha_fin_str:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
+
+    except ValueError:
+        # Manejo simple del error si las fechas son inválidas
+        pass
+
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
@@ -989,7 +997,8 @@ def draw_table_on_canvas(canvas, doc):
                          y=(doc.pagesize[1] - 600) / 2,
                          width=600, height=600, mask='auto')
         canvas.restoreState()
-
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.styles import ParagraphStyle
 def get_articulos_filtrados(request):
     query = request.GET.get('q')
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -1014,6 +1023,7 @@ def get_articulos_filtrados(request):
         articulos = articulos.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
 
     return articulos
+
 
 def reporte_articulo_pdf(request):
     buffer = BytesIO()
@@ -1080,45 +1090,53 @@ def reporte_articulo_pdf(request):
     # Obtener artículos filtrados
     articulos_filtrados = get_articulos_filtrados(request)
 
-    # Tabla artículos
-    data_articulos = [["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]]
-    
-    for articulo in articulos_filtrados:
-        data_articulos.append([
-            wrap_text(str(articulo.id)),
-            wrap_text(articulo.nombre),
-            wrap_text(articulo.marca),
-            wrap_text(articulo.tipo),
-            wrap_text("{:,}".format(articulo.precio)),
-            wrap_text(str(articulo.cantidad)),
-            wrap_text( articulo.observacion),
-        ])
-    tabla_articulos = Table(data_articulos, colWidths=[20, 140, 120, 110, 100, 80, 150])
-    style_articulos = TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # <-- CENTRAR
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # CENTRAR VERTICALMENTE
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
+    if not articulos_filtrados.exists():
+        centered_style = ParagraphStyle(
+            name="CenteredNormal",
+            parent=styles["Normal"],
+            alignment=TA_CENTER,
+        )
+        no_results = Paragraph("No se encontraron artículos.", centered_style)
+        elements.append(no_results)
+    else:
+        # Tabla artículos
+        data_articulos = [["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]]
 
-    # Marca de agua
+        for articulo in articulos_filtrados:
+            data_articulos.append([
+                wrap_text(str(articulo.id)),
+                wrap_text(articulo.nombre),
+                wrap_text(articulo.marca),
+                wrap_text(articulo.tipo),
+                wrap_text("{:,}".format(articulo.precio)),
+                wrap_text(str(articulo.cantidad)),
+                wrap_text(articulo.observacion),
+            ])
+
+        tabla_articulos = Table(data_articulos, colWidths=[20, 140, 120, 110, 100, 80, 150])
+        style_articulos = TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ])
+        tabla_articulos.setStyle(style_articulos)
+        elements.append(tabla_articulos)
+
+    # Marca de agua u otros elementos
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Listado de articulos CCD.pdf"'
     return response
-
 def reporte_articulo_excel(request):
     
     articulos = Articulo.objects.all()
@@ -1222,14 +1240,21 @@ def get_pedidos_filtrados(request):
 
     if query:
         pedidos = pedidos.filter(
-            Q(id__icontains=query) |
-            Q(estado__icontains=query) |
             Q(registrado_por__username__icontains=query) |
-            Q(articulos__articulo__nombre__icontains=query)
+            Q(estado__icontains=query) |
+            Q(articulos__articulo__nombre__icontains=query) |
+            Q(articulos__cantidad__icontains=query) |
+            Q(articulos__tipo__icontains=query) |
+            Q(articulos__area__icontains=query)
         ).distinct()
 
     if fecha_inicio and fecha_fin:
-        pedidos = pedidos.filter(fecha_pedido__range=[fecha_inicio, fecha_fin])
+        try:
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)  # sumar un día para incluir todo el día fin
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio_dt, fecha_pedido__lt=fecha_fin_dt)
+        except ValueError:
+            pass  # puedes mostrar un mensaje de error si las fechas no son válidas
 
     return pedidos
 
@@ -1302,48 +1327,53 @@ def reporte_pedidos_pdf(request):
     table_usuario.setStyle(style_usuario)
     elements.append(table_usuario)
 
-    # Obtener pedidos filtrados usando la función get_pedidos_filtrados
+    # Obtener pedidos filtrados
     pedidos = get_pedidos_filtrados(request).prefetch_related('articulos__articulo')
 
-    # Encabezado de la tabla
-    data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
+    if not pedidos.exists():
+        centered_style = ParagraphStyle(
+            name="CenteredNormal",
+            parent=styles["Normal"],
+            alignment=TA_CENTER,
+        )
+        no_results = Paragraph("No se encontraron pedidos confirmados ni cancelados.", centered_style)
+        elements.append(no_results)
+    else:
+        # Encabezado de tabla
+        data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
 
-    # Filas de pedidos
-    for pedido in pedidos:
-        articulos_raw = ", ".join([
-            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
-            for pa in pedido.articulos.all()
-        ]) or 'Sin artículos'
-        articulos_text = wrap_text_p(articulos_raw)
+        # Filas de pedidos
+        for pedido in pedidos:
+            articulos_raw = ", ".join([
+                f"{pa.cantidad} {pa.articulo.nombre}({pa.tipo})"
+                for pa in pedido.articulos.all()
+            ]) or 'Sin artículos'
+            area_raw = pedido.articulos.first().area if pedido.articulos.exists() else 'Sin área'
 
-        area_raw = pedido.articulos.first().area if pedido.articulos.exists() else 'Sin área'
-        areas_text = wrap_text_p(area_raw)
+            data_pedidos.append([
+                wrap_text_p(str(pedido.id)),
+                wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
+                wrap_text_p(pedido.get_estado_display()),
+                wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
+                wrap_text_p(articulos_raw),
+                wrap_text_p(area_raw),
+            ])
 
-        data_pedidos.append([
-            wrap_text_p(str(pedido.id)),
-            wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
-            wrap_text_p(pedido.get_estado_display()),
-            wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
-            wrap_text_p(articulos_raw),
-            wrap_text_p(area_raw)
+        tabla_pedidos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
+        style_pedidos = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ])
-
-    # Crear la tabla de pedidos
-    tabla_articulos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
-    style_articulos = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
+        tabla_pedidos.setStyle(style_pedidos)
+        elements.append(tabla_pedidos)
 
     # Construir el PDF
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
@@ -1352,6 +1382,122 @@ def reporte_pedidos_pdf(request):
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Lista de pedidos Gestor CCD.pdf"'
     return response
+
+def reporte_pedidos_excel(request):
+    # Obtener todos los pedidos ordenados por fecha descendente
+    pedidos = get_pedidos_filtrados(request).prefetch_related('articulos__articulo')
+
+    # Crear libro Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Pedidos CCD"
+
+    # Ajustar ancho de columnas
+    columnas_anchos = {
+        'A': 10,   # ID
+        'B': 15,   # Fecha
+        'C': 15,   # Estado
+        'D': 25,   # Registrado por
+        'E': 50,   # Artículos
+        'F': 30    # Áreas
+    }
+    for col, width in columnas_anchos.items():
+        ws.column_dimensions[col].width = width
+
+    # Ajustar altura de título y subtítulo
+    ws.row_dimensions[1].height = 50
+    ws.row_dimensions[2].height = 30
+
+    # Título principal
+    ws.merge_cells('A1:F1')
+    ws['A1'] = "GESTOR CCD"
+    ws['A1'].font = Font(size=24, bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Subtítulo
+    ws.merge_cells('A2:F2')
+    ws['A2'] = "Listado de Pedidos"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Bordes para los títulos A1:F1 y A2:F2
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=6):
+        for cell in row:
+            cell.border = thin_border
+
+    # Encabezados de tabla
+    headers = ['ID', 'Fecha', 'Estado', 'Registrado Por', 'Artículos', 'Áreas']
+    ws.append(headers)
+
+    # Estilo para encabezados
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+    for cell in ws[3]:
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    # Aplicar filtro
+    ws.auto_filter.ref = "A3:F3"
+
+    # Si no hay pedidos, mostrar mensaje
+    if not pedidos.exists():
+        ws.merge_cells('A4:F4')
+        cell = ws['A4']
+        cell.value = "No hay pedidos"
+        cell.font = Font(bold=False)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = thin_border
+    else:
+        # Agregar datos de los pedidos
+        for pedido in pedidos:
+            articulos_raw = ", ".join([
+                f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
+                for pa in pedido.articulos.all()
+            ]) or 'Sin artículos'
+
+            areas_raw = ", ".join(set([
+                str(pa.area) for pa in pedido.articulos.all()
+            ])) or 'Sin área'
+
+            usuario = pedido.registrado_por.username if pedido.registrado_por else 'No definido'
+
+            ws.append([
+                pedido.id,
+                pedido.fecha_pedido.strftime('%Y-%m-%d'),
+                pedido.get_estado_display(),
+                usuario,
+                articulos_raw,
+                areas_raw,
+            ])
+
+        # Aplicar bordes y alineación a todas las celdas de A3:F...
+        for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=6):
+            for i, cell in enumerate(row, start=1):
+                cell.border = thin_border
+                cell.alignment = Alignment(
+                    horizontal='center',
+                    vertical='center',
+                    wrap_text=True if i in [4, 5, 6] else False
+                )
+
+        # Ajustar altura de filas para mejor legibilidad
+        for i in range(4, ws.max_row + 1):
+            ws.row_dimensions[i].height = 60
+
+    # Generar y devolver el archivo Excel como descarga
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos confirmados y cancelados.xlsx"'
+    wb.save(response)
+    return response
+
 def get_pedidos_filtrados_pendientes(request):
     query = request.GET.get('q')
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -1361,14 +1507,21 @@ def get_pedidos_filtrados_pendientes(request):
 
     if query:
         pedidos = pedidos.filter(
-            Q(id__icontains=query) |
-            Q(estado__icontains=query) |
             Q(registrado_por__username__icontains=query) |
-            Q(articulos__articulo__nombre__icontains=query)
+            Q(estado__icontains=query) |
+            Q(articulos__articulo__nombre__icontains=query) |
+            Q(articulos__cantidad__icontains=query) |
+            Q(articulos__tipo__icontains=query) |
+            Q(articulos__area__icontains=query)
         ).distinct()
 
     if fecha_inicio and fecha_fin:
-        pedidos = pedidos.filter(fecha_pedido__range=[fecha_inicio, fecha_fin])
+        try:
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d")
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio_dt, fecha_pedido__lt=fecha_fin_dt)
+        except ValueError:
+            pass  # opcional: puedes registrar/loggear el error si las fechas son inválidas
 
     return pedidos
 def reporte_pedidos_pendientes_pdf(request):
@@ -1383,16 +1536,16 @@ def reporte_pedidos_pendientes_pdf(request):
         bottomMargin=40
     )
 
-    doc.title = "Listado de pedidos pendientes CCD"
-    doc.author = "CCD"
-    doc.subject = "Listado de pedidos pendientes"
+    doc.title = "Pedidos pendientes CCD"
+    doc.author = "GESTOR CCD"
+    doc.subject = "Pedidos pendientes CCD"
     doc.creator = "Sistema de Gestión CCD"
 
     elements = []
     styles = getSampleStyleSheet()
 
     # Título principal
-    titulo = Paragraph("REPORTE DE PEDIDOS PENDIENTES", styles["Title"])
+    titulo = Paragraph("Reporte de pedidos pendientes", styles["Title"])
     elements.append(titulo)
 
     # Encabezado institucional
@@ -1440,197 +1593,82 @@ def reporte_pedidos_pendientes_pdf(request):
     table_usuario.setStyle(style_usuario)
     elements.append(table_usuario)
 
-    # Obtener pedidos filtrados usando la función get_pedidos_filtrados
+    # Obtener pedidos filtrados
     pedidos = get_pedidos_filtrados_pendientes(request).prefetch_related('articulos__articulo')
 
-    # Encabezado de la tabla
-    data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
+    if not pedidos.exists():
+        centered_style = ParagraphStyle(
+            name="CenteredNormal",
+            parent=styles["Normal"],
+            alignment=TA_CENTER
+        )
+        no_results = Paragraph("No se encontraron pedidos pendientes.", centered_style)
+        elements.append(Spacer(1, 20))
+        elements.append(no_results)
+    else:
+        # Encabezado de la tabla
+        data_pedidos = [["ID Pedido", "Fecha", "Estado", "Registrado Por", "Artículos", "Área"]]
 
-    # Filas de pedidos
-    for pedido in pedidos:
-        articulos_raw = ", ".join([
-            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
-            for pa in pedido.articulos.all()
-        ]) or 'Sin artículos'
-        articulos_text = wrap_text_p(articulos_raw)
+        # Filas de pedidos
+        for pedido in pedidos:
+            articulos_raw = ", ".join([
+                f"{pa.cantidad} {pa.articulo.nombre}({pa.tipo})"
+                for pa in pedido.articulos.all()
+            ]) or 'Sin artículos'
+            articulos_text = wrap_text_p(articulos_raw)
 
-        area_raw = pedido.articulos.first().area if pedido.articulos.exists() else 'Sin área'
-        areas_text = wrap_text_p(area_raw)
+            area_raw = pedido.articulos.first().area if pedido.articulos.exists() else 'Sin área'
+            areas_text = wrap_text_p(area_raw)
 
-        data_pedidos.append([
-            wrap_text_p(str(pedido.id)),
-            wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
-            wrap_text_p(pedido.get_estado_display()),
-            wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
-            wrap_text_p(articulos_raw),
-            wrap_text_p(area_raw)
+            data_pedidos.append([
+                wrap_text_p(str(pedido.id)),
+                wrap_text_p(pedido.fecha_pedido.strftime('%d-%m-%Y')),
+                wrap_text_p(pedido.get_estado_display()),
+                wrap_text_p(pedido.registrado_por.username if pedido.registrado_por else 'No definido'),
+                wrap_text_p(articulos_raw),
+                wrap_text_p(area_raw)
+            ])
+
+        # Crear tabla de pedidos
+        tabla_articulos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
+        style_articulos = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ])
-
-    # Crear la tabla de pedidos
-    tabla_articulos = Table(data_pedidos, colWidths=[60, 100, 100, 160, 200, 100])
-    style_articulos = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
+        tabla_articulos.setStyle(style_articulos)
+        elements.append(tabla_articulos)
 
     # Construir el PDF
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Lista de pedidos pendientes Gestor CCD.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Pedidos pendientes CCD.pdf"'
     return response
-def reporte_pedidos_excel(request):
-    # Obtener todos los pedidos ordenados por fecha descendente
-    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
 
-    # Crear libro Excel
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Pedidos CCD"
-
-    # Ajustar ancho de columnas
-    columnas_anchos = {
-        'A': 10,   # ID
-        'B': 15,   # Fecha
-        'C': 15,   # Estado
-        'D': 25,   # Registrado por
-        'E': 50,   # Artículos
-        'F': 30    # Áreas
-    }
-    for col, width in columnas_anchos.items():
-        ws.column_dimensions[col].width = width
-
-    # Ajustar altura de título y subtítulo
-    ws.row_dimensions[1].height = 50
-    ws.row_dimensions[2].height = 30
-
-    # Título principal
-    ws.merge_cells('A1:F1')
-    ws['A1'] = "GESTOR CCD"
-    ws['A1'].font = Font(size=24, bold=True)
-    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
-
-    # Subtítulo
-    ws.merge_cells('A2:F2')
-    ws['A2'] = "Listado de Pedidos"
-    ws['A2'].font = Font(size=18)
-    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
-
-    # Bordes para los títulos A1:F1 y A2:F2
-    
-    thin_border = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
-        )
-    for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=6):
-        for cell in row:
-            cell.border = thin_border
-
-    # Encabezados de tabla
-    headers = ['ID', 'Fecha', 'Estado', 'Registrado Por', 'Artículos', 'Áreas']
-    ws.append(headers)
-
-    # Estilo para encabezados
-    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
-    for cell in ws[3]:
-        cell.fill = header_fill
-        cell.font = Font(color="FFFFFF", bold=True)
-        cell.alignment = Alignment(horizontal='center', vertical='center')
-
-    # Aplicar filtro
-    ws.auto_filter.ref = "A3:F3"
-
-    # Estilo de bordes
-    thin_border = Border(
-        left=Side(style='thin'), right=Side(style='thin'),
-        top=Side(style='thin'), bottom=Side(style='thin')
-    )
-
-    # Agregar datos de los pedidos
-    for pedido in pedidos:
-        # Artículos en una sola línea, separados por comas
-        articulos_raw = ", ".join([
-            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
-            for pa in pedido.articulos.all()
-        ]) or 'Sin artículos'
-
-        # Áreas únicas, separadas por comas
-        areas_raw = ", ".join(set([
-            str(pa.area) for pa in pedido.articulos.all()
-        ])) or 'Sin área'
-
-        # Usuario
-        usuario = pedido.registrado_por.username if pedido.registrado_por else 'No definido'
-
-        # Añadir fila
-        ws.append([
-            pedido.id,
-            pedido.fecha_pedido.strftime('%Y-%m-%d'),
-            pedido.get_estado_display(),
-            usuario,
-            articulos_raw,
-            areas_raw,
-        ])
-
-    # Aplicar bordes y alineación a todas las celdas de A3:F...
-    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=6):
-        for i, cell in enumerate(row, start=1):
-            cell.border = thin_border
-            cell.alignment = Alignment(
-                horizontal='center',
-                vertical='center',
-                wrap_text=True if i in [4, 5, 6] else False  # Wrap en usuario, artículos, áreas
-        )
-
-
-    # Ajustar altura de filas para mejor legibilidad
-    for i in range(4, ws.max_row + 1):
-        ws.row_dimensions[i].height = 60
-
-    # Generar y devolver el archivo Excel como descarga
-    response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes.xlsx"'
-    wb.save(response)
-    return response
 
 def reporte_pedidos_pendientes_excel(request):
-    # Obtener todos los pedidos ordenados por fecha descendente
-    pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
+    pedidos = get_pedidos_filtrados_pendientes(request).prefetch_related('articulos__articulo')
 
-    # Crear libro Excel
     wb = Workbook()
     ws = wb.active
     ws.title = "Pedidos CCD"
 
-    # Ajustar ancho de columnas
-    columnas_anchos = {
-        'A': 10,   # ID
-        'B': 15,   # Fecha
-        'C': 15,   # Estado
-        'D': 25,   # Registrado por
-        'E': 50,   # Artículos
-        'F': 30    # Áreas
-    }
+    # Configurar anchos de columna
+    columnas_anchos = {'A': 10, 'B': 15, 'C': 15, 'D': 25, 'E': 50, 'F': 30}
     for col, width in columnas_anchos.items():
         ws.column_dimensions[col].width = width
 
-    # Ajustar altura de título y subtítulo
-    ws.row_dimensions[1].height = 50
+    # Alturas para título y subtítulo
+    ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
     # Título principal
@@ -1639,90 +1677,79 @@ def reporte_pedidos_pendientes_excel(request):
     ws['A1'].font = Font(size=24, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Subtítulo
+    # Subtítulo con fecha
     ws.merge_cells('A2:F2')
-    ws['A2'] = "Listado de Pedidos"
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    ws['A2'] = f"Listado de Pedidos Pendientes - {fecha_actual}"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Bordes para los títulos A1:F1 y A2:F2
-    
-    thin_border = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
-        )
+    # Borde del título y subtítulo
+    borde = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'), bottom=Side(style='thin')
+    )
     for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=6):
         for cell in row:
-            cell.border = thin_border
+            cell.border = borde
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    # Encabezados de tabla
+    # Encabezados
     headers = ['ID', 'Fecha', 'Estado', 'Registrado Por', 'Artículos', 'Áreas']
     ws.append(headers)
-
-    # Estilo para encabezados
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
     for cell in ws[3]:
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
-    # Aplicar filtro
+    # Filtro automático
     ws.auto_filter.ref = "A3:F3"
 
-    # Estilo de bordes
-    thin_border = Border(
-        left=Side(style='thin'), right=Side(style='thin'),
-        top=Side(style='thin'), bottom=Side(style='thin')
-    )
+    # Agregar datos
+    if not pedidos.exists():
+        ws.merge_cells('A4:F4')
+        cell = ws['A4']
+        cell.value = "No se encontraron pedidos pendientes."
+        cell.font = Font(bold=False)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = borde
+    else:
+        for pedido in pedidos:
+            articulos_raw = ", ".join([
+                f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
+                for pa in pedido.articulos.all()
+            ])
+            areas_raw = ", ".join(set(str(pa.area) for pa in pedido.articulos.all()))
+            usuario = pedido.registrado_por.username if pedido.registrado_por else 'No definido'
+            ws.append([
+                pedido.id,
+                pedido.fecha_pedido.strftime('%Y-%m-%d'),
+                pedido.get_estado_display() if hasattr(pedido, 'get_estado_display') else pedido.estado,
+                usuario,
+                articulos_raw or 'Sin artículos',
+                areas_raw or 'Sin área',
+            ])
 
-    # Agregar datos de los pedidos
-    for pedido in pedidos:
-        # Artículos en una sola línea, separados por comas
-        articulos_raw = ", ".join([
-            f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
-            for pa in pedido.articulos.all()
-        ]) or 'Sin artículos'
-
-        # Áreas únicas, separadas por comas
-        areas_raw = ", ".join(set([
-            str(pa.area) for pa in pedido.articulos.all()
-        ])) or 'Sin área'
-
-        # Usuario
-        usuario = pedido.registrado_por.username if pedido.registrado_por else 'No definido'
-
-        # Añadir fila
-        ws.append([
-            pedido.id,
-            pedido.fecha_pedido.strftime('%Y-%m-%d'),
-            pedido.get_estado_display(),
-            usuario,
-            articulos_raw,
-            areas_raw,
-        ])
-
-    # Aplicar bordes y alineación a todas las celdas de A3:F...
+    # Estilos de celdas: bordes y alineación
     for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=6):
         for i, cell in enumerate(row, start=1):
-            cell.border = thin_border
+            cell.border = borde
             cell.alignment = Alignment(
                 horizontal='center',
                 vertical='center',
-                wrap_text=True if i in [4, 5, 6] else False  # Wrap en usuario, artículos, áreas
-        )
+                wrap_text=True if i in [4, 5, 6] else False
+            )
 
-
-    # Ajustar altura de filas para mejor legibilidad
+    # Altura dinámica para filas de contenido
     for i in range(4, ws.max_row + 1):
         ws.row_dimensions[i].height = 60
 
-    # Generar y devolver el archivo Excel como descarga
+    # Preparar respuesta HTTP
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Reporte_pedidos_pendientes.xlsx"'
     wb.save(response)
     return response
 #PDF Y XSLS DE BAJO STOCK
@@ -1744,7 +1771,6 @@ def obtener_articulos_bajo_stock(request):
         articulos = articulos.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
 
     return articulos
-
 def reporte_articulo_bajo_stock_pdf(request):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
@@ -1752,7 +1778,7 @@ def reporte_articulo_bajo_stock_pdf(request):
 
     doc.title = "Listado de BAJO STOCK CCD"
     doc.author = "CCD"
-    doc.subject = "Listado de  bajo stock"
+    doc.subject = "Listado de bajo stock"
     doc.creator = "Sistema de Gestión CCD"
 
     elements = []
@@ -1810,36 +1836,46 @@ def reporte_articulo_bajo_stock_pdf(request):
     # Obtener artículos filtrados
     articulos_filtrados = obtener_articulos_bajo_stock(request)
 
-    # Tabla artículos
-    data_articulos = [["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]]
-    
-    for articulo in articulos_filtrados:
-        data_articulos.append([
-            wrap_text(str(articulo.id)),
-            wrap_text(articulo.nombre),
-            wrap_text(articulo.marca),
-            wrap_text(articulo.tipo),
-            wrap_text("{:,}".format(articulo.precio)),
-            wrap_text(str(articulo.cantidad)),
-            wrap_text( articulo.observacion),
+    if not articulos_filtrados.exists():
+        centered_style = ParagraphStyle(
+            name="CenteredNormal",
+            parent=styles["Normal"],
+            alignment=TA_CENTER
+        )
+        no_results = Paragraph("No se encontraron artículos con bajo stock.", centered_style)
+        elements.append(Spacer(1, 20))
+        elements.append(no_results)
+    else:
+        # Tabla artículos
+        data_articulos = [["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]]
+        
+        for articulo in articulos_filtrados:
+            data_articulos.append([
+                wrap_text(str(articulo.id)),
+                wrap_text(articulo.nombre),
+                wrap_text(articulo.marca),
+                wrap_text(articulo.tipo),
+                wrap_text("{:,}".format(articulo.precio)),
+                wrap_text(str(articulo.cantidad)),
+                wrap_text(articulo.observacion),
+            ])
+
+        tabla_articulos = Table(data_articulos, colWidths=[20, 140, 100, 130, 80, 70, 180])
+        style_articulos = TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ])
-    tabla_articulos = Table(data_articulos, colWidths=[20, 140, 100, 130, 80, 70, 180])
-    style_articulos = TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # <-- CENTRAR
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # CENTRAR VERTICALMENTE
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
-    tabla_articulos.setStyle(style_articulos)
-    elements.append(tabla_articulos)
+        tabla_articulos.setStyle(style_articulos)
+        elements.append(tabla_articulos)
 
     # Marca de agua
     doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
@@ -1857,26 +1893,25 @@ def reporte_articulo_bajo_stock_excel(request):
     ws = wb.active
     ws.title = "Listado de Artículos CCD"
 
-    # Configuración columnas y filas (sin logo)
-    ws.column_dimensions['A'].width = 10
-    ws.column_dimensions['B'].width = 40
-    ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 30
-    ws.column_dimensions['E'].width = 20
-    ws.column_dimensions['F'].width = 15
-    ws.column_dimensions['G'].width = 33
+    # Configurar columnas
+    column_widths = [10, 40, 20, 30, 20, 15, 33]
+    for i, width in enumerate(column_widths, start=1):
+        ws.column_dimensions[chr(64 + i)].width = width
 
+    # Altura de filas
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Título principal y subtítulo
+    # Título principal
     ws.merge_cells('A1:G1')
     ws['A1'] = "GESTOR CCD"
     ws['A1'].font = Font(size=24, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
+    # Subtítulo con fecha actual
     ws.merge_cells('A2:G2')
-    ws['A2'] = "Listado de Artículos"
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    ws['A2'] = f"Listado de Artículos - {fecha_actual}"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
@@ -1885,12 +1920,13 @@ def reporte_articulo_bajo_stock_excel(request):
     ws.append(headers)
 
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
-    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
-        cell = ws[f"{col}3"]
+    for col in range(1, 8):
+        cell = ws.cell(row=3, column=col)
         cell.fill = header_fill
         cell.font = Font(color="FFFFFF", bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
+    # Bordes
     border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -1898,33 +1934,49 @@ def reporte_articulo_bajo_stock_excel(request):
         bottom=Side(style='thin')
     )
 
-    # Agregar datos
-    for articulo in articulos:
-        precio_formateado = f"${articulo.precio:,.2f}" if articulo.precio else "-"
-        ws.append([
-            articulo.id,
-            articulo.nombre,
-            articulo.marca,
-            articulo.tipo,
-            precio_formateado,
-            articulo.cantidad,
-            articulo.observacion or "",
-        ])
+    # Agregar datos o mensaje
+    if not articulos.exists():
+        ws.merge_cells('A4:G4')
+        cell = ws['A4']
+        cell.value = "No se encontraron artículos en bajo stock."
+        cell.font = Font(bold=False)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+    else:
+        for articulo in articulos:
+            precio_formateado = f"${articulo.precio:,.2f}" if articulo.precio else "-"
+            ws.append([
+                articulo.id,
+                str(articulo.nombre),
+                str(articulo.marca),
+                str(articulo.tipo),
+                precio_formateado,
+                articulo.cantidad,
+                str(articulo.observacion or ""),
+            ])
 
-    # Aplicar estilos a celdas de datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
-        for i, cell in enumerate(row, 1):
+    # Estilo a título y subtítulo
+    for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=7):
+        for cell in row:
             cell.border = border
-            # Alineación centrada excepto la columna Observación
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+
+    # Estilo a encabezados y datos
+    for row in ws.iter_rows(min_row=3, max_row=ws.max_row, min_col=1, max_col=7):
+        for i, cell in enumerate(row, start=1):
+            cell.border = border
             if i < 7:
-                cell.alignment = Alignment(horizontal='center', vertical='center')
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             else:
-                cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
+                cell.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+
+    # Filtro automático
+    ws.auto_filter.ref = "A3:G3"
 
     # Preparar respuesta
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte_articulos_filtrados.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Listado_articulos_bajo_stock.xlsx"'
     wb.save(response)
     return response

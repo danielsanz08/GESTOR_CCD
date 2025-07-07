@@ -22,7 +22,6 @@ urlpatterns = [
     path('pedidos_caf/mis_pedidos', views.mis_pedidos, name='mis_pedidos'),
     path('pedidos_caf/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('pedidos_caf/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
-    path('pedidos_caf/mis_pedidos_pendientes/', views.mis_pedidos_pendientes, name='mis_pedidos_pendientes'),
     path('pedidos_caf/lista_bajo_stock/', views.lista_stock_bajo, name='lista_bajo_stock'),
     path('pedidos_caf/lista_pedidos/', views.listado_pedidos_caf, name='lista_pedidos_caf'),
     path("reporte_productos_pdf_caf", views.reporte_pedidos_pdf_caf, name="reporte_pedidos_caf_pdf"),
@@ -34,6 +33,8 @@ urlpatterns = [
     path('grafica_pedidos_caf/', views.grafica_pedidos_caf, name='grafica_pedidos_caf'),
     path('grafica_estado_pedido_caf/', views.grafica_estado_pedido_caf, name='grafica_estado_pedido_caf'),
     path('grafica_bajoStock_caf/', views.grafica_bajo_Stock_caf, name='grafica_bajoStock_caf'),
+    path('reporte_pedidos_pendientes_pdf_caf/', views.reporte_pedidos_pendientes_pdf_caf, name='reporte_pedidos_pendientes_pdf_caf'),
+    path('reporte_pedidos_pendientes_excel_caf/', views.reporte_pedidos_pendientes_excel_caf, name='reporte_pedidos_pendientes_excel_caf'),
 ]
 
 handler404 = 'cafeteria.views.error_404_view'

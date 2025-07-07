@@ -166,94 +166,47 @@ def crear_pedido_cde(request):
         {'name': 'Inicio', 'url': reverse('cde:index_cde')},
         {'name': 'Crear pedido cde', 'url': reverse('cde:crear_pedido_cde')},
     ]
-    
+
     if request.method == 'POST':
-        try:
-            estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
+        form = PedidoProductoCdeForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    pedido = form.save(commit=False)
+                    pedido.usuario = request.user
+                    pedido.fecha_pedido = timezone.now()
+                    pedido.estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
+                    pedido.save()
 
-            pedido_cde = PedidoCde.objects.create(
-                registrado_por=request.user,
-                estado=estado,
-            )
+                    # Enviar correo si el usuario es Empleado
+                    if request.user.role == 'Empleado':
+                        admin_emails = CustomUser.objects.filter(role='Administrador', is_active=True).values_list('email', flat=True)
+                        if admin_emails:
+                            subject = f"📦 Nuevo pedido creado por {request.user.nombre}"
+                            context = {
+                                'usuario': request.user,
+                                'pedido': pedido,
+                                'fecha': timezone.now()
+                            }
+                            html_content = render_to_string('emails/pedido_creado_cde.html', context)
+                            email = EmailMultiAlternatives(subject, '', to=admin_emails)
+                            email.attach_alternative(html_content, "text/html")
+                            email.send()
 
-            productos_ids = request.POST.getlist('producto')
-            cantidades = request.POST.getlist('cantidad')
-            eventos = request.POST.getlist('evento')
+                    messages.success(request, 'El pedido ha sido creado correctamente.')
+                    return redirect('cde:index_cde')
 
-            area_usuario = getattr(request.user, 'area', 'No establecido')
+            except Exception as e:
+                messages.error(request, f'Ocurrió un error al guardar el pedido: {str(e)}')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+    else:
+        form = PedidoProductoCdeForm(initial={'area': request.user.area})
 
-            for producto_id, cantidad, evento in zip(productos_ids, cantidades, eventos):
-                try:
-                    if not producto_id or not cantidad or not evento:
-                        continue
-
-                    producto_id = int(producto_id)
-                    cantidad = int(cantidad)
-
-                    producto = Productos.objects.get(id=producto_id)
-
-                    if estado == 'Confirmado' and producto.cantidad < cantidad:
-                        pedido_cde.delete()
-                        messages.error(request, f"No hay suficiente stock para el producto: {producto.nombre} (disponible: {producto.cantidad}, solicitado: {cantidad})")
-                        return redirect('cde:crear_pedido_cde')
-
-                    PedidoProductoCde.objects.create(
-                        pedido=pedido_cde,
-                        producto=producto,
-                        cantidad=cantidad,
-                        evento=evento,
-                        area=area_usuario,
-                    )
-
-                    if estado == 'Confirmado':
-                        producto.cantidad -= cantidad
-                        producto.save()
-
-                except (ValueError, Productos.DoesNotExist) as e:
-                    print(f"Error al procesar producto: {e}")
-                    continue
-
-            if request.user.role in ['Empleado', 'Administrador']:
-                admin_users = User.objects.filter(role='Administrador', is_active=True)
-                admin_emails = [admin.email for admin in admin_users if admin.email]
-
-                if admin_emails:
-                    subject = "Nuevo pedido registrado por un usuario"
-                    message = (
-                        f"Hola querido administrador,\n\n"
-                        f"Desde el módulo de Centro de eventos te informamos que el usuario '{request.user.username}' "
-                        f"ha realizado un nuevo pedido.\n\n"
-                        f"Información del pedido:\n"
-                        f"Usuario: {request.user.username}\n"
-                        f"Rol: {request.user.role}\n"
-                        f"ID del pedido: {pedido_cde.id}\n"
-                        f"Estado inicial del pedido: {estado}\n\n"
-                        f"Por favor revisa y confirma el pedido si corresponde.\n\n"
-                        f"Gracias por su atención.\n"
-                        f"El equipo de Gestor CCD les desea un excelente día."
-                    )
-                    try:
-                        send_mail(
-                            subject,
-                            message,
-                            settings.DEFAULT_FROM_EMAIL,
-                            admin_emails,
-                            fail_silently=False,
-                        )
-                    except TimeoutError:
-                        messages.error(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación (Timeout).")
-
-            messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
-            return redirect('cde:mis_pedidos_pendientes_cde')
-
-        except Exception as e:
-            print(f"Error al crear pedido: {e}")
-            messages.error(request, "Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.")
-            return redirect('cde:crear_pedido_cde')
-
-    productos = Productos.objects.all()
-    return render(request, 'pedidos_cde/pedidos_cde.html', {
-        'productos': productos,
+    return render(request, 'cde/crear_pedido.html', {
+        'form': form,
         'breadcrumbs': breadcrumbs,
     })
 @login_required

@@ -12,11 +12,7 @@
             <i data-feather="users" class="main-card-icon"></i>
             <h2 class="main-card-title">Usuarios</h2>
         </div>
-        <!-- Card Artículos -->
-        <div class="main-card" onclick="openModal('articulos-modal')">
-            <i data-feather="package" class="main-card-icon"></i>
-            <h2 class="main-card-title">Productos</h2>
-        </div>
+        
 
         <!-- Card Pedidos -->
         <div class="main-card" onclick="openModal('pedidos-modal')">
@@ -47,7 +43,7 @@
         </div>
         <div class="modal-content">
             <div class="modal-options">
-                <a href="{% url 'libreria:ver_usuario' user.id %}" class="modal-option">
+                <a href="{% url 'cde:ver_usuario_cde' user.id %}" class="modal-option">
                     <i data-feather="user" class="modal-option-icon"></i>
                     <span class="modal-option-text">Ver perfil</span>
                 </a>
@@ -71,14 +67,14 @@
         </div>
         <div class="modal-content">
             <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
+                <a href="{% url 'cde:crear_pedido_cde' %}" class="modal-option">
                     <i data-feather="shopping-cart" class="modal-option-icon"></i>
                     <span class="modal-option-text">Nuevo pedido</span>
                 </a>
 
 
 
-                <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
+                <a href="{% url 'cde:mis_pedidos_cde' %}" class="modal-option">
                     <i data-feather="clipboard" class="modal-option-icon"></i>
                     <span class="modal-option-text">Mis pedidos</span>
                 </a>
@@ -151,33 +147,7 @@
     </div>
 </div>
 
-<!-- Modal Artículos -->
-<div class="modal-overlay" id="articulos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Productos</h2>
-            <button class="close-modal" onclick="closeModal('articulos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_producto' %}" class="modal-option">
-                    <i data-feather="file-plus" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Crear productos</span>
-                </a>
 
-                <a href="{% url 'cafeteria:listar_productos' %}" class="modal-option">
-                    <i data-feather="package" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Listar productos</span>
-                </a>
-
-                <a href="{% url 'cafeteria:lista_bajo_stock' %}" class="modal-option">
-                    <i data-feather="alert-triangle" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Bajo stock</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Pedidos -->
 <div class="modal-overlay" id="pedidos-modal">
@@ -188,25 +158,17 @@
         </div>
         <div class="modal-content">
             <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
+                <a href="{% url 'cde_crear_pedido_cde' %}" class="modal-option">
                     <i data-feather="shopping-cart" class="modal-option-icon"></i>
                     <span class="modal-option-text">Nuevo pedido</span>
                 </a>
 
-                <a href="{% url 'cafeteria:lista_pedidos_caf' %}" class="modal-option">
+                <a href="{% url 'cde:mis_pedidos_cde' %}" class="modal-option">
                     <i data-feather="list" class="modal-option-icon"></i>
                     <span class="modal-option-text">Pedidos confirmados</span>
                 </a>
 
-                <a href="{% url 'cafeteria:pedidos_pendientes' %}" class="modal-option">
-                    <i data-feather="clock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Pedidos pendientes</span>
-                </a>
-
-                <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
-                    <i data-feather="clipboard" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Mis pedidos</span>
-                </a>
+                
             </div>
         </div>
     </div>

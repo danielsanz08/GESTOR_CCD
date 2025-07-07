@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 25px;
+      border-radius: 8px;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+
+    h2 {
+      background-color: #4caf50;
+      color: white;
+      padding: 12px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .info {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    .info p {
+      margin: 6px 0;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #777;
+      text-align: center;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #1e88e5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📦 Nuevo Pedido CDE</h2>
+
+    <div class="info">
+      <p><strong>Usuario:</strong> {{ usuario.nombre }}</p>
+      <p><strong>Área:</strong> {{ pedido.area }}</p>
+      <p><strong>Producto:</strong> {{ pedido.producto }}</p>
+      <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
+      <p><strong>Evento:</strong> {{ pedido.evento }}</p>
+      <p><strong>Fecha:</strong> {{ fecha|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <div class="footer">
+      Este correo fue enviado automáticamente por el sistema de pedidos. No responder directamente.
+    </div>
+  </div>
+</body>
+</html>

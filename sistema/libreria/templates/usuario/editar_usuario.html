@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/editar_usuario.css' %}?v={% now 'U' %}">
 
 <div class="formulario">
-    <h2>Editar usuario</h2>
+    <h2 id="editar">Editar usuario</h2>
     <form method="POST" id="userForm">
         {% csrf_token %}
         <div class="mb-3">
@@ -24,7 +24,7 @@
             {{ form.cargo }}
             <div class="error-msg cargo-error" id="error-cargo"></div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="area">
             <label for="area">Área:</label>
             {{ form.area }}
             <div class="error-msg area-error" id="error-area"></div>

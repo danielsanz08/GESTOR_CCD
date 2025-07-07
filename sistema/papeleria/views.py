@@ -283,7 +283,14 @@ from django.urls import reverse
 from django.conf import settings
 from .models import Pedido, PedidoArticulo, Articulo
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
+from django.contrib import messages
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.urls import reverse
+from libreria.models import CustomUser
 User = get_user_model()
 @login_required
 def crear_pedido(request):
@@ -298,13 +305,14 @@ def crear_pedido(request):
         pedido = Pedido.objects.create(
             registrado_por=request.user,
             estado=estado,
+            fecha_estado=timezone.now() if estado == 'Confirmado' else None
         )
 
         articulos_ids = request.POST.getlist('articulo')
         tipos = request.POST.getlist('tipo_articulo')
         cantidades = request.POST.getlist('cantidad')
 
-        area_usuario = getattr(request.user, 'area', 'No establecido')
+        area_usuario = request.user.area  # Usamos directamente el campo area del CustomUser
 
         for articulo_id, tipo, cantidad in zip(articulos_ids, tipos, cantidades):
             if articulo_id and tipo and cantidad:
@@ -328,42 +336,62 @@ def crear_pedido(request):
                     area=area_usuario,
                 )
 
-        admin_users = User.objects.filter(role='Administrador', is_active=True)
+        admin_users = CustomUser.objects.filter(role='Administrador', is_active=True)
         admin_emails = [admin.email for admin in admin_users if admin.email]
 
         if admin_emails:
-            subject = "Nuevo pedido registrado por un usuario"
-            message = (
-                f"Hola querido administrador,\n\n"
-                f"Desde el módulo de Papelería te informamos que el usuario '{request.user.username}' "
-                f"ha realizado un nuevo pedido.\n\n"
-                f"Información del pedido:\n"
-                f"Usuario: {request.user.username}\n"
-                f"Rol: {request.user.role}\n"
-                f"ID del pedido: {pedido.id}\n"
-                f"Estado inicial del pedido: {estado}\n\n"
-                f"Por favor revisa y confirma el pedido si corresponde.\n\n"
-                f"Gracias por su atención.\n"
-                f"El equipo de Gestor CCD les desea un excelente día."
-            )
+            admin_url = request.build_absolute_uri(reverse('papeleria:listado_pedidos'))
+            context = {
+                'usuario': request.user,
+                'pedido': pedido,
+                'admin_url': admin_url,
+                'company_name': 'Gestor CCD',
+                'articulos': PedidoArticulo.objects.filter(pedido=pedido),
+                'fecha_pedido': pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M'),
+            }
+
+            html_message = render_to_string('pedidos/email_notificacion_pedido.html', context)
+            
+            # Usamos username en lugar de get_full_name()
+            text_message = f"""
+Hola Administrador,
+
+Se ha registrado un nuevo pedido en el sistema de Papelería:
+
+Usuario: {request.user.username}
+Rol: {request.user.get_role_display()}  # Muestra el nombre legible del rol
+Área: {request.user.get_area_display()}  # Muestra el nombre legible del área
+Cargo: {request.user.cargo}
+ID del Pedido: {pedido.id}
+Estado: {estado}
+Fecha: {pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M')}
+
+Detalle de artículos:
+{'\n'.join([f"- {pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})" for pa in PedidoArticulo.objects.filter(pedido=pedido)])}
+
+Por favor revisa y gestiona este pedido en el sistema: {admin_url}
+
+Este es un mensaje automático, por favor no respondas a este correo.
+"""
 
             try:
-                send_mail(
+                subject = f"Nuevo pedido {'confirmado' if estado == 'Confirmado' else 'pendiente'} - ID: {pedido.id}"
+                msg = EmailMultiAlternatives(
                     subject,
-                    message,
+                    text_message,
                     settings.DEFAULT_FROM_EMAIL,
-                    admin_emails,
-                    fail_silently=False,
+                    admin_emails
                 )
+                msg.attach_alternative(html_message, "text/html")
+                msg.send()
+
             except TimeoutError:
                 messages.error(request, "El pedido fue creado, pero no se pudo enviar la notificación por correo debido a un problema de conexión (Timeout).")
+            except Exception as e:
+                print(f"Error enviando correo: {e}")
 
         messages.success(request, f"El pedido fue registrado correctamente con estado '{estado}'.")
-
-        if request.user.role == 'Empleado':
-            return redirect('papeleria:mis_pedidos')
-        else:
-            return redirect('papeleria:listado_pedidos')
+        return redirect('papeleria:mis_pedidos' if request.user.role == 'Empleado' else 'papeleria:listado_pedidos')
 
     articulos = Articulo.objects.all()
     return render(request, 'pedidos/pedidos.html', {

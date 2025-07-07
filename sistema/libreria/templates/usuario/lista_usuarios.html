@@ -6,7 +6,7 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/lista_usuarios.css' %}?v={% now 'U' %}">
 
-<section>
+<section id="section">
     <h1>Usuarios de Gestor CCD</h1>
     <div>
         <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
@@ -15,10 +15,10 @@
         <i class="fas fa-search text-white"></i>
     </button>
     <div id="filtro-fechas">
-        <label for="fecha_inicio">Desde:</label>
+        <label for="fecha_inicio" class="desde">Desde:</label>
         <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}" data-tooltip="Fecha de inicio">
         
-        <label for="fecha_fin">Hasta:</label>
+        <label for="fecha_fin" class="hasta">Hasta:</label>
         <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}" data-tooltip="Fecha fin">
 
         <button type="submit" class="search-date" data-tooltip="Buscar por rango de fecha">
@@ -43,7 +43,7 @@
             <button class="excel" data-tooltip="Exportar lista de usuarios en XLSX"><i class="fas fa-file-excel text-white"></i></button>
         </a>
     </div>
-
+    <div class="tabla-scroll">
     <table>
         <thead>
             <tr>
@@ -60,13 +60,13 @@
         </thead>
         <tbody>
             {% for usuario in usuarios %}
-            <tr>
-                <td>{{ usuario.id }}</td>
-                <td data-tooltip="{{ usuario.role }}">{{ usuario.username }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>{{ usuario.area }}</td>
-                <td>{{ usuario.cargo }}</td>
-                <td>{{ usuario.fecha_formateada }}</td>
+            <tr id="info-tr">
+                <td class="td_id">{{ usuario.id }}</td>
+                <td data-tooltip="{{ usuario.role }}" class="td_nombre">{{ usuario.username }}</td>
+                <td class="td_email">{{ usuario.email }}</td>
+                <td class="td_area">{{ usuario.area }}</td>
+                <td class="td_cargo">{{ usuario.cargo }}</td>
+                <td class="td_fecha">{{ usuario.fecha_formateada }}</td>
                 <td class="td_btn_estado" id="td_btn_estado">
                     <form action="{% url 'libreria:cambiar_estado_usuario' usuario.id %}" method="POST" style="margin:0;">
                         {% csrf_token %}
@@ -94,7 +94,7 @@
             {% endfor %}
         </tbody>
     </table>
-
+</div>
     <div class="paginacion" id="pag">
         {% if usuarios.has_previous %}
         <a href="?page={{ usuarios.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Anterior</a>

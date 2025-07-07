@@ -7,283 +7,205 @@
 <link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
 
 {% if user.is_authenticated %}
-{% if request.user.role == 'Administrador' %}
-<div class="main-container">
-    <div class="main-cards">
-        <!-- Card Usuarios -->
-        <div class="main-card" onclick="openModal('usuarios-modal')">
-            <i data-feather="users" class="main-card-icon"></i>
-            <h2 class="main-card-title">Usuarios</h2>
-        </div>
-        <!-- Card Artículos -->
-        <div class="main-card" onclick="openModal('articulos-modal')">
-            <i data-feather="package" class="main-card-icon"></i>
-            <h2 class="main-card-title">Productos</h2>
-        </div>
+  {% if request.user.role == 'Administrador' %}
+  <div class="main-container">
+      <div class="main-cards">
+          <!-- Card Usuarios -->
+          <div class="main-card" onclick="openModal('usuarios-modal')">
+              <i data-feather="users" class="main-card-icon"></i>
+              <h2 class="main-card-title">Usuarios</h2>
+          </div>
+          <!-- Card Artículos -->
+          <div class="main-card" onclick="openModal('articulos-modal')">
+              <i data-feather="package" class="main-card-icon"></i>
+              <h2 class="main-card-title">Productos</h2>
+          </div>
 
-        <!-- Card Pedidos -->
-        <div class="main-card" onclick="openModal('pedidos-modal')">
-            <i data-feather="shopping-cart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Pedidos</h2>
-        </div>
+          <!-- Card Pedidos -->
+          <div class="main-card" onclick="openModal('pedidos-modal')">
+              <i data-feather="shopping-cart" class="main-card-icon"></i>
+              <h2 class="main-card-title">Pedidos</h2>
+          </div>
 
-        <!-- Card Estadísticas -->
-        <div class="main-card" onclick="openModal('estadisticas-modal')">
-            <i data-feather="bar-chart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Estadísticas</h2>
-        </div>
+          <!-- Card Estadísticas -->
+          <div class="main-card" onclick="openModal('estadisticas-modal')">
+              <i data-feather="bar-chart" class="main-card-icon"></i>
+              <h2 class="main-card-title">Estadísticas</h2>
+          </div>
 
-        <!-- Card Manual -->
-        <div class="main-card" onclick="openModal('manual-modal')">
-            <i data-feather="book-open" class="main-card-icon"></i>
-            <h2 class="main-card-title">Manual</h2>
-        </div>
-    </div>
-</div>
+          <!-- Card Manual -->
+          <div class="main-card" onclick="openModal('manual-modal')">
+              <i data-feather="book-open" class="main-card-icon"></i>
+              <h2 class="main-card-title">Manual</h2>
+          </div>
+      </div>
+  </div>
 
-<!-- Modal Usuarios -->
-<div class="modal-overlay" id="usuarios-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Usuarios</h2>
-            <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:ver_usuario' user.id %}" class="modal-option">
-                    <i data-feather="user" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Ver perfil</span>
-                </a>
-                <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
-                    <i data-feather="lock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Cambiar contraseña</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+  <!-- Modal Usuarios -->
+  <div class="modal-overlay" id="usuarios-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Gestión de Usuarios</h2>
+              <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'libreria:ver_usuario' user.id %}" class="modal-option">
+                      <i data-feather="user" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Ver perfil</span>
+                  </a>
+                  <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
+                      <i data-feather="lock" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Cambiar contraseña</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
+  <!-- Modal Artículos -->
+  <div class="modal-overlay" id="articulos-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Gestión de Productos</h2>
+              <button class="close-modal" onclick="closeModal('articulos-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'cafeteria:crear_producto' %}" class="modal-option">
+                      <i data-feather="file-plus" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Crear productos</span>
+                  </a>
+                  <a href="{% url 'cafeteria:listar_productos' %}" class="modal-option">
+                      <i data-feather="package" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Listar productos</span>
+                  </a>
+                  <a href="{% url 'cafeteria:lista_bajo_stock' %}" class="modal-option">
+                      <i data-feather="alert-triangle" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Bajo stock</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
+  <!-- Modal Pedidos -->
+  <div class="modal-overlay" id="pedidos-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Gestión de Pedidos</h2>
+              <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
+                      <i data-feather="shopping-cart" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Nuevo pedido</span>
+                  </a>
+                  <a href="{% url 'cafeteria:lista_pedidos_caf' %}" class="modal-option">
+                      <i data-feather="list" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Pedidos confirmados</span>
+                  </a>
+                  <a href="{% url 'cafeteria:pedidos_pendientes' %}" class="modal-option">
+                      <i data-feather="clock" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Pedidos pendientes</span>
+                  </a>
+                  <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
+                      <i data-feather="clipboard" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Mis pedidos</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
-<!-- Modal Pedidos -->
-<div class="modal-overlay" id="pedidos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Pedidos</h2>
-            <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
-                    <i data-feather="shopping-cart" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Nuevo pedido</span>
-                </a>
+  <!-- Modal Estadísticas -->
+  <div class="modal-overlay" id="estadisticas-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Estadísticas</h2>
+              <button class="close-modal" onclick="closeModal('estadisticas-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'cafeteria:index_estadistica_caf' %}" class="modal-option">
+                      <i data-feather="bar-chart" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Ver estadísticas</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
+  <!-- Modal Backup -->
+  <div class="modal-overlay" id="backup-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Copia de Seguridad</h2>
+              <button class="close-modal" onclick="closeModal('backup-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'backup:index_backup' %}" class="modal-option">
+                      <i data-feather="database" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Gestión de Backup</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
+  {% elif request.user.role == 'Empleado' %}
+  <div class="main-container">
+      <div class="main-cards_empleado">
+          <!-- Card Usuarios -->
+          <div class="main-card" onclick="openModal('usuarios-modal')">
+              <i data-feather="users" class="main-card-icon"></i>
+              <h2 class="main-card-title">Usuarios</h2>
+          </div>
 
-                <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
-                    <i data-feather="clipboard" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Mis pedidos</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+          <!-- Card Pedidos -->
+          <div class="main-card" onclick="openModal('pedidos-modal')">
+              <i data-feather="shopping-cart" class="main-card-icon"></i>
+              <h2 class="main-card-title">Pedidos</h2>
+          </div>
 
+          <!-- Card Manual -->
+          <div class="main-card" onclick="openModal('manual-modal')">
+              <i data-feather="book-open" class="main-card-icon"></i>
+              <h2 class="main-card-title">Manual</h2>
+          </div>
+      </div>
+  </div>
+  {% endif %}
 
+  <!-- Modal Manual (single instance for all users) -->
+  <div class="modal-overlay" id="manual-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Manual de Usuario</h2>
+              <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
+                      <i data-feather="book-open" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Abrir manual</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
 
-
+  {% if request.user.role == 'Administrador' and request.user.acceso_pap and es_papeleria and mostrar_alerta and bajo_stock %}
+  <div id="stock-alert" class="alert-overlay">
+      <div class="alert-box">
+          <button class="close-btn" onclick="cerrarAlerta()">&times;</button>
+          <p>¡Atención! Hay artículos con stock menor a 10 unidades.</p>
+      </div>
+  </div>
+  {% endif %}
 {% endif %}
-
-<!-- Modal Manual -->
-<div class="modal-overlay" id="manual-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Manual de Usuario</h2>
-            <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
-                    <i data-feather="book-open" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Abrir manual</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% if request.user.role == 'Empleado' %}
-<div class="main-container">
-    <div class="main-cards_empleado">
-        <!-- Card Usuarios -->
-        <div class="main-card" onclick="openModal('usuarios-modal')">
-            <i data-feather="users" class="main-card-icon"></i>
-            <h2 class="main-card-title">Usuarios</h2>
-        </div>
-
-        <!-- Card Pedidos -->
-        <div class="main-card" onclick="openModal('pedidos-modal')">
-            <i data-feather="shopping-cart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Pedidos</h2>
-        </div>
-
-        <!-- Card Manual -->
-        <div class="main-card" onclick="openModal('manual-modal')">
-            <i data-feather="book-open" class="main-card-icon"></i>
-            <h2 class="main-card-title">Manual</h2>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Usuarios -->
-<div class="modal-overlay" id="usuarios-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Usuarios</h2>
-            <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:ver_usuario' user.id %}" class="modal-option">
-                    <i data-feather="user" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Ver perfil</span>
-                </a>
-                <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
-                    <i data-feather="lock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Cambiar contraseña</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Artículos -->
-<div class="modal-overlay" id="articulos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Productos</h2>
-            <button class="close-modal" onclick="closeModal('articulos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_producto' %}" class="modal-option">
-                    <i data-feather="file-plus" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Crear productos</span>
-                </a>
-
-                <a href="{% url 'cafeteria:listar_productos' %}" class="modal-option">
-                    <i data-feather="package" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Listar productos</span>
-                </a>
-
-                <a href="{% url 'cafeteria:lista_bajo_stock' %}" class="modal-option">
-                    <i data-feather="alert-triangle" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Bajo stock</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Pedidos -->
-<div class="modal-overlay" id="pedidos-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Gestión de Pedidos</h2>
-            <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
-                    <i data-feather="shopping-cart" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Nuevo pedido</span>
-                </a>
-
-                <a href="{% url 'cafeteria:lista_pedidos_caf' %}" class="modal-option">
-                    <i data-feather="list" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Pedidos confirmados</span>
-                </a>
-
-                <a href="{% url 'cafeteria:pedidos_pendientes' %}" class="modal-option">
-                    <i data-feather="clock" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Pedidos pendientes</span>
-                </a>
-
-                <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
-                    <i data-feather="clipboard" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Mis pedidos</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Estadísticas -->
-<div class="modal-overlay" id="estadisticas-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Estadísticas</h2>
-            <button class="close-modal" onclick="closeModal('estadisticas-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'cafeteria:index_estadistica_caf' %}" class="modal-option">
-                    <i data-feather="bar-chart" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Ver estadísticas</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Backup -->
-<div class="modal-overlay" id="backup-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Copia de Seguridad</h2>
-            <button class="close-modal" onclick="closeModal('backup-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'backup:index_backup' %}" class="modal-option">
-                    <i data-feather="database" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Gestión de Backup</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Modal Manual -->
-<div class="modal-overlay" id="manual-modal">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2 class="modal-title">Manual de Usuario</h2>
-            <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
-        </div>
-        <div class="modal-content">
-            <div class="modal-options">
-                <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
-                    <i data-feather="book-open" class="modal-option-icon"></i>
-                    <span class="modal-option-text">Abrir manual</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if request.user.role == 'Administrador' and request.user.acceso_pap and es_papeleria and mostrar_alerta and
-bajo_stock %}
-<div id="stock-alert" class="alert-overlay">
-    <div class="alert-box">
-        <button class="close-btn" onclick="cerrarAlerta()">&times;</button>
-        <p>¡Atención! Hay artículos con stock menor a 10 unidades.</p>
-    </div>
-</div>
-{% endif %}
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

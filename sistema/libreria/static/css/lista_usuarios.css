@@ -5,34 +5,48 @@ html {
 }
 
 section {
-   background: linear-gradient(110deg, #c7def893, #ffffffe8);
-        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-        border: 2px solid rgba(2, 47, 90, 0.63);
-  position: relative;
+  background: linear-gradient(110deg, #c7def893, #ffffffe8);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+  border: 2px solid rgba(2, 47, 90, 0.63);
+  position: fixed;
   top: 23vh;
+  /* Opcional: Cambiar a px si quieres posición fija */
   left: 9vh;
+  /* Opcional: Cambiar a px si quieres posición fija */
   text-align: center;
   padding: 10px 20px 20px 20px;
-  width: 190vh;
-  height: 60vh;
   border-radius: 20px;
+  min-height: 415px;
+  max-height: 385px;
+  min-width: 1260px;
+  max-width: 1200px;
+
+  box-sizing: border-box;
+  /* Evita que el padding afecte el ancho/alto */
 }
+
 
 .buscador {
   background-color: #ffffff;
   border: none;
   border-radius: 20px;
-  height: 3.5vh;
-  width: 50vh;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: absolute;
-  left: 20vh;
+  left: 130px;
+  width: 320px !important;
+  /* Ancho fijo (no se escala con zoom) */
+  height: 25px !important;
+  /* Altura fija (antes 3.5vh) */
+  box-sizing: border-box;
+  /* Evita que padding/border afecten el tamaño */
 }
+
 #filtro-fechas {
   position: absolute;
-  left: 95vh;
-  top: 12vh;
+  right: 300px;
+  top: 80px;
 }
+
 .fecha_inicio,
 .fecha_fin {
   padding: 0.5rem 1rem;
@@ -44,7 +58,10 @@ section {
   transition: border-color 0.3s ease;
   width: 100px;
   height: 7px;
+  left: 15px;
+
 }
+
 .fecha_inicio:hover,
 .fecha_fin:hover {
   border-color: #1e90ff;
@@ -55,6 +72,7 @@ section {
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
+
 .search-date {
   background-color: #0056b3;
   color: rgb(0, 0, 0);
@@ -62,11 +80,11 @@ section {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  left: 58vh;
-  top: 0vh;
-  width: 10vh;
-  text-align: center;
+  right: -87px;
+  width: 60px;
   height: 25px;
+  top: -2px;
+  text-align: center;
 }
 
 .search-date:hover {
@@ -74,6 +92,7 @@ section {
   cursor: pointer;
   color: white;
 }
+
 .btn-search {
   background-color: #0056b3;
   color: rgb(0, 0, 0);
@@ -81,9 +100,9 @@ section {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  left: 72vh;
-  top: 12vh;
-  width: 10vh;
+  left: 462px;
+  top: 76px;
+  width: 60px;
   height: 25px;
   text-align: center;
 
@@ -98,13 +117,15 @@ section {
   cursor: pointer;
   color: rgb(255, 255, 255);
 }
+
 .icono {
-  height: 3vh;
+  height: 10px;
 }
 
 #icono {
-  height: 3vh;
+  height: 10px;
 }
+
 .clean {
   background-color: #b30000;
   color: rgb(0, 0, 0);
@@ -112,30 +133,32 @@ section {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  right: 20vh;
-  top: 12vh;
-  width: 10vh;
+  right: 134px;
+  top: 76px;
+  width: 60px;
   text-align: center;
-  margin-right: 1vh;
+  margin-right: 1px;
   height: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .clean:hover {
   background-color: #8a0101;
   cursor: pointer;
   color: rgb(255, 255, 255);
 }
+
 .pdf {
   background-color: rgb(255, 0, 0);
   border: none;
-  width: 10vh;
+  width: 60px;
   height: 25px;
   border-radius: 20px;
   position: absolute;
-  top: 5vh;
-  right: 30vh;
+  top: 33px;
+  right: 190px;
   font-weight: bold;
   color: #000;
 }
@@ -149,12 +172,12 @@ section {
 .excel {
   background-color: rgb(0, 255, 13);
   border: none;
-  width: 10vh;
+  width: 60px;
   height: 25px;
   border-radius: 20px;
   position: absolute;
-  top: 5vh;
-  right: 18vh;
+  top: 33px;
+  right: 115px;
   font-weight: bold;
   color: #000;
 }
@@ -164,31 +187,34 @@ section {
   cursor: pointer;
   color: white;
 }
+
 .print {
   background-color: yellow;
   border: none;
-  width: 10vh;
+  width: 60px;
   height: 25px;
   border-radius: 20px;
-  margin-right: 1vh;
   position: absolute;
-  top: 5vh;
-  right: 40vh;
+  top: 33px;
+  right: 265px;
   cursor: pointer;
   color: #000;
 }
+
 .print:hover {
   background-color: rgb(190, 190, 3);
   color: white;
 }
+
 table {
-  width: 180vh;
-  border-spacing: 10px;
+  width: 1155px;
+  border-spacing: 8px;
   position: absolute;
-  top: 20vh;
-  left: 8vh;
+  top: 120px;
+  left: 50px;
 
 }
+
 
 .id,
 .nombre,
@@ -200,7 +226,7 @@ table {
 .fecha,
 .actividad,
 .editar {
-  left: 20vh;
+  left: 160px;
   background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
 
@@ -208,14 +234,15 @@ table {
 
 td {
   background-color: rgba(255, 255, 255, 0.384);
-  margin: 20vh 0 20vh 0;
+  margin: 160px 0 160px 0;
   border-radius: 10px;
   box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.178);
-  height: 5vh;
+  height: 30px;
   align-items: center;
+  padding: 5px 0 5px 0;
 
 }
-/* Toggle Switch Container */
+
 .cl-toggle-switch {
   position: relative;
 }
@@ -341,38 +368,42 @@ td {
 }
 
 .editar-btn {
- background-color: rgb(190, 164, 11);
+  background-color: yellow;
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  width: 10vh;
+  width: 60px;
   height: 25px;
   border-radius: 20px;
   margin-right: 1vh;
   cursor: pointer;
   color: rgb(0, 0, 0);
+
 }
 
 .editar-btn:hover {
-  background-color: rgb(159, 170, 11);
+  background-color: rgb(190, 190, 3);
   cursor: pointer;
   color: #f7f7f7;
 }
-.permisos-btn{
+
+.permisos-btn {
   background-color: #0056b3;
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  width: 10vh;
+  width: 60px;
   height: 25px;
   border-radius: 20px;
   margin-right: 1vh;
   cursor: pointer;
   color: rgb(2, 2, 2);
 }
+
 .permisos-btn:hover {
   background-color: #044080;
   cursor: pointer;
   color: #ffffff;
 }
+
 /* PAGINACION */
 .paginacion {
   display: flex;
@@ -392,8 +423,8 @@ td {
   border: 1px solid transparent;
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
-  position: relative; 
-  top: 45vh; 
+  position: relative;
+  top: 290px;
 }
 
 .paginacion a:hover {
@@ -410,122 +441,278 @@ td {
   font-weight: bold;
 }
 
+.modal-custom {
+  display: none;
+  position: fixed;
+  inset: 0;
+  /* Reemplaza top, left, width y height */
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
 
 /* Modal personalizado */
-    .modal-custom {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
+.modal-custom {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
 
-    .modal-content-custom {
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        width: 320px;
-        max-width: 90%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        position: relative;
-    }
+.modal-content-custom {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
 
-    .modal-header-custom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
+.modal-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
 
-    .modal-header-custom h5 {
-        margin: 0;
-        font-size: 18px;
-    }
+.modal-header-custom h5 {
+  margin: 0;
+  font-size: 18px;
+}
 
-    .btn-close-custom {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        line-height: 1;
-    }
+.btn-close-custom {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
 
-    /* Permisos */
-    .permiso-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+/* Permisos */
+.permiso-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-    .permiso-label {
-        margin-left: 10px;
-        cursor: pointer;
-    }
+.permiso-label {
+  margin-left: 10px;
+  cursor: pointer;
+}
 
-    /* Footer modal */
-    .modal-footer-custom {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
+/* Footer modal */
+.modal-footer-custom {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
 
-    .btn-cancelar,
-    .btn-guardar {
-        padding: 6px 12px;
-        cursor: pointer;
-        border-radius: 4px;
-        border: none;
-        font-size: 14px;
-    }
+.btn-cancelar,
+.btn-guardar {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+}
 
-    .btn-cancelar {
-        background-color: #6c757d;
-        color: white;
-    }
+.btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+}
 
-    .btn-cancelar:hover {
-        background-color: #5a6268;
-    }
+.btn-cancelar:hover {
+  background-color: #5a6268;
+}
 
-    .btn-guardar {
-        background-color: #0d6efd;
-        color: white;
-    }
+.btn-guardar {
+  background-color: #0d6efd;
+  color: white;
+}
 
-    .btn-guardar:hover {
-        background-color: #0b5ed7;
-    }
+.btn-guardar:hover {
+  background-color: #0b5ed7;
+}
+
 .tooltip-custom {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .tooltip-custom .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: -35px; /* más arriba para despejar el switch */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #222;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
-    z-index: 100;
-    font-size: 12px;
-    box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
-    transition: opacity 0.3s;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -35px;
+  /* más arriba para despejar el switch */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #222;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 100;
+  font-size: 12px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s;
 }
 
 .tooltip-custom:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
+
+@media (max-width: 767px) {
+  html {
+    flex-direction: column;
+    align-items: flex-start;
+
+
+  }
+
+  section {
+    position: absolute;
+    min-width: auto;
+    max-width: 100%;
+    min-height: 540px;
+    max-height: 640px;
+    padding: 1rem;
+    margin: 1rem auto;
+    width: 120%;
+    left: 0.1vh;
+    top: 16vh;
+  }
+
+  /* 🚀 AÑADIDO: contenedor scroll horizontal y vertical */
+  .tabla-scroll {
+    max-width: 100%;
+    max-height: 190px;
+    /* Puedes ajustar la altura visible */
+    margin-top: 130px;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: block;
+    background-color: red;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+
+  }
+
+
+  /* Asegura que la tabla se mantenga en tamaño real */
+  .tabla-scroll table {
+    width: max-content;
+    min-width: 600px;
+    /* o el ancho mínimo deseado */
+    position: static;
+    border-collapse: collapse;
+  }
+
+  .buscador {
+    max-width: 30vh;
+    position: absolute;
+
+    left: 30px;
+  }
+.td_fecha,
+.td_area,
+.td_email,
+.td_nombre,
+.td_id{
+    left: 4px;
+}
+  .search-date {
+    position: absolute;
+    left: 35vh;
+    top: 10.5vh;
+  }
+
+  #filtro-fechas {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+  }
+
+  .desde {
+    position: absolute;
+    top: 16vh;
+  }
+
+  .hasta {
+    position: absolute;
+    top: 16vh;
+    right: 17vh;
+  }
+
+  .fecha_inicio {
+    position: absolute;
+    width: 20%;
+    height: 10px;
+    top: 15vh;
+    left: 9vh;
+  }
+
+  .fecha_fin {
+    position: absolute;
+    width: 20%;
+    height: 10px;
+    top: 15vh;
+    left: 32vh;
+  }
+
+  .clean {
+    position: absolute;
+    top: 20vh;
+    left: 15vh;
+  }
+
+  .btn-search {
+    position: absolute;
+    top: 20vh;
+    left: 25vh;
+  }
+
+  .print,
+  .pdf,
+  .excel {
+    display: none;
+  }
+
+
+ 
+
+  .paginacion a,
+  .paginacion span {
+    position: relative;
+    top: 390px;
+  }
+
+  .modal-content-custom {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .editar-btn,
+  .permisos-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+
+/* Responsive */
+@media (max-width: 1024px) {}

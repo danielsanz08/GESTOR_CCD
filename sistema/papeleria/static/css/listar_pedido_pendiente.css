@@ -31,7 +31,7 @@ table {
   position: absolute;
   top: 20vh;
   left: 8vh;
-
+  background-color: red;
 }
 
 .id,

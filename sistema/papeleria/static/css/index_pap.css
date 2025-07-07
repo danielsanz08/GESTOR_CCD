@@ -2,11 +2,7 @@
 html, body {
     background-color: #1c96bb1c;
 }
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+
 
 body {
     color: #333;
@@ -217,12 +213,16 @@ body {
     }
 
     .main-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: 2, 1fr;
+        
+        overflow: auto;
+        margin-top: 100px;
     }
 
     .main-card {
         padding: 1.25rem;
-        min-height: 140px;
+        min-height: 120px;
+        max-width: 170px;
     }
 
     .main-card-icon {

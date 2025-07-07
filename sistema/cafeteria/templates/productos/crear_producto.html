@@ -3,20 +3,20 @@
 {% block titulo %}Crear producto{% endblock %}
 
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/crear_producto.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/crear_articulo.css' %}?v={% now 'U' %}">
 
 <div class="formulario">
     <h2>Crear producto</h2>
-    <form method="POST" class="form_producto" novalidate>
+    <form method="POST" id="form_articulo" novalidate>
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="id_nombre" class="form-label">Nombre del producto</label>
-            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Digite el nombre del producto">
+        <div>
+            <label for="id_nombre">Nombre del producto</label>
+            <input type="text" name="nombre" id="id_nombre" required autocomplete="off" placeholder="Digite el nombre del producto">
             <div class="error-msg error-nombre"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="unidad_medida" class="form-label">Digite la unidad de medida</label>
+        <div>
+            <label for="unidad_medida">Digite la unidad de medida</label>
             <select name="unidad_medida" id="unidad_medida" class="form-select">
                 <option value="" disabled selected>Seleccione una opción</option>
                 <option value="Kilogramos">Kilogramos</option>
@@ -29,37 +29,37 @@
             <div class="error-msg error-tipo"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_marca" class="form-label">Marca del producto</label>
-            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Digite la marca del producto">
+        <div>
+            <label for="id_marca">Marca del producto</label>
+            <input type="text" name="marca" id="id_marca" required autocomplete="off" placeholder="Digite la marca del producto">
             <div class="error-msg error-marca"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_precio" class="form-label">Digite el precio</label>
+        <div>
+            <label for="id_precio">Digite el precio</label>
             <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del producto">
             <div class="error-msg error-precio"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_cantidad" class="form-label">Digite la cantidad</label>
+        <div>
+            <label for="id_cantidad">Digite la cantidad</label>
             <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad del producto">
             <div class="error-msg error-cantidad"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_proveedor" class="form-label">Digite el proveedor</label>
+        <div>
+            <label for="id_proveedor">Digite el proveedor</label>
             <input type="text" id="id_proveedor" name="proveedor" placeholder="Digite el proveedor del producto">
             <div class="error-msg error-proveedor"></div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_presentacion" class="form-label">Presentación del producto:</label>
-            <input type="text" name="presentacion" id="id_presentacion" class="form-control" placeholder="Digite una presentación del producto">
+        <div>
+            <label for="id_presentacion">Presentación del producto:</label>
+            <input type="text" name="presentacion" id="id_presentacion" placeholder="Digite una presentación del producto">
             <div class="error-msg error-presentacion"></div>
         </div>
 
-        <button type="submit" class="btn" id="submit_btn">Registrar</button>
+        <button type="submit" id="submit_btn">Registrar</button>
     </form>
 </div>
 
@@ -87,7 +87,7 @@
 
         function validarTexto(valor) {
             if (valor.trim().length > 0 && valor.length < 3) return "Debe tener más de 3 caracteres.";
-            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?"'()\/\-]*$/.test(valor)) return "Solo letras y signos permitidos.";
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?\"'()\/\-]*$/.test(valor)) return "Solo letras y signos permitidos.";
             if (/(.)\1{2,}/.test(valor)) return "No repita caracteres más de 2 veces.";
             return "";
         }

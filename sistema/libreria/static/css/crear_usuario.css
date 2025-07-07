@@ -22,7 +22,6 @@ body {
 /* Móviles (hasta 767px) */
 @media (max-width: 767px) {
     .formulario {
-        margin-top: 20%;
         padding: 10px;
         border-radius: 10px;
         width: 90%;
@@ -44,9 +43,10 @@ body {
 
     #userForm {
         padding: 10px;
-        max-height: calc(80vh - 20px);
+        max-height: calc(60vh - 40px);
         /* Ajustar al contenedor padre */
         overflow-y: auto;
+        
     }
 
     input,
@@ -79,7 +79,7 @@ body {
         /* Igual que los inputs */
         margin: 25px auto;
         /* Centrado */
-        border-radius: 10px;
+        border-radius: 15px;
         display: block;
         background-color: rgb(255, 255, 255);
         color: rgb(0, 0, 0);
@@ -167,7 +167,7 @@ body {
     .btn {
         height: 6vh;
         width: 50%;
-        border-radius: 20px;
+        border-radius: 15px;
         border: 2px solid black;
         background-color: white;
         font-size: large;
@@ -258,7 +258,7 @@ body {
         color: rgb(0, 0, 0);
         font-weight: bold;
         border: 2px solid black;
-        border-radius: 20px;
+        border-radius: 15px;
         cursor: pointer;
         padding: 0.75rem 1.5rem;
         min-height: 2rem;
@@ -268,7 +268,7 @@ body {
         min-width: 200px;
         box-sizing: border-box;
         font-size: max(0.9rem, 14px);
-        margin: 1rem 0rem 0 25rem;
+        margin: 1rem 0rem 0 26rem;
         /* arriba, derecha,abajo, izquierda */
 
     }

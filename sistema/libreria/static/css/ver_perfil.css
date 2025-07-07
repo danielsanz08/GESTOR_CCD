@@ -79,7 +79,7 @@
         border: 2px solid black;
         height: 6vh;
         width: 20vh;
-        border-radius: 20px;
+        border-radius: 15px;
     }
 
     .editar:hover {
@@ -96,7 +96,7 @@
         border: 2px solid black;
         height: 6vh;
         width: 20vh;
-        border-radius: 20px;
+        border-radius: 15px;
         margin-left: -5px;
     }
 
@@ -188,7 +188,7 @@
         border: 2px solid black;
         height: 5vh;
         width: 20vh;
-        border-radius: 20px;
+        border-radius: 15px;
         font-size: large;
         margin-top: 40px;
     }
@@ -207,7 +207,7 @@
         border: 2px solid black;
         height: 5vh;
         width: 20vh;
-        border-radius: 20px;
+        border-radius: 15px;
         margin-left: -5px;
         font-size: large;
         margin-top: 40px;
@@ -311,8 +311,8 @@
         border: 1px solid black;
         height: 40px;
         min-width: 150px;
-        border-radius: 20px;
-        font-size: 16px;
+        border-radius: 15px;
+        font-size: max(0.9rem, 14px);
         cursor: pointer;
         transition: all 0.3s ease;
         box-sizing: border-box;

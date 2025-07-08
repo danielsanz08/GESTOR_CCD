@@ -103,21 +103,23 @@
         </tbody>
     </table>
 
-    <div class="paginacion" id="pag">
-        {% if articulos.has_previous %}
-        <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
-        {% endif %}
-        {% for num in articulos.paginator.page_range %}
+   <div class="paginacion" id="pag">
+    {% if articulos.has_previous %}
+        <a href="?page={{ articulos.previous_page_number }}{{ query_params }}">Anterior</a>
+    {% endif %}
+    
+    {% for num in articulos.paginator.page_range %}
         {% if articulos.number == num %}
-        <span class="current">{{ num }}</span>
+            <span class="current">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
+            <a href="?page={{ num }}{{ query_params }}">{{ num }}</a>
         {% endif %}
-        {% endfor %}
-        {% if articulos.has_next %}
-        <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
-        {% endif %}
-    </div>
+    {% endfor %}
+    
+    {% if articulos.has_next %}
+        <a href="?page={{ articulos.next_page_number }}{{ query_params }}">Siguiente</a>
+    {% endif %}
+</div>
 
     <!-- Modal para eliminar -->
     <div id="modoEliminar" class="modal" style="display: none;">

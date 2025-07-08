@@ -1,15 +1,15 @@
 {% extends 'navbar.html' %}
 {% load static %}
 
-{% block titulo %}Mis pedidos{% endblock %}
+{% block titulo %}Mis pedidos CDE{% endblock %}
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido.css' %}?v={% now 'U' %}">
 
 
 <section class="pedido">
-    <h1>Mis pedidos</h1>
-    <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
+    <h1>Mis pedidos de centro de eventos</h1>
+    <form method="GET" action="{% url 'cde:mis_pedidos_cde' %}">
         <div>
             <!-- Input de búsqueda general -->
             <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
@@ -18,8 +18,6 @@
                 <i class="fas fa-search text-white"></i>
 
             </button>
-
-
 
             <!-- Inputs de fecha (inicialmente ocultos) -->
             <div id="filtro-fechas">
@@ -35,7 +33,7 @@
                 </button>
             </div>
             <!-- Botón para limpiar filtros -->
-            <a href="{% url 'papeleria:listado_pedidos' %}">
+            <a href="{% url 'cde:mis_pedidos_cde' %}">
                 <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
                         title="Eliminar"></i>
                 </button>
@@ -65,44 +63,48 @@
                     <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i
                             class="fas fa-eye"></i></button>
 
+
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
                         <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                        <p class="fecha_pedido"><strong>Fecha del pedido:</strong>{{ pedido.fecha_formateada }}</p>
                         <p class="estado_d"><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+
+                        {% with primer_producto=pedido.productos.first %}
+                        {% if primer_producto %}
+                        <p><strong>Área:</strong> {{ primer_producto.area }}</p>
+                        <p><strong>Evento:</strong> {{ primer_producto.evento }}</p>
+                        {% endif %}
+                        {% endwith %}
+
+                        <!-- Fecha del estado según el tipo -->
+                        <p>
+                            <strong>
+                                {% if pedido.estado == 'Confirmado' %}
+                                Fecha confirmación:
+                                {% elif pedido.estado == 'Cancelado' %}
+                                Fecha cancelación:
+                                {% else %}
+                                Fecha estado:
+                                {% endif %}
+                            </strong>
+                            {% if pedido.fecha_estado %}
+                            {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
+                            {% else %}
+                            Pendiente
+                            {% endif %}
+                        </p>
+
                         <p><strong>Artículos:</strong></p>
                         <ul>
                             {% for producto in pedido.productos.all %}
-                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
+                            <li><strong>{{ producto.producto.nombre }}</strong> × {{ producto.cantidad }}</li>
                             {% endfor %}
                         </ul>
-                        <p><strong>Área:</strong>
-                            {% for producto in pedido.productos.all|dictsort:"area" %}
-                            {% ifchanged producto.area %}
-                            {{ producto.area }}{% if not forloop.last %}, {% endif %}
-                            {% endifchanged %}
-                            {% empty %}
-                            No hay pedidos de cafeteria
-                            {% endfor %}
-                        </p>
-
-
                     </div>
+
+
                 </td>
-
-                {% if user.perfil.rol == 'Administrador' and pedido.estado == 'pendiente' %}
-                <td>
-                    <form method="POST" action="{% url 'cambiar_estado_pedido' pedido.id %}">
-                        {% csrf_token %}
-                        <button type="submit" name="estado" value="confirmado" class="btn-accion">Confirmar</button>
-                        <button type="submit" name="estado" value="cancelado"
-                            class="btn-accion cancelar">Cancelar</button>
-                    </form>
-                    {% else %}
-
-                    {% endif %}
-                </td>
-
 
             </tr>
             {% empty %}
@@ -114,17 +116,19 @@
     </table>
     <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="step-links">Anterior</a>
         {% endif %}
+
         {% for num in pedidos.paginator.page_range %}
         {% if pedidos.number == num %}
         <span class="current">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
+        <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
         {% endif %}
         {% endfor %}
+
         {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="step-links">Siguiente</a>
         {% endif %}
     </div>
 

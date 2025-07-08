@@ -41,45 +41,60 @@ def index_backup(request):
 @login_required(login_url='/acceso_denegado/')
 def lista_backups(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Backup', 'url': 'index_backup'},
-        {'name': 'Lista de backups', 'url': 'lista_backups'},
+        {'name': 'Inicio', 'url': reverse('papeleria:index_pap')},
+        {'name': 'Backup', 'url': reverse('papeleria:index_backup')},
+        {'name': 'Lista de backups', 'url': reverse('papeleria:lista_backups')},
     ]
     
-    q = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
     
     backups = Backup.objects.all().order_by('-fecha_creacion')
     
-    if q:
+    # Enhanced search
+    if query:
         backups = backups.filter(
-            Q(nombre__icontains=q) |
-            Q(fecha_creacion__icontains=q) |
-            Q(creado_por__icontains=q)
+            Q(nombre__icontains=query) |
+            Q(fecha_creacion__icontains=query) |
+            Q(creado_por__username__icontains=query) |
+            Q(tamano__icontains=query) |
+            Q(id__icontains=query)
         )
 
+    # Improved date filtering
     try:
         if fecha_inicio_str:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
-            backups = backups.filter(fecha_creacion__gte=fecha_inicio)
+            backups = backups.filter(fecha_creacion__date__gte=fecha_inicio)
 
         if fecha_fin_str:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            backups = backups.filter(fecha_creacion__lte=fecha_fin)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            backups = backups.filter(fecha_creacion__date__lt=fecha_fin)
     except ValueError:
         backups = Backup.objects.none()
 
+    # Pagination
     paginator = Paginator(backups, 4)
-    page = request.GET.get('page')
-    backups_paginados = paginator.get_page(page)
+    page_number = request.GET.get('page')
+    backups_page = paginator.get_page(page_number)
+
+    # Build query parameters for pagination
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
 
     return render(request, 'backup/listar.html', {
-        'backups': backups_paginados,
+        'backups': backups_page,
         'breadcrumbs': breadcrumbs,
-        'q': q,
-        'fecha_inicio': fecha_inicio_str,
-        'fecha_fin': fecha_fin_str
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
     })
 
 @login_required(login_url='/acceso_denegado/')

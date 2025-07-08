@@ -1,30 +1,29 @@
 {% extends 'navbar.html' %}
-{% load static %}
-{% block titulo %}Estadísticas - CCD{% endblock %}
+{% block titulo %}Gráfica de estado de pedidos{% endblock %}
 {% block contenido %}
 <style>
     #grafica {
         width: 80%;
         max-width: 800px;
         position: absolute;
-        top: 20vh;
-        left: 40vh;
+        top: -2vh;
+        left: 10vh;
         height: 55vh;
         z-index: 1;
     }
 
-    #cuadradoFondo {
+    .cuadradoFondo {
         width: 80%;
         max-width: 800px;
-        background-color: rgb(255, 255, 255);
+        background-color: white;
+        border: 1px solid black;
         position: absolute;
         top: 29vh;
         left: 35vh;
-        height: 58vh;
+        height: 61vh;
         z-index: 0;
     }
 
-    /* Estilos para el modal de fechas */
     .btn-fecha {
         position: absolute;
         background-color: transparent;
@@ -118,6 +117,21 @@
         color: white;
         cursor: pointer;
     }
+    
+    .chart-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #graficaPedidos {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 400px;
+    }
 </style>
 
 <div class="estadisticas-container">
@@ -137,16 +151,19 @@
                 </div>
                 <div class="mt-3">
                     <button type="submit" id="btn-filtrar">Filtrar</button>
-                    <a href="{% url 'cafeteria:grafica_pedidos_caf' %}" id="btn-clean">Limpiar</a>
+                    <a href="{% url 'papeleria:grafica_pedidos' %}" id="btn-clean">Limpiar</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="cuadradoFondo"></div>
-    <div id="grafica">
-        <h2 class="text-center">Artículos más pedidos</h2>
-        <canvas id="graficaProductos"></canvas>
+    <div class="cuadradoFondo">
+        <div id="grafica">
+            <h2>Gráfica de estado de pedidos CDE</h2>
+            <div class="chart-container">
+                <canvas id="graficaPedidos"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -155,69 +172,98 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Obtener datos desde los scripts ocultos
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
     const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
 
-    // Crear la gráfica
-    const ctx = document.getElementById('graficaProductos').getContext('2d');
+    // La mayor cantidad representa el 100%
+    const maxCantidad = Math.max(...cantidades, 1); // Evita división por cero
+    const porcentajes = cantidades.map(c => parseFloat(((c / maxCantidad) * 100).toFixed(2)));
+
+    const ctx = document.getElementById('graficaPedidos').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: nombres,
-            datasets: [{
-                label: 'Cantidad de pedidos',
-                data: cantidades,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                barThickness: 'flex',
-                maxBarThickness: 30,
-                categoryPercentage: 0.4,
-                barPercentage: 1.0
-            }]
+            labels: ['', '', ''],
+            datasets: [
+                {
+                    label: 'Pendiente',
+                    data: [porcentajes[0], 0, 0],
+                    backgroundColor: 'rgba(255, 205, 86, 0.6)',
+                    borderColor: 'rgba(255, 205, 86, 1)',
+                    borderWidth: 1,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                },
+                {
+                    label: 'Confirmado',
+                    data: [0, porcentajes[1], 0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                },
+                {
+                    label: 'Cancelado',
+                    data: [0, 0, porcentajes[2]],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
+                }
+            ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Cantidad'
+                x: {
+                    grid: {
+                        display: false
                     },
                     ticks: {
-                        precision: 0
+                        padding: 10
                     }
                 },
-                x: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Porcentaje (%)'
+                    },
                     ticks: {
-                        callback: function(value, index) {
-                            // Acortar etiquetas largas para mejor visualización
-                            return nombres[index].length > 15 ? 
-                                   nombres[index].substring(0, 12) + '...' : 
-                                   nombres[index];
+                        callback: function(value) {
+                            return value + '%';
                         }
                     }
                 }
             },
             plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'center'
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return `Pedidos: ${context.parsed.y}`;
+                            return `${context.dataset.label}: ${context.parsed.y}%`;
                         }
                     }
-                },
-                legend: {
-                    display: true,
-                    position: 'top',
+                }
+            },
+            layout: {
+                padding: {
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20
                 }
             }
         }
     });
 
-    // Funciones para el modal de fechas
     function mostrarModal() {
         document.getElementById('modalFechas').style.display = 'flex';
     }

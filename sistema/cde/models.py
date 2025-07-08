@@ -44,7 +44,7 @@ class PedidoProductoCde(models.Model):
     )
     producto = models.ForeignKey(
         Productos,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=False,
         blank=False
     )

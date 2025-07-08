@@ -10,23 +10,140 @@
         top: 20vh;
         left: 40vh;
         height: 55vh;
-        z-index: 1; /* Asegura que la gráfica esté encima del cuadrado */
+        z-index: 1;
     }
 
     #cuadradoFondo {
         width: 80%;
         max-width: 800px;
-        background-color: rgb(255, 255, 255); /* Color de fondo, ajustable */
+        background-color: rgb(255, 255, 255);
         position: absolute;
-        top: 29vh; /* Ajustado para centrar detrás de la gráfica */
+        top: 29vh;
         left: 35vh;
         height: 58vh;
-        z-index: 0; /* Asegura que esté detrás de la gráfica */
+        z-index: 0;
+    }
+
+    /* Estilos para el modal de fechas */
+    .btn-fecha {
+        position: absolute;
+        background-color: transparent;
+        color: black;
+        margin-left: 135vh;
+        margin-top: 30vh;
+        padding: 10px 20px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        z-index: 2000;
+    }
+
+    .btn-fecha:hover {
+        transform: scale(1.05);
+        color: #007bff;
+    }
+
+    .modal-fechas {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        min-width: 320px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    .close-modal {
+        float: right;
+        cursor: pointer;
+        font-weight: bold;
+        color: red;
+        font-size: 22px;
+    }
+
+    .form-fechas {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .form-fechas label {
+        font-weight: bold;
+    }
+
+    .form-fechas input[type="date"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .form-fechas .mt-3 {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .form-fechas button,
+    .form-fechas a {
+        flex: 1;
+        color: black;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid black;
+        background-color: white;
+    }
+
+    #btn-filtrar:hover {
+        background-color: #044080;
+        color: white;
+        cursor: pointer;
+    }
+
+    #btn-clean:hover {
+        background-color: #8a0101;
+        color: white;
+        cursor: pointer;
     }
 </style>
 
 <div class="estadisticas-container">
-    <div id="cuadradoFondo"></div> <!-- Fondo detrás de la gráfica -->
+    <button class="btn-fecha" onclick="mostrarModal()">Buscar por fecha</button>
+
+    <div id="modalFechas" class="modal-fechas">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            <form method="get" class="form-fechas">
+                <div>
+                    <label for="fecha_inicio">Fecha inicio:</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ fecha_inicio }}">
+                </div>
+                <div>
+                    <label for="fecha_fin">Fecha fin:</label>
+                    <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
+                </div>
+                <div class="mt-3">
+                    <button type="submit" id="btn-filtrar">Filtrar</button>
+                    <a href="{% url 'cafeteria:graficas_productos' %}" id="btn-clean">Limpiar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="cuadradoFondo"></div>
     <div id="grafica">
         <h2 class="text-center">Gráfica de productos por Porcentaje</h2>
         <canvas id="graficaProductos"></canvas>
@@ -96,6 +213,21 @@
                     }
                 }
             }
+        }
+    });
+
+    // Funciones para el modal de fechas
+    function mostrarModal() {
+        document.getElementById('modalFechas').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalFechas').style.display = 'none';
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            cerrarModal();
         }
     });
 </script>

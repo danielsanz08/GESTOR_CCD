@@ -24,7 +24,6 @@
         z-index: 0;
     }
 
-    /* Estilos para el modal de fechas */
     .btn-fecha {
         position: absolute;
         background-color: transparent;
@@ -137,7 +136,7 @@
                 </div>
                 <div class="mt-3">
                     <button type="submit" id="btn-filtrar">Filtrar</button>
-                    <a href="{% url 'cafeteria:grafica_pedidos_caf' %}" id="btn-clean">Limpiar</a>
+                    <a href="{% url 'cde:grafica_estado_pedido_cde' %}" id="btn-clean">Limpiar</a>
                 </div>
             </form>
         </div>
@@ -145,7 +144,7 @@
 
     <div id="cuadradoFondo"></div>
     <div id="grafica">
-        <h2 class="text-center">Artículos más pedidos</h2>
+        <h2 class="text-center">Gráfica de productos por Porcentajes</h2>
         <canvas id="graficaProductos"></canvas>
     </div>
 </div>
@@ -155,19 +154,22 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Obtener datos desde los scripts ocultos
     const nombres = JSON.parse(document.getElementById('labels-data').textContent);
-    const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
+    const cantidadesAbsolutas = JSON.parse(document.getElementById('cantidades-data').textContent);
 
-    // Crear la gráfica
+    const maxCantidad = Math.max(...cantidadesAbsolutas, 1);
+    const cantidadesPorcentaje = cantidadesAbsolutas.map(c => {
+        return ((c / maxCantidad) * 100).toFixed(2);
+    });
+
     const ctx = document.getElementById('graficaProductos').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: nombres,
             datasets: [{
-                label: 'Cantidad de pedidos',
-                data: cantidades,
+                label: 'Porcentaje',
+                data: cantidadesPorcentaje,
                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
@@ -182,21 +184,21 @@
             scales: {
                 y: {
                     beginAtZero: true,
+                    max: 100,
                     title: {
                         display: true,
-                        text: 'Cantidad'
+                        text: 'Cantidad (%)'
                     },
                     ticks: {
-                        precision: 0
+                        callback: function (value) {
+                            return value + '%';
+                        }
                     }
                 },
                 x: {
                     ticks: {
-                        callback: function(value, index) {
-                            // Acortar etiquetas largas para mejor visualización
-                            return nombres[index].length > 15 ? 
-                                   nombres[index].substring(0, 12) + '...' : 
-                                   nombres[index];
+                        callback: function (value, index) {
+                            return nombres[index];
                         }
                     }
                 }
@@ -204,20 +206,15 @@
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
-                            return `Pedidos: ${context.parsed.y}`;
+                        label: function (context) {
+                            return context.parsed.y + '%';
                         }
                     }
-                },
-                legend: {
-                    display: true,
-                    position: 'top',
                 }
             }
         }
     });
 
-    // Funciones para el modal de fechas
     function mostrarModal() {
         document.getElementById('modalFechas').style.display = 'flex';
     }

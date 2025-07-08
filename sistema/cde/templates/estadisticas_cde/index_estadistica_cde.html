@@ -1,0 +1,20 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Estadisticas Gestor CCD {% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+<section>
+    <a href="{% url 'cde:grafica_pedidos_cde' %}" id="pedidosAreasBtn">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos</p>
+        </div>
+    </a>
+    <a href="{% url 'cde:grafica_estado_pedido_cde' %}" id="pedidosAreasBtn">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Estado Pedidos</p>
+        </div>
+    </a>
+</section>
+{% endblock %}

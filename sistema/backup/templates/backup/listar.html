@@ -90,25 +90,29 @@
         </table>
 
         <!-- Paginación -->
-        <div class="paginacion" id="pag">
-            {% if backups.has_previous %}
-            <a
-                href="?page={{ backups.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Anterior</a>
-            {% endif %}
-            {% for num in backups.paginator.page_range %}
+       <div class="pagination" id="pag">
+    {% if backups.has_previous %}
+        <a href="?page={{ backups.previous_page_number }}{{ query_params }}" class="page-link">
+            &laquo; Anterior
+        </a>
+    {% endif %}
+    
+    {% for num in backups.paginator.page_range %}
+        {% if num > backups.number|add:-3 and num < backups.number|add:3 %}
             {% if backups.number == num %}
-            <span class="current">{{ num }}</span>
+                <span class="current-page active">{{ num }}</span>
             {% else %}
-            <a
-                href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">{{
-                num }}</a>
+                <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
             {% endif %}
-            {% endfor %}
-            {% if backups.has_next %}
-            <a
-                href="?page={{ backups.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Siguiente</a>
-            {% endif %}
-        </div>
+        {% endif %}
+    {% endfor %}
+    
+    {% if backups.has_next %}
+        <a href="?page={{ backups.next_page_number }}{{ query_params }}" class="page-link">
+            Siguiente &raquo;
+        </a>
+    {% endif %}
+</div>
 
 </section>
 {% endblock %}

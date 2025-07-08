@@ -91,20 +91,22 @@
         </tbody>
     </table>
     <div class="paginacion" id="pag">
-        {% if articulos.has_previous %}
-        <a href="?page={{ articulos.previous_page_number }}">Anterior</a>
-        {% endif %}
-        {% for num in articulos.paginator.page_range %}
-        {% if articulos.number == num %}
-        <span class="current">{{ num }}</span>
+    {% if productos.has_previous %}
+        <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
+    {% endif %}
+    
+    {% for num in productos.paginator.page_range %}
+        {% if productos.number == num %}
+            <span class="current-page">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
+            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
         {% endif %}
-        {% endfor %}
-        {% if articulos.has_next %}
-        <a href="?page={{ articulos.next_page_number }}">Siguiente</a>
-        {% endif %}
-    </div>
+    {% endfor %}
+    
+    {% if productos.has_next %}
+        <a href="?page={{ productos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
+    {% endif %}
+</div>
 
 </section>
 <script>

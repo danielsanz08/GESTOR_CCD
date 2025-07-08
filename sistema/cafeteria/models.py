@@ -90,7 +90,7 @@ class PedidoProducto(models.Model):
     )
     producto = models.ForeignKey(
         Productos,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         blank=False,
         null=False
     )

@@ -180,21 +180,27 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="paginacion" id="pag">
-        {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
-        {% endif %}
-        {% for num in pedidos.paginator.page_range %}
+   <div class="pagination" id="pag">
+    {% if pedidos.has_previous %}
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">
+            &laquo; Anterior
+        </a>
+    {% endif %}
+    
+    {% for num in pedidos.paginator.page_range %}
         {% if pedidos.number == num %}
-        <span class="current">{{ num }}</span>
-        {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
+            <span class="current-page active">{{ num }}</span>
+        {% elif num > pedidos.number|add:-3 and num < pedidos.number|add:3 %}
+            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
         {% endif %}
-        {% endfor %}
-        {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
-        {% endif %}
-    </div>
+    {% endfor %}
+    
+    {% if pedidos.has_next %}
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">
+            Siguiente &raquo;
+        </a>
+    {% endif %}
+</div>
 
 </section>
 

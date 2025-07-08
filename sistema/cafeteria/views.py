@@ -154,7 +154,7 @@ def crear_producto(request):
 def listar_productos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
-         {'name': 'Listado de cafeteria y aseo', 'url': reverse('cafeteria:listar_productos')},
+        {'name': 'Listado de cafeteria y aseo', 'url': reverse('cafeteria:listar_productos')},
     ]
 
     query = request.GET.get('q', '').strip()
@@ -173,32 +173,47 @@ def listar_productos(request):
             Q(precio__icontains=query) |
             Q(proveedor__icontains=query) |
             Q(cantidad__icontains=query) |
-            Q(registrado_por__username__icontains=query)
+            Q(registrado_por__username__icontains=query) |
+            Q(id__icontains=query)
         )
 
-    # Filtrado por rango de fechas
+    # Filtrado por rango de fechas con timedelta
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             productos = productos.filter(fecha_registro__gte=fecha_inicio)
         except ValueError:
-            # Manejo del error: ignorar filtro o asignar un queryset vacío
             productos = Productos.objects.none()
 
     if fecha_fin_str:
         try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            productos = productos.filter(fecha_registro__lte=fecha_fin)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            productos = productos.filter(fecha_registro__lt=fecha_fin)
         except ValueError:
             productos = Productos.objects.none()
 
     # Paginación
     paginator = Paginator(productos, 4)
     page_number = request.GET.get('page')
-    productos = paginator.get_page(page_number)
+    productos_page = paginator.get_page(page_number)
 
-    return render (request, 'productos/listar_productos.html', {'productos': productos,
-        'breadcrumbs': breadcrumbs})
+    # Build query parameters for pagination
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
+
+    return render(request, 'productos/listar_productos.html', {
+        'productos': productos_page,
+        'breadcrumbs': breadcrumbs,
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
+    })
 def eliminar_producto(request, id):
     producto = get_object_or_404(Productos, id=id)
     if request.method == 'POST':
@@ -511,16 +526,17 @@ def lista_stock_bajo(request):
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
         {'name': 'Bajo Stock', 'url': reverse('cafeteria:lista_bajo_stock')},
     ]
+    
     query = request.GET.get('q', '').strip()
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Filtrar solo artículos con cantidad menor a 10
-    productos_bajo_stock = Productos.objects.filter(cantidad__lt=10)
+    # Filtrar artículos con cantidad menor a 10
+    productos = Productos.objects.filter(cantidad__lt=10)
 
     # Filtro por búsqueda de texto
     if query:
-        productos_bajo_stock = productos_bajo_stock.filter(
+        productos = productos.filter(
             Q(nombre__icontains=query) |
             Q(marca__icontains=query) |
             Q(presentacion__icontains=query) |
@@ -528,29 +544,52 @@ def lista_stock_bajo(request):
             Q(precio__icontains=query) |
             Q(proveedor__icontains=query) |
             Q(cantidad__icontains=query) |
-            Q(registrado_por__username__icontains=query)
+            Q(registrado_por__username__icontains=query) |
+            Q(id__icontains=query)
         )
 
-    # Filtro por rango de fechas en fecha_registro
-    if fecha_inicio:
-        productos_bajo_stock = productos_bajo_stock.filter(fecha_registro__gte=fecha_inicio)
-    if fecha_fin:
-        productos_bajo_stock = productos_bajo_stock.filter(fecha_registro__lte=fecha_fin)
+    # Filtro por fechas con manejo de errores
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            productos = productos.filter(fecha_registro__gte=fecha_inicio)
+        except ValueError:
+            productos = Productos.objects.none()
 
-    bajo_stock_caf = productos_bajo_stock.exists()
-    nombres_bajo_stock = [art.nombre for art in productos_bajo_stock]
+    if fecha_fin_str:
+        try:
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            productos = productos.filter(fecha_registro__lt=fecha_fin)
+        except ValueError:
+            productos = Productos.objects.none()
 
-    paginator = Paginator(productos_bajo_stock, 4)
+    bajo_stock = productos.exists()
+    nombres_bajo_stock = [art.nombre for art in productos]
+
+    # Paginación
+    paginator = Paginator(productos, 4)
     page_number = request.GET.get('page')
     productos_page = paginator.get_page(page_number)
 
+    # Construir parámetros de búsqueda
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
+
     return render(request, 'productos/bajo_stock.html', {
         'productos': productos_page,
-        'bajo_stock': bajo_stock_caf,
+        'bajo_stock': bajo_stock,
         'nombres_bajo_stock': nombres_bajo_stock,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
     })
-
 def crear_pedido_caf(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
@@ -683,20 +722,25 @@ def mis_pedidos(request):
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
         {'name': 'Mis pedidos', 'url': reverse('cafeteria:mis_pedidos')},
     ]
+    
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Filtra los PEDIDOS (no los productos) por el usuario autenticado
+    # Get orders for authenticated user
     pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
 
+    # Text search
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(productos__area__icontains=query)  # Accede al área a través de la relación productos
+            Q(productos__area__icontains=query) |
+            Q(id__icontains=query) |
+            Q(productos__producto__nombre__icontains=query)
         ).distinct()
 
+    # Date filtering with error handling
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
@@ -706,17 +750,32 @@ def mis_pedidos(request):
 
     if fecha_fin_str:
         try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt instead of lte
         except ValueError:
             pedidos = Pedido.objects.none()
 
+    # Pagination
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
+    # Build query parameters for pagination
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
+
     return render(request, 'pedidos/mis_pedidos_caf.html', {
-        'pedidos': pedidos_page, 'breadcrumbs': breadcrumbs
+        'pedidos': pedidos_page,
+        'breadcrumbs': breadcrumbs,
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
     })
 @csrf_exempt
 @require_POST
@@ -794,48 +853,67 @@ def pedidos_pendientes(request):
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
         {'name': 'Pedidos pendientes', 'url': reverse('cafeteria:pedidos_pendientes')},
     ]
+    
     query = request.GET.get('q', '').strip()
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Filtrar solo pedidos pendientes
+    # Get pending orders ordered by date (newest first)
     pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
 
+    # Text search with more comprehensive filters
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(productos__producto__nombre__icontains=query) |  # Buscar en el nombre del producto
-            Q(productos__area__icontains=query) |  # Buscar en el área del PedidoProducto
-            Q(productos__lugar__icontains=query)   # Buscar en el lugar del PedidoProducto
+            Q(productos__producto__nombre__icontains=query) |
+            Q(productos__area__icontains=query) |
+            Q(productos__lugar__icontains=query) |
+            Q(id__icontains=query) |  # Search by order ID
+            Q(comentarios__icontains=query)  # Search in order comments
         ).distinct()
 
+    # Date filtering with proper range inclusion
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pass  # No hacer nada si la fecha es inválida
-
+            pass  # Silently ignore invalid dates
+            
     if fecha_fin_str:
         try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt for proper date inclusion
         except ValueError:
-            pass  # No hacer nada si la fecha es inválida
+            pass  # Silently ignore invalid dates
 
+    # Pagination with 4 items per page
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
+    # Build query parameters for pagination links
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
+
     return render(request, 'pedidos/confirmar_pedido_caf.html', {
         'pedidos': pedidos_page,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
     })
 
 def listado_pedidos_caf(request):
     breadcrumbs = [
-        {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
         {'name': 'Listado de pedidos', 'url': reverse('cafeteria:lista_pedidos_caf')},
     ]
 
@@ -843,37 +921,56 @@ def listado_pedidos_caf(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Filtrar solo pedidos del usuario actual
+    # Get all orders ordered by date (newest first)
     pedidos = Pedido.objects.all().order_by('-fecha_pedido')
 
+    # Enhanced text search
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(productos__area__icontains=query)
+            Q(productos__area__icontains=query) |
+            Q(id__icontains=query) |  # Search by order ID
+            Q(productos__producto__nombre__icontains=query) |  # Search by product name
+            Q(comentarios__icontains=query)  # Search in comments
         ).distinct()
 
+    # Improved date filtering
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pedidos = Pedido.objects.none()
+            pass  # Silently ignore invalid dates
 
     if fecha_fin_str:
         try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt for proper date inclusion
         except ValueError:
-            pedidos = Pedido.objects.none()
+            pass  # Silently ignore invalid dates
 
+    # Pagination
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
+    # Build query parameters for pagination
+    query_params = ''
+    if query:
+        query_params += f'&q={query}'
+    if fecha_inicio_str:
+        query_params += f'&fecha_inicio={fecha_inicio_str}'
+    if fecha_fin_str:
+        query_params += f'&fecha_fin={fecha_fin_str}'
+
     return render(request, 'pedidos/lista_pedidos_caf.html', {
         'pedidos': pedidos_page,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
+        'query_params': query_params,
+        'current_query': query,
+        'current_fecha_inicio': fecha_inicio_str,
+        'current_fecha_fin': fecha_fin_str,
     })
 
 def get_pedidos_filtrados_caf(request):
@@ -1185,14 +1282,30 @@ def graficas_productos(request):
         {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
         {'name': 'Grafico de productos', 'url': reverse('cafeteria:graficas_productos')}, 
     ]
+    
+    # Obtener parámetros de fecha
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+    
     productos = Productos.objects.all()
+    
+    # Aplicar filtros de fecha si existen
+    if fecha_inicio:
+        productos = productos.filter(fecha_registro__gte=fecha_inicio)
+    if fecha_fin:
+        # Convertir a datetime y sumar 1 día para incluir todo el día final
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d') + timedelta(days=1)
+        productos = productos.filter(fecha_registro__lt=fecha_fin_dt)
+    
     nombres = [art.nombre for art in productos]
     cantidades = [art.cantidad for art in productos]
 
     return render(request, 'estadisticas_caf/grafica_productos.html', {
         'nombres': nombres,
         'cantidades': cantidades,
-        'breadcrumbs': breadcrumbs
+        'breadcrumbs': breadcrumbs,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
     })
 #grafica de usuario
 
@@ -1213,29 +1326,26 @@ def graficas_usuario_caf(request):
 
 def grafica_pedidos_caf(request):
     breadcrumbs = [
-         {'name': 'Inicio', 'url': '/index_caf'},
-    {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
+        {'name': 'Inicio', 'url': '/index_caf'},
+        {'name': 'Estadisticas', 'url': reverse('cafeteria:index_estadistica_caf')}, 
         {'name': 'Gráfico de pedidos Administrativa', 'url': reverse('cafeteria:grafica_pedidos_caf')},
     ]
 
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    productos = PedidoProducto.objects.select_related('pedido', 'producto', 'pedido__registrado_por')
+    productos = PedidoProducto.objects.select_related('producto')
 
     if fecha_inicio:
         productos = productos.filter(pedido__fecha_pedido__gte=fecha_inicio)
     if fecha_fin:
-        productos = productos.filter(pedido__fecha_pedido__lte=fecha_fin)
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d') + timedelta(days=1)
+        productos = productos.filter(pedido__fecha_pedido__lt=fecha_fin_dt)
 
-    datos = productos.values(
-        'pedido__registrado_por__username',  # o 'first_name' si prefieres
-        'producto__nombre'
-    ).annotate(
+    datos = productos.values('producto__nombre').annotate(
         total_cantidad=Sum('cantidad')
-    ).order_by('pedido__registrado_por__username', 'producto__nombre')
+    ).order_by('producto__nombre')
 
-    # Formato: etiquetas tipo "Juan - Café", "Laura - Jugo"
     etiquetas = [item['producto__nombre'] for item in datos]
     cantidades = [item['total_cantidad'] for item in datos]
 
@@ -1261,7 +1371,9 @@ def grafica_estado_pedido_caf(request):
     if fecha_inicio:
         pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
     if fecha_fin:
-        pedidos = pedidos.filter(fecha_pedido__lte=fecha_fin)
+        # Incluir todo el día final sumando 1 día
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d') + timedelta(days=1)
+        pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin_dt)
 
     pendientes = pedidos.filter(estado='Pendiente').count()
     confirmados = pedidos.filter(estado='Confirmado').count()

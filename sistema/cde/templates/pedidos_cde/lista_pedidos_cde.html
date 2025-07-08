@@ -63,7 +63,7 @@
 </style>
 
 <section class="pedido">
-    <h1>Listado de centro de eventos</h1>
+    <h1>Pedidos confirmados y cancelados de centro de eventos</h1>
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
         <a
@@ -72,7 +72,7 @@
         </a>
 
         <a
-            href="{% url 'cafeteria:reporte_pedidos_caf_xsls' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+            href="{% url 'cde:reporte_pedidos_excel_cde' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
         </a>
 
@@ -137,23 +137,43 @@
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
                         <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                        <p class="fecha_pedido"><strong>Fecha del pedido:</strong>{{ pedido.fecha_formateada }}</p>
                         <p class="estado_d"><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+
+                        {% with primer_producto=pedido.productos.first %}
+                        {% if primer_producto %}
+                        <p><strong>Área:</strong> {{ primer_producto.area }}</p>
+                        <p><strong>Evento:</strong> {{ primer_producto.evento }}</p>
+                        {% endif %}
+                        {% endwith %}
+
+                        <!-- Fecha del estado según el tipo -->
+                        <p>
+                            <strong>
+                                {% if pedido.estado == 'Confirmado' %}
+                                Fecha confirmación:
+                                {% elif pedido.estado == 'Cancelado' %}
+                                Fecha cancelación:
+                                {% else %}
+                                Fecha estado:
+                                {% endif %}
+                            </strong>
+                            {% if pedido.fecha_estado %}
+                            {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
+                            {% else %}
+                            Pendiente
+                            {% endif %}
+                        </p>
+
                         <p><strong>Artículos:</strong></p>
                         <ul>
                             {% for producto in pedido.productos.all %}
-                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
+                            <li><strong>{{ producto.producto.nombre }}</strong> × {{ producto.cantidad }}</li>
                             {% endfor %}
                         </ul>
-                        <p><strong>Áreas:</strong>
-                            {% for producto in pedido.productos.all %}
-                            {{ producto.area }}{% if not forloop.last %}, {% endif %}
-                            {% empty %}
-                            No hay pedidos
-                            {% endfor %}
-                        </p>
 
                     </div>
+
                 </td>
 
                 {% if user.perfil.rol == 'Administrador' and pedido.estado == 'pendiente' %}
@@ -180,20 +200,21 @@
     </table>
     <div class="paginacion" id="pag">
         {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="step-links">Anterior</a>
         {% endif %}
+
         {% for num in pedidos.paginator.page_range %}
         {% if pedidos.number == num %}
         <span class="current">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
+        <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
         {% endif %}
         {% endfor %}
+
         {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="step-links">Siguiente</a>
         {% endif %}
     </div>
-
 </section>
 
 <!-- Modal -->
@@ -278,6 +299,8 @@
             #detalles, .fecha_pedido, .registrado, .estado_d{
                 display: none;
     }
+            list-style-type: none;
+
         </style>
     `;
 

@@ -1,107 +1,90 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo Pedido CDE</title>
+    <title>Nuevo Pedido Registrado</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f7fa;
+            line-height: 1.6;
             color: #333;
-            margin: 0;
+            max-width: 600px;
+            margin: 0 auto;
             padding: 20px;
         }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 700px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
         .header {
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
+            text-align: center;
             margin-bottom: 20px;
         }
-
-        .header h2 {
-            color: #007bff;
+        .logo {
+            max-width: 150px;
+            height: auto;
         }
-
-        .detalle-articulos {
-            margin-top: 20px;
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
-
-        .detalle-articulos ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .detalle-articulos li {
-            padding: 5px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .btn {
+        .button {
             display: inline-block;
-            padding: 10px 15px;
+            padding: 10px 20px;
             background-color: #007bff;
-            color: white;
+            color: white !important;
             text-decoration: none;
             border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
             margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
         }
-
-        .btn:hover {
-            background-color: #0056b3;
+        .info-label {
+            font-weight: bold;
+            margin-right: 5px;
         }
-
+        .producto-item {
+            margin-left: 15px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>Nuevo Pedido Registrado - Centro de Eventos</h2>
-        </div>
-
+    <div class="header">
+        <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD" class="logo">
+        <h2>Notificación de Nuevo Pedido - CDE</h2>
+    </div>
+    
+    <div class="content">
         <p>Hola Administrador,</p>
-
-        <p>Se ha registrado un nuevo pedido en el sistema del <strong>Centro de Eventos</strong>.</p>
-
-        <p><strong>Información del pedido:</strong></p>
+        
+        <p>Se ha registrado un nuevo pedido en el sistema del Centro de Eventos:</p>
+        
+        <p><span class="info-label">Usuario:</span> {{ usuario.username }}</p>
+        <p><span class="info-label">Rol:</span> {{ usuario.get_role_display }}</p>
+        <p><span class="info-label">Área:</span> {{ usuario.get_area_display }}</p>
+        <p><span class="info-label">ID del Pedido:</span> {{ pedido.id }}</p>
+        <p><span class="info-label">Estado:</span> {{ pedido.estado }}</p>
+        <p><span class="info-label">Fecha:</span> {{ fecha_pedido }}</p>
+        
+        <p><span class="info-label">Detalle de productos solicitados:</span></p>
         <ul>
-            <li><strong>Usuario:</strong> {{ usuario.username }}</li>
-            <li><strong>Rol:</strong> {{ usuario.get_role_display }}</li>
-            <li><strong>Área:</strong> {{ usuario.get_area_display }}</li>
-            <li><strong>ID del pedido:</strong> {{ pedido.id }}</li>
-            <li><strong>Estado:</strong> {{ pedido.estado }}</li>
-            <li><strong>Fecha:</strong> {{ fecha_pedido }}</li>
+            {% for producto in productos %}
+                <li class="producto-item">
+                    {{ producto.cantidad }} {{ producto.producto.nombre }} para {{ producto.evento }}
+                </li>
+            {% endfor %}
         </ul>
-
-        <div class="detalle-articulos">
-            <p><strong>Detalle de productos:</strong></p>
-            <ul>
-                {% for producto in productos %}
-                    <li>{{ producto.producto.nombre }} &mdash; {{ producto.cantidad }} unidad(es) (Evento: {{ producto.evento }})</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <p>Puedes revisar y gestionar este pedido haciendo clic en el siguiente botón:</p>
-        <a href="{{ admin_url }}" class="btn">Ver Pedido</a>
-
-        <div class="footer">
-            <p>Este es un mensaje automático del sistema <strong>{{ company_name }}</strong>, por favor no respondas a este correo.</p>
-        </div>
+        
+        <p>Por favor revisa y gestiona este pedido en el sistema.</p>
+        
+        
+    </div>
+    
+    <div class="footer">
+        <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+        <p>© {% now "Y" %} Gestor CCD. Todos los derechos reservados.</p>
     </div>
 </body>
 </html>

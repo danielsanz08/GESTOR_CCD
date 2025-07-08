@@ -14,10 +14,10 @@ urlpatterns = [
     path('pedidos_cde/mis_pedido_cde', views.mis_pedidos_cde, name='mis_pedidos_cde'),
     path('pedidos_cde/pendientes/<int:pedido_id>/', views.cambiar_estado_pedido_cde, name='cambiar_estado_pedido_cde'),
     path('pedidos_cde/pendientes_cde/', views.pedidos_pendientes_cde, name='pedidos_pendientes_cde'),
-    path('pedidos_cde/mis_pedidos_pendientes_cde/', views.mis_pedidos_pendientes_cde, name='mis_pedidos_pendientes_cde'),
     path('pedidos_caf/lista_pedidos_cde/', views.listado_pedidos_cde, name='lista_pedidos_cde'),
     path('ver_perfil_cde/<int:id>/', views.ver_usuario_cde, name='ver_usuario_cde'),
     path('timeout/', views.timeouterror, name='timeouterror'),
+    path("reporte_productos_pdf_ccd", views.reporte_pedidos_pdf_cde, name="reporte_pedidos_ccd_pdf"),
 ]
 
 handler404 = 'cde.views.error_404_view'

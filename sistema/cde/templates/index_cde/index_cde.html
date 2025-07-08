@@ -71,8 +71,10 @@
                     <i data-feather="shopping-cart" class="modal-option-icon"></i>
                     <span class="modal-option-text">Nuevo pedido</span>
                 </a>
-
-
+                <a href="{% url 'cde:lista_pedidos_cde' %}" class="modal-option">
+                      <i data-feather="list" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Pedidos confirmados y cancelados</span>
+                  </a>
 
                 <a href="{% url 'cde:mis_pedidos_cde' %}" class="modal-option">
                     <i data-feather="clipboard" class="modal-option-icon"></i>
@@ -158,7 +160,7 @@
         </div>
         <div class="modal-content">
             <div class="modal-options">
-                <a href="{% url 'cde_crear_pedido_cde' %}" class="modal-option">
+                <a href="{% url 'cde:crear_pedido_cde' %}" class="modal-option">
                     <i data-feather="shopping-cart" class="modal-option-icon"></i>
                     <span class="modal-option-text">Nuevo pedido</span>
                 </a>

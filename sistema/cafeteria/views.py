@@ -17,6 +17,9 @@ from django.utils import timezone
 from reportlab.lib.enums import TA_CENTER
 from datetime import timedelta
 from reportlab.platypus import Spacer
+from django.utils import timezone
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 from reportlab.lib.styles import ParagraphStyle
 # Forms
@@ -553,7 +556,7 @@ def crear_pedido_caf(request):
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
         {'name': 'Crear pedido', 'url': reverse('cafeteria:crear_pedido_caf')},
     ]
-    
+
     if request.method == 'POST':
         try:
             estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
@@ -579,10 +582,11 @@ def crear_pedido_caf(request):
                     messages.error(request, "Producto inválido o cantidad no válida.")
                     return redirect('cafeteria:crear_pedido_caf')
 
-            # Crear el pedido principal
+            # Crear pedido
             pedido = Pedido.objects.create(
                 registrado_por=request.user,
                 estado=estado,
+                fecha_estado=timezone.now() if estado == 'Confirmado' else None
             )
 
             for producto_id, cantidad, lugar in zip(productos_ids, cantidades, lugares):
@@ -592,7 +596,6 @@ def crear_pedido_caf(request):
 
                     producto_id = int(producto_id)
                     cantidad = int(cantidad)
-
                     producto = Productos.objects.get(id=producto_id)
 
                     PedidoProducto.objects.create(
@@ -612,35 +615,54 @@ def crear_pedido_caf(request):
                     continue
 
             # Notificar a administradores
-            if request.user.role in ['Empleado', 'Administrador']:
-                admin_users = User.objects.filter(role='Administrador', is_active=True)
-                admin_emails = [admin.email for admin in admin_users if admin.email]
+            admin_users = User.objects.filter(role='Administrador', is_active=True)
+            admin_emails = [admin.email for admin in admin_users if admin.email]
 
-                if admin_emails:
-                    subject = "Nuevo pedido registrado por un usuario"
-                    message = (
-                        f"Hola querido administrador,\n\n"
-                        f"Desde el módulo de Cafeteria te informamos que el usuario '{request.user.username}' "
-                        f"ha realizado un nuevo pedido.\n\n"
-                        f"Información del pedido:\n"
-                        f"Usuario: {request.user.username}\n"
-                        f"Rol: {request.user.role}\n"
-                        f"ID del pedido: {pedido.id}\n"
-                        f"Estado inicial del pedido: {estado}\n\n"
-                        f"Por favor revisa y confirma el pedido si corresponde.\n\n"
-                        f"Gracias por su atención.\n"
-                        f"El equipo de Gestor CCD les desea un excelente día."
+            if admin_emails:
+                admin_url = request.build_absolute_uri(reverse('cafeteria:mis_pedidos'))
+                context = {
+                    'usuario': request.user,
+                    'pedido': pedido,
+                    'admin_url': admin_url,
+                    'productos': PedidoProducto.objects.filter(pedido=pedido),
+                    'fecha_pedido': pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else '',
+                }
+
+                html_message = render_to_string('pedidos/email_notificacion_pedido_caf.html', context)
+
+                text_message = f"""
+Hola Administrador,
+
+Se ha registrado un nuevo pedido en el sistema de Cafetería:
+
+Usuario: {request.user.username}
+Rol: {request.user.get_role_display()}
+Área: {getattr(request.user, 'area', 'No especificada')}
+ID del Pedido: {pedido.id}
+Estado: {estado}
+Fecha: {pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else 'N/D'}
+
+Detalle de productos:
+{chr(10).join([f"- {pp.producto.nombre} x {pp.cantidad} (Lugar: {pp.lugar})" for pp in PedidoProducto.objects.filter(pedido=pedido)])}
+
+Revisar el pedido: {admin_url}
+
+Este es un mensaje automático, por favor no respondas.
+"""
+
+                try:
+                    subject = f"Nuevo pedido {'confirmado' if estado == 'Confirmado' else 'pendiente'} - ID: {pedido.id}"
+                    msg = EmailMultiAlternatives(
+                        subject,
+                        text_message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        admin_emails
                     )
-                    try:
-                        send_mail(
-                            subject,
-                            message,
-                            settings.DEFAULT_FROM_EMAIL,
-                            admin_emails,
-                            fail_silently=False,
-                        )
-                    except TimeoutError:
-                        messages.error(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación (Timeout).")
+                    msg.attach_alternative(html_message, "text/html")
+                    msg.send()
+                except Exception as e:
+                    print(f"Error enviando correo: {e}")
+                    messages.warning(request, "El pedido fue creado, pero no se pudo enviar el correo de notificación.")
 
             messages.success(request, f"Pedido creado exitosamente con estado: {estado}.")
             return redirect('cafeteria:mis_pedidos')

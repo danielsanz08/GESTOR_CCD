@@ -42,8 +42,9 @@ def index_backup(request):
 def lista_backups(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('papeleria:index_pap')},
-        {'name': 'Backup', 'url': reverse('papeleria:index_backup')},
-        {'name': 'Lista de backups', 'url': reverse('papeleria:lista_backups')},
+        {'name': 'Backup', 'url': reverse('backup:index_backup')},
+        {'name': 'Lista de backups', 'url': reverse('backup:lista_backups')},
+
     ]
     
     query = request.GET.get('q', '').strip()

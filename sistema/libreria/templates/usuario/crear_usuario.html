@@ -7,9 +7,44 @@ Crear usuario papelería
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    /* Estilos para mensajes de error */
+    .error-nombre,
+    .error-cargo,
+    .error-email,
+    .error-password {
+        color: #e74c3c;
+        font-size: 13px;
+        margin-top: 5px;
+        min-height: 18px;
+    }
+    
+    /* Estilos para la fortaleza de contraseña */
+    .password-strength-container {
+        position: relative;
+        margin-top: 10px;
+    }
+    .strength-meter {
+        height: 5px;
+        background-color: #ecf0f1;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+    .strength-meter-fill {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .password-feedback {
+        font-size: 13px;
+        min-height: 18px;
+    }
+</style>
 
 <div class="fondo">
-    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD" class="logo">
 </div>
 
 <div class="formulario">
@@ -62,9 +97,20 @@ Crear usuario papelería
 
         <div class="mb-3" id="password">
             <label for="id_password" class="form-label">Contraseña:</label>
-            <input type="password" id="id_password" name="password" class="form-control" required
-                autocomplete="new-password" placeholder="Ingrese su contraseña">
+            <div class="input-group">
+                <input type="password" id="id_password" name="password" class="form-control" required
+                    autocomplete="new-password" placeholder="Ingrese su contraseña">
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
             <div id="error_password" class="error-password"></div>
+            <div id="password-strength-container" class="password-strength-container">
+                <div class="strength-meter">
+                    <div class="strength-meter-fill" id="strength-meter-fill"></div>
+                </div>
+                <div id="password-feedback" class="password-feedback"></div>
+            </div>
         </div>
 
         <button type="submit" id="btn" class="btn">Registrar</button>
@@ -72,115 +118,175 @@ Crear usuario papelería
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const username = document.getElementById('id_username');
-        const cargo = document.getElementById('id_cargo');
-        const email = document.getElementById('id_email');
-        const password = document.getElementById('id_password');
-        const btn = document.getElementById('btn');
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos del DOM
+    const form = document.getElementById('userForm');
+    const username = document.getElementById('id_username');
+    const cargo = document.getElementById('id_cargo');
+    const email = document.getElementById('id_email');
+    const password = document.getElementById('id_password');
+    const togglePassword = document.getElementById('togglePassword');
+    const btnSubmit = document.getElementById('btn');
+    const strengthMeter = document.getElementById('strength-meter-fill');
+    const passwordFeedback = document.getElementById('password-feedback');
+    const passwordStrengthContainer = document.getElementById('password-strength-container');
+    
+    // Elementos de error
+    const errorUsername = document.getElementById('error_username');
+    const errorCargo = document.getElementById('error_cargo');
+    const errorEmail = document.getElementById('error_email');
+    const errorPassword = document.getElementById('error_password');
+    
+    // Expresiones regulares
+    const repeatedCharRegex = /(.)\1\1/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let passwordVerificationTimeout;
 
-        const errorUsername = document.getElementById('error_username');
-        const errorCargo = document.getElementById('error_cargo');
-        const errorEmail = document.getElementById('error_email');
-        const errorPassword = document.getElementById('error_password');
-
-        const repeatedCharRegex = /(.)\1\1/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        function validateForm() {
-            const valid =
-                errorUsername.textContent === '' &&
-                errorCargo.textContent === '' &&
-                errorEmail.textContent === '' &&
-                errorPassword.textContent === '' &&
-                username.value.trim() !== '' &&
-                cargo.value.trim() !== '' &&
-                email.value.trim() !== '' &&
-                password.value.trim() !== '';
-
-            btn.disabled = !valid;
-        }
-
-        username.addEventListener('input', function () {
-            let value = username.value.replace(/[0-9]/g, '');
-
-            // Capitalizar la primera letra de cada palabra
-            value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-
-            username.value = value;
-
-            if (value.trim().length < 3) {
-                errorUsername.textContent = 'Mínimo 3 caracteres';
-                return validateForm();
-            }
-            if (repeatedCharRegex.test(value)) {
-                errorUsername.textContent = 'No se permiten 3 caracteres iguales seguidos';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        cargo.addEventListener('input', function () {
-            let value = cargo.value.replace(/[0-9]/g, '');
-
-            // Solo capitaliza la primera letra de la primera palabra
-            value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-
-            cargo.value = value;
-
-            if (value.trim().length < 3) {
-                errorCargo.textContent = 'Mínimo 3 caracteres';
-                return validateForm();
-            }
-            if (repeatedCharRegex.test(value)) {
-                errorCargo.textContent = 'No se permiten 3 caracteres iguales seguidos';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        email.addEventListener('input', function () {
-            const value = email.value;
-
-            if (!emailRegex.test(value)) {
-                errorEmail.textContent = 'Correo inválido';
-                return validateForm();
-            }
-
-            fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
-                .then(res => res.json())
-                .then(data => {
-                    errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
-                    validateForm();
-                });
-        });
-
-        password.addEventListener('input', function () {
-            const value = password.value;
-
-            if (value.length < 6) {
-                errorPassword.textContent = 'Formato invalido';
-            } else if (repeatedCharRegex.test(value)) {
-                errorPassword.textContent = 'No se permiten 3 caracteres iguales seguidos';
-            } else {
-                errorPassword.textContent = '';
-            }
-
-            validateForm();
-        });
+    // Mostrar/ocultar contraseña
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
     });
-</script>
 
+    // Validación general del formulario
+    function validateForm() {
+        const isValid = 
+            errorUsername.textContent === '' &&
+            errorCargo.textContent === '' &&
+            errorEmail.textContent === '' &&
+            errorPassword.textContent === '' &&
+            username.value.trim() !== '' &&
+            cargo.value.trim() !== '' &&
+            email.value.trim() !== '' &&
+            password.value.trim() !== '' &&
+            checkPasswordStrength(password.value).strength >= 3;
+        
+        btnSubmit.disabled = !isValid;
+        return isValid;
+    }
+
+    // Verificar fortaleza de la contraseña
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        const feedback = [];
+        
+        // Longitud mínima
+        if (password.length < 8) {
+            feedback.push("Mínimo 8 caracteres");
+            return { strength: 0, feedback };
+        } else if (password.length >= 12) {
+            strength += 1;
+        }
+        
+        // Requisitos de complejidad
+        if (/[a-z]/.test(password)) strength += 1;
+        else feedback.push("Incluye minúsculas");
+        
+        if (/[A-Z]/.test(password)) strength += 1;
+        else feedback.push("Incluye mayúsculas");
+        
+        if (/[0-9]/.test(password)) strength += 1;
+        else feedback.push("Incluye números");
+        
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        else feedback.push("Incluye caracteres especiales");
+        
+        if (repeatedCharRegex.test(password)) {
+            strength = Math.max(0, strength - 2);
+            feedback.push("Evita caracteres repetidos");
+        }
+        
+        return { strength, feedback };
+    }
+
+    // Actualizar indicador de fortaleza
+    function updatePasswordStrength() {
+        const passwordValue = password.value;
+        const { strength, feedback } = checkPasswordStrength(passwordValue);
+        
+        // Actualizar barra de fortaleza
+        strengthMeter.style.width = `${strength * 20}%`;
+        
+        // Cambiar color según fortaleza
+        if (strength <= 1) {
+            strengthMeter.style.backgroundColor = '#e74c3c';
+        } else if (strength <= 3) {
+            strengthMeter.style.backgroundColor = '#f39c12';
+        } else {
+            strengthMeter.style.backgroundColor = '#2ecc71';
+        }
+        
+        // Mostrar retroalimentación
+        if (passwordValue.length === 0) {
+            passwordFeedback.textContent = '';
+        } else if (feedback.length > 0) {
+            passwordFeedback.textContent = 'Requisitos: ' + feedback.join(', ');
+            passwordFeedback.style.color = '#e74c3c';
+        } else {
+            passwordFeedback.textContent = 'Contraseña segura';
+            passwordFeedback.style.color = '#2ecc71';
+        }
+    }
+
+    // Verificar si la contraseña ya existe
+    function verifyPasswordExists(password) {
+        if (password.length < 8) {
+            passwordStrengthContainer.style.display = 'block';
+            return Promise.resolve(false);
+        }
+        
+        return fetch(`/verificar_password/?password=${encodeURIComponent(password)}`)
+            .then(res => {
+                if (!res.ok) throw new Error('Error en la verificación');
+                return res.json();
+            })
+            .then(data => {
+                if (data.password_existe) {
+                    errorPassword.textContent = data.mensaje;
+                    passwordStrengthContainer.style.display = 'none';
+                    return true;
+                }
+                errorPassword.textContent = '';
+                passwordStrengthContainer.style.display = 'block';
+                return false;
+            })
+            .catch(error => {
+                console.error('Error al verificar contraseña:', error);
+                errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
+                passwordStrengthContainer.style.display = 'none';
+                return false;
+            });
+    }
+
+    // Event listeners para validación en tiempo real
+    password.addEventListener('input', function() {
+        clearTimeout(passwordVerificationTimeout);
+        updatePasswordStrength();
+        
+        passwordVerificationTimeout = setTimeout(async () => {
+            const { strength, feedback } = checkPasswordStrength(password.value);
+            
+            if (strength < 3) {
+                errorPassword.textContent = 'Contraseña débil: ' + feedback.join(', ');
+                passwordStrengthContainer.style.display = 'block';
+                validateForm();
+                return;
+            }
+            
+            await verifyPasswordExists(password.value);
+            validateForm();
+        }, 500);
+    });
+
+    // Validar formulario antes de enviar
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            alert('Por favor, complete correctamente todos los campos.');
+        }
+    });
+});
+</script>
 {% endblock %}

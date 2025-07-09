@@ -5,26 +5,106 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido_pendiente.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* Modal Styles */
+    #modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #333;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
+    }
+
+    #modal button {
+        margin-top: 15px;
+        padding: 8px 12px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #modal button:hover {
+        background-color: #0056b3;
+    }
+</style>
 
 {% if request.user.role == 'Administrador' %}
 <section>
     <h1>Pedidos Pendientes de cafeteria y aseo</h1>
-      <div class="Bototnes">
+    <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
         <a
             href="{% url 'cafeteria:reporte_pedidos_pendientes_pdf_caf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
         </a>
 
-       <a
-    href="{% url 'cafeteria:reporte_pedidos_pendientes_excel_caf' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
-    <button class="excel" title="Exportar a Excel">
-        <i class="fas fa-file-excel text-white"></i>
-    </button>
-</a>
-
-
-
+        <a
+            href="{% url 'cafeteria:reporte_pedidos_pendientes_excel_caf' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+            <button class="excel" title="Exportar a Excel">
+                <i class="fas fa-file-excel text-white"></i>
+            </button>
+        </a>
     </div>
     <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
         <div>
@@ -70,11 +150,33 @@
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
                 <td>
-                    {% for producto_pedido in pedido.productos.all %}
-                    <p>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</p>
-                    {% empty %}
-                    <p>No hay productos asociados</p>
-                    {% endfor %}
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
+                        <i class="fas fa-eye"></i> Ver detalles
+                    </button>
+                    
+                    <!-- Contenido oculto para el modal -->
+                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido #{{ pedido.id }}</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                            <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+                            <p><strong>Productos:</strong></p>
+                            <ul>
+                                {% for producto_pedido in pedido.productos.all %}
+                                <li>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</li>
+                                {% empty %}
+                                <li>No hay productos asociados</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
                 </td>
                 <td>{{ pedido.estado }}</td>
                 <td class="botones">
@@ -84,7 +186,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="estado" value="Confirmado">
                         <button type="submit" class="btn-confirmar">
-                            <i data-feather="check-square" class="icono"></i>
+                            <i data-feather="check-square" class="icono"></i> Confirmar
                         </button>
                     </form>
 
@@ -94,7 +196,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="estado" value="Cancelado">
                         <button type="submit" class="btn-cancelar">
-                            <i data-feather="x-square" class="icono"></i>
+                            <i data-feather="x-square" class="icono"></i> Cancelar
                         </button>
                     </form>
                 </td>
@@ -172,11 +274,33 @@
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
                 <td>
-                    {% for producto_pedido in pedido.productos.all %}
-                    <p>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</p>
-                    {% empty %}
-                    <p>No hay productos asociados</p>
-                    {% endfor %}
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
+                        <i class="fas fa-eye"></i> Ver detalles
+                    </button>
+                    
+                    <!-- Contenido oculto para el modal -->
+                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido #{{ pedido.id }}</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                            <p><strong>Estado:</strong> {{ pedido.estado }}</p>
+                            <p><strong>Productos:</strong></p>
+                            <ul>
+                                {% for producto_pedido in pedido.productos.all %}
+                                <li>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</li>
+                                {% empty %}
+                                <li>No hay productos asociados</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
                 </td>
                 <td>{{ pedido.estado }}</td>
                 <td>{{ pedido.fecha_pedido }}</td>
@@ -190,26 +314,50 @@
     </table>
 
     <div class="pagination" id="pag">
-    {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link" aria-label="Previous">
-            <span aria-hidden="true">&laquo; Anterior</span>
-        </a>
-    {% endif %}
-    
-    {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-            <span class="current-page active">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+        {% if pedidos.has_previous %}
+            <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo; Anterior</span>
+            </a>
         {% endif %}
-    {% endfor %}
-    
-    {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link" aria-label="Next">
-            <span aria-hidden="true">Siguiente &raquo;</span>
-        </a>
-    {% endif %}
-</div>
+        
+        {% for num in pedidos.paginator.page_range %}
+            {% if pedidos.number == num %}
+                <span class="current-page active">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pedidos.has_next %}
+            <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link" aria-label="Next">
+                <span aria-hidden="true">Siguiente &raquo;</span>
+            </a>
+        {% endif %}
+    </div>
 </section>
 {% endif %}
+
+<!-- Contenedor del Modal -->
+<div id="modal-backdrop" onclick="cerrarModal()"></div>
+<div id="modal">
+    <div id="modal-content"></div>
+</div>
+
+<script>
+    function mostrarDetalles(id) {
+        var contenido = document.getElementById("detalles-" + id).innerHTML;
+        document.getElementById("modal-content").innerHTML = contenido;
+        document.getElementById("modal").style.display = "block";
+        document.getElementById("modal-backdrop").style.display = "block";
+    }
+
+    function cerrarModal() {
+        document.getElementById("modal").style.display = "none";
+        document.getElementById("modal-backdrop").style.display = "none";
+    }
+
+    document.querySelector('.print').addEventListener('click', function () {
+        window.print();
+    });
+</script>
 {% endblock %}

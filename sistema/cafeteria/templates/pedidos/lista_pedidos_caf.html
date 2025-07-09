@@ -1,11 +1,82 @@
 {% extends 'navbar.html' %}
 {% load static %}
 
-{% block titulo %}Lista{% endblock %}
+{% block titulo %}Pedidos confirmados y cancelados{% endblock %}
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
+    /* Modal Styles */
+    #modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #ff0000;
+        background: none;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
+    }
+
+   
+
     @media print {
         body * {
             visibility: hidden;
@@ -58,12 +129,7 @@
         #fecha {
             display: none !important;
         }
-
     }
-
-
-
-   
 </style>
 
 <section class="pedido">
@@ -79,8 +145,6 @@
             href="{% url 'cafeteria:reporte_pedidos_caf_xsls' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
             <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
         </a>
-
-
     </div>
     <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
         <div>
@@ -89,10 +153,7 @@
                 value="{{ request.GET.q }}">
             <button type="submit" class="btn-search" title="Buscar texto">
                 <i class="fas fa-search text-white"></i>
-
             </button>
-
-
 
             <!-- Inputs de fecha (inicialmente ocultos) -->
             <div id="filtro-fechas">
@@ -104,13 +165,12 @@
 
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
-
                 </button>
             </div>
             <!-- Botón para limpiar filtros -->
             <a href="{% url 'papeleria:listado_pedidos' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
-                        title="Eliminar"></i>
+                <button type="button" class="clean" title="Limpiar búsqueda">
+                    <i class="fas fa-trash text-white" title="Eliminar"></i>
                 </button>
             </a>
         </div>
@@ -123,7 +183,6 @@
                 <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
                 <th class="detalle">Detalles</th>
-
             </tr>
         </thead>
         <tbody>
@@ -134,27 +193,35 @@
                 <td class="fecha_td">{{ pedido.fecha_formateada }}</p></td>
                 <td>{{ pedido.get_estado_display }}</td>
                 <td>
-                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i class="fas fa-eye"></i></button>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> 
+                        <i class="fas fa-eye"></i>
+                    </button>
 
                     <!-- Contenido oculto para el modal -->
-                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
-                        <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                        <p class="estado_d"><strong >Estado:</strong> {{ pedido.get_estado_display }}</p>
-                        <p><strong>Artículos:</strong></p>
-                        <ul>
-                            {% for producto in pedido.productos.all %}
-                            <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
-                            {% endfor %}
-                        </ul>
-                        <p><strong>Áreas:</strong>
-                            {% for producto in pedido.productos.all %}
-                            {{ producto.area }}{% if not forloop.last %}, {% endif %}
-                            {% empty %}
-                            No hay pedidos de cafeteria
-                            {% endfor %}
-                        </p>
-
+                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                            <p class="estado_d"><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                            <p><strong>Artículos:</strong></p>
+                            <ul>
+                                {% for producto in pedido.productos.all %}
+                                <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
+                                {% endfor %}
+                            </ul>
+                            <p><strong>Áreas:</strong>
+                                {% for producto in pedido.productos.all %}
+                                {{ producto.area }}{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                No hay pedidos de cafeteria
+                                {% endfor %}
+                            </p>
+                        </div>
+                        
                     </div>
                 </td>
 
@@ -170,8 +237,6 @@
 
                     {% endif %}
                 </td>
-
-
             </tr>
             {% empty %}
             <tr>
@@ -180,34 +245,32 @@
             {% endfor %}
         </tbody>
     </table>
-   <div class="pagination" id="pag">
-    {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">
-            &laquo; Anterior
-        </a>
-    {% endif %}
-    
-    {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-            <span class="current-page active">{{ num }}</span>
-        {% elif num > pedidos.number|add:-3 and num < pedidos.number|add:3 %}
-            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+    <div class="pagination" id="pag">
+        {% if pedidos.has_previous %}
+            <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">
+                &laquo; Anterior
+            </a>
         {% endif %}
-    {% endfor %}
-    
-    {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">
-            Siguiente &raquo;
-        </a>
-    {% endif %}
-</div>
-
+        
+        {% for num in pedidos.paginator.page_range %}
+            {% if pedidos.number == num %}
+                <span class="current-page active">{{ num }}</span>
+            {% elif num > pedidos.number|add:-3 and num < pedidos.number|add:3 %}
+                <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pedidos.has_next %}
+            <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">
+                Siguiente &raquo;
+            </a>
+        {% endif %}
+    </div>
 </section>
 
 <!-- Modal -->
 <div id="modal">
     <div id="modal-content"></div>
-    <button onclick="cerrarModal()">Cerrar</button>
 </div>
 
 <!-- Fondo oscuro detrás del modal -->
@@ -225,6 +288,7 @@
         document.getElementById("modal").style.display = "none";
         document.getElementById("modal-backdrop").style.display = "none";
     }
+
     document.querySelector('.print').addEventListener('click', function () {
         const contenidoOriginal = document.body.innerHTML;
         const titulo = document.querySelector('h1').outerHTML;
@@ -234,7 +298,7 @@
         <div class="fondo">
             <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
         </div>
-    `
+        `;
 
         const estiloImpresion = `
         <style>
@@ -285,9 +349,9 @@
             }
             #detalles, .fecha_pedido, .registrado, .estado_d{
                 display: none;
-    }
+            }
         </style>
-    `;
+        `;
 
         const ventanaImpresion = window.open('', '', 'height=700,width=900');
         ventanaImpresion.document.write('<html><head><title>Listado de productos</title>');
@@ -302,6 +366,5 @@
         ventanaImpresion.print();
         ventanaImpresion.close();
     });
-
 </script>
 {% endblock %}

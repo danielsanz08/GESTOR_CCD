@@ -147,6 +147,10 @@
   body.dark{
     background-color: rgb(61, 60, 60);
   }
+  body.dark .breadcrumb-item a{
+    background-color: #000;
+    color: white;
+  }
   /* Móviles (hasta 767px) */
   @media (max-width: 767px) {
     .navbar {
@@ -883,9 +887,11 @@
   </div>
 </div>
 <style>
-  body.dark #accessibility-menu{
+  body.dark #accessibility-menu,
+  body.dark .accessibility-btn{
     background-color: #000;
   }
+  
   
 </style>
 <style>
@@ -1176,6 +1182,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(180, 204, 241, 0.4);
     }
+    
 
     .accessibility-btn:hover {
       transform: translateY(-2px);
@@ -1234,12 +1241,12 @@
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      box-shadow: 0 6px 20px rgba(107, 171, 255, 0.6);
     }
 
     .zoom-reset-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+      box-shadow: 0 6px 20px rgba(107, 171, 255, 0.6);
     }
 
     [data-tooltip]:before,

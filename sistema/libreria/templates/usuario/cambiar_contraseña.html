@@ -42,12 +42,20 @@
         left: 15vh;
     }
 
+    .loading {
+        color: rgb(255, 165, 0);
+        font-size: 0.9rem;
+        position: absolute;
+        top: 5vh;
+        left: 5vh;
+    }
+
     button[type="submit"] {
         transition: background-color 0.3s, color 0.3s;
         position: absolute;
         left: 10vh;
         bottom: 32vh;
-        /* Quitado el cursor y colores de disabled */
+        cursor: pointer;
     }
 
     button[type="submit"]:hover {
@@ -55,7 +63,11 @@
         color: black;
     }
 
-    /* Quité el estilo para button[type="submit"]:disabled */
+    button[type="submit"]:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
 </style>
 
 <link rel="stylesheet" href="{% static 'css/cambiar_contraseña.css' %}?v={% now 'U' %}">
@@ -87,8 +99,7 @@
             <div class="error-new2"></div>
         </div>
 
-        <!-- Botón SIN atributo disabled -->
-        <button type="submit" class="btn" id="submit-btn">
+        <button type="submit" class="btn" id="submit-btn" disabled>
             Restablecer
         </button>
     </form>
@@ -106,6 +117,11 @@
     const errorNew1 = document.querySelector(".error-new1");
     const errorNew2 = document.querySelector(".error-new2");
 
+    let isOldPasswordValid = false;
+    let isNewPassword1Valid = false;
+    let isNewPassword2Valid = false;
+    let verificationTimeout;
+
     function validatePassword(password) {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
         return regex.test(password);
@@ -113,60 +129,160 @@
 
     function showError(element, message) {
         element.textContent = message;
-        element.classList.remove("success-match");
+        element.classList.remove("success-match", "loading");
     }
 
     function showSuccess(element, message) {
         element.textContent = message;
         element.classList.add("success-match");
+        element.classList.remove("loading");
+    }
+
+    function showLoading(element, message) {
+        element.textContent = message;
+        element.classList.add("loading");
+        element.classList.remove("success-match");
     }
 
     function clearError(element) {
         element.textContent = "";
-        element.classList.remove("success-match");
+        element.classList.remove("success-match", "loading");
+    }
+
+    function updateSubmitButton() {
+        if (isOldPasswordValid && isNewPassword1Valid && isNewPassword2Valid) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
+
+    function verificarContraseñaActual(password) {
+        if (!password) {
+            isOldPasswordValid = false;
+            updateSubmitButton();
+            return;
+        }
+
+        showLoading(errorOld, "Verificando contraseña...");
+        
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('{% url "libreria:verificar_contraseña_actual" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                contraseña_actual: password
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta del servidor:', data); // Debug
+            
+            if (data.valida) {
+                clearError(errorOld);
+                isOldPasswordValid = true;
+                new1Group.style.display = "block";
+            } else {
+                let mensaje = data.mensaje || "Contraseña actual incorrecta";
+                if (data.debug) {
+                    console.log('Debug info:', data.debug); // Solo para desarrollo
+                }
+                showError(errorOld, mensaje);
+                isOldPasswordValid = false;
+                new1Group.style.display = "none";
+                new2Group.style.display = "none";
+                isNewPassword1Valid = false;
+                isNewPassword2Valid = false;
+            }
+            updateSubmitButton();
+        })
+        .catch(error => {
+            console.error('Error completo:', error);
+            showError(errorOld, "Error al verificar la contraseña - Revisa la consola");
+            isOldPasswordValid = false;
+            new1Group.style.display = "none";
+            new2Group.style.display = "none";
+            isNewPassword1Valid = false;
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+        });
     }
 
     oldPassword.addEventListener("input", () => {
-        if (validatePassword(oldPassword.value)) {
-            clearError(errorOld);
-            new1Group.style.display = "block";
-        } else {
+        const password = oldPassword.value;
+        
+        // Limpiar timeout anterior
+        if (verificationTimeout) {
+            clearTimeout(verificationTimeout);
+        }
+        
+        if (!validatePassword(password)) {
             showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 6 caracteres.");
+            isOldPasswordValid = false;
             new1Group.style.display = "none";
             new2Group.style.display = "none";
-            // Ya no deshabilita botón
+            isNewPassword1Valid = false;
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+            return;
         }
+
+        // Verificar contraseña después de 800ms de inactividad
+        verificationTimeout = setTimeout(() => {
+            verificarContraseñaActual(password);
+        }, 800);
     });
 
     newPassword1.addEventListener("input", () => {
-        if (!validatePassword(newPassword1.value)) {
+        const password = newPassword1.value;
+        
+        if (!validatePassword(password)) {
             showError(errorNew1, "Debe cumplir con los mismos requisitos de seguridad.");
+            isNewPassword1Valid = false;
             new2Group.style.display = "none";
-            // Ya no deshabilita botón
-        } else if (newPassword1.value === oldPassword.value) {
+            isNewPassword2Valid = false;
+        } else if (password === oldPassword.value) {
             showError(errorNew1, "La nueva contraseña no puede ser igual a la anterior.");
+            isNewPassword1Valid = false;
             new2Group.style.display = "none";
-            // Ya no deshabilita botón
+            isNewPassword2Valid = false;
         } else {
             clearError(errorNew1);
+            isNewPassword1Valid = true;
             new2Group.style.display = "block";
         }
+        updateSubmitButton();
     });
 
     newPassword2.addEventListener("input", () => {
-        if (!validatePassword(newPassword2.value)) {
+        const password = newPassword2.value;
+        
+        if (!validatePassword(password)) {
             showError(errorNew2, "Debe cumplir con los requisitos de seguridad.");
-            // Ya no deshabilita botón
-        } else if (newPassword2.value !== newPassword1.value) {
+            isNewPassword2Valid = false;
+        } else if (password !== newPassword1.value) {
             showError(errorNew2, "Las contraseñas no coinciden.");
-            // Ya no deshabilita botón
-        } else if (newPassword2.value === oldPassword.value) {
+            isNewPassword2Valid = false;
+        } else if (password === oldPassword.value) {
             showError(errorNew2, "La nueva contraseña no puede ser igual a la anterior.");
-            // Ya no deshabilita botón
+            isNewPassword2Valid = false;
         } else {
             showSuccess(errorNew2, "Las contraseñas coinciden.");
-            // Ya no habilita botón, porque nunca fue deshabilitado
+            isNewPassword2Valid = true;
         }
+        updateSubmitButton();
     });
+
+    // Inicializar el estado del botón
+    updateSubmitButton();
 </script>
 {% endblock %}

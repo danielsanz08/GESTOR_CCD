@@ -22,13 +22,9 @@
         z-index: 1000;
         max-width: 500px;
         width: 90%;
-
         max-height: 80vh;
-        /* Limita la altura máxima del modal */
         overflow-y: auto;
-        /* Agrega scroll vertical si es necesario */
     }
-
 
     #modal-backdrop {
         display: none;
@@ -41,19 +37,44 @@
         z-index: 999;
     }
 
-    #modal button {
-        margin-top: 15px;
-        padding: 8px 12px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
     }
 
-    #modal button:hover {
-        background-color: #0056b3;
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
     }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #ff0000;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
+    }
+
+    
 </style>
 <section>
     <h1>Mis pedidos</h1>
@@ -64,10 +85,7 @@
                 value="{{ request.GET.q }}">
             <button type="submit" class="btn-search" title="Buscar texto">
                 <i class="fas fa-search text-white"></i>
-
             </button>
-
-
 
             <!-- Inputs de fecha (inicialmente ocultos) -->
             <div id="filtro-fechas">
@@ -79,13 +97,12 @@
 
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
-
                 </button>
             </div>
             <!-- Botón para limpiar filtros -->
             <a href="{% url 'papeleria:mis_pedidos' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash text-white"
-                        title="Eliminar"></i>
+                <button type="button" class="clean" title="Limpiar búsqueda">
+                    <i class="fas fa-trash text-white" title="Eliminar"></i>
                 </button>
             </a>
         </div>
@@ -99,7 +116,6 @@
                 <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
                 <th class="pedido">Pedido</th>
-
             </tr>
         </thead>
         <tbody>
@@ -116,72 +132,75 @@
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
-                        <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
-                        <p>
-                            <strong>
-                                {% if pedido.estado == 'Confirmado' %}
-                                Fecha confirmación:
-                                {% elif pedido.estado == 'Cancelado' %}
-                                Fecha cancelación:
-                                {% elif pedido.estado == 'Pendiente' %}
-                                Fecha pendiente:
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                            <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                            <p>
+                                <strong>
+                                    {% if pedido.estado == 'Confirmado' %}
+                                    Fecha confirmación:
+                                    {% elif pedido.estado == 'Cancelado' %}
+                                    Fecha cancelación:
+                                    {% elif pedido.estado == 'Pendiente' %}
+                                    Fecha pendiente:
+                                    {% else %}
+                                    Fecha estado:
+                                    {% endif %}
+                                </strong>
+                                {% if pedido.fecha_estado %}
+                                {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
                                 {% else %}
-                                Fecha estado:
+                                Pendiente
                                 {% endif %}
-                            </strong>
-
-                            {% if pedido.fecha_estado %}
-                            {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
-                            {% else %}
-                            Pendiente
-                            {% endif %}
-                        </p>
-                        <p><strong>Áreas:</strong>
-                            {% with areas=pedido.articulos.all|dictsort:"area" %}
-                            {% for articulo in areas %}
-                            {% ifchanged articulo.area %}
-                            {{ articulo.area }}{% if not forloop.last %}, {% endif %}
-                            {% endifchanged %}
-                            {% empty %}
-                            No hay áreas
-                            {% endfor %}
-                            {% endwith %}
-                        </p>
-                        <p><strong>Artículos:</strong></p>
-                        <ul>
-                            {% for articulo in pedido.articulos.all %}
-                            <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>
-                            {% endfor %}
-                        </ul>
-                        <button onclick="cerrarModal()">Cerrar</button>
+                            </p>
+                            <p><strong>Áreas:</strong>
+                                {% with areas=pedido.articulos.all|dictsort:"area" %}
+                                {% for articulo in areas %}
+                                {% ifchanged articulo.area %}
+                                {{ articulo.area }}{% if not forloop.last %}, {% endif %}
+                                {% endifchanged %}
+                                {% empty %}
+                                No hay áreas
+                                {% endfor %}
+                                {% endwith %}
+                            </p>
+                            <p><strong>Artículos:</strong></p>
+                            <ul>
+                                {% for articulo in pedido.articulos.all %}
+                                <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
                     </div>
                 </td>
-
-
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-   <div class="paginacion" id="pag">
-    {% if pedidos.has_previous %}
+    <div class="paginacion" id="pag">
+        {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}">Anterior</a>
-    {% endif %}
-    
-    {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-            <span class="current">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}{{ query_params }}">{{ num }}</a>
         {% endif %}
-    {% endfor %}
-    
-    {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}">Siguiente</a>
-    {% endif %}
-</div>
+        
+        {% for num in pedidos.paginator.page_range %}
+            {% if pedidos.number == num %}
+                <span class="current">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}{{ query_params }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pedidos.has_next %}
+            <a href="?page={{ pedidos.next_page_number }}{{ query_params }}">Siguiente</a>
+        {% endif %}
+    </div>
 </section>
 
 <!-- Contenedor del Modal -->
@@ -202,24 +221,6 @@
         document.getElementById("modal-backdrop").style.display = "none";
     }
 
-    function mostrarMenuContextual(btn) {
-        document.querySelectorAll('.context-menu').forEach(menu => {
-            if (menu !== btn.nextElementSibling) {
-                menu.style.display = 'none';
-            }
-        });
-
-        const menu = btn.nextElementSibling;
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    document.addEventListener('click', function (e) {
-        document.querySelectorAll('.context-menu').forEach(menu => {
-            if (!menu.contains(e.target) && !e.target.closest('.btn-accion')) {
-                menu.style.display = 'none';
-            }
-        });
-    });
     document.querySelector('.print').addEventListener('click', function () {
         const contenidoOriginal = document.body.innerHTML;
         const titulo = document.querySelector('h1').outerHTML;
@@ -229,7 +230,7 @@
         <div class="fondo">
             <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
         </div>
-    `;
+        `;
 
         const estiloImpresion = `
         <style>
@@ -275,12 +276,12 @@
                 max-height: 80%;
                 object-fit: contain;
             }
-           th:nth-child(n+5),
-                td:nth-child(n+5) {
-                    display: none !important;
-                }
+            th:nth-child(n+5),
+            td:nth-child(n+5) {
+                display: none !important;
+            }
         </style>
-    `;
+        `;
 
         const ventanaImpresion = window.open('', '', 'height=700,width=900');
         ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
@@ -295,6 +296,5 @@
         ventanaImpresion.print();
         ventanaImpresion.close();
     });
-
 </script>
 {% endblock %}

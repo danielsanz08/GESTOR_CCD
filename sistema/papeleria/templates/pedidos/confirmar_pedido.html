@@ -22,13 +22,9 @@
         z-index: 1000;
         max-width: 500px;
         width: 90%;
-
         max-height: 80vh;
-        /* Limita la altura máxima del modal */
         overflow-y: auto;
-        /* Agrega scroll vertical si es necesario */
     }
-
 
     #modal-backdrop {
         display: none;
@@ -39,6 +35,43 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 999;
+    }
+
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #ff0000;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
     }
 
     #modal button {
@@ -52,7 +85,7 @@
     }
 
     #modal button:hover {
-        background-color: #0056b3;
+        color: red;
     }
 </style>
 <section>
@@ -65,19 +98,15 @@
             <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
         </a>
 
-       <a
-    href="{% url 'papeleria:reporte_pedidos_pendientes_excel' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
-    <button class="excel" title="Exportar a Excel">
-        <i class="fas fa-file-excel text-white"></i>
-    </button>
-</a>
-
-
-
+        <a
+            href="{% url 'papeleria:reporte_pedidos_pendientes_excel' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+            <button class="excel" title="Exportar a Excel">
+                <i class="fas fa-file-excel text-white"></i>
+            </button>
+        </a>
     </div>
 
     <form method="GET" action="{% url 'papeleria:pedidos_pendientes' %}">
-
         <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
         <button type="submit" class="btn-search" title="Buscar texto"><i class="fas fa-search"></i></button>
 
@@ -92,7 +121,6 @@
         <a href="{% url 'papeleria:pedidos_pendientes' %}">
             <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash"></i></button>
         </a>
-
     </form>
 
     <table>
@@ -120,43 +148,49 @@
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
-                        <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                        <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                        <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
-                        <p>
-                            <strong>
-                                {% if pedido.estado == 'Confirmado' %}
-                                Fecha confirmación:
-                                {% elif pedido.estado == 'Cancelado' %}
-                                Fecha cancelación:
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+                            <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                            <p>
+                                <strong>
+                                    {% if pedido.estado == 'Confirmado' %}
+                                    Fecha confirmación:
+                                    {% elif pedido.estado == 'Cancelado' %}
+                                    Fecha cancelación:
+                                    {% else %}
+                                    El pedido aún no ha sido confirmado ni cancelado.
+                                    {% endif %}
+                                </strong>
+                                {% if pedido.fecha_estado %}
+                                {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
                                 {% else %}
-                                Fecha estado:
+                                No hay fecha de confirmación disponible.
                                 {% endif %}
-                            </strong>
-                            {% if pedido.fecha_estado %}
-                            {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
-                            {% else %}
-                            Pendiente
-                            {% endif %}
-                        </p>
-                        <p><strong>Áreas:</strong>
-                            {% with areas=pedido.articulos.all|dictsort:"area" %}
-                            {% for articulo in areas %}
-                            {% ifchanged articulo.area %}
-                            {{ articulo.area }}{% if not forloop.last %}, {% endif %}
-                            {% endifchanged %}
-                            {% empty %}
-                            No hay áreas
-                            {% endfor %}
-                            {% endwith %}
-                        </p>
-                        <p><strong>Artículos:</strong></p>
-                        <ul>
-                            {% for articulo in pedido.articulos.all %}
-                            <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>
-                            {% endfor %}
-                        </ul>
-                        <button onclick="cerrarModal()">Cerrar</button>
+                            </p>
+                            <p><strong>Áreas:</strong>
+                                {% with areas=pedido.articulos.all|dictsort:"area" %}
+                                {% for articulo in areas %}
+                                {% ifchanged articulo.area %}
+                                {{ articulo.area }}{% if not forloop.last %}, {% endif %}
+                                {% endifchanged %}
+                                {% empty %}
+                                No hay áreas
+                                {% endfor %}
+                                {% endwith %}
+                            </p>
+                            <p><strong>Artículos:</strong></p>
+                            <ul>
+                                {% for articulo in pedido.articulos.all %}
+                                <li>{{ articulo.articulo.nombre }} × {{ articulo.cantidad }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
                     </div>
                 </td>
 
@@ -172,7 +206,6 @@
                         </button>
                         <span class="tooltip-text">Solo válido para administradores</span>
                     </div>
-
                     {% endif %}
                     <div class="context-menu">
                         <form class="form-cambiar-estado" method="POST"
@@ -192,10 +225,6 @@
                                 <i class="fas fa-times"></i> Rechazar
                             </button>
                         </form>
-
-                        <button type="button" class="cerrar">
-                            <i class="fas fa-times"></i> Cerrar
-                        </button>
                     </div>
                 </td>
             </tr>
@@ -203,23 +232,23 @@
         </tbody>
     </table>
 
-   <div class="paginacion" id="pag">
-    {% if pedidos.has_previous %}
+    <div class="paginacion" id="pag">
+        {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
-    {% endif %}
-    
-    {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-            <span class="current-page">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
         {% endif %}
-    {% endfor %}
-    
-    {% if pedidos.has_next %}
+
+        {% for num in pedidos.paginator.page_range %}
+        {% if pedidos.number == num %}
+        <span class="current-page">{{ num }}</span>
+        {% else %}
+        <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 </section>
 
 <!-- Contenedor del Modal -->
@@ -258,7 +287,8 @@
             }
         });
     });
-     document.querySelector('.print').addEventListener('click', function () {
+    
+    document.querySelector('.print').addEventListener('click', function () {
         const contenidoOriginal = document.body.innerHTML;
         const titulo = document.querySelector('h1').outerHTML;
         const tabla = document.querySelector('table').outerHTML;
@@ -333,6 +363,5 @@
         ventanaImpresion.print();
         ventanaImpresion.close();
     });
-
 </script>
 {% endblock %}

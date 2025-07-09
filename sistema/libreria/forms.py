@@ -1,6 +1,7 @@
 from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import PasswordChangeForm
+
 class CustomUserForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
@@ -25,6 +26,24 @@ class CustomUserForm(forms.ModelForm):
         self.fields['role'].widget.attrs.update({'class': 'form-select'})
         self.fields['cargo'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cargo'})
         self.fields['area'].widget.attrs.update({'class': 'form-select'})
+
+    def clean_role(self):
+        """Validación para CREACIÓN: máximo 1 administrador"""
+        new_role = self.cleaned_data.get('role')
+        
+        # Solo validamos si se intenta crear un 'Administrador'
+        if new_role == 'Administrador':
+            admin_count = CustomUser.objects.filter(
+                role='Administrador',
+                is_active=True
+            ).count()
+
+            if admin_count >= 1:
+                raise forms.ValidationError(
+                    "Ya existe 1 usuario activo con rol de Administrador. No puedes crear otro administrador durante el registro."
+                )
+
+        return new_role
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -71,6 +90,7 @@ class CustomUserEditForm(forms.ModelForm):
         return email or self.instance.email  # Mantiene el valor anterior si no se cambia
 
     def clean_role(self):
+        """Validación para EDICIÓN: máximo 2 administradores"""
         new_role = self.cleaned_data.get('role')
 
         # Solo validamos si se intenta cambiar a 'Administrador'

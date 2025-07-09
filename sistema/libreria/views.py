@@ -76,18 +76,18 @@ def crear_usuario(request):
                 user = form.save(commit=False)
                 role = user.role
 
-                # ✅ MODIFICADO: Permitir hasta 2 administradores activos
+                # ✅ MODIFICADO: Permitir hasta 1 administrador activo en CREACIÓN
                 if role == 'Administrador':
                     admin_count = CustomUser.objects.filter(
                         role='Administrador',
                         is_active=True
                     ).count()
 
-                    limit = 2
+                    limit = 1  # CAMBIADO: Límite de 1 para creación
                     if admin_count >= limit:
                         messages.error(
                             request,
-                            f"Límite de administradores alcanzado. Solo se permiten {limit} administradores activos."
+                            f"Límite de administradores alcanzado. Solo se permite {limit} administrador activo durante el registro."
                         )
                         return redirect('libreria:crear_usuario')
 
@@ -189,6 +189,7 @@ def crear_usuario(request):
         'admin_exists': admin_exists,
         'breadcrumbs': breadcrumbs
     })
+
 
 
 def ver_usuario(request, user_id):
@@ -317,6 +318,8 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from .models import CustomUser
+import json
+from django.views.decorators.http import require_http_methods
 
 @login_required
 def cambiar_estado_usuario(request, user_id):
@@ -324,22 +327,74 @@ def cambiar_estado_usuario(request, user_id):
         usuario = get_object_or_404(CustomUser, id=user_id)
         estado_anterior = usuario.is_active
         nuevo_estado = 'is_active' in request.POST
-
+        
         # Evita que el usuario se desactive a sí mismo
         if request.user.id == usuario.id and not nuevo_estado:
             messages.error(request, "Error: No puedes desactivar tu propio usuario mientras estás autenticado.")
+        # Evita que los administradores se desactiven a sí mismos
+        elif request.user.id == usuario.id and usuario.role == 'Administrador' and not nuevo_estado:
+            messages.error(request, "Error: Los usuarios con rol de Administrador no pueden desactivarse a sí mismos.")
         elif estado_anterior != nuevo_estado:
             usuario.is_active = nuevo_estado
             usuario.save()
-
+            
             if nuevo_estado:
                 messages.success(request, f"Éxito: El usuario '{usuario.username}' ha sido activado correctamente.")
             else:
                 messages.error(request, f"Advertencia: El usuario '{usuario.username}' ha sido desactivado.")
         else:
             messages.error(request, f"Información: El estado del usuario '{usuario.username}' no cambió.")
-
+    
     return redirect(reverse("libreria:lista_usuarios"))
+from django.contrib.auth.hashers import check_password
+import logging
+logger = logging.getLogger(__name__)
+@require_http_methods(["POST"])
+def verificar_contraseña_actual(request):
+    """
+    Vista para verificar si la contraseña actual ingresada es correcta
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Usuario no autenticado'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        contraseña_actual = data.get('contraseña_actual', '')
+        
+        # Debug: Log para ver qué se está recibiendo
+        logger.debug(f"Usuario: {request.user.username}")
+        logger.debug(f"Contraseña recibida: {contraseña_actual}")
+        
+        # Método 1: Usar check_password directamente (más directo)
+        password_valid = check_password(contraseña_actual, request.user.password)
+        
+        # Método 2: Como respaldo, usar authenticate
+        user_auth = authenticate(username=request.user.username, password=contraseña_actual)
+        
+        # Debug: Log de resultados
+        logger.debug(f"check_password result: {password_valid}")
+        logger.debug(f"authenticate result: {user_auth is not None}")
+        
+        # Usar check_password como método principal
+        if password_valid:
+            return JsonResponse({'valida': True})
+        else:
+            # Intentar con authenticate como respaldo
+            if user_auth is not None:
+                return JsonResponse({'valida': True})
+            else:
+                return JsonResponse({
+                    'valida': False, 
+                    'mensaje': 'Contraseña actual incorrecta',
+                    'debug': f'Usuario: {request.user.username}'
+                })
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Datos JSON inválidos'}, status=400)
+    except Exception as e:
+        logger.error(f"Error en verificar_contraseña_actual: {str(e)}")
+        return JsonResponse({'error': f'Error interno del servidor: {str(e)}'}, status=500)
+
 def cambiar_contraseña(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -353,8 +408,35 @@ def cambiar_contraseña(request):
             return redirect('libreria:inicio')  # Redirige después de cambiar la contraseña
     else:
         form = CustomPasswordChangeForm(user=request.user)
-
     return render(request, 'usuario/cambiar_contraseña.html', {'form': form, 'breadcrumbs': breadcrumbs})
+
+@require_http_methods(["GET"])
+def verificar_contraseña(request):
+    """
+    Vista para verificar si la contraseña ya existe en la base de datos
+    """
+    password = request.GET.get('password', '')
+    
+    if not password:
+        return JsonResponse({'error': 'No se proporcionó contraseña'}, status=400)
+    
+    try:
+        # Verificar contra todos los usuarios
+        usuarios = User.objects.all()
+        password_existe = False
+        
+        for usuario in usuarios:
+            if check_password(password, usuario.password):
+                password_existe = True
+                break
+        
+        return JsonResponse({
+            'password_existe': password_existe,
+            'mensaje': 'Esta contraseña ya está en uso. Por seguridad, elige una diferente.' if password_existe else 'Contraseña válida'
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': f'Error al verificar contraseña: {str(e)}'}, status=500)
 # views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model

@@ -585,7 +585,8 @@ def listado_pedidos(request):
     fecha_fin_str = request.GET.get('fecha_fin')
 
     # Filtrar pedidos confirmados o cancelados
-    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
+    pedidos = Pedido.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_estado')
+
     
     if query:
         pedidos = pedidos.filter(

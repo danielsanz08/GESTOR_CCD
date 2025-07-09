@@ -14,32 +14,35 @@
 
 </head>
 <style>
-   .tooltip-container {
-      position: relative;
-      display: inline-block;
-    }
-    .tooltip-text {
-      visibility: hidden;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 6px 8px;
-      border-radius: 5px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      white-space: nowrap;
-      font-size: 12px;
-    }
-    .tooltip-container:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
+  .tooltip-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 6px 8px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
 </style>
+
 <body>
 </body>
 <div class="fondo">
@@ -94,7 +97,7 @@
       object-fit: cover;
       z-index: -1;
       opacity: 1;
-      opacity: 0.3;
+      
     }
   }
 
@@ -137,11 +140,13 @@
 </div>
 <style>
   body.dark .navbar,
-    body.dark img,
-    body.dark footer{
-      background-color: #000;
-      opacity: none;
-    }
+  body.dark footer {
+    background-color: #000;
+    opacity: none;
+  }
+  body.dark{
+    background-color: rgb(61, 60, 60);
+  }
   /* Móviles (hasta 767px) */
   @media (max-width: 767px) {
     .navbar {
@@ -327,7 +332,7 @@
       font-size: 1em;
       font-weight: bold;
     }
-    
+
   }
 
   /* Escritorio (1025px en adelante) */
@@ -348,7 +353,7 @@
       justify-content: center;
       align-items: center;
     }
-    
+
     .gestor-container {
       display: flex;
       align-items: center;
@@ -417,41 +422,38 @@
       font-weight: bold;
     }
   }
-
- 
 </style>
 <!-- ============= SECCIÓN ALERTA ============= -->
- <style>
-  
- [data-tooltip] {
-  position: relative;
-  cursor: pointer;
-}
+<style>
+  [data-tooltip] {
+    position: relative;
+    cursor: pointer;
+  }
 
-[data-tooltip]::after {
-  content: attr(data-tooltip);
-  visibility: hidden;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 6px 8px;
-  border-radius: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%; /* posición sobre el elemento */
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  white-space: nowrap;
-  font-size: 12px;
-}
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 6px 8px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    /* posición sobre el elemento */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-size: 12px;
+  }
 
-[data-tooltip]:hover::after {
-  visibility: visible;
-  opacity: 1;
-}
-
+  [data-tooltip]:hover::after {
+    visibility: visible;
+    opacity: 1;
+  }
 </style>
 
 <!-- ============= SECCIÓN FOOTER ============= -->
@@ -676,19 +678,19 @@
 {% if messages %}
 <div class="alert-container">
   {% for message in messages %}
-    {% if message.tags == 'success' %}
-    <div class="custom-alert alert-success">
-      <span class="icon"></span> {{ message }}
-    </div>
-    {% elif message.tags == 'error' %}
-    <div class="custom-alert alert-error">
-      <span class="icon"></span> {{ message }}
-    </div>
-    {% elif message.tags == 'info' %}
-    <div class="custom-alert alert-info">
-      <span class="icon"></span> {{ message }}
-    </div>
-    {% endif %}
+  {% if message.tags == 'success' %}
+  <div class="custom-alert alert-success">
+    <span class="icon"></span> {{ message }}
+  </div>
+  {% elif message.tags == 'error' %}
+  <div class="custom-alert alert-error">
+    <span class="icon"></span> {{ message }}
+  </div>
+  {% elif message.tags == 'info' %}
+  <div class="custom-alert alert-info">
+    <span class="icon"></span> {{ message }}
+  </div>
+  {% endif %}
   {% endfor %}
 </div>
 {% endif %}
@@ -737,6 +739,7 @@
       border-color: rgba(118, 139, 0, 0.473);
       color: rgb(139, 16, 0);
     }
+
     .icon {
       margin-right: 10px;
     }
@@ -819,6 +822,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -830,6 +834,7 @@
       opacity: 1;
       transform: translateY(0);
     }
+
     to {
       opacity: 0;
       transform: translateY(-10px);
@@ -840,7 +845,7 @@
 <div id="accessibility-menu" class="hidden">
   <div class="accessibility-grid">
     <!-- Fila 1 -->
-    <button class="accessibility-btn dark-mode" data-tooltip="Modo Oscuro">
+    <button class="accessibility-btn dark-mode" data-tooltip="Modo Oscuro" id="modo_oscuro">
       <i class="bi bi-moon-fill"></i>
     </button>
     <button class="accessibility-btn monocromo" data-tooltip="Modo Monocromo">
@@ -877,6 +882,12 @@
     </button>
   </div>
 </div>
+<style>
+  body.dark #accessibility-menu{
+    background-color: #000;
+  }
+  
+</style>
 <style>
   /* Tablets (768px — 1024px) */
   /* Móviles (hasta 767px) */

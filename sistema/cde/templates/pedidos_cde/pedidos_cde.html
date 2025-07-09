@@ -6,6 +6,30 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
 
+<style>
+    .btn-eliminar-articulo {
+        margin-left: 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-eliminar-articulo:hover {
+        background-color: #c82333;
+    }
+    .producto-deshabilitado {
+        color: #999;
+        text-decoration: line-through;
+    }
+    
+    .rojo {
+        color: red;
+    }
+</style>
+
 <section>
     <h1>Realizar Pedido</h1>
     <form method="post" id="pedidoForm">
@@ -17,15 +41,20 @@
         </div>
         <div id="productos-container">
             <div class="producto-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
-                <select name="producto" required>
+                <select name="producto" required class="select-producto">
                     <option value="">-- Seleccionar producto --</option>
                     {% for producto in productos %}
-                    <option value="{{ producto.id }}">{{ producto.nombre }} ({{ producto.cantidad }})</option>
+                        {% if producto.cantidad > 0 %}
+                            <option value="{{ producto.id }}" data-cantidad="{{ producto.cantidad }}"
+                                {% if producto.cantidad < 10 %} class="rojo" {% endif %}>
+                                {{ producto.nombre }} ({{ producto.cantidad }})
+                            </option>
+                        {% endif %}
                     {% endfor %}
                 </select>
                 <label for="cantidad">Cantidad:</label>
-                <input type="number" name="cantidad" min="1" value="1" required placeholder="Cantidad">
-                <label for="lugar">Evento:</label>
+                <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
+                <label for="evento">Evento:</label>
                 <input type="text" name="evento" required placeholder="Evento">
             </div>
             <!-- Buttons moved here, outside of producto-form -->
@@ -39,27 +68,100 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    let productosSeleccionados = [];
+
+    // Actualiza las opciones disponibles en todos los selects
+    function actualizarOpcionesDisponibles() {
+        const selectsProductos = document.querySelectorAll('.select-producto');
+
+        selectsProductos.forEach(select => {
+            const currentSelected = select.value;
+
+            Array.from(select.options).forEach(option => {
+                if (option.value) {
+                    if (!productosSeleccionados.includes(option.value) || option.value === currentSelected) {
+                        option.disabled = false;
+                        option.classList.remove('producto-deshabilitado');
+                    } else {
+                        option.disabled = true;
+                        option.classList.add('producto-deshabilitado');
+                    }
+                }
+            });
+        });
+    }
+
+    // Valida que la cantidad no supere el stock disponible
+    function actualizarValidacionCantidad(form) {
+        const selectProducto = form.querySelector('.select-producto');
+        const inputCantidad = form.querySelector('.input-cantidad');
+
+        inputCantidad.addEventListener('input', function() {
+            if (selectProducto.value) {
+                const cantidadDisponible = parseInt(selectProducto.selectedOptions[0].getAttribute('data-cantidad')) || 0;
+                const valorIngresado = parseInt(this.value) || 0;
+
+                if (valorIngresado > cantidadDisponible) {
+                    this.value = cantidadDisponible;
+                    alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                }
+            }
+        });
+
+        // También validar al cambiar el producto
+        selectProducto.addEventListener('change', function() {
+            if (this.value && inputCantidad.value) {
+                const cantidadDisponible = parseInt(this.selectedOptions[0].getAttribute('data-cantidad')) || 0;
+                const valorIngresado = parseInt(inputCantidad.value) || 0;
+
+                if (valorIngresado > cantidadDisponible) {
+                    inputCantidad.value = cantidadDisponible;
+                    alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                }
+            }
+        });
+    }
+
+    // Inicializa un formulario de producto
     function inicializarFormulario(form, incluirEliminar = false) {
+        const selectProducto = form.querySelector('.select-producto');
+
+        // Manejar cambio de producto
+        selectProducto.addEventListener('change', function() {
+            const prevValue = form.getAttribute('data-selected-producto');
+            if (prevValue) {
+                productosSeleccionados = productosSeleccionados.filter(id => id !== prevValue);
+            }
+
+            if (this.value) {
+                productosSeleccionados.push(this.value);
+                form.setAttribute('data-selected-producto', this.value);
+            } else {
+                form.removeAttribute('data-selected-producto');
+            }
+
+            actualizarOpcionesDisponibles();
+        });
+
+        // Agregar botón de eliminar si es necesario
         if (incluirEliminar) {
             const eliminarBtn = document.createElement('button');
             eliminarBtn.type = 'button';
             eliminarBtn.textContent = 'Eliminar';
             eliminarBtn.classList.add('btn', 'btn-eliminar-producto');
-            eliminarBtn.id = 'btn_delete';
             eliminarBtn.title = "Eliminar";
-            eliminarBtn.onclick = function () {
-                eliminarProductos(form);
+            eliminarBtn.onclick = function() {
+                eliminarProducto(form);
             };
             form.appendChild(eliminarBtn);
         }
+
+        // Configurar validación de cantidad
+        actualizarValidacionCantidad(form);
     }
 
-    const defaultForm = document.querySelector('.producto-form.default-form');
-    if (defaultForm) {
-        inicializarFormulario(defaultForm);
-    }
-
-    window.agregarProducto = function () {
+    // Agregar nuevo formulario de producto
+    window.agregarProducto = function() {
         const container = document.getElementById('productos-container');
         const buttonsContainer = document.getElementById('buttons-container');
         const nuevoFormulario = defaultForm.cloneNode(true);
@@ -67,21 +169,39 @@ document.addEventListener('DOMContentLoaded', function () {
         nuevoFormulario.style.display = 'flex';
 
         // Limpiar valores
-        const selects = nuevoFormulario.querySelectorAll('select');
-        selects.forEach(select => select.selectedIndex = 0);
-        nuevoFormulario.querySelector('input[name="cantidad"]').value = 1;
-        nuevoFormulario.querySelector('input[name="lugar"]').value = '';
+        nuevoFormulario.querySelector('.select-producto').selectedIndex = 0;
+        nuevoFormulario.querySelector('.input-cantidad').value = 1;
+        nuevoFormulario.querySelector('input[name="evento"]').value = '';
+        nuevoFormulario.removeAttribute('data-selected-producto');
 
+        // Inicializar el nuevo formulario
         inicializarFormulario(nuevoFormulario, true);
+        
         // Insertar antes del contenedor de botones
         container.insertBefore(nuevoFormulario, buttonsContainer);
+        
+        // Actualizar opciones disponibles
+        actualizarOpcionesDisponibles();
     };
 
-    window.eliminarProductos = function (form) {
+    // Eliminar un formulario de producto
+    window.eliminarProducto = function(form) {
         if (!form.classList.contains('default-form')) {
+            const productoId = form.getAttribute('data-selected-producto');
+            if (productoId) {
+                productosSeleccionados = productosSeleccionados.filter(id => id !== productoId);
+            }
             form.remove();
+            actualizarOpcionesDisponibles();
         }
     };
+
+    // Inicializar el primer formulario
+    const defaultForm = document.querySelector('.producto-form.default-form');
+    if (defaultForm) {
+        inicializarFormulario(defaultForm);
+        actualizarOpcionesDisponibles();
+    }
 });
 </script>
 

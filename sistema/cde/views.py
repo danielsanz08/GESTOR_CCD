@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Sum
+from django.utils.timezone import localtime
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -137,7 +138,7 @@ def crear_pedido_cde(request):
                     'admin_url': admin_url,
                     'company_name': 'Gestor CCD',
                     'productos': PedidoProductoCde.objects.filter(pedido=pedido_cde),
-                    'fecha_pedido': pedido_cde.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido_cde.fecha_pedido else '',
+                    'fecha_pedido': localtime(pedido_cde.fecha_pedido).strftime('%d/%m/%Y %H:%M') if pedido_cde.fecha_pedido else '',
                 }
 
                 html_message = render_to_string('pedidos_cde/email_notificacion_pedido.html', context)
@@ -579,7 +580,9 @@ def reporte_pedidos_pdf_cde(request):
     fecha_fin = request.GET.get('fecha_fin')
 
     # Fetch pedidos with prefetch for productos and producto
-    pedidos = PedidoCde.objects.prefetch_related('productos__producto').all()
+    pedidos = PedidoCde.objects.prefetch_related('productos__producto') \
+    .filter(estado__in=['Confirmado', 'Cancelado'])
+
 
     if q:
         pedidos = pedidos.filter(

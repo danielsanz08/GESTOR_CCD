@@ -76,18 +76,18 @@ def crear_usuario(request):
                 user = form.save(commit=False)
                 role = user.role
 
-                # Validación para administradores
+                # ✅ MODIFICADO: Permitir hasta 2 administradores activos
                 if role == 'Administrador':
                     admin_count = CustomUser.objects.filter(
                         role='Administrador',
                         is_active=True
                     ).count()
 
-                    limit = 1
+                    limit = 2
                     if admin_count >= limit:
                         messages.error(
                             request,
-                            "Límite de administradores alcanzado. Solo puede haber un administrador activo en el sistema."
+                            f"Límite de administradores alcanzado. Solo se permiten {limit} administradores activos."
                         )
                         return redirect('libreria:crear_usuario')
 
@@ -152,14 +152,14 @@ def crear_usuario(request):
             # Mensajes de error específicos por campo
             for field, errors in form.errors.items():
                 field_label = form.fields[field].label if field in form.fields else field
-                
+
                 if 'username' in field:
                     for error in errors:
                         if 'unique' in error:
                             messages.error(request, "Este nombre de usuario ya está en uso. Por favor elija otro.")
                         else:
                             messages.error(request, f"Nombre de usuario: {error}")
-                
+
                 elif 'email' in field:
                     for error in errors:
                         if 'unique' in error:
@@ -168,7 +168,7 @@ def crear_usuario(request):
                             messages.error(request, "Ingrese una dirección de correo electrónico válida.")
                         else:
                             messages.error(request, f"Correo electrónico: {error}")
-                
+
                 elif 'password' in field:
                     for error in errors:
                         if 'too short' in error.lower():
@@ -177,7 +177,7 @@ def crear_usuario(request):
                             messages.error(request, "La contraseña es demasiado común o insegura.")
                         else:
                             messages.error(request, f"Contraseña: {error}")
-                
+
                 else:
                     for error in errors:
                         messages.error(request, f"{field_label}: {error}")
@@ -189,6 +189,7 @@ def crear_usuario(request):
         'admin_exists': admin_exists,
         'breadcrumbs': breadcrumbs
     })
+
 
 def ver_usuario(request, user_id):
     breadcrumbs = [

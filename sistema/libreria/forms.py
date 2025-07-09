@@ -47,11 +47,24 @@ class CustomUserEditForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].required = False
 
-        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nombre de usuario'})
-        self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Correo electrónico'})
-        self.fields['role'].widget.attrs.update({'class': 'form-select'})
-        self.fields['cargo'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Cargo'})
-        self.fields['area'].widget.attrs.update({'class': 'form-select'})
+        self.fields['username'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Nombre de usuario'
+        })
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Correo electrónico'
+        })
+        self.fields['role'].widget.attrs.update({
+            'class': 'form-select'
+        })
+        self.fields['cargo'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Cargo'
+        })
+        self.fields['area'].widget.attrs.update({
+            'class': 'form-select'
+        })
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -59,10 +72,19 @@ class CustomUserEditForm(forms.ModelForm):
 
     def clean_role(self):
         new_role = self.cleaned_data.get('role')
+
+        # Solo validamos si se intenta cambiar a 'Administrador'
         if new_role == 'Administrador':
-            admin_exists = CustomUser.objects.filter(role='Administrador', is_active=True).exclude(id=self.instance.id).exists()
-            if admin_exists:
-                raise forms.ValidationError("Ya existe un usuario con rol de Administrador. No puedes asignar este rol.")
+            admin_count = CustomUser.objects.filter(
+                role='Administrador',
+                is_active=True
+            ).exclude(id=self.instance.id).count()
+
+            if admin_count >= 2:
+                raise forms.ValidationError(
+                    "Ya existen 2 usuarios activos con rol de Administrador. No puedes asignar este rol."
+                )
+
         return new_role
 
 

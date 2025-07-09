@@ -5,6 +5,7 @@ from django.contrib.sessions.models import Session
 from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.utils.timezone import localtime
 from datetime import datetime, timedelta
 from django.utils.dateparse import parse_date
 from django.db.models import Q, Sum, Count
@@ -383,8 +384,7 @@ def crear_pedido(request):
                 'admin_url': admin_url,
                 'company_name': 'Gestor CCD',
                 'articulos': PedidoArticulo.objects.filter(pedido=pedido),
-                'fecha_pedido': pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M'),
-            }
+                'fecha_pedido': localtime(pedido.fecha_pedido).strftime('%d/%m/%Y %H:%M')}
 
             html_message = render_to_string('pedidos/email_notificacion_pedido.html', context)
             

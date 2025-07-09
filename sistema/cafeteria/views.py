@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import localtime
 from django.contrib import messages
 from django.urls import reverse
 from django.core.paginator import Paginator
@@ -664,7 +665,7 @@ def crear_pedido_caf(request):
                     'pedido': pedido,
                     'admin_url': admin_url,
                     'productos': PedidoProducto.objects.filter(pedido=pedido),
-                    'fecha_pedido': pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else '',
+                    'fecha_pedido': localtime(pedido.fecha_pedido).strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else '',
                 }
 
                 html_message = render_to_string('pedidos/email_notificacion_pedido_caf.html', context)
@@ -679,7 +680,7 @@ Rol: {request.user.get_role_display()}
 Área: {getattr(request.user, 'area', 'No especificada')}
 ID del Pedido: {pedido.id}
 Estado: {estado}
-Fecha: {pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else 'N/D'}
+Fecha: {localtime(pedido.fecha_pedido).strftime('%d/%m/%Y %H:%M') if pedido.fecha_pedido else 'N/D'}
 
 Detalle de productos:
 {chr(10).join([f"- {pp.producto.nombre} x {pp.cantidad} (Lugar: {pp.lugar})" for pp in PedidoProducto.objects.filter(pedido=pedido)])}

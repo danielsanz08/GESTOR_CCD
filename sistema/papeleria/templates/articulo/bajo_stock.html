@@ -93,12 +93,16 @@
         <span class="disabled">Anterior</span>
     {% endif %}
 
+    <!-- Número de página actual -->
+    <span class="current-page">Página {{ articulos.number }} de {{ articulos.paginator.num_pages }}</span>
+
     {% if articulos.has_next %}
         <a href="?page={{ articulos.next_page_number }}{{ query_params }}">Siguiente</a>
     {% else %}
         <span class="disabled">Siguiente</span>
     {% endif %}
 </div>
+
 
 
 </section>

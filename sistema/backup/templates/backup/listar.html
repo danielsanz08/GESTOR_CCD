@@ -96,7 +96,7 @@
                 &laquo; Anterior
             </a>
             {% else %}
-            <span class="page-link disabled">&laquo; Anterior</span>
+            <span class="page-link disabled" aria-disabled="true">&laquo; Anterior</span>
             {% endif %}
 
             {% if backups.has_next %}
@@ -104,12 +104,13 @@
                 Siguiente &raquo;
             </a>
             {% else %}
-            <span class="page-link disabled">Siguiente &raquo;</span>
+            <span class="page-link disabled" aria-disabled="true">Siguiente &raquo;</span>
             {% endif %}
         </div>
-<style>
-    
-</style>
+
+        <style>
+
+        </style>
 
 </section>
 {% endblock %}

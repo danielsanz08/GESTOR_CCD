@@ -313,26 +313,32 @@
     </table>
 
     <div class="pagination" id="pag">
-        {% if pedidos.has_previous %}
-            <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link" aria-label="Previous">
-                <span aria-hidden="true">&laquo; Anterior</span>
-            </a>
-        {% endif %}
-        
-        {% for num in pedidos.paginator.page_range %}
-            {% if pedidos.number == num %}
-                <span class="current-page active">{{ num }}</span>
-            {% else %}
-                <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-        
-        {% if pedidos.has_next %}
-            <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link" aria-label="Next">
-                <span aria-hidden="true">Siguiente &raquo;</span>
-            </a>
-        {% endif %}
-    </div>
+    {% if pedidos.has_previous %}
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link" aria-label="Previous">
+            <span aria-hidden="true">&laquo; Anterior</span>
+        </a>
+    {% else %}
+        <span class="page-link disabled" aria-label="Previous">
+            <span aria-hidden="true">&laquo; Anterior</span>
+        </span>
+    {% endif %}
+    
+    <!-- Mostrar número de página actual -->
+    <span class="current-page active">
+        Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}
+    </span>
+    
+    {% if pedidos.has_next %}
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link" aria-label="Next">
+            <span aria-hidden="true">Siguiente &raquo;</span>
+        </a>
+    {% else %}
+        <span class="page-link disabled" aria-label="Next">
+            <span aria-hidden="true">Siguiente &raquo;</span>
+        </span>
+    {% endif %}
+</div>
+
 </section>
 {% endif %}
 

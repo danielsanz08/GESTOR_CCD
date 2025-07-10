@@ -184,12 +184,16 @@
         <span class="disabled">Anterior</span>
     {% endif %}
 
+    <!-- Número de página actual -->
+    <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+
     {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}">Siguiente</a>
     {% else %}
         <span class="disabled">Siguiente</span>
     {% endif %}
 </div>
+
 
 </section>
 

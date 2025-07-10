@@ -154,13 +154,13 @@
     {% if productos.has_previous %}
         <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
-        <span class="page-link disabled">Anterior</span>
+        <span class="page-link disabled" aria-disabled="true">Anterior</span>
     {% endif %}
 
     {% if productos.has_next %}
         <a href="?page={{ productos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
     {% else %}
-        <span class="page-link disabled">Siguiente</span>
+        <span class="page-link disabled" aria-disabled="true">Siguiente</span>
     {% endif %}
 </div>
 

@@ -205,12 +205,16 @@
         <span class="step-links disabled">Anterior</span>
     {% endif %}
 
+    <!-- Número de página actual -->
+    <span class="current-page step-links">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+
     {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="step-links">Siguiente</a>
     {% else %}
         <span class="step-links disabled">Siguiente</span>
     {% endif %}
 </div>
+
 
 </section>
 

@@ -90,7 +90,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="paginacion" id="pag">
+  <div class="paginacion" id="pag">
     {% if productos.has_previous %}
         <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% endif %}
@@ -107,7 +107,6 @@
         <a href="?page={{ productos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
     {% endif %}
 </div>
-
 </section>
 <script>
     document.querySelector('.print').addEventListener('click', function () {

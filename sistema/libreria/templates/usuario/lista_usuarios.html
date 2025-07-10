@@ -95,20 +95,22 @@
         </tbody>
     </table>
 </div>
-    <div class="paginacion" id="pag">
+<div class="paginacion" id="pag">
     {% if usuarios.has_previous %}
-        <a href="?page={{ usuarios.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Anterior</a>
+        <a href="?page={{ usuarios.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}%}">Anterior</a>
     {% else %}
         <span class="disabled">Anterior</span>
     {% endif %}
 
+    <!-- Número de página actual -->
+    <span class="current-page">Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
+
     {% if usuarios.has_next %}
-        <a href="?page={{ usuarios.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Siguiente</a>
+        <a href="?page={{ usuarios.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}%}">Siguiente</a>
     {% else %}
         <span class="disabled">Siguiente</span>
     {% endif %}
 </div>
-
 
     <!-- Modales para permisos -->
     {% for usuario in usuarios %}

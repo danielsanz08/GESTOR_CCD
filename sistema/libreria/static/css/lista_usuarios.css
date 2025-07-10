@@ -441,6 +441,16 @@ td {
   font-weight: bold;
 }
 
+/* NUEVO: Estilo para botones deshabilitados */
+.paginacion .disabled {
+  color: #999;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
 .modal-custom {
   display: none;
   position: fixed;

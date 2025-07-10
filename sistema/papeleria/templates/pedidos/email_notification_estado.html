@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Estado de Pedido Actualizado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
+        }
+        .info-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .articulo-item {
+            margin-left: 15px;
+        }
+        .estado-confirmado {
+            color: #28a745;
+        }
+        .estado-cancelado {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD" class="logo">
+        <h2>Notificación de Estado de Pedido - Papelería</h2>
+    </div>
+    
+    <div class="content">
+        <p>Hola {{ usuario.username }},</p>
+        
+        <p>El estado de tu pedido en el sistema de Papelería ha sido actualizado:</p>
+        
+        <p><span class="info-label">ID del Pedido:</span> {{ pedido.id }}</p>
+        <p><span class="info-label">Nuevo Estado:</span> 
+            <span class="estado-{{ pedido.estado|lower }}">{{ pedido.estado }}</span>
+        </p>
+        <p><span class="info-label">Fecha de actualización:</span> {{ fecha_pedido }}</p>
+        
+        {% if pedido.estado == 'Cancelado' and pedido.motivo_cancelacion %}
+        <p><span class="info-label">Motivo de cancelación:</span> {{ pedido.motivo_cancelacion }}</p>
+        {% endif %}
+        
+        <p><span class="info-label">Detalle de artículos:</span></p>
+        <ul>
+            {% for articulo in articulos %}
+                <li class="articulo-item">
+                    {{ articulo.cantidad }} {{ articulo.articulo.nombre }} de Tipo: {{ articulo.tipo }}
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <p>Puedes verificar el estado de tu pedido en cualquier momento en el sistema.</p>
+    </div>
+    
+    <div class="footer">
+        <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+        <p>© {% now "Y" %} Gestor CCD. Todos los derechos reservados.</p>
+    </div>
+</body>
+</html>

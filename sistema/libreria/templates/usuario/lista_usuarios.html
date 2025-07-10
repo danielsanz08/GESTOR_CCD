@@ -96,20 +96,19 @@
     </table>
 </div>
     <div class="paginacion" id="pag">
-        {% if usuarios.has_previous %}
+    {% if usuarios.has_previous %}
         <a href="?page={{ usuarios.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Anterior</a>
-        {% endif %}
-        {% for num in usuarios.paginator.page_range %}
-            {% if usuarios.number == num %}
-                <span class="current">{{ num }}</span>
-            {% else %}
-                <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-        {% if usuarios.has_next %}
+    {% else %}
+        <span class="disabled">Anterior</span>
+    {% endif %}
+
+    {% if usuarios.has_next %}
         <a href="?page={{ usuarios.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Siguiente</a>
-        {% endif %}
-    </div>
+    {% else %}
+        <span class="disabled">Siguiente</span>
+    {% endif %}
+</div>
+
 
     <!-- Modales para permisos -->
     {% for usuario in usuarios %}

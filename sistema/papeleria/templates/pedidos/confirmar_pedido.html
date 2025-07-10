@@ -233,22 +233,19 @@
     </table>
 
     <div class="paginacion" id="pag">
-        {% if pedidos.has_previous %}
+    {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
-        {% endif %}
+    {% else %}
+        <span class="page-link disabled">Anterior</span>
+    {% endif %}
 
-        {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-        <span class="current-page">{{ num }}</span>
-        {% else %}
-        <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
-        {% endif %}
-        {% endfor %}
-
-        {% if pedidos.has_next %}
+    {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
-        {% endif %}
-    </div>
+    {% else %}
+        <span class="page-link disabled">Siguiente</span>
+    {% endif %}
+</div>
+
 </section>
 
 <!-- Contenedor del Modal -->

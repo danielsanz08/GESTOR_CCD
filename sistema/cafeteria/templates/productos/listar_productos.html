@@ -150,24 +150,20 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <div class="paginacion" id="pag">
+<div class="paginacion" id="pag">
     {% if productos.has_previous %}
         <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
+    {% else %}
+        <span class="page-link disabled">Anterior</span>
     {% endif %}
-    
-    {% for num in productos.paginator.page_range %}
-        {% if productos.number == num %}
-            <span class="current-page">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-    
+
     {% if productos.has_next %}
         <a href="?page={{ productos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
+    {% else %}
+        <span class="page-link disabled">Siguiente</span>
     {% endif %}
 </div>
+
 
     <div id="modoEliminar" class="modal" style="display: none;">
         <div class="modal-contenido">

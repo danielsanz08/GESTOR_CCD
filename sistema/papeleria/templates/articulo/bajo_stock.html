@@ -86,23 +86,20 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="paginacion" id="pag">
+   <div class="paginacion" id="pag">
     {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}{{ query_params }}">Anterior</a>
+    {% else %}
+        <span class="disabled">Anterior</span>
     {% endif %}
-    
-    {% for num in articulos.paginator.page_range %}
-        {% if articulos.number == num %}
-            <span class="current">{{ num }}</span>
-        {% else %}
-            <a href="?page={{ num }}{{ query_params }}">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-    
+
     {% if articulos.has_next %}
         <a href="?page={{ articulos.next_page_number }}{{ query_params }}">Siguiente</a>
+    {% else %}
+        <span class="disabled">Siguiente</span>
     {% endif %}
 </div>
+
 
 </section>
 {% endblock %}

@@ -9,38 +9,7 @@ Crear usuario papelería
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-    /* Estilos para mensajes de error */
-    .error-nombre,
-    .error-cargo,
-    .error-email,
-    .error-password {
-        color: #e74c3c;
-        font-size: 13px;
-        margin-top: 5px;
-        min-height: 18px;
-    }
     
-    /* Estilos para la fortaleza de contraseña */
-    .password-strength-container {
-        position: relative;
-        margin-top: 10px;
-    }
-    .strength-meter {
-        height: 5px;
-        background-color: #ecf0f1;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-bottom: 5px;
-    }
-    .strength-meter-fill {
-        height: 100%;
-        width: 0%;
-        transition: width 0.3s ease, background-color 0.3s ease;
-    }
-    .password-feedback {
-        font-size: 13px;
-        min-height: 18px;
-    }
 </style>
 
 <div class="fondo">
@@ -105,6 +74,10 @@ Crear usuario papelería
                 </button>
             </div>
             <div id="error_password" class="error-password"></div>
+            <div id="verification-indicator" class="verification-indicator">
+                <div class="spinner"></div>
+                <span>Verificando contraseña...</span>
+            </div>
             <div id="password-strength-container" class="password-strength-container">
                 <div class="strength-meter">
                     <div class="strength-meter-fill" id="strength-meter-fill"></div>
@@ -130,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const strengthMeter = document.getElementById('strength-meter-fill');
     const passwordFeedback = document.getElementById('password-feedback');
     const passwordStrengthContainer = document.getElementById('password-strength-container');
+    const verificationIndicator = document.getElementById('verification-indicator');
     
     // Elementos de error
     const errorUsername = document.getElementById('error_username');
@@ -230,12 +204,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Mostrar indicador de verificación
+    function showVerificationIndicator() {
+        verificationIndicator.classList.add('show');
+        passwordStrengthContainer.style.display = 'none';
+        errorPassword.textContent = '';
+    }
+
+    // Ocultar indicador de verificación
+    function hideVerificationIndicator() {
+        verificationIndicator.classList.remove('show');
+    }
+
     // Verificar si la contraseña ya existe
     function verifyPasswordExists(password) {
         if (password.length < 8) {
+            hideVerificationIndicator();
             passwordStrengthContainer.style.display = 'block';
             return Promise.resolve(false);
         }
+        
+        // Mostrar indicador de verificación
+        showVerificationIndicator();
         
         return fetch(`/verificar_password/?password=${encodeURIComponent(password)}`)
             .then(res => {
@@ -243,6 +233,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return res.json();
             })
             .then(data => {
+                hideVerificationIndicator();
+                
                 if (data.password_existe) {
                     errorPassword.textContent = data.mensaje;
                     passwordStrengthContainer.style.display = 'none';
@@ -253,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             })
             .catch(error => {
+                hideVerificationIndicator();
                 console.error('Error al verificar contraseña:', error);
                 errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
                 passwordStrengthContainer.style.display = 'none';
@@ -271,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (strength < 3) {
                 errorPassword.textContent = 'Contraseña débil: ' + feedback.join(', ');
                 passwordStrengthContainer.style.display = 'block';
+                hideVerificationIndicator();
                 validateForm();
                 return;
             }

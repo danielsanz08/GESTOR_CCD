@@ -50,6 +50,36 @@
         left: 5vh;
     }
 
+    /* Estilos para el indicador de verificación */
+    .verification-indicator {
+        display: none;
+        color: #3498db;
+        font-size: 0.9rem;
+        position: absolute;
+        top: 5vh;
+        left: 5vh;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .verification-indicator.show {
+        display: flex;
+    }
+    
+    .spinner {
+        border: 2px solid #ecf0f1;
+        border-top: 2px solid #3498db;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     button[type="submit"] {
         transition: background-color 0.3s, color 0.3s;
         position: absolute;
@@ -83,6 +113,10 @@
             <input type="password" name="old_password" id="old_password" class="form-input0" required
                 placeholder="Digite su actual contraseña">
             <div class="error-old"></div>
+            <div id="verification-indicator" class="verification-indicator">
+                <div class="spinner"></div>
+                <span>Verificando contraseña...</span>
+            </div>
         </div>
 
         <div class="mb-3" id="new1-group" style="display: none;">
@@ -112,6 +146,7 @@
     const new1Group = document.getElementById("new1-group");
     const new2Group = document.getElementById("new2-group");
     const submitBtn = document.getElementById("submit-btn");
+    const verificationIndicator = document.getElementById("verification-indicator");
 
     const errorOld = document.querySelector(".error-old");
     const errorNew1 = document.querySelector(".error-new1");
@@ -149,6 +184,17 @@
         element.classList.remove("success-match", "loading");
     }
 
+    // Mostrar indicador de verificación
+    function showVerificationIndicator() {
+        verificationIndicator.classList.add('show');
+        clearError(errorOld);
+    }
+
+    // Ocultar indicador de verificación
+    function hideVerificationIndicator() {
+        verificationIndicator.classList.remove('show');
+    }
+
     function updateSubmitButton() {
         if (isOldPasswordValid && isNewPassword1Valid && isNewPassword2Valid) {
             submitBtn.disabled = false;
@@ -164,7 +210,8 @@
             return;
         }
 
-        showLoading(errorOld, "Verificando contraseña...");
+        // Mostrar indicador de verificación
+        showVerificationIndicator();
         
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
@@ -185,6 +232,9 @@
             return response.json();
         })
         .then(data => {
+            // Ocultar indicador de verificación
+            hideVerificationIndicator();
+            
             console.log('Respuesta del servidor:', data); // Debug
             
             if (data.valida) {
@@ -206,6 +256,9 @@
             updateSubmitButton();
         })
         .catch(error => {
+            // Ocultar indicador de verificación
+            hideVerificationIndicator();
+            
             console.error('Error completo:', error);
             showError(errorOld, "Error al verificar la contraseña - Revisa la consola");
             isOldPasswordValid = false;
@@ -224,6 +277,9 @@
         if (verificationTimeout) {
             clearTimeout(verificationTimeout);
         }
+        
+        // Ocultar indicador si se está escribiendo
+        hideVerificationIndicator();
         
         if (!validatePassword(password)) {
             showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 6 caracteres.");

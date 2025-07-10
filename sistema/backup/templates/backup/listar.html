@@ -25,7 +25,7 @@
 
         <!-- Botones principales -->
         <div class="Botones">
-            <a href="{% url 'backup:crear_backup' %}" >
+            <a href="{% url 'backup:crear_backup' %}">
                 <button class="crear" title="Crear copia de seguridad"><i class="fas fa-plus-circle me-2"></i></button>
             </a>
             <a href="{% url 'backup:exportar_backup' %}">
@@ -90,29 +90,26 @@
         </table>
 
         <!-- Paginación -->
-       <div class="pagination" id="pag">
-    {% if backups.has_previous %}
-        <a href="?page={{ backups.previous_page_number }}{{ query_params }}" class="page-link">
-            &laquo; Anterior
-        </a>
-    {% endif %}
-    
-    {% for num in backups.paginator.page_range %}
-        {% if num > backups.number|add:-3 and num < backups.number|add:3 %}
-            {% if backups.number == num %}
-                <span class="current-page active">{{ num }}</span>
+        <div class="pagination" id="pag">
+            {% if backups.has_previous %}
+            <a href="?page={{ backups.previous_page_number }}{{ query_params }}" class="page-link">
+                &laquo; Anterior
+            </a>
             {% else %}
-                <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
+            <span class="page-link disabled">&laquo; Anterior</span>
             {% endif %}
-        {% endif %}
-    {% endfor %}
+
+            {% if backups.has_next %}
+            <a href="?page={{ backups.next_page_number }}{{ query_params }}" class="page-link">
+                Siguiente &raquo;
+            </a>
+            {% else %}
+            <span class="page-link disabled">Siguiente &raquo;</span>
+            {% endif %}
+        </div>
+<style>
     
-    {% if backups.has_next %}
-        <a href="?page={{ backups.next_page_number }}{{ query_params }}" class="page-link">
-            Siguiente &raquo;
-        </a>
-    {% endif %}
-</div>
+</style>
 
 </section>
 {% endblock %}

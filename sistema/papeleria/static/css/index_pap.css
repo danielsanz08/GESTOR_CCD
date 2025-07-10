@@ -1,10 +1,8 @@
 /* Reset y estilos base */
 html, body {
+    margin: 0;
+    padding: 0;
     background-color: #1c96bb1c;
-}
-
-
-body {
     color: #333;
     font-family: 'Roboto', sans-serif;
     min-height: 100vh;
@@ -28,36 +26,36 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Grid de 3 columnas con 3 cards cada una */
-.main-cards {
+/* Grid de tarjetas */
+.main-cards,
+.main-cards_empleado,
+.main-cards_admin {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     justify-content: center;
     padding: 0 1rem;
-    
-
 }
+
+.main-cards {
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .main-cards_empleado {
-    display: grid;
     grid-template-columns: repeat(3, 2fr);
     gap: 5.5rem;
-    justify-content: center;
-    padding: 0 1rem;
     margin-top: 10vh;
 }
+
 .main-cards_admin {
-    display: grid;
     grid-template-columns: repeat(2, 2fr);
     gap: 5.5rem;
-    justify-content: center;
-    padding: 0 1rem;
     margin-top: 10vh;
 }
-/* Cards principales */
+
+/* Estilo de cada tarjeta */
 .main-card {
-   background: linear-gradient(110deg, #c7def893, #ffffffe8);
-    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
     padding: 1.5rem;
     border-radius: 10px;
@@ -99,10 +97,7 @@ body {
 /* Ventanas emergentes */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     display: none;
     align-items: center;
@@ -199,10 +194,26 @@ body {
     font-weight: 500;
 }
 
-/* Responsive */
+/* Responsive design */
 @media (max-width: 1024px) {
     .main-cards {
         grid-template-columns: repeat(2, 1fr);
+        
+        height: 65vh;
+        overflow: hidden;
+        overflow-y: scroll;
+        position: absolute;
+        top: 20vh;
+        width: 50vh;
+    }
+
+    .main-cards_empleado {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .main-cards_admin {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -212,17 +223,17 @@ body {
         padding: 1rem;
     }
 
-    .main-cards {
-        grid-template-columns: 2, 1fr;
-        
-        overflow: auto;
-        margin-top: 100px;
+    .main-cards,
+    .main-cards_empleado,
+    .main-cards_admin {
+        grid-template-columns: 1fr;
+        margin-top: 5vh;
     }
 
     .main-card {
+        max-width: 100%;
+        min-height: 100px;
         padding: 1.25rem;
-        min-height: 120px;
-        max-width: 170px;
     }
 
     .main-card-icon {

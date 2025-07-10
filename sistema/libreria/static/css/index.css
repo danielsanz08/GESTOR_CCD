@@ -118,9 +118,9 @@ body {
   }
   
   .registrate {
-    position: absolute;
+    position: static;
     top: 25vh;
-    left: 45vh;
+    left: 43vh;
     animation: fadeIn 1s ease-out 1.5s forwards;
     opacity: 0;
     z-index: 10;

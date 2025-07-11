@@ -9,13 +9,13 @@ html {
     justify-content: center;
     align-items: center;
     background-color: #80808000;
-    /* Gris de fondo si la imagen no carga */
 }
 
 html,
 body {
     background-color: #86cfe61c;
 }
+
 .formulario {
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
@@ -29,13 +29,13 @@ body {
     min-width: 600px;
     min-height: 430px;
     max-height: 430px;
-    /* Added to limit maximum height */
     margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 #userForm {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -44,8 +44,8 @@ body {
     box-sizing: border-box;
     width: 100%;
     height: 290px;
-
 }
+
 input,
 .form-select {
     min-height: 1rem;
@@ -65,6 +65,7 @@ label {
     margin-bottom: 0.25rem;
     display: block;
 }
+
 #btn {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
@@ -79,36 +80,67 @@ label {
     margin-top: 230px;
     margin-left: 410px;
 }
+
 #btn:hover {
     background-color: rgb(33, 74, 187);
     color: rgb(255, 255, 255);
 }
+
 h2 {
     text-align: center;
     font-size: max(1.5rem, 20px);
     margin: 1rem 0;
 }
-.error-message{
+
+.error-message {
     color: red;
     font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
 }
-.verification-indicator{
+
+.verification-indicator {
     color: blue;
     font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    display: none;
 }
+
+.verification-indicator.show {
+    display: block;
+}
+
 .password-feedback {
-    color: violet;
+    color: rgb(255, 0, 0);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    font-weight: bold;
 }
+
+.password-feedback.password-ok {
+    color: green;
+    font-weight: bold;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (max-width: 767px) {
     .formulario {
         width: 95vw;
         min-width: 90vw;
         max-width: 95vw;
-        min-height: 70vh;
+        min-height: 65vh;
         max-height: none;
         margin-top: 10vh;
         padding: 1rem 1rem 1rem 1rem;
-        background-color: red;
+        
         overflow: hidden;
         overflow-y: scroll;
     }
@@ -119,7 +151,6 @@ h2 {
         gap: 1rem;
         padding: 1rem 1rem 1rem 1rem;
         height: 85vw;
-        
         overflow: hidden;
         overflow-y: scroll;
     }
@@ -139,88 +170,76 @@ h2 {
         max-width: unset;
     }
 
-    #togglePassword {
-        display: none;
-        
-    }
-
-    #eye {
-        position: relative;
-        bottom: 0;
-        right: 0;
-    }
-
-    .error-password,
+    .error-message,
     .verification-indicator,
     .password-feedback {
         position: static;
         text-align: center;
-        margin-top: 0.5rem;
+        margin-top: 0.25rem;
     }
 }
-/* Tablets (768px — 1024px) - Single-column layout with two-column userForm */
+
 @media (min-width: 768px) and (max-width: 1024px) {
-    .formulario {
-        width: 95vw;
-        min-width: 70vw;
-        max-width: 70vw;
-        min-height: 50vh;
-        max-height: 80vh; /* Limit max-height to fit within reduced viewport */
-        margin: 5vh auto; /* Center form with reduced top margin */
-        padding: 1rem;
-        background-color: red;
-        box-sizing: border-box; /* Ensure padding doesn't affect width */
-        overflow-y: auto; /* Allow scrolling if content overflows */
-        position: relative; /* Ensure proper positioning within viewport */
-    }
+   .formulario {
+       width: 85vw;
+       min-width: 75vw;
+       max-width: 85vw;
+       min-height: 60vh;
+       max-height: 85vh;
+       margin: 2vh auto;
+       padding: 1.5rem;
+       box-sizing: border-box;
+       overflow-y: auto;
+       position: relative;
+   }
 
-    #userForm {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Two equal-width columns */
-        gap: 1rem;
-        padding: 1rem;
-        width: 100%; /* Full width of parent container */
-        min-height: 40vh; /* Ensure form fits within viewport */
-        max-height: 70vh; /* Limit height to avoid being cut off */
-        background-color: violet;
-        overflow-y: auto; /* Allow scrolling within form if needed */
-        box-sizing: border-box;
-    }
+   #userForm {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 1.5rem;
+       padding: 1.5rem;
+       width: 100%;
+       min-height: 50vh;
+       max-height: 75vh;
+       overflow-y: auto;
+       box-sizing: border-box;
+   }
 
-    input,
-    .form-select {
-        width: 100%;
-        max-width: 100%;
-        height: 5vh; /* Reduced height to prevent overflow with keyboard */
-        box-sizing: border-box;
-    }
+   input,
+   .form-select {
+       width: 100%;
+       max-width: 100%;
+       height: 6vh;
+       box-sizing: border-box;
+       font-size: 1rem;
+   }
 
-    #btn {
-        position: static;
-        margin: 1rem auto; /* Center button with consistent margin */
-        width: 20vh;
-        
-        max-width: 200px; /* Prevent button from being too wide */
-        grid-column: span 2; /* Ensure button spans both columns */
-    }
+   label {
+       font-size: 1.1rem;
+   }
 
-    #togglePassword {
-        display: none; /* Hide toggle if not needed */
-    }
+   h2 {
+       font-size: 1.8rem;
+       margin: 0.5rem 0;
+   }
 
-    #eye {
-        position: absolute; /* Position relative to input */
-        bottom: 1.5vh; /* Adjust to align with input */
-        right: 1rem;
-    }
+   #btn {
+       position: static;
+       margin: 0.5rem auto;
+       width: 25vh;
+       height: 50px;
+       max-width: 250px;
+       grid-column: span 2;
+       font-size: 1.1rem;
+   }
 
-    .error-password,
-    .verification-indicator,
-    .password-feedback {
-        position: static;
-        text-align: center;
-        margin-top: 0.5rem;
-        font-size: 0.9rem; /* Slightly smaller font for better fit */
-        grid-column: span 2; /* Ensure feedback spans both columns */
-    }
+   .error-message,
+   .verification-indicator,
+   .password-feedback {
+       position: static;
+       text-align: center;
+       margin-top: 0.5rem;
+       font-size: 1rem;
+       grid-column: span 2;
+   }
 }

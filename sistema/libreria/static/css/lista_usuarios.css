@@ -10,35 +10,27 @@ section {
   border: 2px solid rgba(2, 47, 90, 0.63);
   position: fixed;
   top: 23vh;
-  /* Opcional: Cambiar a px si quieres posición fija */
   left: 9vh;
-  /* Opcional: Cambiar a px si quieres posición fija */
   text-align: center;
   padding: 10px 20px 20px 20px;
-  border-radius: 20px;
+  border-radius: 10px;
   min-height: 415px;
   max-height: 385px;
   min-width: 1260px;
   max-width: 1200px;
-
   box-sizing: border-box;
-  /* Evita que el padding afecte el ancho/alto */
 }
-
 
 .buscador {
   background-color: #ffffff;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: absolute;
   left: 130px;
   width: 320px !important;
-  /* Ancho fijo (no se escala con zoom) */
   height: 25px !important;
-  /* Altura fija (antes 3.5vh) */
   box-sizing: border-box;
-  /* Evita que padding/border afecten el tamaño */
 }
 
 #filtro-fechas {
@@ -47,11 +39,26 @@ section {
   top: 80px;
 }
 
-.fecha_inicio,
+.fecha_inicio {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100px;
+  height: 7px;
+  left: -15px;
+}
+.desde{
+  position: relative;
+  left: -20px;
+}
 .fecha_fin {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
+  border-radius: 10px;
   background-color: #fff;
   color: #000;
   outline: none;
@@ -59,9 +66,7 @@ section {
   width: 100px;
   height: 7px;
   left: 15px;
-
 }
-
 .fecha_inicio:hover,
 .fecha_fin:hover {
   border-color: #1e90ff;
@@ -76,7 +81,7 @@ section {
 .search-date {
   background-color: #0056b3;
   color: rgb(0, 0, 0);
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -96,7 +101,7 @@ section {
 .btn-search {
   background-color: #0056b3;
   color: rgb(0, 0, 0);
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -105,8 +110,6 @@ section {
   width: 60px;
   height: 25px;
   text-align: center;
-
-  /* Centrado con Flexbox */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -129,7 +132,7 @@ section {
 .clean {
   background-color: #b30000;
   color: rgb(0, 0, 0);
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -155,7 +158,7 @@ section {
   border: none;
   width: 60px;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   position: absolute;
   top: 33px;
   right: 190px;
@@ -174,7 +177,7 @@ section {
   border: none;
   width: 60px;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   position: absolute;
   top: 33px;
   right: 115px;
@@ -193,7 +196,7 @@ section {
   border: none;
   width: 60px;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   position: absolute;
   top: 33px;
   right: 265px;
@@ -206,15 +209,21 @@ section {
   color: white;
 }
 
-table {
-  width: 1155px;
-  border-spacing: 8px;
+.tabla-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
   position: absolute;
   top: 120px;
   left: 50px;
-
+  width: 1155px;
+  max-height: 240px;
 }
 
+table {
+  width: 100%;
+  border-spacing: 8px;
+  min-width: 900px;
+}
 
 .id,
 .nombre,
@@ -229,7 +238,6 @@ table {
   left: 160px;
   background-color: rgba(43, 116, 226, 0.616);
   border-radius: 10px;
-
 }
 
 td {
@@ -240,20 +248,17 @@ td {
   height: 30px;
   align-items: center;
   padding: 5px 0 5px 0;
-
 }
 
 .cl-toggle-switch {
   position: relative;
 }
 
-/* Switch Element */
 .cl-switch {
   position: relative;
   display: inline-block;
 }
 
-/* Input */
 .cl-switch>input {
   appearance: none;
   -moz-appearance: none;
@@ -275,7 +280,6 @@ td {
   transition: opacity 0.3s 0.1s, transform 0.2s 0.1s;
 }
 
-/* Track */
 .cl-switch>span::before {
   content: "";
   display: inline-block;
@@ -288,7 +292,6 @@ td {
   transition: background-color 0.2s, opacity 0.2s;
 }
 
-/* Thumb */
 .cl-switch>span::after {
   content: "";
   position: absolute;
@@ -303,7 +306,6 @@ td {
   cursor: pointer;
 }
 
-/* Checked State */
 .cl-switch>input:checked {
   right: -10px;
   background-color: #85b8b7;
@@ -322,7 +324,6 @@ td {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Hover, Focus */
 .cl-switch:hover>input {
   opacity: 0.04;
 }
@@ -335,7 +336,6 @@ td {
   opacity: 0.16;
 }
 
-/* Active State */
 .cl-switch>input:active {
   opacity: 1;
   transform: scale(0);
@@ -350,7 +350,6 @@ td {
   background-color: #85b8b7;
 }
 
-/* Disabled State */
 .cl-switch>input:disabled {
   opacity: 0;
 }
@@ -373,11 +372,10 @@ td {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   width: 60px;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-right: 1vh;
   cursor: pointer;
   color: rgb(0, 0, 0);
-
 }
 
 .editar-btn:hover {
@@ -392,7 +390,7 @@ td {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   width: 60px;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-right: 1vh;
   cursor: pointer;
   color: rgb(2, 2, 2);
@@ -404,7 +402,6 @@ td {
   color: #ffffff;
 }
 
-/* PAGINACION */
 .paginacion {
   display: flex;
   justify-content: center;
@@ -441,7 +438,6 @@ td {
   font-weight: bold;
 }
 
-/* NUEVO: Estilo para botones deshabilitados */
 .paginacion .disabled {
   color: #999;
   background-color: #f2f2f2;
@@ -450,27 +446,11 @@ td {
   pointer-events: none;
 }
 
-
 .modal-custom {
   display: none;
   position: fixed;
   inset: 0;
-  /* Reemplaza top, left, width y height */
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-/* Modal personalizado */
-.modal-custom {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
@@ -506,7 +486,6 @@ td {
   line-height: 1;
 }
 
-/* Permisos */
 .permiso-item {
   display: flex;
   align-items: center;
@@ -518,7 +497,6 @@ td {
   cursor: pointer;
 }
 
-/* Footer modal */
 .modal-footer-custom {
   margin-top: 20px;
   display: flex;
@@ -564,7 +542,6 @@ td {
   opacity: 0;
   position: absolute;
   top: -35px;
-  /* más arriba para despejar el switch */
   left: 50%;
   transform: translateX(-50%);
   background-color: #222;
@@ -583,117 +560,126 @@ td {
   opacity: 1;
 }
 
+/* =================================== */
+/* RESPONSIVE DESIGN - MOBILE FIRST */
+/* =================================== */
+
+/* Mobile devices (767px and below) */
 @media (max-width: 767px) {
   html {
-    flex-direction: column;
-    align-items: flex-start;
-
-
+    padding: 0;
+    margin: 0;
   }
 
   section {
-    position: absolute;
-    min-width: auto;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-width: 100%;
     max-width: 100%;
-    min-height: 540px;
-    max-height: 640px;
-    padding: 1rem;
-    margin: 1rem auto;
-    width: 120%;
-    left: 0.1vh;
-    top: 16vh;
+    min-height: 100vh;
+    max-height: none;
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
-  /* 🚀 AÑADIDO: contenedor scroll horizontal y vertical */
-  .tabla-scroll {
-    max-width: 100%;
-    max-height: 190px;
-    /* Puedes ajustar la altura visible */
-    margin-top: 130px;
-    overflow-x: auto;
-    overflow-y: auto;
-    display: block;
-    background-color: red;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-
+  /* Header con título */
+  h1 {
+    font-size: 1.5rem;
+    margin: 10px 0;
   }
 
-
-  /* Asegura que la tabla se mantenga en tamaño real */
-  .tabla-scroll table {
-    width: max-content;
-    min-width: 600px;
-    /* o el ancho mínimo deseado */
-    position: static;
-    border-collapse: collapse;
-  }
-
+  /* Reorganizar búsqueda y filtros */
   .buscador {
-    max-width: 30vh;
-    position: absolute;
-
-    left: 30px;
-  }
-.td_fecha,
-.td_area,
-.td_email,
-.td_nombre,
-.td_id{
-    left: 4px;
-}
-  .search-date {
-    position: absolute;
-    left: 35vh;
-    top: 10.5vh;
-  }
-
-  #filtro-fechas {
-    position: static;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-
-  }
-
-  .desde {
-    position: absolute;
-    top: 16vh;
-  }
-
-  .hasta {
-    position: absolute;
-    top: 16vh;
-    right: 17vh;
-  }
-
-  .fecha_inicio {
-    position: absolute;
-    width: 20%;
-    height: 10px;
-    top: 15vh;
-    left: 9vh;
-  }
-
-  .fecha_fin {
-    position: absolute;
-    width: 20%;
-    height: 10px;
-    top: 15vh;
-    left: 32vh;
-  }
-
-  .clean {
     position: absolute;
     top: 20vh;
-    left: 15vh;
+    left: 10px;
+    width: 80% !important;
+    margin-bottom: 10px;
+    height: 35px !important;
   }
 
   .btn-search {
-    position: absolute;
-    top: 20vh;
-    left: 25vh;
+    position: relative;
+    left: 292px;
+    top: 11.5vh;
+    width: 15%;
+    height: 35px;
+    margin: 5px 0;
+
+  }
+
+  #filtro-fechas {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+    background-color: rgba(0, 128, 0, 0);
+  }
+
+  .desde {
+    position: relative;
+    top: 110px;
+    left: -140px;
+    font-weight: bold;
+  }
+
+  .hasta {
+    position: relative;
+    top: 47px;
+    left: 35px;
+    font-weight: bold;
+  }
+
+  .fecha_inicio {
+    position: relative;
+    top: 75px;
+    width: 80px;
+    background-color: #00000000;
+    left: 60px;
+  }
+
+  .fecha_fin {
+    background-color: #00000000;
+    position: relative;
+    top: 10px;
+    width: 80px;
+    left: 230px;
+  }
+
+  .search-date {
+    position: relative;
+    top: 20px;
+    width: 80px;
+    left: 80px;
+
+    
+  }
+
+  .clean {
+     position: relative;
+    left: 180px;
+    top: -15px;
+    width: 80px;
+    
+    margin: 5px 0;
+    
+  }
+
+  /* Botones de acción */
+  .Botones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
   }
 
   .print,
@@ -702,27 +688,276 @@ td {
     display: none;
   }
 
-
- 
-
-  .paginacion a,
-  .paginacion span {
+ /* Tabla responsive */
+.tabla-scroll {
+    min-width: 30px;
+    max-width: 330px;
+    overflow: hidden;
+    overflow-x: scroll;
+    
     position: relative;
-    top: 390px;
+    top: -15px;
+    left: 1px;
+    
+}
+
+  table {
+    min-width: 800px;
+    width: 800px;
+    border-spacing: 4px;
   }
 
-  .modal-content-custom {
-    width: 100%;
-    padding: 10px;
+  th,
+  td {
+    padding: 8px 4px;
+    font-size: 12px;
+    min-width: 50px;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .editar-btn,
   .permisos-btn {
-    width: 100%;
-    margin-bottom: 0.5rem;
+    width: 40px;
+    height: 30px;
+    font-size: 12px;
+    margin: 0 2px;
+  }
+
+  /* Paginación */
+  .paginacion {
+    position: relative;
+    top: 20px;
+    left: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .paginacion a,
+  .paginacion span {
+    position: relative;
+    top: 0;
+    padding: 0.3rem 0.6rem;
+    font-size: 14px;
+  }
+
+  /* Modal responsive */
+  .modal-content-custom {
+    width: 95%;
+    max-width: 350px;
+    margin: 10px;
+  }
+
+  .modal-header-custom h5 {
+    font-size: 16px;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 8px 12px;
+    font-size: 14px;
   }
 }
 
+/* Tablet devices (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+   html {
+    padding: 0;
+    margin: 0;
+  }
 
-/* Responsive */
-@media (max-width: 1024px) {}
+  section {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    max-height: none;
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* Header con título */
+  h1 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+  }
+
+  /* Reorganizar búsqueda y filtros */
+  .buscador {
+    position: relative;
+    top: 90px;
+    left: -60px;
+    width: 60% !important;
+    margin-bottom: 10px;
+    height: 35px !important;
+  }
+
+  .btn-search {
+    position: relative;
+    left: 595px;
+    top: 40px;
+    width: 15%;
+    height: 35px;
+    margin: 5px 0;
+
+  }
+
+  #filtro-fechas {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+    background-color: rgba(0, 128, 0, 0);
+  }
+
+  .desde {
+    position: relative;
+    top: 110px;
+    right: 280px;
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .hasta {
+    position: relative;
+    top: 30px;
+    left: 35px;
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .fecha_inicio {
+    position: relative;
+    top: 67px;
+    width: 80px;
+    height: 20px;
+    background-color: #fdfcfc;
+    left: 160px;
+  }
+
+  .fecha_fin {
+    background-color: #ffffff;
+    position: relative;
+    top: -12px;
+    width: 80px;
+    left: 480px;
+    height: 20px;
+  }
+
+  .search-date {
+    position: relative;
+    top: 20px;
+    width: 80px;
+    left: 270px;
+
+    
+  }
+
+  .clean {
+     position: relative;
+    left: 380px;
+    top: -15px;
+    width: 80px;
+    
+    margin: 5px 0;
+    
+  }
+
+  /* Botones de acción */
+  .Botones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+  }
+
+  .print,
+  .pdf,
+  .excel {
+    display: none;
+  }
+
+ /* Tabla responsive */
+.tabla-scroll {
+    min-width: 30px;
+    max-width: 800px;
+    max-height: 500px;
+    overflow: hidden;
+    overflow-x: scroll;
+    position: relative;
+    top: -15px;
+    left: 3px;
+    
+}
+
+  table {
+    min-width: 800px;
+    width: 800px;
+    border-spacing: 10px;
+  }
+
+  th,
+  td {
+    padding: 8px 4px;
+    font-size: 12px;
+    min-width: 50px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: larger;
+  }
+
+  .editar-btn,
+  .permisos-btn {
+    width: 40px;
+    height: 30px;
+    font-size: 12px;
+    margin: 0 2px;
+  }
+
+  /* Paginación */
+  .paginacion {
+    position: relative;
+    top: 20px;
+    left: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    
+  }
+
+  .paginacion a,
+  .paginacion span {
+    position: relative;
+    top: 0;
+    padding: 0.3rem 0.6rem;
+    font-size: 14px;
+    font-size: larger;
+  }
+
+  /* Modal responsive */
+  .modal-content-custom {
+    width: 95%;
+    max-width: 350px;
+    margin: 10px;
+  }
+
+  .modal-header-custom h5 {
+    font-size: 16px;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 8px 12px;
+    font-size: 14px;
+  }	
+}
+

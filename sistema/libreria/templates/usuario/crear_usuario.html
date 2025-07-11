@@ -8,379 +8,309 @@ Crear usuario papelería
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<div class="fondo">
-    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD" class="logo">
-</div>
-
 <div class="formulario">
-    <h2 class="titulo">Crear Usuario Papeleria</h2>
-    <form id="userForm" method="POST">
-        {% csrf_token %}
+        <h2 class="titulo">Crear Usuario Papeleria</h2>
+        <form id="userForm" method="POST">
+            <div class="form-group">
+                <label for="id_username" class="form-label">Nombre de usuario:</label>
+                <input type="text" id="id_username" name="username" class="form-control" required autocomplete="off"
+                    placeholder="Ingrese su usuario" maxlength="40">
+                <div id="error_username" class="error-message"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="id_username" class="form-label">Nombre de usuario:</label>
-            <input type="text" id="id_username" name="username" class="form-control" required autocomplete="off"
-                placeholder="Ingrese su usuario" maxlength="40">
-            <div id="error_username" class="error-message"></div>
-        </div>
+            <div class="form-group" id="rol">
+                <label for="id_role" class="form-label">Rol:</label>
+                <select id="id_role" name="role" class="form-select" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Empleado">Empleado</option>
+                </select>
+            </div>
 
-        <div class="form-group" id="rol">
-            <label for="id_role" class="form-label">Rol:</label>
-            <select id="id_role" name="role" class="form-select" required>
-                <option value="" disabled selected>Seleccione una opción</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Empleado">Empleado</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="id_cargo" class="form-label">Cargo:</label>
+                <input type="text" id="id_cargo" name="cargo" class="form-control" required autocomplete="off"
+                    placeholder="Ingrese su cargo" maxlength="50">
+                <div id="error_cargo" class="error-message"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="id_cargo" class="form-label">Cargo:</label>
-            <input type="text" id="id_cargo" name="cargo" class="form-control" required autocomplete="off"
-                placeholder="Ingrese su cargo" maxlength="50">
-            <div id="error_cargo" class="error-message"></div>
-        </div>
+            <div class="form-group" id="area">
+                <label for="id_area" class="form-label">Área:</label>
+                <select id="id_area" name="area" class="form-select" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="Administrativa">Administrativa</option>
+                    <option value="Registros públicos">Registros públicos</option>
+                    <option value="Gestión empresarial">Gestión empresarial</option>
+                    <option value="Competitividad">Competitividad</option>
+                    <option value="Presidencia">Presidencia</option>
+                    <option value="Financiera">Financiera</option>
+                </select>
+            </div>
 
-        <div class="form-group" id="area">
-            <label for="id_area" class="form-label">Área:</label>
-            <select id="id_area" name="area" class="form-select" required>
-                <option value="" disabled selected>Seleccione una opción</option>
-                <option value="Administrativa">Administrativa</option>
-                <option value="Registros públicos">Registros públicos</option>
-                <option value="Gestión empresarial">Gestión empresarial</option>
-                <option value="Competitividad">Competitividad</option>
-                <option value="Presidencia">Presidencia</option>
-                <option value="Financiera">Financiera</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="id_email" class="form-label">Correo:</label>
+                <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
+                    placeholder="Ingrese su correo" maxlength="70">
+                <div id="error_email" class="error-message"></div>
+            </div>
 
-        <div class="form-group">
-            <label for="id_email" class="form-label">Correo:</label>
-            <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
-                placeholder="Ingrese su correo" maxlength="70">
-            <div id="error_email" class="error-message"></div>
-        </div>
-
-        <div class="form-group" id="password-group">
-            <label for="id_password" class="form-label">Contraseña:</label>
-            <div class="input-group">
+            <div class="form-group" id="password-group">
+                <label for="id_password" class="form-label">Contraseña:</label>
                 <input type="password" id="id_password" name="password" class="form-control" required
                     autocomplete="new-password" placeholder="Ingrese su contraseña">
-                <button type="button" id="togglePassword" class="toggle-password">
-                    <i class="fas fa-eye"></i>
-                </button>
+                <div id="error_password" class="error-message"></div>
+                <div id="verification-indicator" class="verification-indicator">
+                    Verificando contraseña...
+                </div>
+                <div id="password-feedback" class="password-feedback" aria-live="polite"></div>
             </div>
-            <div id="error_password" class="error-message"></div>
-            <div id="verification-indicator" class="verification-indicator">
-                <div class="spinner"></div>
-                <span>Verificando contraseña...</span>
-            </div>
-            <div id="password-feedback" class="password-feedback" aria-live="polite"></div>
-        </div>
 
-        <button type="submit" id="btn" class="btn">Registrar usuario</button>
-    </form>
-</div>
-<div class="orientation-warning">
-    <div class="warning-content">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p>Por favor, gira tu dispositivo a posición vertical para una mejor experiencia</p>
+            <button type="submit" id="btn" class="btn">Registrar usuario</button>
+        </form>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
-    const form = document.getElementById('userForm');
-    const username = document.getElementById('id_username');
-    const cargo = document.getElementById('id_cargo');
-    const email = document.getElementById('id_email');
-    const password = document.getElementById('id_password');
-    const togglePassword = document.getElementById('togglePassword');
-    const btnSubmit = document.getElementById('btn');
-    const passwordFeedback = document.getElementById('password-feedback');
-    const verificationIndicator = document.getElementById('verification-indicator');
-    
-    // Elementos de error
-    const errorUsername = document.getElementById('error_username');
-    const errorCargo = document.getElementById('error_cargo');
-    const errorEmail = document.getElementById('error_email');
-    const errorPassword = document.getElementById('error_password');
-    
-    // Expresiones regulares
-    const repeatedCharRegex = /(.)\1{2,}/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Mostrar/ocultar contraseña
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.querySelector('i').classList.toggle('fa-eye');
-        this.querySelector('i').classList.toggle('fa-eye-slash');
-    });
-
-    // Validación general del formulario
-    function validateForm() {
-        const isValid = 
-            errorUsername.textContent === '' &&
-            errorCargo.textContent === '' &&
-            errorEmail.textContent === '' &&
-            errorPassword.textContent === '' &&
-            username.value.trim() !== '' &&
-            cargo.value.trim() !== '' &&
-            email.value.trim() !== '' &&
-            password.value.trim() !== '' &&
-            checkPasswordStrength(password.value).strength >= 3;
-        
-        btnSubmit.disabled = !isValid;
-        return isValid;
-    }
-
-    // Verificar fortaleza de la contraseña
-    function checkPasswordStrength(password) {
-        let strength = 0;
-        const feedback = [];
-        
-        if (password.length < 8) {
-            feedback.push("Mínimo 8 caracteres");
-            return { strength: 0, feedback };
-        } else if (password.length >= 12) {
-            strength += 1;
-        }
-        
-        if (/[a-z]/.test(password)) strength += 1;
-        else feedback.push("Incluye minúsculas");
-        
-        if (/[A-Z]/.test(password)) strength += 1;
-        else feedback.push("Incluye mayúsculas");
-        
-        if (/[0-9]/.test(password)) strength += 1;
-        else feedback.push("Incluye números");
-        
-        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-        else feedback.push("Incluye caracteres especiales");
-        
-        if (repeatedCharRegex.test(password)) {
-            strength = Math.max(0, strength - 2);
-            feedback.push("Evita 3 o más caracteres iguales seguidos");
-        }
-        
-        return { strength, feedback };
-    }
-
-    // Actualizar feedback de contraseña
-    function updatePasswordFeedback() {
-        const passwordValue = password.value;
-        const { strength, feedback } = checkPasswordStrength(passwordValue);
-        
-        if (passwordValue.length === 0) {
-            passwordFeedback.textContent = '';
-            passwordFeedback.className = 'password-feedback';
-        } else if (feedback.length > 0) {
-            passwordFeedback.textContent = feedback.join(', ');
-            passwordFeedback.className = 'password-feedback';
-        } else {
-            passwordFeedback.textContent = 'Contraseña segura';
-            passwordFeedback.className = 'password-feedback password-ok';
-        }
-    }
-
-    // Mostrar indicador de verificación
-    function showVerificationIndicator() {
-        verificationIndicator.classList.add('show');
-        errorPassword.textContent = '';
-    }
-
-    // Ocultar indicador de verificación
-    function hideVerificationIndicator() {
-        verificationIndicator.classList.remove('show');
-    }
-
-    // Función de debounce para retrasar la verificación
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    // Verificar si la contraseña ya existe
-    async function verifyPasswordExists(password) {
-        if (password.length < 8) {
-            hideVerificationIndicator();
-            updatePasswordFeedback();
-            return false;
-        }
-        
-        showVerificationIndicator();
-        
-        try {
-            const res = await fetch(`/verificar_password/?password=${encodeURIComponent(password)}`);
-            if (!res.ok) throw new Error('Error en la verificación');
-            const data = await res.json();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const form = document.getElementById('userForm');
+            const username = document.getElementById('id_username');
+            const cargo = document.getElementById('id_cargo');
+            const email = document.getElementById('id_email');
+            const password = document.getElementById('id_password');
+            const btnSubmit = document.getElementById('btn');
+            const passwordFeedback = document.getElementById('password-feedback');
+            const verificationIndicator = document.getElementById('verification-indicator');
             
-            hideVerificationIndicator();
+            // Elementos de error
+            const errorUsername = document.getElementById('error_username');
+            const errorCargo = document.getElementById('error_cargo');
+            const errorEmail = document.getElementById('error_email');
+            const errorPassword = document.getElementById('error_password');
             
-            if (data.password_existe) {
-                errorPassword.textContent = data.mensaje;
-                passwordFeedback.textContent = '';
-                passwordFeedback.className = 'password-feedback';
-                return true;
-            } else {
+            // Expresiones regulares
+            const repeatedCharRegex = /(.)\1{2,}/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Validación general del formulario
+            function validateForm() {
+                const isValid = 
+                    errorUsername.textContent === '' &&
+                    errorCargo.textContent === '' &&
+                    errorEmail.textContent === '' &&
+                    errorPassword.textContent === '' &&
+                    username.value.trim() !== '' &&
+                    cargo.value.trim() !== '' &&
+                    email.value.trim() !== '' &&
+                    password.value.trim() !== '' &&
+                    checkPasswordStrength(password.value).strength >= 3;
+                
+                btnSubmit.disabled = !isValid;
+                return isValid;
+            }
+
+            // Verificar fortaleza de la contraseña
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                const feedback = [];
+                
+                if (password.length < 8) {
+                    feedback.push("Mínimo 8 caracteres");
+                    return { strength: 0, feedback };
+                } else if (password.length >= 12) {
+                    strength += 1;
+                }
+                
+                if (/[a-z]/.test(password)) strength += 1;
+                else feedback.push("Incluye minúsculas");
+                
+                if (/[A-Z]/.test(password)) strength += 1;
+                else feedback.push("Incluye mayúsculas");
+                
+                if (/[0-9]/.test(password)) strength += 1;
+                else feedback.push("Incluye números");
+                
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                else feedback.push("Incluye caracteres especiales");
+                
+                if (repeatedCharRegex.test(password)) {
+                    strength = Math.max(0, strength - 2);
+                    feedback.push("Evita 3 o más caracteres iguales seguidos");
+                }
+                
+                return { strength, feedback };
+            }
+
+            // Limpiar todos los mensajes de contraseña
+            function clearPasswordMessages() {
                 errorPassword.textContent = '';
+                passwordFeedback.textContent = '';
+                verificationIndicator.classList.remove('show');
+            }
+
+            // Mostrar indicador de verificación
+            function showVerificationIndicator() {
+                clearPasswordMessages();
+                verificationIndicator.classList.add('show');
+            }
+
+            // Ocultar indicador de verificación
+            function hideVerificationIndicator() {
+                verificationIndicator.classList.remove('show');
+            }
+
+            // Función de debounce para retrasar la verificación
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Verificar si la contraseña ya existe
+            async function verifyPasswordExists(password) {
                 const { strength, feedback } = checkPasswordStrength(password);
-                if (strength >= 3) {
-                    passwordFeedback.textContent = 'Contraseña segura';
-                    passwordFeedback.className = 'password-feedback password-ok';
-                } else {
+                
+                if (password.length === 0) {
+                    clearPasswordMessages();
+                    validateForm();
+                    return;
+                }
+                
+                if (strength < 3) {
+                    clearPasswordMessages();
                     passwordFeedback.textContent = feedback.join(', ');
                     passwordFeedback.className = 'password-feedback';
+                    validateForm();
+                    return;
                 }
-                return false;
+                
+                showVerificationIndicator();
+                
+                try {
+                    // Reemplaza esta parte con tu endpoint real
+                    const res = await fetch(`/verificar_password/?password=${encodeURIComponent(password)}`);
+                    if (!res.ok) throw new Error('Error en la verificación');
+                    const data = await res.json();
+                    
+                    hideVerificationIndicator();
+                    
+                    if (data.password_existe) {
+                        errorPassword.textContent = data.mensaje || 'Esta contraseña ya está en uso';
+                    } else {
+                        passwordFeedback.textContent = 'Contraseña segura';
+                        passwordFeedback.className = 'password-feedback password-ok';
+                    }
+                    
+                    validateForm();
+                    
+                } catch (error) {
+                    hideVerificationIndicator();
+                    console.error('Error al verificar contraseña:', error);
+                    errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
+                    validateForm();
+                }
             }
-        } catch (error) {
-            hideVerificationIndicator();
-            console.error('Error al verificar contraseña:', error);
-            errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
-            passwordFeedback.textContent = '';
-            passwordFeedback.className = 'password-feedback';
-            return false;
-        }
-    }
 
-    // Validación del nombre de usuario
-    username.addEventListener('input', function() {
-        let value = username.value.replace(/[0-9]/g, '');
-        
-        value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-        username.value = value;
-        
-        if (value.trim().length < 3) {
-            errorUsername.textContent = 'Mínimo 3 caracteres';
-            validateForm();
-            return;
-        }
-        
-        if (repeatedCharRegex.test(value)) {
-            errorUsername.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
-            validateForm();
-            return;
-        }
-        
-        fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
-            .then(res => res.json())
-            .then(data => {
-                errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
-                validateForm();
-            })
-            .catch(error => {
-                console.error('Error al verificar usuario:', error);
+            // Validación del nombre de usuario
+            username.addEventListener('input', function() {
+                let value = username.value.replace(/[0-9]/g, '');
+                
+                value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+                username.value = value;
+                
+                if (value.trim().length < 3) {
+                    errorUsername.textContent = 'Mínimo 3 caracteres';
+                    validateForm();
+                    return;
+                }
+                
+                if (repeatedCharRegex.test(value)) {
+                    errorUsername.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
+                    validateForm();
+                    return;
+                }
+                
+                fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
+                        validateForm();
+                    })
+                    .catch(error => {
+                        console.error('Error al verificar usuario:', error);
+                    });
             });
-    });
 
-    // Validación del cargo
-    cargo.addEventListener('input', function() {
-        let value = cargo.value.replace(/[0-9]/g, '');
-        
-        value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-        cargo.value = value;
-        
-        if (value.trim().length < 3) {
-            errorCargo.textContent = 'Mínimo 3 caracteres';
-            validateForm();
-            return;
-        }
-        
-        if (repeatedCharRegex.test(value)) {
-            errorCargo.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
-            validateForm();
-            return;
-        }
-        
-        fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
-            .then(res => res.json())
-            .then(data => {
-                errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
-                validateForm();
-            })
-            .catch(error => {
-                console.error('Error al verificar cargo:', error);
+            // Validación del cargo
+            cargo.addEventListener('input', function() {
+                let value = cargo.value.replace(/[0-9]/g, '');
+                
+                value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                cargo.value = value;
+                
+                if (value.trim().length < 3) {
+                    errorCargo.textContent = 'Mínimo 3 caracteres';
+                    validateForm();
+                    return;
+                }
+                
+                if (repeatedCharRegex.test(value)) {
+                    errorCargo.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
+                    validateForm();
+                    return;
+                }
+                
+                fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
+                        validateForm();
+                    })
+                    .catch(error => {
+                        console.error('Error al verificar cargo:', error);
+                    });
             });
-    });
 
-    // Validación del email
-    email.addEventListener('input', function() {
-        const value = email.value;
-        
-        if (!emailRegex.test(value)) {
-            errorEmail.textContent = 'Correo inválido';
-            validateForm();
-            return;
-        }
-        
-        fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
-            .then(res => res.json())
-            .then(data => {
-                errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
-                validateForm();
-            })
-            .catch(error => {
-                console.error('Error al verificar email:', error);
+            // Validación del email
+            email.addEventListener('input', function() {
+                const value = email.value;
+                
+                if (!emailRegex.test(value)) {
+                    errorEmail.textContent = 'Correo inválido';
+                    validateForm();
+                    return;
+                }
+                
+                fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
+                        validateForm();
+                    })
+                    .catch(error => {
+                        console.error('Error al verificar email:', error);
+                    });
             });
-    });
 
-    // Validación de la contraseña con debounce
-    const debouncedVerifyPassword = debounce(verifyPasswordExists, 3000);
+            // Validación de la contraseña con debounce
+            const debouncedVerifyPassword = debounce(verifyPasswordExists, 2000);
 
-    password.addEventListener('input', function() {
-        updatePasswordFeedback();
-        
-        const { strength } = checkPasswordStrength(password.value);
-        
-        if (strength < 3 && password.value.length > 0) {
-            updatePasswordFeedback();
-            hideVerificationIndicator();
-            validateForm();
-            return;
-        }
-        
-        debouncedVerifyPassword(password.value).then(() => {
-            validateForm();
+            password.addEventListener('input', function() {
+                debouncedVerifyPassword(password.value);
+            });
+
+            // Validar formulario antes de enviar
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    alert('Por favor, complete correctamente todos los campos.');
+                }
+            });
         });
-    });
-
-    // Validar formulario antes de enviar
-    form.addEventListener('submit', function(e) {
-        if (!validateForm()) {
-            e.preventDefault();
-            alert('Por favor, complete correctamente todos los campos.');
-        }
-    });
-});
-
-// Manejar cambio de orientación
-function handleOrientation() {
-    const warning = document.querySelector('.orientation-warning');
-    if (!warning) return;
-    
-    const isMobile = window.innerWidth <= 767;
-    const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-    
-    if (isMobile && isLandscape) {
-        warning.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    } else {
-        warning.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-}
-
-// Inicializar y escuchar cambios
-window.addEventListener('load', handleOrientation);
-window.addEventListener('resize', handleOrientation);
-</script>
+    </script>
 {% endblock %}

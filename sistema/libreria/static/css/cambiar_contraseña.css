@@ -1,81 +1,96 @@
+
+
+html,
+body {
+    background-color: #86cfe61c;
+}
 .card-confirm {
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
     text-align: center;
     position: relative;
-    top: 26vh;
-    width: 70vh;
+    top: 20vh;
+    width: 470px;
     left: 70vh;
-    border-radius: 20px;
-    height: 57vh;
+    border-radius: 10px;
+    height: 440px;
+    
 }
-
-.form-label0 {
-    position: absolute;
-    display: block;
-    top: -4vh;
-    left: 17vh;
-    font-weight: bold;
-}
-
 .form-input0 {
     background-color: rgb(253, 253, 253);
     height: 30px;
-    border-radius: 20px;
-    border: none;
-    width: 60vh;
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 400px;
     margin: 20px 20px 20px 20px;
     text-align: center;
-    left: -4vh;
-    position: absolute;
-    bottom: 42vh;
+    left: 8px;
+    top: -8px;
+    position: relative;
 }
-
-.form-label1 {
-    position: absolute;
-    display: block;
-    top: 7vh;
-    left: 17vh;
-    font-weight: bold;
-}
-
 .form-control1 {
     background-color: rgb(255, 255, 255);
     height: 30px;
-    border-radius: 20px;
-    border: none;
-    width: 60vh;
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 400px;
     margin: 20px 20px 20px 20px;
     text-align: center;
-    left: -4vh;
-    position: absolute;
-    bottom: 31vh;
+    left: 8px;
+    position: relative;
+    top: -13px;
 
 }
 
 .form-label2 {
-    position: absolute;
+    position: relative;
     display: block;
-    top: 18vh;
-    left: 14vh;
+    top: -18px;
+    left: 14px;
     font-weight: bold;
 }
-
 .form-control2 {
     background-color: rgb(253, 253, 253);
     height: 30px;
-    border-radius: 20px;
+    border-radius: 10px;
     border: none;
-    width: 60vh;
+    width: 400px;
     margin: 20px 20px 20px 20px;
     text-align: center;
-    left: -4vh;
-    position: absolute;
-    bottom: 20vh;
-
+    left: 8px;
+    position: relative;
+    top: -23px;
 }
+.verification-indicator {
+        display: none;
+        color: #015aff;
+        font-size: 0.9rem;
+        position: relative;
+         top: -4px;
+        left: 24px;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+    }
+    
+    .verification-indicator.show {
+        display: flex;
+    }
+    .error-old,
+    .error-new1,
+    .error-new2 {
+        font-size: 0.9rem;
+        
+    }
 
+    .error-old {
+        color: rgb(255, 30, 0);
+        font-weight: bold;
+        position: relative;
+        top: -4px;
+        left: 12px;
+    }
 @keyframes shake-slow {
     0% {
         transform: translateX(-3px);
@@ -97,51 +112,13 @@
         transform: translateX(0);
     }
 }
-
-.error-card {
-    position: relative;
-    margin: 20px auto;
-    max-width: 500px;
-    padding: 20px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(255, 85, 85, 0.85), rgba(180, 0, 0, 0.85));
-    color: #fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-    border: 2px solid #ff4d4d;
-    animation: shake-slow 2.5s infinite ease-in-out;
-}
-
-.expirado {
-    font-size: 1.3em;
-    font-weight: bold;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-form {
-    background: rgba(19, 104, 161, 0);
-    width: 50vh;
-    position: relative;
-    left: 6vh;
-    height: 50vh;
-    top: 2vh;
-
-}
-
-
-
 .btn {
-    background-color: rgb(51, 104, 248);
-    color: white;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     font-weight: bold;
-    border: none;
-    height: 6vh;
-    width: 35vh;
+    border: 1px solid black;
+    width: 200px;
+    height: 40px;
     border-radius: 20px;
     position: relative;
     left: 3.5vh;
@@ -153,4 +130,6 @@ form {
     background-color: rgb(33, 74, 187);
     color: rgb(0, 0, 0);
     font-weight: bold;
+    cursor: pointer;
 }
+

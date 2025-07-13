@@ -16,7 +16,18 @@ body {
     height: 440px;
 
 }
-
+.card-confirmid{
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    text-align: center;
+    position: relative;
+    top: 20vh;
+    width: 470px;
+    left: 70vh;
+    border-radius: 10px;
+    height: 340px;
+}
 /* Ajustes para labels - más cerca de los inputs */
 .form-label0 {
     position: relative;
@@ -88,11 +99,12 @@ body {
     font-size: 0.9rem;
     position: relative;
     top: 2px;
-    left: 24px;
+    left: 44px;
     align-items: center;
     gap: 8px;
     font-weight: bold;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .verification-indicator.show {
@@ -112,6 +124,7 @@ body {
     margin-left: 50px;
     word-wrap: break-word;
     text-align: center;
+    font-weight: bold;
 }
 
 .error-old {
@@ -175,6 +188,7 @@ body {
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
     border: 2px solid #ff4d4d;
     animation: shake-slow 2.5s infinite ease-in-out;
+    font-weight: bold;
 }
 
 .expirado {
@@ -184,6 +198,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: bold;
     gap: 10px;
 }
 
@@ -254,13 +269,23 @@ body {
         max-width: 600px;
         left: 50%;
         transform: translateX(-50%);
-        top: 10vh;
+        top: 20vh;
         height: auto;
-        min-height: 440px;
+        min-height: 460px;
         padding: 20px;
         box-sizing: border-box;
     }
-
+    .card-confirmid{
+         width: 90%;
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 20vh;
+        height: auto;
+        min-height: 390px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
     .form-input0,
     .form-control1,
     .form-control2 {
@@ -269,13 +294,15 @@ body {
         margin: 0 auto 10px auto;
         left: 0;
         display: block;
+        font-size: larger;
     }
 
     .form-label0,
     .form-label1,
     .form-label2 {
         left: 5%;
-        text-align: left;
+        text-align: center;
+        font-size: larger;
     }
 
     .error-old,
@@ -285,11 +312,13 @@ body {
         margin-left: 0;
         max-width: 85%;
         margin: 5px auto 10px auto;
+        font-size: larger;
     }
 
     .verification-indicator {
         left: 5%;
         justify-content: flex-start;
+        font-size: larger;
     }
 
     .btn {
@@ -297,12 +326,14 @@ body {
         transform: translateX(-50%);
         width: 150px;
         height: 45px;
+        font-size: larger;
     }
 
     .error-card {
         width: 90%;
         max-width: 600px;
         margin: 20px auto;
+        font-size: large;
     }
 }
 
@@ -322,6 +353,18 @@ body {
         top: 22vh;
         height: auto;
         min-height: 500px;
+        padding: 15px;
+        box-sizing: border-box;
+        border-radius: 15px;
+    }
+    .card-confirmid{
+        width: 95%;
+        max-width: 400px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 22vh;
+        height: auto;
+        min-height: 400px;
         padding: 15px;
         box-sizing: border-box;
         border-radius: 15px;
@@ -370,7 +413,7 @@ body {
         max-width: 200px;
         height: 45px;
         font-size: 1rem;
-        bottom: 60px;
+        bottom: 40px;
     }
 
     .error-card {

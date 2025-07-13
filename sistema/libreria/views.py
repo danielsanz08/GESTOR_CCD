@@ -410,6 +410,42 @@ def cambiar_contraseña(request):
         form = CustomPasswordChangeForm(user=request.user)
     return render(request, 'usuario/cambiar_contraseña.html', {'form': form, 'breadcrumbs': breadcrumbs})
 
+def cambiar_contraseña_id(request, user_id):
+    """Vista para cambiar contraseña de cualquier usuario por ID"""
+    
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Cambiar Contraseña por ID', 'url': reverse('libreria:cambiar_contraseña_id', args=[user_id])},
+    ]
+
+    target_user = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=target_user, data=request.POST)
+        if form.is_valid():
+            new_password = form.cleaned_data['new_password1']
+            target_user.set_password(new_password)
+            target_user.save()
+            messages.success(request, f'Contraseña cambiada exitosamente para {target_user.username} (ID: {target_user.id})')
+            return redirect('libreria:lista_usuarios', user_id=user_id)
+        else:
+            messages.error(request, 'Formulario inválido. Revisa los datos ingresados.')
+    else:
+        form = CustomPasswordChangeForm(user=target_user)
+
+    all_users = User.objects.all().values(
+    'id', 'username', 'email', 'role', 'area', 'cargo', 'is_active'
+)
+
+    context = {
+        'form': form,
+        'breadcrumbs': breadcrumbs,
+        'all_users': all_users,
+        'user_id': user_id,
+        'user': target_user,
+    }
+
+    return render(request, 'usuario/cambiar_contraseña_id.html', context)
 @require_http_methods(["GET"])
 def verificar_contraseña(request):
     """

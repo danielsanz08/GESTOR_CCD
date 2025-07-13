@@ -1,202 +1,661 @@
+/* ========================================
+   ESTILOS GENERALES PARA TODOS LOS DISPOSITIVOS
+   ======================================== */
+
 /* Ajustes generales del body y html */
 body, html {
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Sin scroll horizontal ni vertical */
+    overflow-x: hidden; /* Sin scroll horizontal */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    padding-top: 20px;
+    background-color: #1c96bb1c;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Contenedor principal adaptable */
+#container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Sección principal con altura dinámica */
+section {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    border-radius: 20px;
+    padding: 25px;
+    width: 100%;
+    max-width: 700px;
+    min-height: 320px; /* Altura mínima inicial */
+    height: auto; /* Altura automática para adaptarse al contenido */
+    animation: fadeInUp 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+/* Título del formulario */
+section h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2e5984;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Formulario principal */
+form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+}
+
+/* Contenedor de artículos con scroll cuando sea necesario */
+#articulos-container {
+    flex: 1;
+    max-height: 450px; /* Altura máxima antes de activar scroll */
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 25px;
     
+    /* Scroll personalizado para Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #00a67e #ffffff;
 }
- html, body{
-      background-color: #1c96bb1c;
-    }
-/* Animación de entrada */
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+
+/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
+#articulos-container::-webkit-scrollbar {
+    width: 10px;
 }
-section{
-    background: linear-gradient(110deg, #c7def893, #ffffffe8);
-        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-        border: 2px solid rgba(2, 47, 90, 0.63);
+
+#articulos-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+#articulos-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00a67e, #007c5d);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+#articulos-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #007c5d, #005a45);
+    transform: scale(1.1);
+}
+
+/* Formulario individual de artículo */
+.articulo-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    border: 1px solid rgba(2, 47, 90, 0.2);
+    flex-wrap: nowrap;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.articulo-form::before {
+    content: '';
     position: absolute;
-    top: 20vh;
-    left: 25vh;
-    padding: 20px 20px 20px 20px;
-    border-radius: 20px;
-    height: 60vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00a67e, #2e5984);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
+
+.articulo-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.articulo-form:hover::before {
+    opacity: 1;
+}
+
 /* Estilo para los inputs y selects */
 input[type="text"],
 input[type="number"],
 select,
 .form-control {
-    margin: 10px 30px 30px 30px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    height: 45px;
+    padding: 0 18px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: #333;
+    font-weight: 500;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: #00a67e;
+    box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Select específicos */
+.select-articulo {
+    flex: 3;
+    min-width: 200px;
+    font-weight: 600;
+}
+
+.select-tipo {
+    flex: 2;
+    min-width: 150px;
+}
+
+.input-cantidad {
+    flex: 1;
+    min-width: 90px;
+    max-width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Botón eliminar individual */
+.btn-eliminar-articulo {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
     border: none;
-    border-radius: 20px;
-    height: 4vh;
-    width: 35vh;
-}
-form {
-    position: relative;
-    max-height: 240px;
-    overflow-y: auto;
-    width: 100%;
-    padding: 10px;
-
-    scrollbar-width: thin;            /* Firefox */
-    scrollbar-color: #000ba6 #ffffff; /* Color del pulgar y del fondo en Firefox */
-}
-
-/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
-form::-webkit-scrollbar {
-    width: 8px; /* Grosor del scroll */
-}
-
-form::-webkit-scrollbar-track {
-    background: #ffffff; /* Color del fondo del scroll */
-    border-radius: 10px;
-}
-
-form::-webkit-scrollbar-thumb {
-    background-color: #00a67e; /* Color del "pulgar" del scroll */
-    border-radius: 10px;
-    border: 2px solid #ffffff; /* Espacio entre thumb y track */
-}
-
-form::-webkit-scrollbar-thumb:hover {
-    background-color: #007c5d; /* Color al pasar el cursor */
-}
-
-
-/* Botón para agregar formularios y para enviar */
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 2px solid black;
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 12px;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    min-width: 80px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
 
-.btn:hover {
-    background-color: rgb(33, 74, 187);
-    color: rgb(255, 255, 255);
+.btn-eliminar-articulo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
 }
-#btn_delete:hover {
-    background-color: rgb(187, 33, 33);
-    color: rgb(255, 255, 255);
+
+.btn-eliminar-articulo:hover {
+    background: linear-gradient(135deg, #c82333, #b21e2d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
-/* Móviles (hasta 767px) */
+
+.btn-eliminar-articulo:hover::before {
+    left: 100%;
+}
+
+.btn-eliminar-articulo:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Contenedor de botones principales */
+.botones-principales {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 25px;
+    border-top: 2px solid rgba(2, 47, 90, 0.1);
+    position: relative;
+}
+
+.botones-principales::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #00a67e, #2e5984);
+    border-radius: 2px;
+}
+
+/* Botones principales */
+button {
+    padding: 14px 30px;
+    border-radius: 25px;
+    border: 2px solid #2e5984;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #2e5984;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 160px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #2e5984, #1e3a54);
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 89, 132, 0.3);
+    border-color: #1e3a54;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button[type="submit"] {
+    background: linear-gradient(135deg, #00a67e, #007c5d);
+    border-color: #00a67e;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(135deg, #007c5d, #005a45);
+    border-color: #005a45;
+    box-shadow: 0 8px 25px rgba(0, 166, 126, 0.4);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+/* Estilos para opciones especiales */
+.rojo {
+    color: #dc3545 !important;
+    font-weight: 700 !important;
+}
+
+.articulo-deshabilitado {
+    color: #6c757d !important;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.no-allowed {
+    display: none !important;
+}
+
+/* ========================================
+   MÓVILES - Media Query para dispositivos hasta 767px
+   ======================================== */
 @media (max-width: 767px) {
-    body{
-        background-color: red;
+    body {
+        padding-top: 10px;
+        background-color: #1c96bb1c;
+    }
+    
+    #container {
+        padding: 10px;
+    }
+    
+    section {
+        padding: 18px;
+        min-height: 280px;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 15px;
+    }
+    
+    section h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    #articulos-container {
+        max-height: 320px;
+        margin-bottom: 20px;
+        padding-right: 5px;
+    }
+    
+    .articulo-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .articulo-form > div {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    /* Fila superior: Artículo y Tipo */
+    .articulo-form .select-articulo,
+    .articulo-form .select-tipo {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    /* Fila inferior: Cantidad y Eliminar */
+    .articulo-form .input-cantidad {
+        flex: 2;
+        min-width: 0;
+        max-width: none;
+    }
+    
+    .articulo-form .btn-eliminar-articulo {
+        flex: 1;
+        min-width: 0;
+        align-self: stretch;
+        margin: 0;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 40px;
+        font-size: 14px;
+        min-width: 0;
+        padding: 0 12px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 0;
+    }
+    
+    .botones-principales {
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 20px;
+    }
+    
+    button {
+        padding: 12px 25px;
+        font-size: 14px;
+        min-width: 0;
+        width: 100%;
     }
 }
 
-/* Tablets (768px — 1024px) */
+/* ========================================
+   TABLETS - Media Query para dispositivos entre 768px y 1024px
+   ======================================== */
 @media (min-width: 768px) and (max-width: 1024px) {
-    body{
-        background-color: #00a653;
+    body {
+        background-color: #1c96bb1c;
+    }
+    
+    #container {
+        padding: 15px;
+    }
+    
+    section {
+        padding: 22px;
+        max-width: 750px;
+        min-height: 300px;
+    }
+    
+    section h1 {
+        font-size: 1.8rem;
+    }
+    
+    #articulos-container {
+        max-height: 380px;
+        margin-bottom: 22px;
+    }
+    
+    .articulo-form {
+        gap: 12px;
+        padding: 16px;
+        flex-wrap: nowrap;
+        margin-bottom: 18px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 42px;
+        font-size: 14px;
+        padding: 0 16px;
+    }
+    
+    .select-articulo {
+        flex: 2.5;
+        min-width: 180px;
+    }
+    
+    .select-tipo {
+        flex: 1.8;
+        min-width: 140px;
+    }
+    
+    .input-cantidad {
+        flex: 1;
+        min-width: 80px;
+        max-width: 100px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 9px 14px;
+        font-size: 12px;
+        min-width: 75px;
+    }
+    
+    .botones-principales {
+        gap: 18px;
+        padding-top: 22px;
+    }
+    
+    button {
+        padding: 13px 28px;
+        font-size: 14px;
+        min-width: 140px;
     }
 }
 
-/* Escritorio (1025px en adelante) */
+/* ========================================
+   ESCRITORIO - Media Query para dispositivos de 1025px en adelante
+   ======================================== */
 @media (min-width: 1025px) {
+    body {
+        background-color: #1c96bb1c;
+    }
+    
+    section {
+        max-width: 800px;
+        min-height: 320px;
+        padding: 30px;
+    }
+    
+    section h1 {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+    }
+    
+    #articulos-container {
+        max-height: 480px;
+        margin-bottom: 30px;
+        padding-right: 10px;
+    }
+    
+    .articulo-form {
+        gap: 18px;
+        padding: 20px;
+        margin-bottom: 22px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 48px;
+        font-size: 15px;
+        padding: 0 20px;
+    }
+    
+    .select-articulo {
+        flex: 3.5;
+        min-width: 220px;
+    }
+    
+    .select-tipo {
+        flex: 2.5;
+        min-width: 170px;
+    }
+    
+    .input-cantidad {
+        flex: 1;
+        min-width: 100px;
+        max-width: 130px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 12px 18px;
+        font-size: 13px;
+        min-width: 90px;
+    }
+    
+    .botones-principales {
+        gap: 25px;
+        padding-top: 30px;
+    }
+    
+    button {
+        padding: 16px 35px;
+        font-size: 15px;
+        min-width: 180px;
+    }
+}
 
-/* Animación de entrada */
-@keyframes fadeInUp {
-    to {
+/* ========================================
+   UTILIDADES Y ESTADOS ESPECIALES
+   ======================================== */
+
+/* Animación para nuevos formularios */
+.articulo-form.nuevo {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Animación de salida */
+@keyframes fadeOut {
+    from {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
     }
 }
-section{
-    background: linear-gradient(110deg, #c7def893, #ffffffe8);
-        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-        border: 2px solid rgba(2, 47, 90, 0.63);
-    position: absolute;
-    top: 20vh;
-    left: 25vh;
-    padding: 20px 20px 20px 20px;
-    border-radius: 20px;
-    height: 60vh;
-}
-/* Estilo para los inputs y selects */
-input[type="text"],
-input[type="number"],
-select,
-.form-control {
-    margin: 10px 30px 30px 30px;
-    border: none;
-    border-radius: 20px;
-    height: 4vh;
-    width: 35vh;
-}
-form {
+
+/* Estado de carga */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
     position: relative;
-    max-height: 240px;
-    overflow-y: auto;
-    width: 100%;
-    padding: 10px;
-
-    scrollbar-width: thin;            /* Firefox */
-    scrollbar-color: #000ba6 #ffffff; /* Color del pulgar y del fondo en Firefox */
 }
 
-/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
-form::-webkit-scrollbar {
-    width: 8px; /* Grosor del scroll */
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: inherit;
 }
 
-form::-webkit-scrollbar-track {
-    background: #ffffff; /* Color del fondo del scroll */
-    border-radius: 10px;
-}
-
-form::-webkit-scrollbar-thumb {
-    background-color: #00a67e; /* Color del "pulgar" del scroll */
-    border-radius: 10px;
-    border: 2px solid #ffffff; /* Espacio entre thumb y track */
-}
-
-form::-webkit-scrollbar-thumb:hover {
-    background-color: #007c5d; /* Color al pasar el cursor */
-}
-
-
-/* Botón para agregar formularios y para enviar */
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 2px solid black;
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background-color: rgb(33, 74, 187);
-    color: rgb(255, 255, 255);
-}
-#btn_delete:hover {
-    background-color: rgb(187, 33, 33);
-    color: rgb(255, 255, 255);
-}
-    }
-
-/* Móviles (hasta 767px) */
-@media (max-width: 767px) {
-    section{
-        background: #007c5d;
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
+
+/* Focus visible para mejor accesibilidad */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid #00a67e;
+    outline-offset: 2px;
+}
+
+/* Estados de hover mejorados */
+@media (hover: hover) {
+    .articulo-form:hover {
+        transform: translateY(-3px);
+    }
+    
+    button:hover {
+        transform: translateY(-3px);
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* Estilo para navegadores con soporte limita

@@ -5,33 +5,33 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
+
 <div id="container">
-<section>
-    <h1>Realizar Pedido</h1>
+    <section>
+        <h1>Realizar Pedido</h1>
 
-    <form method="post">
-        {% csrf_token %}
+        <form method="post">
+            {% csrf_token %}
 
-        <div class="mb-3" style="display: none;">
-            <label class="form-label">Área:</label>
-            <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
-        </div>
+            <div class="mb-3" style="display: none;">
+                <label class="form-label">Área:</label>
+                <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
+            </div>
 
-        <div id="articulos-container">
-            <div class="articulo-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
-                <select name="articulo" required class="select-articulo">
-                    <option value="">-- Seleccionar Artículo --</option>
-                    {% for articulo in articulos %}
-                        {% if articulo.cantidad > 0 %}
-                            <option value="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}"
-                                {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
-                                {{ articulo.nombre }} ({{ articulo.cantidad }})
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+            <div id="articulos-container">
+                <div class="articulo-form default-form">
+                    <select name="articulo" required class="select-articulo">
+                        <option value="">-- Seleccionar Artículo --</option>
+                        {% for articulo in articulos %}
+                            {% if articulo.cantidad > 0 %}
+                                <option value="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}"
+                                    {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
+                                    {{ articulo.nombre }} ({{ articulo.cantidad }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
 
-                <div>
                     <select name="tipo_articulo" required class="select-tipo">
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
@@ -45,40 +45,59 @@
                             {% endif %}
                         {% endfor %}
                     </select>
+
+                    <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
                 </div>
-
-                <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
             </div>
-        </div>
 
-        <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
-        <button type="submit">Realizar Pedido</button>
-    </form>
-</section>
+            <!-- Contenedor para los botones principales -->
+            <div class="botones-principales">
+                <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
+                <button type="submit">Realizar Pedido</button>
+            </div>
+        </form>
+    </section>
 </div>
 
+<!-- Estilos adicionales específicos -->
 <style>
     .rojo {
-        color: red;
+        color: #dc3545 !important;
+        font-weight: bold;
     }
 
     .btn-eliminar-articulo {
-        margin-left: 10px;
         background-color: #dc3545;
         color: white;
         border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 8px 12px;
+        border-radius: 10px;
         cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        min-width: 70px;
     }
 
     .btn-eliminar-articulo:hover {
         background-color: #c82333;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
 
     .articulo-deshabilitado {
-        color: #999;
+        color: #999 !important;
         text-decoration: line-through;
+    }
+
+    .no-allowed {
+        display: none !important;
+    }
+
+    /* Animación para nuevos formularios */
+    .articulo-form.nuevo {
+        animation: fadeInUp 0.4s ease-out;
     }
 </style>
 
@@ -146,7 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectArticulo = form.querySelector('.select-articulo');
         const inputCantidad = form.querySelector('.input-cantidad');
 
-        inputCantidad.addEventListener('input', function () {
+        // Remover listeners previos para evitar duplicados
+        const newInputCantidad = inputCantidad.cloneNode(true);
+        inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+
+        newInputCantidad.addEventListener('input', function () {
             const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
             const valorIngresado = parseInt(this.value);
 
@@ -182,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
             eliminarBtn.type = 'button';
             eliminarBtn.textContent = 'Eliminar';
             eliminarBtn.classList.add('btn-eliminar-articulo');
-            eliminarBtn.title = "Eliminar";
+            eliminarBtn.title = "Eliminar artículo";
             eliminarBtn.onclick = function () {
                 eliminarArticulo(form);
             };
@@ -201,18 +224,29 @@ document.addEventListener('DOMContentLoaded', function () {
     window.agregarArticulo = function () {
         const container = document.getElementById('articulos-container');
         const nuevoFormulario = defaultForm.cloneNode(true);
+        
+        // Limpiar clases y preparar el nuevo formulario
         nuevoFormulario.classList.remove('default-form');
+        nuevoFormulario.classList.add('nuevo');
         nuevoFormulario.style.display = 'flex';
 
+        // Resetear valores
         const selects = nuevoFormulario.querySelectorAll('select');
         selects.forEach(select => select.selectedIndex = 0);
         nuevoFormulario.querySelector('.input-cantidad').value = 1;
         nuevoFormulario.removeAttribute('data-selected-articulo');
 
+        // Inicializar el nuevo formulario con botón eliminar
         inicializarFormulario(nuevoFormulario, true);
         container.appendChild(nuevoFormulario);
 
+        // Actualizar opciones disponibles
         actualizarOpcionesDisponibles();
+
+        // Remover clase de animación después de la animación
+        setTimeout(() => {
+            nuevoFormulario.classList.remove('nuevo');
+        }, 400);
     };
 
     window.eliminarArticulo = function (form) {
@@ -221,10 +255,32 @@ document.addEventListener('DOMContentLoaded', function () {
             if (articuloId) {
                 articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
             }
-            form.remove();
-            actualizarOpcionesDisponibles();
+            
+            // Animación de salida
+            form.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                form.remove();
+                actualizarOpcionesDisponibles();
+            }, 300);
         }
     };
 });
+
+// Animación de salida
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+`;
+document.head.appendChild(style);
 </script>
+
 {% endblock %}

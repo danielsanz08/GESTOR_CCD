@@ -18,6 +18,7 @@ urlpatterns = [
     path('cambiar-estado-usuario/<int:user_id>/', views.cambiar_estado_usuario, name='cambiar_estado_usuario'),
     path('verificar-contraseña-actual/', views.verificar_contraseña_actual, name='verificar_contraseña_actual'),
     path('cambiar-contraseña/', views.cambiar_contraseña, name='cambiar_contraseña'),
+    path('cambiar_contraseña_id/<int:user_id>/', views.cambiar_contraseña_id, name='cambiar_contraseña_id'),
     path('verificar_password/', views.verificar_contraseña, name='verificar_password'),
     # RESTABLECER CONTRASEÑA 
     path("reset_password/", views.password_reset_request, name="password_reset"),

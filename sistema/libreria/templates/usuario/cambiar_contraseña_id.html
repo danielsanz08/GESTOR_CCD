@@ -1,0 +1,159 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Cambiar contraseña{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/cambiar_contraseña.css' %}?v={% now 'U' %}">
+
+<div class="card-confirmid">
+    <br>
+    <h2>Restablecer contraseña {{ user.username }}</h2>
+    <form method="POST" id="change-password-form">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="new_password1" class="form-label1">Nueva contraseña:</label>
+            <input type="password" name="new_password1" id="new_password1" class="form-control1" required
+                placeholder="Digita tu nueva contraseña">
+            <div id="error-new1" class="error-new1"></div>
+            <div class="verification-indicator" id="verifying-indicator">
+                <div class="spinner"></div>
+                <span>Verificando contraseña...</span>
+            </div>
+        </div>
+
+        <div class="mb-3" id="group-new2" style="display: none;">
+            <label for="new_password2" class="form-label2">Confirmar nueva contraseña:</label>
+            <input type="password" name="new_password2" id="new_password2" class="form-control2" required
+                placeholder="Digita nuevamente tu nueva contraseña">
+            <div id="error-new2" class="error-new2"></div>
+        </div>
+
+        <button type="submit" class="btn" id="submit-btn" disabled>Restablecer</button>
+    </form>
+</div>
+
+<script>
+    const newPassword1 = document.getElementById("new_password1");
+    const newPassword2 = document.getElementById("new_password2");
+    const errorNew1 = document.getElementById("error-new1");
+    const errorNew2 = document.getElementById("error-new2");
+    const verifyingIndicator = document.getElementById("verifying-indicator");
+    const groupNew2 = document.getElementById("group-new2");
+    const submitBtn = document.getElementById("submit-btn");
+
+    let isPasswordValid = false;
+    let isConfirmationValid = false;
+
+    function validatePassword(password) {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+        return regex.test(password);
+    }
+
+    function showError(element, message) {
+        element.textContent = message;
+        element.classList.remove("success-match", "loading");
+    }
+
+    function showSuccess(element, message) {
+        element.textContent = message;
+        element.classList.add("success-match");
+        element.classList.remove("loading");
+    }
+
+    function clearError(element) {
+        element.textContent = "";
+        element.classList.remove("success-match", "loading");
+    }
+
+    function updateSubmitButton() {
+        submitBtn.disabled = !(isPasswordValid && isConfirmationValid);
+    }
+
+    function verificarPassword(password) {
+        verifyingIndicator.classList.add("show");
+        clearError(errorNew1);
+
+        fetch("{% url 'libreria:verificar_password' %}?password=" + encodeURIComponent(password))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error en la solicitud");
+                }
+                return response.json();
+            })
+            .then(data => {
+                verifyingIndicator.classList.remove("show");
+                if (data.password_existe) {
+                    showError(errorNew1, data.mensaje);
+                    isPasswordValid = false;
+                    groupNew2.style.display = "none";
+                } else {
+                    showSuccess(errorNew1, "Contraseña segura");
+                    isPasswordValid = true;
+                    groupNew2.style.display = "block";
+                }
+                updateSubmitButton();
+            })
+            .catch(error => {
+                verifyingIndicator.classList.remove("show");
+                showError(errorNew1, "Error al verificar contraseña.");
+                isPasswordValid = false;
+                groupNew2.style.display = "none";
+                updateSubmitButton();
+                console.error(error);
+            });
+    }
+
+    newPassword1.addEventListener("input", () => {
+        const password = newPassword1.value;
+
+        clearError(errorNew1);
+        groupNew2.style.display = "none";
+        isPasswordValid = false;
+        isConfirmationValid = false;
+        updateSubmitButton();
+
+        if (!validatePassword(password)) {
+            showError(errorNew1, "Debe tener mayúscula, minúscula, número, símbolo y mínimo 6 caracteres.");
+        } else {
+            verificarPassword(password);
+        }
+    });
+
+    newPassword2.addEventListener("input", () => {
+        const password2 = newPassword2.value;
+        if (password2 !== newPassword1.value) {
+            showError(errorNew2, "Las contraseñas no coinciden.");
+            isConfirmationValid = false;
+        } else {
+            showSuccess(errorNew2, "Las contraseñas coinciden.");
+            isConfirmationValid = true;
+        }
+        updateSubmitButton();
+    });
+
+    // Enviar con AJAX
+    document.getElementById("change-password-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
+            },
+            body: new URLSearchParams(new FormData(this))
+        })
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            })
+            .catch(error => {
+                alert("Error al cambiar la contraseña.");
+                console.error("Error:", error);
+            });
+    });
+</script>
+{% endblock %}

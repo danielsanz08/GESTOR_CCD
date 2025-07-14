@@ -329,7 +329,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from libreria.models import CustomUser
 User = get_user_model()
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def crear_pedido(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

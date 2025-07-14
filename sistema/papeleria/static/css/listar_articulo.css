@@ -123,11 +123,11 @@ td {
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
   position: relative;
-  top: 45vh;
+  top: 290px;
 }
 
 .paginacion a:hover {
-  background-color: #015cbd;
+  background-color: #007bff;
   color: white;
   border-color: #007bff;
 }
@@ -136,13 +136,18 @@ td {
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
-  cursor: pointer;
+  cursor: default;
   font-weight: bold;
 }
 
-.paginacion .current:hover {
-  background-color: #015cbd;
+.paginacion .disabled {
+  color: #999;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
 }
+
 
 /* MODAL DE ELIMINAR ARTICULO*/
 .modal {
@@ -652,4 +657,101 @@ td {
 #detalles:hover {
   background-color: rgb(190, 190, 3);
   cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  section {
+    max-width: 370px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+  .modal-contenido{
+    left: 16px;
+    width: 310px;
+  }
+  .pdf,
+  .excel,
+  .print,
+  .crear,
+  .desde,
+  .hasta,
+  #filtro-fechas {
+    display: none;
+  }
+
+  table {
+
+    left: 5vh;
+  }
+
+  .clean {
+    left: 75vh;
+    top: 16vh;
+  }
+
+  .buscador {
+    top: 15vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 16vh;
+    left: 62vh;
+  }
+  #detalles{
+    position: relative;
+    top: 8px;
+  }
+
+  .paginacion {
+    bottom: 90vh;
+  }
+}
+
+/* Tablet devices (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  section {
+    max-width: 780px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+
+  .buscador {
+    top: 10vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 10vh;
+    left: 62vh;
+    height: 40px;
+  }
+  .clean{
+    left: 73vh;
+    top: 10vh;
+    height:40px ;
+  }
+   #filtro-fechas {
+    display: none;
+  }
+ .pdf,
+ .print,
+ .crear,
+ .excel{
+  top: 6vh;
+ }
+ #detalles{
+  top: 15px;
+  position: relative;
+  height: 30px;
+ }
+ .eliminar-btn,
+ .editar-btn{
+  height: 30px;
+  top: 15px;
+
+ }
+
 }

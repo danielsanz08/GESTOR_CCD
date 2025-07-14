@@ -136,7 +136,7 @@ h2 {
         width: 95vw;
         min-width: 90vw;
         max-width: 95vw;
-        min-height: 65vh;
+        min-height: 60vh;
         max-height: none;
         margin-top: 10vh;
         padding: 1rem 1rem 1rem 1rem;
@@ -150,26 +150,33 @@ h2 {
         flex-direction: column;
         gap: 1rem;
         padding: 1rem 1rem 1rem 1rem;
-        height: 85vw;
+        height: 90vw;
         overflow: hidden;
         overflow-y: scroll;
+        position: relative;
+        top: -50px;
     }
-
+    .titulo{
+        position: relative;
+        top: -40px;
+    }
     input,
     .form-select {
         width: 100%;
         max-width: 100%;
     }
 
-    #btn {
-        position: static;
-        margin: 5px auto 0 auto;
-        margin-bottom: 20px;
+      #btn {
+        position: fixed; 
+        bottom: 170px; 
+        left: 50%;
+        transform: translateX(-50%); 
         width: 80%;
         min-width: unset;
         max-width: unset;
+        z-index: 1000;
+        margin: 0; 
     }
-
     .error-message,
     .verification-indicator,
     .password-feedback {

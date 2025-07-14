@@ -1,5 +1,4 @@
-body,
-html {
+body, html {
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -9,6 +8,11 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html, body {
     background-color: #1c96bb1c;
 }
 
@@ -35,13 +39,11 @@ html {
     margin-top: -5vh;
 }
 
-input,
-.form-select,
-.form-control {
+input, .form-select, .form-control {
     margin-bottom: 15vh;
     margin-right: 5px;
-    border: none;
-    border-radius: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
     height: 4vh;
     width: 35vh;
     margin: 10px 30px 30px 30px;
@@ -56,27 +58,172 @@ h2 {
     text-align: center;
 }
 
-button[type="submit"] {
+.btn-edit {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     font-weight: bold;
-    border: none;
-    height: 7vh;
-    width: 100%;
-    border-radius: 20px;
+    border: 1px solid black;
+    height: 6vh;
+    width: 35vh;
+    border-radius: 10px;
     position: absolute;
     left: 57vh;
     top: 47vh;
     cursor: pointer;
 }
 
-button[type="submit"]:hover {
+.btn-edit:hover {
     background-color: rgb(33, 74, 187);
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
-button[type="submit"]:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
+.error-msg {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.error-nombre,
+.error-tipo,
+.error-marca,
+.error-precio,
+.error-cantidad,
+.error-proveedor,
+.error-observacion {
+     color: #ff0101;
+    font-weight: bold;
+    position: relative;
+    display: block;
+    margin-top: -20px;
+    left: 30px;
+    right: 30px;
+    font-size: 0.8em;
+}
+/* MÓVIL - Hasta 767px */
+@media (max-width: 767px) {
+    body, html {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .formulario {
+        position: relative;
+        top: 6vh;
+        left: auto;
+        width: 85vw;
+        height: 60vh;
+        max-height: 60vh;
+        padding: 8px;
+        margin: 5px auto;
+        transform: none;
+        overflow-y: auto;
+    }
+    
+    #form_articulo {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        padding: 5px;
+        height: auto;
+        max-height: 53vh;
+        gap: 2px;
+        margin-top: 0;
+        overflow-y: auto;
+        
+    }
+    
+    input, .form-select, .form-control {
+        width: 85%;
+        margin: 3px 0 20px 20px;
+        height: 4vh;
+        max-width: none;
+        font-size: 0.9em;
+    }
+    
+    label {
+        margin: 20px 0 0px 20px;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+    
+    button[type="submit"] {
+        position: static;
+        width: 80%;
+        height: 5vh;
+        margin: 20px 0 5px 30px;
+        display: block;
+        font-size: 0.9em;
+    }
+    
+    h2 {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+}
+/* TABLET - 768px a 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .formulario {
+        top: 13vh;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60vw;
+        height: 78vh;
+        padding: 15px;
+        font-size: larger;
+        overflow: hidden;
+    }
+    
+    #form_articulo {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(3, auto);
+        padding: 20px;
+        height: 75vh;
+        gap: 10px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        
+    }
+    
+   input, .form-select, .form-control {
+        width: 90%;
+        margin: 5px 0 5px 20px;
+        height: 3vh;
+        font-size: 16px;
+    }
+    
+    label {
+        margin: 35px 0 0 0;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    
+    button[type="submit"] {
+        position: static;
+        width: 40vw;
+        height: 4vh;
+        margin: 30px auto 0 auto;
+        display: block;
+        font-size: large;
+        
+    }
+    
+    h2 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+    .error-nombre,
+.error-tipo,
+.error-marca,
+.error-precio,
+.error-cantidad,
+.error-proveedor,
+.error-observacion {
+     color: #ff0101;
+    font-weight: bold;
+    position: relative;
+    display: block;
+    margin-top: -5px;
+    left: 30px;
+    right: 30px;
+    font-size: 0.8em;
+}
 }

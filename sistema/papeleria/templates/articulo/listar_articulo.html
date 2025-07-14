@@ -12,10 +12,12 @@
     <h1>Artículos de papelería</h1>
 
     <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
-    <a href="{% url 'papeleria:reporte_articulo_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+    <a
+        href="{% url 'papeleria:reporte_articulo_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
         <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
     </a>
-    <a href="{% url 'papeleria:reporte_articulo_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+    <a
+        href="{% url 'papeleria:reporte_articulo_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
         <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
     </a>
     <a href="{% url 'papeleria:crear_articulo' %}">
@@ -24,15 +26,16 @@
 
     <form method="GET" action="{% url 'papeleria:listar_articulo' %}">
         <div>
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
+            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
+                value="{{ request.GET.q }}">
             <button type="submit" class="btn-search" title="Buscar texto">
                 <i class="fas fa-search text-white"></i>
             </button>
 
             <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
+                <label for="fecha_inicio" class="desde">Desde:</label>
                 <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-                <label for="fecha_fin">Hasta:</label>
+                <label for="fecha_fin" class="hasta">Hasta:</label>
                 <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
@@ -46,79 +49,80 @@
             </a>
         </div>
     </form>
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th class="id">ID</th>
+                    <th class="nombre">Nombre</th>
+                    <th class="marca">Marca</th>
+                    <th class="cantidad">Cantidad</th>
+                    <th class="tipo" style="width: 15vh;">Tipo</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for articulo in articulos %}
+                <tr>
+                    <td>{{ articulo.id }}</td>
+                    <td>{{ articulo.nombre }}</td>
+                    <td class="td_marca">{{ articulo.marca }}</td>
+                    <td class="td_cantidad" style="width: 15vh;">{{ articulo.cantidad }}</td>
+                    <td class="td_tipo">{{ articulo.tipo }}</td>
+                    <td class="td_acciones">
+                        <a href="{% url 'papeleria:editar_articulo' articulo.id %}">
+                            <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>
+                        </a>
+                        <button class="eliminar-btn" onclick="mostrarModalEliminar('{{ articulo.id }}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <button type="button" id="detalles" onclick="mostrarDetalles('{{ articulo.id }}')">
+                            <i data-feather="eye" class="icono"></i>
+                        </button>
+                    </td>
+                </tr>
+                <!-- Bloque oculto para detalles del artículo -->
+                <tr style="display: none;">
+                    <td colspan="6">
+                        <div id="detalles-{{ articulo.id }}">
+                            <p><strong>ID:</strong> {{ articulo.id }}</p>
+                            <p><strong>Nombre:</strong> {{ articulo.nombre }}</p>
+                            <p><strong>Marca:</strong> {{ articulo.marca }}</p>
+                            <p><strong>Precio:</strong> {{ articulo.precio_formateado }}</p>
+                            <p><strong>Cantidad:</strong> {{ articulo.cantidad }}</p>
+                            <p><strong>Tipo:</strong> {{ articulo.tipo }}</p>
+                            <p><strong>Proveedor:</strong> {{ articulo.proveedor }}</p>
+                            <p><strong>Observación:</strong> {{ articulo.observacion }}</p>
+                            <p><strong>Registrado por:</strong> {{articulo.registrado_por }}</p>
+                            <p><strong>Fecha de creación:</strong> {{ articulo.fecha_registro }}</p>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No se encontraron resultados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th class="id">ID</th>
-                <th class="nombre">Nombre</th>
-                <th class="marca">Marca</th>
-                <th class="cantidad">Cantidad</th>
-                <th class="tipo" style="width: 15vh;">Tipo</th>
-                <th class="acciones">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for articulo in articulos %}
-            <tr>
-                <td>{{ articulo.id }}</td>
-                <td>{{ articulo.nombre }}</td>
-                <td class="td_marca">{{ articulo.marca }}</td>
-                <td class="td_cantidad" style="width: 15vh;">{{ articulo.cantidad }}</td>
-                <td class="td_tipo">{{ articulo.tipo }}</td>
-                <td class="td_acciones">
-                    <a href="{% url 'papeleria:editar_articulo' articulo.id %}">
-                        <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>
-                    </a>
-                    <button class="eliminar-btn" onclick="mostrarModalEliminar('{{ articulo.id }}')">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                    <button type="button" id="detalles" onclick="mostrarDetalles('{{ articulo.id }}')">
-                        <i data-feather="eye" class="icono"></i>
-                    </button>
-                </td>
-            </tr>
-            <!-- Bloque oculto para detalles del artículo -->
-            <tr style="display: none;">
-                <td colspan="6">
-                    <div id="detalles-{{ articulo.id }}">
-                        <p><strong>ID:</strong> {{ articulo.id }}</p>
-                        <p><strong>Nombre:</strong> {{ articulo.nombre }}</p>
-                        <p><strong>Marca:</strong> {{ articulo.marca }}</p>
-                        <p><strong>Precio:</strong> {{ articulo.precio_formateado }}</p>
-                        <p><strong>Cantidad:</strong> {{ articulo.cantidad }}</p>
-                        <p><strong>Tipo:</strong> {{ articulo.tipo }}</p>
-                        <p><strong>Proveedor:</strong> {{ articulo.proveedor }}</p>
-                        <p><strong>Observación:</strong> {{ articulo.observacion }}</p>
-                        <p><strong>Registrado por:</strong> {{articulo.registrado_por }}</p>
-                        <p><strong>Fecha de creación:</strong> {{ articulo.fecha_registro }}</p>
-                    </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No se encontraron resultados</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-   <div class="paginacion" id="pag">
-    {% if articulos.has_previous %}
+    <div class="paginacion" id="pag">
+        {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}{{ query_params }}">Anterior</a>
-    {% else %}
+        {% else %}
         <span class="disabled">Anterior</span>
-    {% endif %}
+        {% endif %}
 
-    <!-- Número de página actual -->
-    <span class="current-page">Página {{ articulos.number }} de {{ articulos.paginator.num_pages }}</span>
+        <!-- Número de página actual -->
+        <span class="current-page">Página {{ articulos.number }} de {{ articulos.paginator.num_pages }}</span>
 
-    {% if articulos.has_next %}
+        {% if articulos.has_next %}
         <a href="?page={{ articulos.next_page_number }}{{ query_params }}">Siguiente</a>
-    {% else %}
+        {% else %}
         <span class="disabled">Siguiente</span>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 
 
     <!-- Modal para eliminar -->

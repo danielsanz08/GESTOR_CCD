@@ -2,60 +2,7 @@
 {% load static %}
 {% block titulo %}Editar artículos{% endblock %}
 {% block contenido %}
-<style>
-    .error-msg {
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-    }
 
-    .error-nombre,
-    .error-tipo,
-    .error-marca,
-    .error-precio,
-    .error-cantidad,
-    .error-proveedor,
-    .error-observacion {
-        color: #ff0101;
-        font-weight: bold;
-        position: absolute;
-    }
-
-    .error-nombre {
-        top: 27vh;
-        left: 13vh;
-    }
-
-    .error-tipo {
-        top: 27vh;
-        left: 58vh;
-    }
-
-    .error-marca {
-        top: 27vh;
-        left: 102vh;
-    }
-
-    .error-precio {
-        top: 42vh;
-        left: 13vh;
-        display: block;
-    }
-
-    .error-cantidad {
-        top: 42vh;
-        left: 58vh;
-    }
-
-    .error-proveedor {
-        top: 42vh;
-        left: 102vh;
-    }
-
-    .error-observacion {
-        top: 59vh;
-        left: 11vh;
-    }
-</style>
 
 <link rel="stylesheet" href="{% static 'css/editar_articulo.css' %}?v={% now 'U' %}">
 <div class="fondo">
@@ -107,7 +54,7 @@
                 placeholder="Maximo 30 caracteres" maxlength="50" value="{{ form.observacion.value|default:'' }}">
             <div class="error-msg error-observacion"></div>
         </div>
-        <button type="submit" id="submitBtn">Editar artículo</button>
+        <button type="submit" id="submitBtn" class="btn-edit">Editar artículo</button>
     </form>
 </div>
 

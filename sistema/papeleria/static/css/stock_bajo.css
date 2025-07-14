@@ -218,23 +218,156 @@ td {
   cursor: pointer;
 }
  .paginacion {
-        text-align: center;
-        margin-top: 50vh;
-    }
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
+}
 
-    .paginacion a {
-        margin: 0 5px;
-        padding: 8px 12px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
+.paginacion a,
+.paginacion span {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  position: relative;
+  top: 290px;
+}
 
-    .paginacion a:hover {
-        background-color: #0056b3;
-    }
+.paginacion a:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
 
-    .paginacion span {
-        margin: 0 10px;
-    }
+.paginacion .current {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  cursor: default;
+  font-weight: bold;
+}
+
+.paginacion .disabled {
+  color: #999;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+@media (max-width: 767px) {
+  section {
+    max-width: 370px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+  .modal-contenido{
+    left: 16px;
+    width: 310px;
+  }
+  .pdf,
+  .excel,
+  .print,
+  .crear,
+  .desde,
+  .hasta,
+  #filtro-fechas {
+    display: none;
+  }
+
+  table {
+
+    left: 5vh;
+  }
+
+  .clean {
+    left: 75vh;
+    top: 16vh;
+  }
+
+  .buscador {
+    top: 15vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 16vh;
+    left: 62vh;
+  }
+  #detalles{
+    position: relative;
+    top: 8px;
+  }
+  td{
+    font-weight: bold;
+    font-size: large;
+  }
+  .paginacion {
+    position: relative;
+    top: 100px;
+    font-size: large;
+  }
+}
+/* Tablet devices (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  section {
+    max-width: 780px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+
+  .buscador {
+    top: 10vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 10vh;
+    left: 62vh;
+    height: 40px;
+  }
+  .clean{
+    left: 73vh;
+    top: 10vh;
+    height:40px ;
+  }
+   #filtro-fechas {
+    display: none;
+  }
+ .pdf,
+ .print,
+ .crear,
+ .excel{
+  top: 6vh;
+ }
+ #detalles{
+  top: 15px;
+  position: relative;
+  height: 30px;
+ }
+ .eliminar-btn,
+ .editar-btn{
+  height: 30px;
+  top: 15px;
+
+ }
+td{
+  font-size: larger;
+  font-weight: bold;
+}
+ .paginacion {
+    position: relative;
+    top: 210px;
+    left: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    font-size: larger;
+  }
+}

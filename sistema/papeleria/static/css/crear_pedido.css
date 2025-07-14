@@ -1,97 +1,67 @@
-/* ========================================
-   ESTILOS GENERALES PARA TODOS LOS DISPOSITIVOS
-   ======================================== */
-
-/* Ajustes generales del body y html */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100vw;
     height: 100vh;
-    overflow-x: hidden; /* Sin scroll horizontal */
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding-top: 20px;
+    align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html,
+body {
     background-color: #1c96bb1c;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
-
-/* Animación de entrada */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Contenedor principal adaptable */
-#container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Sección principal con altura dinámica */
 section {
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     border: 2px solid rgba(2, 47, 90, 0.63);
     border-radius: 20px;
-    padding: 25px;
-    width: 100%;
-    max-width: 700px;
-    min-height: 320px; /* Altura mínima inicial */
-    height: auto; /* Altura automática para adaptarse al contenido */
+    padding: 18px;
+    width: 120%;
+    max-width: 710px;
+    margin-top: 60px;
+    height: 320px; 
     animation: fadeInUp 0.8s ease-out;
     display: flex;
     flex-direction: column;
     position: relative;
-    backdrop-filter: blur(10px);
 }
-
-/* Título del formulario */
 section h1 {
     text-align: center;
-    margin-bottom: 25px;
-    color: #2e5984;
-    font-size: 2rem;
+    margin: 0 0 12px 0; /* Margin más pequeño */
+    color: #000000;
+    font-size: 1.5rem; /* Fuente más pequeña */
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* No se comprime */
 }
-
-/* Formulario principal */
 form {
     display: flex;
     flex-direction: column;
     height: 100%;
     flex: 1;
+    min-height: 0; /* Importante para que funcione el flex */
 }
-
-/* Contenedor de artículos con scroll cuando sea necesario */
 #articulos-container {
-    flex: 1;
-    max-height: 450px; /* Altura máxima antes de activar scroll */
+    flex: 1; /* Toma todo el espacio disponible */
     overflow-y: auto;
-    padding-right: 8px;
-    margin-bottom: 25px;
+    overflow-x: hidden;
+    padding-right: 6px;
+    margin-bottom: 10px; /* Margin más pequeño */
+    min-height: 0; /* Permite que se encoja */
     
     /* Scroll personalizado para Firefox */
     scrollbar-width: thin;
-    scrollbar-color: #00a67e #ffffff;
+    scrollbar-color: #0035a6 #ffffff;
 }
-
-/* Scroll personalizado para navegadores WebKit (Chrome, Safari, Edge) */
 #articulos-container::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 #articulos-container::-webkit-scrollbar-track {
@@ -111,64 +81,38 @@ form {
     background: linear-gradient(180deg, #007c5d, #005a45);
     transform: scale(1.1);
 }
-
-/* Formulario individual de artículo */
 .articulo-form {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    padding: 18px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    border: 1px solid rgba(2, 47, 90, 0.2);
+    gap: 10px; /* Gap más pequeño */
+    margin-bottom: 8px; /* Margin más pequeño */
+    padding: 10px; /* Padding más pequeño */
+    background: rgba(0, 0, 0, 0);
+    border-radius: 10px; /* Border radius más pequeño */
+    border: none;
     flex-wrap: nowrap;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0; /* No se comprime */
 }
-
-.articulo-form::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #00a67e, #2e5984);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.articulo-form:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.articulo-form:hover::before {
-    opacity: 1;
-}
-
-/* Estilo para los inputs y selects */
 input[type="text"],
 input[type="number"],
 select,
 .form-control {
     border: 2px solid transparent;
-    border-radius: 12px;
-    height: 45px;
-    padding: 0 18px;
-    font-size: 14px;
+    border-radius: 10px; /* Border radius más pequeño */
+    height: 27px; /* Altura más pequeña */
+    padding: 0 12px; /* Padding más pequeño */
+    font-size: 13px; /* Fuente más pequeña */
     flex: 1;
-    min-width: 120px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 100px; /* Min width más pequeño */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra más pequeña */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
     color: #333;
     font-weight: 500;
 }
-
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus {
@@ -177,153 +121,81 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
 }
-
-/* Select específicos */
 .select-articulo {
     flex: 3;
-    min-width: 200px;
-    font-weight: 600;
+    min-width: 160px; /* Min width más pequeño */
+    
 }
-
 .select-tipo {
     flex: 2;
-    min-width: 150px;
+    min-width: 120px; /* Min width más pequeño */
 }
-
 .input-cantidad {
     flex: 1;
-    min-width: 90px;
-    max-width: 120px;
+    min-width: 70px; /* Min width más pequeño */
+    max-width: 90px; /* Max width más pequeño */
     text-align: center;
     font-weight: 600;
 }
-
-/* Botón eliminar individual */
 .btn-eliminar-articulo {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
+     background-color:  white;
+    color: rgb(0, 0, 0);
+    border: 1px solid #000000;
+    padding: 6px 10px; /* Padding más pequeño */
+    border-radius: 8px; /* Border radius más pequeño */
     cursor: pointer;
-    font-size: 13px;
+    font-size: 11px; /* Fuente más pequeña */
     font-weight: 700;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
-    min-width: 80px;
+    min-width: 60px; /* Min width más pequeño */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
     overflow: hidden;
-}
-
-.btn-eliminar-articulo::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn-eliminar-articulo:hover {
-    background: linear-gradient(135deg, #c82333, #b21e2d);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-}
-
-.btn-eliminar-articulo:hover::before {
-    left: 100%;
-}
-
-.btn-eliminar-articulo:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-}
-
-/* Contenedor de botones principales */
-.botones-principales {
     display: flex;
-    gap: 20px;
+    align-items: center;
     justify-content: center;
-    margin-top: auto;
-    padding-top: 25px;
-    border-top: 2px solid rgba(2, 47, 90, 0.1);
-    position: relative;
+    gap: 3px; /* Gap más pequeño */
 }
-
-.botones-principales::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, #00a67e, #2e5984);
-    border-radius: 2px;
-}
-
-/* Botones principales */
-button {
-    padding: 14px 30px;
-    border-radius: 25px;
-    border: 2px solid #2e5984;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    color: #2e5984;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 160px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.6s ease;
-}
-
-button:hover {
-    background: linear-gradient(135deg, #2e5984, #1e3a54);
-    color: #ffffff;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(46, 89, 132, 0.3);
-    border-color: #1e3a54;
-}
-
-button:hover::before {
-    left: 100%;
-}
-
-button[type="submit"] {
-    background: linear-gradient(135deg, #00a67e, #007c5d);
-    border-color: #00a67e;
+.btn-eliminar-articulo:hover{
+    background-color: #b30000;
     color: white;
 }
-
-button[type="submit"]:hover {
-    background: linear-gradient(135deg, #007c5d, #005a45);
-    border-color: #005a45;
-    box-shadow: 0 8px 25px rgba(0, 166, 126, 0.4);
+.botones-principales {
+    display: flex;
+    gap: 12px; /* Gap más pequeño */
+    justify-content: center;
+    padding-top: 10px; /* Padding más pequeño */
+    border-top: 2px solid rgba(2, 47, 90, 0.1);
+    position: relative;
+    flex-shrink: 0; /* No se comprime nunca */
+    background: inherit; /* Mantiene el fondo de la sección */
+}
+.botones-principales button {
+    padding: 8px 18px; /* Padding más pequeño */
+    border-radius: 15px; /* Border radius más pequeño */
+    border: 1px solid #000000;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #000000;
+    font-weight:   bold;
+    cursor: pointer;
+    font-size: 12px; /* Fuente más pequeña */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 110px; /* Min width más pequeño */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
 
-button:active {
-    transform: translateY(-1px);
+.botones-principales button:hover {
+    background: linear-gradient(135deg, #2e5984, #1e3a54);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 89, 132, 0.3);
+    border-color: #1e3a54;
 }
-
-/* Estilos para opciones especiales */
 .rojo {
     color: #dc3545 !important;
     font-weight: 700 !important;
@@ -333,15 +205,14 @@ button:active {
     color: #6c757d !important;
     text-decoration: line-through;
     opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .no-allowed {
     display: none !important;
-}
 
-/* ========================================
-   MÓVILES - Media Query para dispositivos hasta 767px
-   ======================================== */
+}
+/*MOVILES*/
 @media (max-width: 767px) {
     body {
         padding-top: 10px;
@@ -353,35 +224,36 @@ button:active {
     }
     
     section {
-        padding: 18px;
-        min-height: 280px;
+        padding: 12px;
+        height: 310px; 
         max-width: 100%;
         margin: 0;
-        border-radius: 15px;
+        border-radius: 12px;
+        margin-right: 105px;
+        max-width: 300px;
     }
     
     section h1 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
     }
     
     #articulos-container {
-        max-height: 320px;
-        margin-bottom: 20px;
-        padding-right: 5px;
+        margin-bottom: 8px;
+        padding-right: 4px;
     }
     
     .articulo-form {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
-        padding: 15px;
-        margin-bottom: 15px;
+        gap: 8px;
+        padding: 8px;
+        margin-bottom: 6px;
     }
     
     .articulo-form > div {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         width: 100%;
     }
     
@@ -410,35 +282,43 @@ button:active {
     input[type="number"],
     select,
     .form-control {
-        height: 40px;
-        font-size: 14px;
+        height: 28px;
+        font-size: 12px;
         min-width: 0;
-        padding: 0 12px;
+        padding: 0 8px;
     }
     
     .btn-eliminar-articulo {
-        padding: 8px 12px;
-        font-size: 12px;
+        padding: 5px 8px;
+        font-size: 10px;
         min-width: 0;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(255, 71, 87, 0.25);
+    }
+    
+    .btn-eliminar-articulo::before {
+        font-size: 9px;
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 3px 10px rgba(255, 71, 87, 0.35);
     }
     
     .botones-principales {
         flex-direction: column;
-        gap: 15px;
-        padding-top: 20px;
+        gap: 8px;
+        padding-top: 8px;
     }
     
     button {
-        padding: 12px 25px;
-        font-size: 14px;
+        padding: 8px 16px;
+        font-size: 11px;
         min-width: 0;
         width: 100%;
+        border-radius: 12px;
     }
 }
-
-/* ========================================
-   TABLETS - Media Query para dispositivos entre 768px y 1024px
-   ======================================== */
 @media (min-width: 768px) and (max-width: 1024px) {
     body {
         background-color: #1c96bb1c;
@@ -449,67 +329,78 @@ button:active {
     }
     
     section {
-        padding: 22px;
-        max-width: 750px;
-        min-height: 300px;
+        padding: 15px;
+        max-width: 650px;
+        height: 300px; /* Altura más pequeña para tablets */
     }
     
     section h1 {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
+        margin-bottom: 12px;
     }
     
     #articulos-container {
-        max-height: 380px;
-        margin-bottom: 22px;
+        margin-bottom: 10px;
     }
     
     .articulo-form {
-        gap: 12px;
-        padding: 16px;
+        gap: 8px;
+        padding: 10px;
         flex-wrap: nowrap;
-        margin-bottom: 18px;
+        margin-bottom: 8px;
     }
     
     input[type="text"],
     input[type="number"],
     select,
     .form-control {
-        height: 42px;
-        font-size: 14px;
-        padding: 0 16px;
+        height: 30px;
+        font-size: 13px;
+        padding: 0 10px;
     }
     
     .select-articulo {
         flex: 2.5;
-        min-width: 180px;
+        min-width: 140px;
     }
     
     .select-tipo {
         flex: 1.8;
-        min-width: 140px;
+        min-width: 110px;
     }
     
     .input-cantidad {
         flex: 1;
-        min-width: 80px;
-        max-width: 100px;
+        min-width: 60px;
+        max-width: 80px;
     }
     
     .btn-eliminar-articulo {
-        padding: 9px 14px;
-        font-size: 12px;
-        min-width: 75px;
+        padding: 5px 8px;
+        font-size: 11px;
+        min-width: 50px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.28);
+    }
+    
+    .btn-eliminar-articulo::before {
+        font-size: 10px;
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
     }
     
     .botones-principales {
-        gap: 18px;
-        padding-top: 22px;
+        gap: 10px;
+        padding-top: 10px;
     }
     
     button {
-        padding: 13px 28px;
-        font-size: 14px;
-        min-width: 140px;
+        padding: 8px 16px;
+        font-size: 12px;
+        min-width: 100px;
     }
 }
 
@@ -522,140 +413,78 @@ button:active {
     }
     
     section {
-        max-width: 800px;
-        min-height: 320px;
-        padding: 30px;
+        max-width: 750px;
+        height: 350px; /* Altura más pequeña para escritorio */
+        padding: 20px;
+        width: 750px;
     }
     
     section h1 {
-        font-size: 2.2rem;
-        margin-bottom: 30px;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
     }
     
     #articulos-container {
-        max-height: 480px;
-        margin-bottom: 30px;
-        padding-right: 10px;
+        margin-bottom: 12px;
+        padding-right: 8px;
     }
     
     .articulo-form {
-        gap: 18px;
-        padding: 20px;
-        margin-bottom: 22px;
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
     }
     
     input[type="text"],
     input[type="number"],
     select,
     .form-control {
-        height: 48px;
-        font-size: 15px;
-        padding: 0 20px;
+        height: 32px;
+        font-size: 13px;
+        padding: 0 12px;
     }
     
     .select-articulo {
         flex: 3.5;
-        min-width: 220px;
+        min-width: 160px;
     }
     
     .select-tipo {
         flex: 2.5;
-        min-width: 170px;
+        min-width: 120px;
     }
     
     .input-cantidad {
         flex: 1;
-        min-width: 100px;
-        max-width: 130px;
+        min-width: 70px;
+        max-width: 90px;
     }
     
     .btn-eliminar-articulo {
-        padding: 12px 18px;
-        font-size: 13px;
-        min-width: 90px;
+        padding: 6px 10px;
+        font-size: 11px;
+        min-width: 60px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
     }
     
-    .botones-principales {
-        gap: 25px;
-        padding-top: 30px;
-    }
-    
-    button {
-        padding: 16px 35px;
-        font-size: 15px;
-        min-width: 180px;
-    }
-}
-
-/* ========================================
-   UTILIDADES Y ESTADOS ESPECIALES
-   ======================================== */
-
-/* Animación para nuevos formularios */
-.articulo-form.nuevo {
-    animation: fadeInUp 0.5s ease-out;
-}
-
-/* Animación de salida */
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-}
-
-/* Estado de carga */
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-    position: relative;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: inherit;
-}
-
-/* Mejoras de accesibilidad */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Focus visible para mejor accesibilidad */
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-    outline: 3px solid #00a67e;
-    outline-offset: 2px;
-}
-
-/* Estados de hover mejorados */
-@media (hover: hover) {
-    .articulo-form:hover {
-        transform: translateY(-3px);
-    }
-    
-    button:hover {
-        transform: translateY(-3px);
+    .btn-eliminar-articulo::before {
+        font-size: 10px;
     }
     
     .btn-eliminar-articulo:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 4px 15px rgba(255, 71, 87, 0.45);
+    }
+    
+    .botones-principales {
+        gap: 12px;
+        padding-top: 12px;
+    }
+    
+    button {
+        padding: 8px 18px;
+        font-size: 12px;
+        min-width: 110px;
     }
 }
-
-/* Estilo para navegadores con soporte limita

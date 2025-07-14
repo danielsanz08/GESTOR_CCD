@@ -20,6 +20,7 @@
 
             <div id="articulos-container">
                 <div class="articulo-form default-form">
+                    <label for="articulo">Articulo</label>
                     <select name="articulo" required class="select-articulo">
                         <option value="">-- Seleccionar Artículo --</option>
                         {% for articulo in articulos %}
@@ -31,7 +32,7 @@
                             {% endif %}
                         {% endfor %}
                     </select>
-
+                    <label for="tipo">Tipo:</label>
                     <select name="tipo_articulo" required class="select-tipo">
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
@@ -45,61 +46,21 @@
                             {% endif %}
                         {% endfor %}
                     </select>
-
+                    <label for="cantidad">Cantidad:</label>
                     <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
                 </div>
             </div>
 
             <!-- Contenedor para los botones principales -->
             <div class="botones-principales">
-                <button type="button" onclick="agregarArticulo()">Añadir otro artículo</button>
-                <button type="submit">Realizar Pedido</button>
+                <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro artículo</button>
+                <button type="submit" id="realizar">Realizar Pedido</button>
             </div>
         </form>
     </section>
 </div>
 
 <!-- Estilos adicionales específicos -->
-<style>
-    .rojo {
-        color: #dc3545 !important;
-        font-weight: bold;
-    }
-
-    .btn-eliminar-articulo {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-        min-width: 70px;
-    }
-
-    .btn-eliminar-articulo:hover {
-        background-color: #c82333;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-    }
-
-    .articulo-deshabilitado {
-        color: #999 !important;
-        text-decoration: line-through;
-    }
-
-    .no-allowed {
-        display: none !important;
-    }
-
-    /* Animación para nuevos formularios */
-    .articulo-form.nuevo {
-        animation: fadeInUp 0.4s ease-out;
-    }
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

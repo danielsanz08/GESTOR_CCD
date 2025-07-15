@@ -11,6 +11,7 @@ Crear usuario papelería
 <div class="formulario">
         <h2 class="titulo">Crear Usuario Papeleria</h2>
         <form id="userForm" method="POST">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="id_username" class="form-label">Nombre de usuario:</label>
                 <input type="text" id="id_username" name="username" class="form-control" required autocomplete="off"
@@ -69,248 +70,245 @@ Crear usuario papelería
         </form>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elementos del DOM
-            const form = document.getElementById('userForm');
-            const username = document.getElementById('id_username');
-            const cargo = document.getElementById('id_cargo');
-            const email = document.getElementById('id_email');
-            const password = document.getElementById('id_password');
-            const btnSubmit = document.getElementById('btn');
-            const passwordFeedback = document.getElementById('password-feedback');
-            const verificationIndicator = document.getElementById('verification-indicator');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos del DOM
+        const form = document.getElementById('userForm');
+        const username = document.getElementById('id_username');
+        const cargo = document.getElementById('id_cargo');
+        const email = document.getElementById('id_email');
+        const password = document.getElementById('id_password');
+        const btnSubmit = document.getElementById('btn');
+        const passwordFeedback = document.getElementById('password-feedback');
+        const verificationIndicator = document.getElementById('verification-indicator');
+        
+        // Elementos de error
+        const errorUsername = document.getElementById('error_username');
+        const errorCargo = document.getElementById('error_cargo');
+        const errorEmail = document.getElementById('error_email');
+        const errorPassword = document.getElementById('error_password');
+        
+        // Expresiones regulares
+        const repeatedCharRegex = /(.)\1{2,}/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Validación general del formulario
+        function validateForm() {
+            const isValid = 
+                errorUsername.textContent === '' &&
+                errorCargo.textContent === '' &&
+                errorEmail.textContent === '' &&
+                errorPassword.textContent === '' &&
+                username.value.trim() !== '' &&
+                cargo.value.trim() !== '' &&
+                email.value.trim() !== '' &&
+                password.value.trim() !== '' &&
+                checkPasswordStrength(password.value).strength >= 3;
             
-            // Elementos de error
-            const errorUsername = document.getElementById('error_username');
-            const errorCargo = document.getElementById('error_cargo');
-            const errorEmail = document.getElementById('error_email');
-            const errorPassword = document.getElementById('error_password');
+            btnSubmit.disabled = !isValid;
+            return isValid;
+        }
+
+        // Verificar fortaleza de la contraseña
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const feedback = [];
             
-            // Expresiones regulares
-            const repeatedCharRegex = /(.)\1{2,}/;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            // Validación general del formulario
-            function validateForm() {
-                const isValid = 
-                    errorUsername.textContent === '' &&
-                    errorCargo.textContent === '' &&
-                    errorEmail.textContent === '' &&
-                    errorPassword.textContent === '' &&
-                    username.value.trim() !== '' &&
-                    cargo.value.trim() !== '' &&
-                    email.value.trim() !== '' &&
-                    password.value.trim() !== '' &&
-                    checkPasswordStrength(password.value).strength >= 3;
-                
-                btnSubmit.disabled = !isValid;
-                return isValid;
+            if (password.length < 8) {
+                feedback.push("Mínimo 8 caracteres");
+                return { strength: 0, feedback };
+            } else if (password.length >= 12) {
+                strength += 1;
             }
-
-            // Verificar fortaleza de la contraseña
-            function checkPasswordStrength(password) {
-                let strength = 0;
-                const feedback = [];
-                
-                if (password.length < 8) {
-                    feedback.push("Mínimo 8 caracteres");
-                    return { strength: 0, feedback };
-                } else if (password.length >= 12) {
-                    strength += 1;
-                }
-                
-                if (/[a-z]/.test(password)) strength += 1;
-                else feedback.push("Incluye minúsculas");
-                
-                if (/[A-Z]/.test(password)) strength += 1;
-                else feedback.push("Incluye mayúsculas");
-                
-                if (/[0-9]/.test(password)) strength += 1;
-                else feedback.push("Incluye números");
-                
-                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-                else feedback.push("Incluye caracteres especiales");
-                
-                if (repeatedCharRegex.test(password)) {
-                    strength = Math.max(0, strength - 2);
-                    feedback.push("Evita 3 o más caracteres iguales seguidos");
-                }
-                
-                return { strength, feedback };
+            
+            if (/[a-z]/.test(password)) strength += 1;
+            else feedback.push("Incluye minúsculas");
+            
+            if (/[A-Z]/.test(password)) strength += 1;
+            else feedback.push("Incluye mayúsculas");
+            
+            if (/[0-9]/.test(password)) strength += 1;
+            else feedback.push("Incluye números");
+            
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+            else feedback.push("Incluye caracteres especiales");
+            
+            if (repeatedCharRegex.test(password)) {
+                strength = Math.max(0, strength - 2);
+                feedback.push("Evita 3 o más caracteres iguales seguidos");
             }
+            
+            return { strength, feedback };
+        }
 
-            // Limpiar todos los mensajes de contraseña
-            function clearPasswordMessages() {
-                errorPassword.textContent = '';
-                passwordFeedback.textContent = '';
-                verificationIndicator.classList.remove('show');
-            }
+        // Limpiar todos los mensajes de contraseña
+        function clearPasswordMessages() {
+            errorPassword.textContent = '';
+            passwordFeedback.textContent = '';
+            verificationIndicator.classList.remove('show');
+        }
 
-            // Mostrar indicador de verificación
-            function showVerificationIndicator() {
+        // Mostrar indicador de verificación
+        function showVerificationIndicator() {
+            clearPasswordMessages();
+            verificationIndicator.classList.add('show');
+        }
+
+        // Ocultar indicador de verificación
+        function hideVerificationIndicator() {
+            verificationIndicator.classList.remove('show');
+        }
+
+        // Función de debounce para retrasar la verificación
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func(...args), wait);
+            };
+        }
+
+        // Verificar si la contraseña ya existe
+        async function verifyPasswordExists(password) {
+            const { strength, feedback } = checkPasswordStrength(password);
+            
+            if (password.length === 0) {
                 clearPasswordMessages();
-                verificationIndicator.classList.add('show');
+                validateForm();
+                return;
+            }
+            
+            if (strength < 3) {
+                clearPasswordMessages();
+                passwordFeedback.textContent = feedback.join(', ');
+                passwordFeedback.className = 'password-feedback';
+                validateForm();
+                return;
             }
 
-            // Ocultar indicador de verificación
-            function hideVerificationIndicator() {
-                verificationIndicator.classList.remove('show');
+            try {
+                const res = await fetch(`/verificar_password/?password=${encodeURIComponent(password)}`);
+                if (!res.ok) throw new Error('Error en la verificación');
+                const data = await res.json();
+                
+                hideVerificationIndicator();
+                
+                if (data.password_existe) {
+                    errorPassword.textContent = data.mensaje || 'Esta contraseña ya está en uso';
+                } else {
+                    passwordFeedback.textContent = 'Contraseña segura';
+                    passwordFeedback.className = 'password-feedback password-ok';
+                }
+                
+                validateForm();
+                
+            } catch (error) {
+                hideVerificationIndicator();
+                console.error('Error al verificar contraseña:', error);
+                errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
+                validateForm();
             }
+        }
 
-            // Función de debounce para retrasar la verificación
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
+        // ✅ CORREGIDO: Se muestra el indicador solo después del debounce
+        const debouncedVerifyPassword = debounce((passwordValue) => {
+            showVerificationIndicator();
+            verifyPasswordExists(passwordValue);
+        }, 3000);  // 3 segundos
 
-            // Verificar si la contraseña ya existe
-            async function verifyPasswordExists(password) {
-                const { strength, feedback } = checkPasswordStrength(password);
-                
-                if (password.length === 0) {
-                    clearPasswordMessages();
-                    validateForm();
-                    return;
-                }
-                
-                if (strength < 3) {
-                    clearPasswordMessages();
-                    passwordFeedback.textContent = feedback.join(', ');
-                    passwordFeedback.className = 'password-feedback';
-                    validateForm();
-                    return;
-                }
-                
-                showVerificationIndicator();
-                
-                try {
-                    // Reemplaza esta parte con tu endpoint real
-                    const res = await fetch(`/verificar_password/?password=${encodeURIComponent(password)}`);
-                    if (!res.ok) throw new Error('Error en la verificación');
-                    const data = await res.json();
-                    
-                    hideVerificationIndicator();
-                    
-                    if (data.password_existe) {
-                        errorPassword.textContent = data.mensaje || 'Esta contraseña ya está en uso';
-                    } else {
-                        passwordFeedback.textContent = 'Contraseña segura';
-                        passwordFeedback.className = 'password-feedback password-ok';
-                    }
-                    
-                    validateForm();
-                    
-                } catch (error) {
-                    hideVerificationIndicator();
-                    console.error('Error al verificar contraseña:', error);
-                    errorPassword.textContent = 'Error al verificar contraseña. Intente nuevamente.';
-                    validateForm();
-                }
-            }
-
-            // Validación del nombre de usuario
-            username.addEventListener('input', function() {
-                let value = username.value.replace(/[0-9]/g, '');
-                
-                value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-                username.value = value;
-                
-                if (value.trim().length < 3) {
-                    errorUsername.textContent = 'Mínimo 3 caracteres';
-                    validateForm();
-                    return;
-                }
-                
-                if (repeatedCharRegex.test(value)) {
-                    errorUsername.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
-                    validateForm();
-                    return;
-                }
-                
-                fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
-                        validateForm();
-                    })
-                    .catch(error => {
-                        console.error('Error al verificar usuario:', error);
-                    });
-            });
-
-            // Validación del cargo
-            cargo.addEventListener('input', function() {
-                let value = cargo.value.replace(/[0-9]/g, '');
-                
-                value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-                cargo.value = value;
-                
-                if (value.trim().length < 3) {
-                    errorCargo.textContent = 'Mínimo 3 caracteres';
-                    validateForm();
-                    return;
-                }
-                
-                if (repeatedCharRegex.test(value)) {
-                    errorCargo.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
-                    validateForm();
-                    return;
-                }
-                
-                fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
-                        validateForm();
-                    })
-                    .catch(error => {
-                        console.error('Error al verificar cargo:', error);
-                    });
-            });
-
-            // Validación del email
-            email.addEventListener('input', function() {
-                const value = email.value;
-                
-                if (!emailRegex.test(value)) {
-                    errorEmail.textContent = 'Correo inválido';
-                    validateForm();
-                    return;
-                }
-                
-                fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
-                        validateForm();
-                    })
-                    .catch(error => {
-                        console.error('Error al verificar email:', error);
-                    });
-            });
-
-            // Validación de la contraseña con debounce
-            const debouncedVerifyPassword = debounce(verifyPasswordExists, 2000);
-
-            password.addEventListener('input', function() {
-                debouncedVerifyPassword(password.value);
-            });
-
-            // Validar formulario antes de enviar
-            form.addEventListener('submit', function(e) {
-                if (!validateForm()) {
-                    e.preventDefault();
-                    alert('Por favor, complete correctamente todos los campos.');
-                }
-            });
+        password.addEventListener('input', function() {
+            debouncedVerifyPassword(password.value);
         });
-    </script>
+
+        // Validación del nombre de usuario
+        username.addEventListener('input', function() {
+            let value = username.value.replace(/[0-9]/g, '');
+            
+            value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+            username.value = value;
+            
+            if (value.trim().length < 3) {
+                errorUsername.textContent = 'Mínimo 3 caracteres';
+                validateForm();
+                return;
+            }
+            
+            if (repeatedCharRegex.test(value)) {
+                errorUsername.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
+                validateForm();
+                return;
+            }
+            
+            fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
+                .then(res => res.json())
+                .then(data => {
+                    errorUsername.textContent = data.username ? 'Usuario ya registrado' : '';
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Error al verificar usuario:', error);
+                });
+        });
+
+        // Validación del cargo
+        cargo.addEventListener('input', function() {
+            let value = cargo.value.replace(/[0-9]/g, '');
+            
+            value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+            cargo.value = value;
+            
+            if (value.trim().length < 3) {
+                errorCargo.textContent = 'Mínimo 3 caracteres';
+                validateForm();
+                return;
+            }
+            
+            if (repeatedCharRegex.test(value)) {
+                errorCargo.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
+                validateForm();
+                return;
+            }
+            
+            fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
+                .then(res => res.json())
+                .then(data => {
+                    errorCargo.textContent = data.cargo ? 'Cargo ya registrado' : '';
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Error al verificar cargo:', error);
+                });
+        });
+
+        // Validación del email
+        email.addEventListener('input', function() {
+            const value = email.value;
+            
+            if (!emailRegex.test(value)) {
+                errorEmail.textContent = 'Correo inválido';
+                validateForm();
+                return;
+            }
+            
+            fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
+                .then(res => res.json())
+                .then(data => {
+                    errorEmail.textContent = data.email ? 'Correo ya registrado' : '';
+                    validateForm();
+                })
+                .catch(error => {
+                    console.error('Error al verificar email:', error);
+                });
+        });
+
+        // Validar formulario antes de enviar
+        form.addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                alert('Por favor, complete correctamente todos los campos.');
+            }
+        });
+    });
+</script>
+
 {% endblock %}

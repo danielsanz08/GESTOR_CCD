@@ -5,45 +5,47 @@ html {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    /* Elimina el scroll horizontal y vertical */
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #80808000;
-    /* Gris de fondo si la imagen no carga */
 }
 
 html,
 body {
-    background-color: #1c96bb1c;
+    background-color: #86cfe61c;
 }
-
 .formulario {
     background: linear-gradient(110deg, #c7def893, #ffffffe8);
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
     border: 2px solid rgba(2, 47, 90, 0.63);
     position: fixed;
-    top: 20vh;
+    top: 21vh;
     left: 32vh;
     padding: 20px 20px 20px 20px;
     border-radius: 10px;
-    height: 60vh;
+    height: 387px;
+    width: 930px;
 }
-
+h2 {
+    text-align: center;
+    font-size: max(1.5rem, 20px);
+    margin: 1rem 0;
+}
 #form_articulo {
     background-color: rgba(255, 255, 255, 0);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, auto);
-    padding: 30px 30px 30px 30px;
-    height: 30vh;
-    margin-top: -3vh;
+    padding: 20px 20px 20px 20px;
+    height: 300px;
+    margin-top: -1vh;
+    width: 860px;
 }
-
 input,
 .form-select {
-    margin-bottom: 15vh;
-    margin-right: 5px;
+    position: relative;
+    top: -1vh;
+    left: 2vh;
     border: none;
     border-radius: 10px;
     height: 4vh;
@@ -51,27 +53,21 @@ input,
     margin: 10px 30px 30px 30px;
     border: 1px solid black;
 }
-
 label {
     display: block;
-    margin: 10px 30px 0px 30px;
+    margin: 10px 30px 0px 50px;
 }
-
-h2 {
-    text-align: center;
-}
-
 button[type="submit"] {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     font-weight: bold;
     border: 2px solid black;
-    height: 6vh;
-    width: 35vh;
+    height: 38px;
+    width: 230px;
     border-radius: 10px;
-    position: absolute;
-    left: 57vh;
-    top: 50vh;
+    position: relative;
+    left: 5vh;
+    top: 4vh;
     cursor: pointer;
 }
 
@@ -96,116 +92,8 @@ button[type="submit"]:disabled {
     font-weight: bold;
     position: relative;
     display: block;
-    margin-top: -20px;
-    left: 30px;
+    top: -27px;
+    left: 40px;
     right: 30px;
     font-size: 0.8em;
-}
-/* MÓVIL - Hasta 767px */
-@media (max-width: 767px) {
-    body, html {
-        overflow-y: auto;
-        height: auto;
-        min-height: 100vh;
-    }
-    
-    .formulario {
-        position: relative;
-        top: 6vh;
-        left: auto;
-        width: 85vw;
-        height: 60vh;
-        max-height: 60vh;
-        padding: 8px;
-        margin: 5px auto;
-        transform: none;
-        overflow-y: auto;
-    }
-    
-    #form_articulo {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        padding: 5px;
-        height: auto;
-        max-height: 53vh;
-        gap: 2px;
-        margin-top: 0;
-        overflow-y: auto;
-        
-    }
-    
-    input, .form-select {
-        width: 90%;
-        margin: 3px 0 20px 20px;
-        height: 4vh;
-        max-width: none;
-        font-size: 0.9em;
-    }
-    
-    label {
-        margin: 20px 0 0px 20px;
-        font-size: 0.8em;
-        font-weight: 500;
-    }
-    
-    button[type="submit"] {
-        position: static;
-        width: 80%;
-        height: 5vh;
-        margin: 20px 0 5px 30px;
-        display: block;
-        font-size: 0.9em;
-    }
-    
-    h2 {
-        font-size: 1em;
-        margin-bottom: 10px;
-    }
-}
-/* TABLET - 768px a 1024px */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .formulario {
-        top: 15vh;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60vw;
-        height: 70vh;
-        padding: 15px;
-        font-size: larger;
-    }
-    
-    #form_articulo {
-        grid-template-columns: repeat(1, 1fr);
-        grid-template-rows: repeat(3, auto);
-        padding: 20px;
-        height: auto;
-        gap: 10px;
-    }
-    
-    input, .form-select {
-        width: 90%;
-        margin: 5px 0 5px 20px;
-        height: 3vh;
-        font-size: 16px;
-    }
-    
-    label {
-        margin: 35px 0 0 0;
-        font-size: 1em;
-        font-weight: bold;
-    }
-    
-    button[type="submit"] {
-        position: static;
-        width: 40vw;
-        height: 4vh;
-        margin: 30px auto 0 auto;
-        display: block;
-        font-size: large;
-    }
-    
-    h2 {
-        font-size: 1.3em;
-        margin-bottom: 15px;
-    }
 }

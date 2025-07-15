@@ -17,113 +17,99 @@ html,
 body {
     background-color: #86cfe61c;
 }
-/* Escritorio (1025px en adelante) */
-@media (min-width: 1025px) {
 
-    .formulario {
-         background: linear-gradient(110deg, #c7def893, #ffffffe8);
-        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
-        border: 2px solid rgba(2, 47, 90, 0.63);
-        margin-top: 7%;
-        padding: 20px 20px 20px 20px;
-        border-radius: 20px;
-        height: 60vh;
-    }
-
-    #userForm {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, auto);
-        padding: 30px 30px 30px 30px;
-        height: 30vh;
-        margin-top: 2%;
-
-    }
-
-    input,
-    .form-select {
-        margin-bottom: 15vh;
-        margin-right: 5px;
-        border: none;
-        border-radius: 20px;
-        height: 4vh;
-        width: 35vh;
-        margin: 10px 30px 30px 30px;
-        border: 1px solid black;
-    }
-
-    label {
-        display: block;
-        margin: 10px 30px 0px 30px;
-    }
-
-    .btn {
+.formulario {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    margin-top: 3%;
+    padding: 2rem;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 90vw;
+    max-width: 1200px;
+    min-width: 600px;
+    min-height: 430px;
+    max-height: 430px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+#userForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    box-sizing: border-box;
+    width: 95%;
+    
+    height: 290px;
+    left: 8vh;
+    position: relative;
+}
+h2 {
+    text-align: center;
+    font-size: max(1.5rem, 20px);
+    margin: 1rem 0;
+}
+input,
+.form-select {
+    min-height: 1rem;
+    max-height: 2rem;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-size: max(0.9rem, 14px);
+    margin: 0.5rem 0;
+}
+label {
+    font-size: max(1rem, 14px);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+#btn {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     font-weight: bold;
-    border: 2px solid black;
-    height: 6vh;
-    width: 35vh;
-    border-radius: 20px;
-    position: absolute;
-    left: 89vh;
-    top: 72vh;
+    border: 1px solid black;
+    border-radius: 10px;
     cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    width: 200px;
+    height: 40px;
+    position: fixed;
+    margin-top: 260px;
+    margin-left: 410px;
 }
 
-.btn:hover {
+#btn:hover {
     background-color: rgb(33, 74, 187);
     color: rgb(255, 255, 255);
 }
-
-
-    h2 {
-        text-align: center;
+.error-msg {
+    color: red;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+@media (max-width: 767px) {
+    .formulario{
+         width: 95vw;
+        min-width: 90vw;
+        max-width: 95vw;
+        min-height: 60vh;
+        max-height: none;
+        margin-top: 10vh;
+        padding: 1rem 1rem 1rem 1rem;
+        
+        overflow: hidden;
+        overflow-y: scroll;
     }
-
-    .error-nombre,
-    .error-cargo,
-    .error-email,
-    .error-password {
-        font-size: 14px;
-        font-weight: bold;
-        position: absolute;
-        color: rgb(255, 0, 0);
-    }
-
-    .error-nombre {
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 5vh !important;
-        color: red !important;
-        font-size: 0.9rem !important;
-    }
-    .error-cargo {
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 5vh !important;
-        color: rgb(255, 0, 0) !important;
-        font-size: 0.9rem !important;
-    }
-
-    .error-email {
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 5vh !important;
-        color: rgb(255, 0, 0) !important;
-        font-size: 0.9rem !important;
-    }
-
-    .error-password {
-        display: block !important;
-        position: static !important;
-        margin-top: -4vh !important;
-        margin-left: 5vh !important;
-        color: rgb(255, 0, 0) !important;
-        font-size: 0.9rem !important;
-    }
-
 }

@@ -31,7 +31,7 @@ table {
   position: absolute;
   top: 20vh;
   left: 8vh;
-  background-color: red;
+
 }
 
 .id,
@@ -280,11 +280,11 @@ td {
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
   position: relative;
-  top: 45vh;
+  top: 290px;
 }
 
 .paginacion a:hover {
-  background-color: #015cbd;
+  background-color: #007bff;
   color: white;
   border-color: #007bff;
 }
@@ -293,12 +293,16 @@ td {
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
-  cursor: pointer;
+  cursor: default;
   font-weight: bold;
 }
 
-.paginacion .current:hover {
-  background-color: #015cbd;
+.paginacion .disabled {
+  color: #999;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .context-menu {
@@ -391,4 +395,196 @@ td {
   background-color: rgb(5, 117, 42);
   cursor: pointer;
   color: white;
+}
+
+#modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+#modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+#modal .modal-title {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+#modal .close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #777;
+  padding: 0;
+  margin: 0;
+}
+
+#modal .close-modal:hover {
+  color: #ff0000;
+}
+
+#modal .modal-body {
+  padding: 10px 0;
+}
+
+#modal .modal-footer {
+  margin-top: 15px;
+  text-align: right;
+}
+
+#modal button {
+  margin-top: 15px;
+  padding: 8px 12px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#modal button:hover {
+  color: red;
+}
+/* Mobile devices (767px and below) */
+@media (max-width: 767px) {
+  section {
+    max-width: 370px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+  .modal-contenido{
+    left: 16px;
+    width: 310px;
+  }
+  .pdf,
+  .excel,
+  .print,
+  .crear,
+  .desde,
+  .hasta,
+  #filtro-fechas {
+    display: none;
+  }
+  table {
+    width: 100vh;
+    left: 5vh;
+    font-weight: bold;
+  }
+
+  .clean {
+    left: 75vh;
+    top: 16vh;
+  }
+
+  .buscador {
+    top: 15vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 16vh;
+    left: 62vh;
+  }
+  .paginacion {
+    position: relative;
+    top: 3vh;
+  }
+  .edit-td,
+  .confirm-td,
+  .estado-td,
+  .fecha-td{
+    width: 15vh;
+  }
+  .td-registrado{
+    width: 20vh;
+  }
+  .td_id{
+    width: 8vh;
+  }
+}
+/* Tablet devices (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  section {
+    max-width: 780px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+  .buscador {
+    top: 10vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 10vh;
+    left: 62vh;
+    height: 40px;
+  }
+  .clean{
+    left: 73vh;
+    top: 10vh;
+    height:40px ;
+  }
+   #filtro-fechas {
+    display: none;
+  }
+ .pdf,
+ .print,
+ .crear,
+ .excel{
+  top: 6vh;
+ }
+ table{
+  font-weight: bold;
+  font-size: larger;
+  width: 90vh;
+ }
+ .td-registrado{
+    width: 20vh;
+  }
+  .paginacion {
+    position: relative;
+    top: 17vh;
+    font-weight: bold;
+    font-size: larger;
+  }
+  #detalles{
+    overflow: hidden;
+    padding-bottom: 30px;
+    }
+    .modal-body,
+    #aprobar{
+      font-size: larger;
+    }
 }

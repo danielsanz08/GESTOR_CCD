@@ -115,15 +115,14 @@ body {
 }
 
 .atras:hover {
-    background-color: rgb(187, 69, 33);
+    background-color: rgb(255, 0, 0);
     color: rgb(255, 255, 255);
 }
 @media (max-width: 767px) {
     .card {
         width: 95%;
-        
         max-width: none;
-        margin: 20px auto;
+        margin: 20px 0 -30px;
         padding: 20px 15px;
         min-height: 300px;
         border-radius: 12px;

@@ -19,6 +19,7 @@ section {
   min-width: 1260px;
   max-width: 1200px;
   box-sizing: border-box;
+  
 }
 
 .buscador {
@@ -212,20 +213,14 @@ section {
   color: white;
 }
 
-.tabla-scroll {
-  overflow-x: auto;
-  overflow-y: auto;
-  position: absolute;
-  top: 120px;
-  left: 50px;
-  width: 1155px;
-  max-height: 240px;
-}
+
 
 table {
   width: 100%;
   border-spacing: 8px;
   min-width: 900px;
+  position: relative;
+  top: 40px;
 }
 
 .id,
@@ -436,7 +431,7 @@ td {
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
   position: relative;
-  top: 290px;
+  top: 40px;
 }
 
 .paginacion a:hover {
@@ -538,12 +533,16 @@ td {
 }
 
 .btn-guardar {
-  background-color: #0d6efd;
-  color: white;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 10px;
+  border: 1px solid black;
+  font-weight: bold;
 }
 
 .btn-guardar:hover {
   background-color: #0b5ed7;
+  color: white;
 }
 
 .tooltip-custom {
@@ -574,404 +573,127 @@ td {
   visibility: visible;
   opacity: 1;
 }
-
-/* =================================== */
-/* RESPONSIVE DESIGN - MOBILE FIRST */
-/* =================================== */
-
 /* Mobile devices (767px and below) */
 @media (max-width: 767px) {
-  html {
-    padding: 0;
-    margin: 0;
-  }
-
-  section {
+   section {
     position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100vh;
+    top: 25vh;
+    left: -1vh;
+    min-width: 105%;
+    max-width: 90%;
+    min-height: 500px;
     max-height: none;
-    margin: 0;
-    padding: 10px;
-    border-radius: 0;
-    box-sizing: border-box;
-    overflow-x: hidden;
+    padding: 15px;
+    margin: 0 auto;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+   .pdf,
+  .excel,
+  .print,
+  .crear,
+  .desde,
+  .hasta,
+  #filtro-fechas {
+    display: none;
+  }
+  .paginacion{
+    font-size: larger;
+    font-weight: bold;
+  }
+  table{
+    font-weight: bold;
+  }
+  .clean {
+    left: 56vh;
+    top: 10vh;
   }
 
-  /* Header con título */
-  h1 {
-    font-size: 1.5rem;
-    margin: 10px 0;
-  }
-
-  /* Reorganizar búsqueda y filtros */
   .buscador {
-    position: absolute;
-    top: 20vh;
-    left: 10px;
-    width: 80% !important;
-    margin-bottom: 10px;
-    height: 35px !important;
+    top: 10vh;
+    left: 10vh;
   }
 
   .btn-search {
-    position: relative;
-    left: 292px;
-    top: 11.5vh;
-    width: 15%;
-    height: 35px;
-    margin: 5px 0;
-
-  }
-
-  #filtro-fechas {
-    position: relative;
-    right: 0;
-    top: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 10px 0;
-    background-color: rgba(0, 128, 0, 0);
-  }
-
-  .desde {
-    position: relative;
-    top: 110px;
-    left: -140px;
-    font-weight: bold;
-  }
-
-  .hasta {
-    position: relative;
-    top: 47px;
-    left: 35px;
-    font-weight: bold;
-  }
-
-  .fecha_inicio {
-    position: relative;
-    top: 75px;
-    width: 80px;
-    background-color: #00000000;
-    left: 60px;
-  }
-
-  .fecha_fin {
-    background-color: #00000000;
-    position: relative;
-    top: 10px;
-    width: 80px;
-    left: 230px;
-  }
-
-  .search-date {
-    position: relative;
-    top: 20px;
-    width: 80px;
-    left: 80px;
-
-
-  }
-
-  .clean {
-    position: relative;
-    left: 180px;
-    top: -15px;
-    width: 80px;
-
-    margin: 5px 0;
-
-  }
-
-  /* Botones de acción */
-  .Botones {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 15px 0;
-  }
-
-  .print,
-  .pdf,
-  .excel {
-    display: none;
-  }
-
-  /* Tabla responsive */
-  .tabla-scroll {
-    min-width: 30px;
-    max-width: 330px;
-    overflow: hidden;
-    overflow-x: scroll;
-
-    position: relative;
-    top: -15px;
-    left: 1px;
-
-  }
-
-  table {
-    min-width: 800px;
-    width: 800px;
-    border-spacing: 4px;
-  }
-
-  th,
-  td {
-    padding: 8px 4px;
-    font-size: 12px;
-    min-width: 50px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  .editar-btn,
-  .permisos-btn {
-    width: 40px;
-    height: 30px;
-    font-size: 12px;
-    margin: 0 2px;
-  }
-
-  /* Paginación */
-  .paginacion {
-    position: relative;
-    top: 20px;
-    left: 10px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-  }
-
-  .paginacion a,
-  .paginacion span {
-    position: relative;
-    top: 0;
-    padding: 0.3rem 0.6rem;
-    font-size: 14px;
-  }
-
-  /* Modal responsive */
-  .modal-content-custom {
-    width: 95%;
-    max-width: 350px;
-    margin: 10px;
-  }
-
-  .modal-header-custom h5 {
-    font-size: 16px;
-  }
-
-  .btn-cancelar,
-  .btn-guardar {
-    padding: 8px 12px;
-    font-size: 14px;
+    top: 10vh;
+    left: 47vh;
   }
 }
-
 /* Tablet devices (768px to 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
-  html {
-    padding: 0;
-    margin: 0;
-  }
-
   section {
     position: relative;
-    top: 0;
+    top: 23vh;
     left: 0;
-    width: 100%;
     min-width: 100%;
     max-width: 100%;
-    min-height: 100vh;
+    min-height: 700px;
     max-height: none;
-    margin: 0;
-    padding: 10px;
-    border-radius: 0;
-    box-sizing: border-box;
-    overflow-x: hidden;
+    padding: 15px;
+    margin: 0 auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
   }
-
-  /* Header con título */
-  h1 {
-    font-size: 1.5rem;
-    margin: 10px 0;
-  }
-
-  /* Reorganizar búsqueda y filtros */
   .buscador {
-    position: relative;
-    top: 90px;
-    left: -60px;
-    width: 60% !important;
-    margin-bottom: 10px;
-    height: 35px !important;
+    top: 10vh;
+    left: 10vh;
+    height: 50vh;
+    height: 30px !important;
   }
-
   .btn-search {
-    position: relative;
-    left: 595px;
-    top: 40px;
-    width: 15%;
-    height: 35px;
-    margin: 5px 0;
-
-  }
-
-  #filtro-fechas {
-    position: relative;
-    right: 0;
-    top: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 10px 0;
-    background-color: rgba(0, 128, 0, 0);
-  }
-
-  .desde {
-    position: relative;
-    top: 110px;
-    right: 280px;
-    font-weight: bold;
-    font-size: larger;
-  }
-
-  .hasta {
-    position: relative;
-    top: 30px;
-    left: 35px;
-    font-weight: bold;
-    font-size: larger;
-  }
-
-  .fecha_inicio {
-    position: relative;
-    top: 67px;
+    top: 10vh;
+    left: 38vh;
+    height: 30px;
     width: 80px;
-    height: 20px;
-    background-color: #fdfcfc;
-    left: 160px;
   }
-
-  .fecha_fin {
-    background-color: #ffffff;
-    position: relative;
-    top: -12px;
-    width: 80px;
-    left: 480px;
-    height: 20px;
-  }
-
-  .search-date {
-    position: relative;
-    top: 20px;
-    width: 80px;
-    left: 270px;
-
-
-  }
-
   .clean {
-    position: relative;
-    left: 380px;
-    top: -15px;
+    left: 47vh;
+    top: 10vh;
+    height: 30px;
     width: 80px;
-
-    margin: 5px 0;
-
   }
-
-  /* Botones de acción */
-  .Botones {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 15px 0;
+  .pdf {
+    top: 6vh;
+    left: 25vh;
+    height: 30px;
+    width: 70px;
   }
-
-  .print,
-  .pdf,
-  .excel {
+  .print{
+    left: 16vh ;
+    top: 6vh;
+    height: 30px;
+    width: 70px;
+  }
+  .excel{
+    left: 35vh;
+    height: 30px;
+    width: 70px;
+    top: 6vh;
+    }
+  
+  #filtro-fechas {
     display: none;
   }
-
-  /* Tabla responsive */
-  .tabla-scroll {
-    min-width: 30px;
-    max-width: 800px;
-    max-height: 500px;
-    overflow: hidden;
-    overflow-x: scroll;
+  table{
     position: relative;
-    top: -15px;
-    left: 3px;
-
+    top: 10vh;
   }
-
+  .td_editar{
+    width: 13vh;
+  }
   table {
-    min-width: 800px;
-    width: 800px;
-    border-spacing: 10px;
-  }
-
-  th,
-  td {
-    padding: 8px 4px;
-    font-size: 12px;
-    min-width: 50px;
-    text-align: center;
-    white-space: nowrap;
+    font-weight: bold;
     font-size: larger;
+    width: 100vh;
+    top: 10vh;
   }
-
-  .editar-btn,
-  .permisos-btn {
-    width: 40px;
-    height: 30px;
-    font-size: 12px;
-    margin: 0 2px;
+  td{
+    padding: 5px 5px 5px 5px;
   }
-
-  /* Paginación */
   .paginacion {
     position: relative;
-    top: 20px;
-    left: 10px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-
-  }
-
-  .paginacion a,
-  .paginacion span {
-    position: relative;
-    top: 0;
-    padding: 0.3rem 0.6rem;
-    font-size: 14px;
+    bottom: -8vh;
     font-size: larger;
   }
 
-  /* Modal responsive */
-  .modal-content-custom {
-    width: 95%;
-    max-width: 350px;
-    margin: 10px;
-  }
-
-  .modal-header-custom h5 {
-    font-size: 16px;
-  }
-
-  .btn-cancelar,
-  .btn-guardar {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
 }

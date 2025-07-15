@@ -99,7 +99,7 @@ def logout_view(request):
     response.delete_cookie('sessionid')
     return response
 #VIEWS DE ARTICULOS
-@login_required
+@login_required(login_url='/acceso_denegado/')
 def crear_articulo(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -129,7 +129,7 @@ def crear_articulo(request):
         'form': form,
         'breadcrumbs': breadcrumbs
     })
-
+@login_required(login_url='/acceso_denegado/')
 def editar_articulo(request, articulo_id):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -165,7 +165,7 @@ def editar_articulo(request, articulo_id):
         'articulo': articulo,
         'breadcrumbs': breadcrumbs
     })
-
+@login_required(login_url='/acceso_denegado/')
 def listar_articulo(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -245,7 +245,7 @@ def eliminar_articulo(request, id):
         articulo.delete()
         messages.success(request, "Artículo eliminado correctamente.")
     return redirect('papeleria:listar_articulo')
-
+@login_required(login_url='/acceso_denegado/')
 def lista_stock_bajo(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -434,7 +434,7 @@ Este es un mensaje automático, por favor no respondas a este correo.
         'articulos': articulos,
         'breadcrumbs': breadcrumbs,
     })
-
+@login_required(login_url='/acceso_denegado/')
 def mis_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -495,9 +495,9 @@ def mis_pedidos(request):
         'current_fecha_fin': fecha_fin_str,
     })
 from django.utils import timezone
+@login_required(login_url='/acceso_denegado/')
 @csrf_exempt
 @require_POST
-
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
@@ -574,6 +574,7 @@ def cambiar_estado_pedido(request, pedido_id):
 
     messages.error(request, 'No se pudo actualizar el estado.')
     return redirect('papeleria:pedidos_pendientes')
+@login_required(login_url='/acceso_denegado/')
 def listado_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -635,6 +636,7 @@ def listado_pedidos(request):
         'current_fecha_inicio': fecha_inicio_str,
         'current_fecha_fin': fecha_fin_str,
     })
+@login_required(login_url='/acceso_denegado/')
 def pedidos_pendientes(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -713,6 +715,7 @@ def verificar_nombre_articulo(request):
     return JsonResponse({'existe': existe})
 
 #ESTADISTICAS 
+@login_required(login_url='/acceso_denegado/')
 def index_estadistica(request):
     breadcrumbs = [
     {'name': 'Inicio', 'url': '/index_pap'},
@@ -720,7 +723,7 @@ def index_estadistica(request):
 ]
 
     return render(request, 'estadisticas/index_estadistica.html', {'breadcrumbs': breadcrumbs})
-
+@login_required(login_url='/acceso_denegado/')
 def estadisticas_articulos(request):
     articulos = Articulo.objects.all().order_by('-cantidad')  # Puedes ordenar por cantidad, nombre, etc.
     total_cantidad = articulos.aggregate(total=Sum('cantidad'))['total'] or 0
@@ -729,6 +732,7 @@ def estadisticas_articulos(request):
         'total_cantidad': total_cantidad,
     })
 #GRAFIC DE CANTIDAD DE ARTICULOS
+@login_required(login_url='/acceso_denegado/')
 def graficas_articulos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -745,7 +749,7 @@ def graficas_articulos(request):
         'breadcrumbs': breadcrumbs
     })
 #grafica de usuario
-
+@login_required(login_url='/acceso_denegado/')
 def graficas_usuario(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -760,6 +764,7 @@ def graficas_usuario(request):
     return render(request, 'estadisticas/grafica_usuarios.html', {'nombres':nombres,
                                                                   'cantidades': cantidades,
                                                                   'breadcrumbs': breadcrumbs})
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -796,7 +801,7 @@ from django.shortcuts import render
 from django.db.models import Sum
 from django.urls import reverse
 from .models import PedidoArticulo
-
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos_administrativa(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -831,6 +836,7 @@ def grafica_pedidos_administrativa(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos_rues(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -865,6 +871,7 @@ def grafica_pedidos_rues(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos_presidencia(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -899,6 +906,7 @@ def grafica_pedidos_presidencia(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 @never_cache
 def grafica_pedidos_financiera(request):
     breadcrumbs = [
@@ -934,6 +942,7 @@ def grafica_pedidos_financiera(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos_gestion_empresarial(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -969,6 +978,7 @@ def grafica_pedidos_gestion_empresarial(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 def grafica_pedidos_competitividad(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
@@ -1004,6 +1014,7 @@ def grafica_pedidos_competitividad(request):
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin
     })
+@login_required(login_url='/acceso_denegado/')
 def grafica_bajo_Stock(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},

@@ -3,6 +3,7 @@ html {
   justify-content: center;
   align-items: center;
 }
+
 section {
   background: linear-gradient(110deg, #c7def893, #ffffffe8);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
@@ -20,6 +21,7 @@ section {
   box-sizing: border-box;
   overflow: hidden;
 }
+
 .buscador {
   background-color: #ffffff;
   border: none;
@@ -31,11 +33,13 @@ section {
   height: 25px !important;
   box-sizing: border-box;
 }
+
 #filtro-fechas {
   position: absolute;
   right: 300px;
   top: 80px;
 }
+
 .fecha_inicio {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
@@ -208,12 +212,13 @@ section {
   background-color: rgb(190, 190, 3);
   color: white;
 }
+
 .crear {
   background-color: rgb(0, 60, 255);
   border: none;
   width: 10vh;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-right: 1vh;
   position: absolute;
   top: 5vh;
@@ -229,6 +234,7 @@ section {
   color: white;
 
 }
+
 table {
   width: 1180px;
   border-spacing: 10px;
@@ -239,12 +245,14 @@ table {
   position: relative;
 
 }
+
 td,
 th {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .id {
   width: 40px;
   left: 20vh;
@@ -296,6 +304,7 @@ td {
   align-items: center;
 
 }
+
 /* MODAL DE ELIMINAR ARTICULO*/
 .modal {
   position: fixed;
@@ -359,6 +368,7 @@ td {
   cursor: pointer;
   color: white;
 }
+
 .editar-btn {
   background-color: rgb(233, 200, 12);
   border: none;
@@ -387,6 +397,7 @@ td {
   background-color: rgb(190, 190, 3);
   cursor: pointer;
 }
+
 /* Estilos para el modal de detalles */
 #modal-detalles {
   display: none;
@@ -428,6 +439,7 @@ td {
 .cerrar:hover {
   color: red;
 }
+
 .eliminar-btn {
   background-color: rgb(233, 12, 12);
   border: none;
@@ -451,6 +463,7 @@ td {
 #icono {
   height: 3vh;
 }
+
 .paginacion {
   display: flex;
   justify-content: center;
@@ -494,17 +507,24 @@ td {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* Mobile devices (max-width: 767px) */
 @media (max-width: 767px) {
+
+
   section {
-    max-width: 370px;
-    overflow: hidden;
-    overflow-x: scroll;
-    left: 2px;
+    position: relative;
+    top: 22vh;
+    left: 0vh;
+    min-width: 100%;
+    max-width: 95%;
+    min-height: 60vh;
+    max-height: none;
+    padding: 10px;
+    margin: 0 auto;
+    overflow-x: auto;
   }
-  .modal-contenido{
-    left: 16px;
-    width: 310px;
-  }
+
   .pdf,
   .excel,
   .print,
@@ -516,77 +536,136 @@ td {
   }
 
   table {
-
+    width: 120vh;
     left: 5vh;
+    font-weight: bold;
   }
 
   .clean {
-    left: 75vh;
-    top: 16vh;
+    left: 56vh;
+    top: 10vh;
   }
 
   .buscador {
-    top: 15vh;
+    top: 10vh;
     left: 10vh;
   }
 
   .btn-search {
-    top: 16vh;
-    left: 62vh;
-  }
-  #detalles{
-    position: relative;
-    top: 8px;
+    top: 10vh;
+    left: 47vh;
   }
 
   .paginacion {
-    bottom: 90vh;
+    position: relative;
+    bottom: 25vh;
+  }
+
+  .editar-btn,
+  #detalles,
+  .eliminar-btn {
+    width: 45px;
+  }
+
+  .td_acciones {
+    width: 100%;
+    width: 200vh;
+  }
+
+  #detalles {
+    top: 8px;
+    position: relative;
+    height: 30px;
   }
 }
 
 /* Tablet devices (768px to 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
   section {
-    max-width: 780px;
-    overflow: hidden;
+    position: relative;
+    top: 23vh;
+    left: 0;
+    min-width: 100%;
+    max-width: 90%;
+    min-height: 700px;
+    max-height: none;
+    padding: 15px;
+    margin: 0 auto;
     overflow-x: scroll;
-    left: 2px;
   }
 
   .buscador {
-    top: 10vh;
+    top: 12vh;
     left: 10vh;
+    height: 50vh;
+    height: 30px !important;
   }
 
   .btn-search {
-    top: 10vh;
-    left: 62vh;
-    height: 40px;
+    top: 12vh;
+    left: 42vh;
+    height: 30px;
+    width: 80px;
   }
-  .clean{
-    left: 73vh;
-    top: 10vh;
-    height:40px ;
+
+  .clean {
+    left: 52vh;
+    top: 12vh;
+    height: 30px;
+    width: 80px;
   }
-   #filtro-fechas {
+
+  #filtro-fechas {
     display: none;
   }
- .pdf,
- .print,
- .crear,
- .excel{
-  top: 6vh;
- }
- #detalles{
-  top: 15px;
-  position: relative;
-  height: 30px;
- }
- .eliminar-btn,
- .editar-btn{
-  height: 30px;
-  top: 15px;
 
- }
-
+  .pdf {
+    top: 8vh;
+    left: 25vh;
+    height: 30px;
+    width: 70px;
+  }
+  .print{
+    left: 16vh ;
+    top: 8vh;
+    height: 30px;
+    width: 70px;
+  }
+  .excel{
+    left: 35vh;
+    height: 30px;
+    width: 70px;
+    top: 8vh;
+    }
+    .crear{
+      left: 45vh;
+      height: 30px;
+      width: 70px;
+      top: 8vh;
+    }
+  table {
+    font-weight: bold;
+    font-size: larger;
+    width: 100vh;
+    top: 10vh;
+  }
+   .paginacion {
+    position: relative;
+    bottom: 15vh;
+    font-size: larger;
+  }
+  .editar-btn,
+  .eliminar-btn,
+  #detalles{
+    width: 55px;
+  }
+   #detalles {
+    top: 10px;
+    position: relative;
+    height: 30px;
+  }
+  .modal-contenido{
+    left: 18vh;
+    width: 300px;
+  }
 }

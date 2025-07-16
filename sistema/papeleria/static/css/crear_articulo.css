@@ -87,7 +87,8 @@ button[type="submit"]:disabled {
 .error-precio,
 .error-cantidad,
 .error-proveedor,
-.error-observacion {
+.error-observacion,
+.error-presentacion {
     color: #ff0101;
     font-weight: bold;
     position: relative;

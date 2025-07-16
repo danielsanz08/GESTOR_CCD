@@ -1,78 +1,28 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% block titulo %}Listado de productos{% endblock %}
+{% block titulo %}Listar productos{% endblock %}
 {% block contenido %}
-<style>
-    #filtro-fechas {
-        margin-top: 10px;
-    }
-
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-
-        h1,
-        table,
-        table * {
-            visibility: visible;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-            border: 1px solid black;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 6px;
-            text-align: center;
-        }
-
-        #btn-print,
-        .Bototnes,
-        form,
-        .paginacion,
-        .fondo,
-        .modal {
-            display: none !important;
-        }
-    }
-</style>
-
 <link rel="stylesheet" href="{% static 'css/listar_articulo.css' %}?v={% now 'U' %}">
 
 <div class="fondo">
     <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
 </div>
 
-<section>
+<section id="section">
     <h1>Productos de cafeteria y aseo</h1>
 
-    <div class="Bototnes">
-        <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
-        <a
-            href="{% url 'cafeteria:reporte_productos_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-            <button class="pdf" title="Exportar a PDF">
-                <i class="fas fa-file-pdf text-white"></i>
-            </button>
-        </a>
-
-        <a
-            href="{% url 'cafeteria:reporte_productos_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
-            <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
-        </a>
-        <a href="{% url 'cafeteria:crear_producto' %}"><button class="crear" title="Crear producto"><i
-                    class="bi bi-plus-circle"></i></button></a>
-    </div>
+    <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
+    <a
+        href="{% url 'cafeteria:reporte_productos_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+        <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
+    </a>
+    <a
+        href="{% url 'cafeteria:reporte_productos_excel' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+        <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
+    </a>
+    <a href="{% url 'cafeteria:crear_producto' %}">
+        <button class="crear" title="Crear articulo"><i class="bi bi-plus-circle"></i></button>
+    </a>
 
     <form method="GET" action="{% url 'cafeteria:listar_productos' %}">
         <div>
@@ -83,12 +33,10 @@
             </button>
 
             <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
+                <label for="fecha_inicio" class="desde">Desde:</label>
                 <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-
-                <label for="fecha_fin">Hasta:</label>
+                <label for="fecha_fin" class="hasta">Hasta:</label>
                 <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
-
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
                 </button>
@@ -96,61 +44,70 @@
 
             <a href="{% url 'cafeteria:listar_productos' %}">
                 <button type="button" class="clean" title="Limpiar búsqueda">
-                    <i class="fas fa-trash text-white" title="Eliminar"></i>
+                    <i class="fas fa-trash text-white"></i>
                 </button>
             </a>
         </div>
     </form>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="id">ID</th>
-                <th class="nombre">Nombre</th>
-                <th class="marca">Marca</th>
-                <th class="precio">Precio</th>
-                <th class="cantidad">Cantidad</th>
-                <th class="estado">Registrado por</th>
-                
-                <th class="editar">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-            <tr>
-                <td>{{ producto.id }}</td>
-                <td>{{ producto.nombre }}</td>
-                <td>{{ producto.marca }}</td>
-                <td>${{ producto.precio_formateado }}</td>
-                <td>{{ producto.cantidad }}</td>
-                
-                <td>{{ producto.registrado_por }}</td>
-                
-                <td class="td_acciones">
-                    <a href="{% url 'cafeteria:editar_producto' producto.id %}">
-                        <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>
-                    </a>
-                    <button class="eliminar-btn" onclick="mostrarModal('{{ producto.id }}')">
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th class="id">ID</th>
+                    <th class="nombre">Nombre</th>
+                    <th class="marca">Marca</th>
+                    <th class="cantidad">Cantidad</th>
+                    <th class="tipo" style="width: 15vh;">Tipo</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td class="td_marca">{{ producto.marca }}</td>
+                    <td class="td_cantidad" style="width: 15vh;">{{ producto.cantidad }}</td>
+                    <td class="td_tipo">${{ producto.precio_formateado }}</td>
+                    <td class="td_acciones">
+                        <a href="{% url 'cafeteria:editar_producto' producto.id %}">
+                            <button class="editar-btn"><i class="bi bi-pencil-square"></i></button>
+                        </a>
+                        <button class="eliminar-btn" onclick="mostrarModal('{{ producto.id }}')">
                         <i class="bi bi-trash"></i>
                     </button>
-                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> <i class="fas fa-eye"></i></button>
-                                        <div id="detalles-{{ pedido.id }}" class="detalles-ocultos">
-                        <p class="registrado"><strong>Fecha de registro:</strong> {{ producto.fecha_formateada }}</p>
-                        <p class="fecha_pedido"><strong>Proveedor:</strong> {{ producto.proveedor }}</p>
-                        <p class="estado_d"><strong >Unidad de medida:</strong> {{ producto.unidad_medida }}</p>
-                        <p class="estado_d"><strong >Presentación:</strong> {{ producto.presentacion_formateada }}</p>
-                    </div>
-                </td>
+                        <button type="button" id="detalles" onclick="mostrarDetalles('{{ articulo.id }}')">
+                            <i data-feather="eye" class="icono"></i>
+                        </button>
+                    </td>
+                </tr>
+                <!-- Bloque oculto para detalles del artículo -->
+                <tr style="display: none;">
+                    <td colspan="6">
+                        <div id="detalles-{{ articulo.id }}">
+                            <p><strong>ID:</strong> {{ producto.id }}</p>
+                            <p><strong>Producto:</strong> {{ producto.nombre }}</p>
+                            <p><strong>Marca:</strong> {{ producto.marca }}</p>
+                            <p><strong>Precio:</strong> ${{ producto.precio_formateado }}</p>
+                            <p><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
+                            <p><strong>Unidad de medida:</strong> {{ producto.unidad_medida }}</p>
+                            <p><strong>Proveedor:</strong> {{ producto.proveedor }}</p>
+                            <p><strong>Presentación:</strong> {{ producto.presentacion_formateada }}</p>
+                            <p><strong>Registrado por:</strong> {{ producto.registrado_por }}</p>
+                            <p><strong>Fecha de creación:</strong> {{ producto.fecha_formateada }}</p>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No se encontraron resultados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9">No se encontraron resultados</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-<div class="paginacion" id="pag">
+    <div class="paginacion" id="pag">
     {% if productos.has_previous %}
         <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
@@ -165,9 +122,10 @@
 </div>
 
 
+    <!-- Modal para eliminar -->
     <div id="modoEliminar" class="modal" style="display: none;">
         <div class="modal-contenido">
-            <h2>¿Estás seguro de eliminar este producto?</h2>
+            <h4>¿Estás seguro de eliminar este producto?</h4>
             <form id="formEliminar" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn-delete">Eliminar</button>
@@ -175,19 +133,34 @@
             </form>
         </div>
     </div>
-<!-- Modal -->
-<div id="modal">
-    <div id="modal-content"></div>
-    <button onclick="cerrarModal()">Cerrar</button>
-</div>
 
-<!-- Fondo oscuro detrás del modal -->
-<div id="modal-backdrop" onclick="cerrarModal()"></div>
+    <!-- Modal para detalles -->
+    <div id="modal-detalles">
+        <span class="cerrar" onclick="cerrarModalDetalles()">&times;</span>
+        <div id="modal-detalles-content"></div>
+    </div>
+    <div id="modal-detalles-backdrop"></div>
+</section>
 
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
 
+    function mostrarDetalles(id) {
+        var contenido = document.getElementById("detalles-" + id).innerHTML;
+        document.getElementById("modal-detalles-content").innerHTML = contenido;
+        document.getElementById("modal-detalles").style.display = "block";
+        document.getElementById("modal-detalles-backdrop").style.display = "block";
+    }
 
-    <script>
-        function mostrarModal(id) {
+    function cerrarModalDetalles() {
+        document.getElementById("modal-detalles").style.display = "none";
+        document.getElementById("modal-detalles-backdrop").style.display = "none";
+    }
+
+    function mostrarModal(id) {
             const modal = document.getElementById("modoEliminar");
             const formEliminar = document.getElementById("formEliminar");
             formEliminar.action = `{% url 'cafeteria:eliminar_productos' 0 %}`.replace(/0/, id);
@@ -198,90 +171,80 @@
             document.getElementById("modoEliminar").style.display = "none";
         }
 
-        document.querySelector('.print').addEventListener('click', function () {
-            const contenidoOriginal = document.body.innerHTML;
-            const titulo = document.querySelector('h1').outerHTML;
-            const tabla = document.querySelector('table').outerHTML;
+    document.querySelector('.print').addEventListener('click', function () {
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
 
-            const fondo = `
-                <div class="fondo">
-                    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
-                </div>
-            `;
+        const fondo = `
+            <div class="fondo">
+                <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+            </div>
+        `;
 
-            const estiloImpresion = `
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        text-align: center;
-                        position: relative;
-                    }
-                    h1 {
-                        margin-bottom: 20px;
-                        position: relative;
-                        z-index: 2;
-                    }
-                    table {
-                        margin: auto;
-                        width: 90%;
-                        border-collapse: collapse;
-                        position: relative;
-                        z-index: 2;
-                    }
-                    th, td {
-                        border: 1px solid black;
-                        padding: 8px;
-                        text-align: center;
-                    }
-                    thead {
-                        background-color: rgba(61, 43, 226, 0.411);
-                    }
-                    .fondo {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        z-index: 1;
-                        opacity: 0.1;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                    .fondo img {
-                        max-width: 80%;
-                        max-height: 80%;
-                        object-fit: contain;
-                    }
-                    .td_acciones, .editar {
-                        display: none;
-                    }
-                </style>
-            `;
+        const estiloImpresion = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    position: relative;
+                }
+                h1 {
+                    margin-bottom: 20px;
+                    position: relative;
+                    z-index: 2;
+                }
+                table {
+                    margin: auto;
+                    width: 90%;
+                    border-collapse: collapse;
+                    position: relative;
+                    z-index: 2;
+                }
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: center;
+                }
+                thead {
+                    background-color: rgba(61, 43, 226, 0.411);
+                }
+                .fondo {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                    opacity: 0.1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .fondo img {
+                    max-width: 80%;
+                    max-height: 80%;
+                    object-fit: contain;
+                }
+                th:nth-child(n+6),
+                td:nth-child(n+6) {
+                    display: none !important;
+                }
+            </style>
+        `;
 
-            const ventanaImpresion = window.open('', '', 'height=700,width=900');
-            ventanaImpresion.document.write('<html><head><title>Listado de productos</title>');
-            ventanaImpresion.document.write(estiloImpresion);
-            ventanaImpresion.document.write('</head><body>');
-            ventanaImpresion.document.write(fondo);
-            ventanaImpresion.document.write(titulo);
-            ventanaImpresion.document.write(tabla);
-            ventanaImpresion.document.write('</body></html>');
-            ventanaImpresion.document.close();
-            ventanaImpresion.focus();
-            ventanaImpresion.print();
-            ventanaImpresion.close();
-        });
-          function mostrarDetalles(id) {
-        var contenido = document.getElementById("detalles-" + id).innerHTML;
-        document.getElementById("modal-content").innerHTML = contenido;
-        document.getElementById("modal").style.display = "block";
-        document.getElementById("modal-backdrop").style.display = "block";
-    }
-
-    function cerrarModal() {
-        document.getElementById("modal").style.display = "none";
-        document.getElementById("modal-backdrop").style.display = "none";
-    }
-    </script>
-    {% endblock %}
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de artículos</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);
+        ventanaImpresion.document.write(titulo);
+        ventanaImpresion.document.write(tabla);
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+    });
+</script>
+{% endblock %}

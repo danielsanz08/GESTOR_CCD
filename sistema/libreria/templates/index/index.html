@@ -3,51 +3,49 @@
 {% block titulo %}GESTOR CCD{% endblock %}
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/index.css' %}?v={% now 'U' %}">
-<body>
-    <div class="contenedor-principal">
-        <!-- Botón "Regístrate" en esquina superior derecha -->
-        <a href="{% url 'libreria:crear_usuario' %}" class="registrate">Registrate</a>
+<div class="contenedor-principal">
+    <!-- Botón "Regístrate" en esquina superior derecha -->
+    <a href="{% url 'libreria:crear_usuario' %}" class="registrate">Registrate</a>
 
-        <!-- Div izquierdo (Logo) -->
-        <div class="div-izquierdo">
-            <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD">
-        </div>
+    <!-- Div izquierdo (Logo) -->
+    <div class="div-izquierdo">
+        <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD">
+    </div>
 
-        <!-- Div derecho (Secciones) -->
-        <div class="div-derecho">
-            <a href="{% url 'papeleria:login_papeleria' %}">
-                <div class="seccion" onclick="location.href='#';">
+    <!-- Div derecho (Secciones) -->
+    <div class="div-derecho">
+        <a href="{% url 'papeleria:login_papeleria' %}">
+            <div class="seccion" onclick="location.href='#';">
                 <h2>Papelería</h2>
                 <p>Gestión completa de productos y servicios de papelería</p>
             </div>
-            </a>
-            <a href="{% url 'cafeteria:login_cafeteria' %}">
-                <div class="seccion" >
+        </a>
+        <a href="{% url 'cafeteria:login_cafeteria' %}">
+            <div class="seccion">
                 <h2>Cafetería</h2>
                 <p>Administración de menú, pedidos y ventas de cafetería</p>
             </div>
-            </a>
-            <a href="{% url 'cde:login_cde' %}">
-                <div class="seccion" >
+        </a>
+        <a href="{% url 'cde:login_cde' %}">
+            <div class="seccion">
                 <h2>Centro de Eventos</h2>
                 <p>Control de reservas y gestión de eventos</p>
             </div>
-            </a>
-        </div>
+        </a>
     </div>
-
-    <script>
-        // Efecto hover para móviles
-        document.querySelectorAll('.seccion').forEach(section => {
-            section.addEventListener('touchstart', function() {
-                this.classList.add('hover-effect');
-            });
-            
-            section.addEventListener('touchend', function() {
-                setTimeout(() => {
-                    this.classList.remove('hover-effect');
-                }, 150);
-            });
+</div>
+<script>
+    // Efecto hover para móviles
+    document.querySelectorAll('.seccion').forEach(section => {
+        section.addEventListener('touchstart', function () {
+            this.classList.add('hover-effect');
         });
-    </script>
-    {% endblock %}
+
+        section.addEventListener('touchend', function () {
+            setTimeout(() => {
+                this.classList.remove('hover-effect');
+            }, 150);
+        });
+    });
+</script>
+{% endblock %}

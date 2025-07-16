@@ -57,15 +57,11 @@
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Nombre</th>
-                <th>Unidad de medida</th>
                 <th class="marca">Marca</th>
                 <th class="precio">Precio</th>
                 <th class="cantidad">Cantidad</th>
                 <th>Provedor</th>
-                <th class="observacion">Presentación</th>
-                <th class="estado">Registrado por</th>
                 <th class="actividad">Fecha de registro</th>
-                <th class="editar">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -85,7 +81,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8">No se encontraron resultados</td>
+                <td colspan="8" class="">No se encontraron resultados</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,0 +1,329 @@
+[
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$ftXenUpxymjELJ27tApvUH$sgZGBv/twhYBCAgbBnNyTAcHday/NGWMJpOAdG4i9s0=",
+        "last_login": "2025-07-16T14:01:31.883Z",
+        "is_superuser": false,
+        "username": "Daniel Sanchez",
+        "email": "jonnathansz73@gmail.com",
+        "role": "Administrador",
+        "area": "Administrativa",
+        "cargo": "Aprendiz sena",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$v8yZB3DvMHKkWJRbBIbh5B$3Rq0lXL5nmxNy8du5aPYi8cA6aO3W7dFKeRgot0issI=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Viviana Rodriguez",
+        "email": "viviana@gmail.com",
+        "role": "Empleado",
+        "area": "Administrativa",
+        "cargo": "Asistente en gestion documental",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$XaxFTHY78rar0iX5NzJ1Y3$xX0SDEkSgeFJw7oKjDhw2PZBREobdnlA7PflKqBkW14=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Carlos Andres Orozco",
+        "email": "carlos@gmail.com",
+        "role": "Empleado",
+        "area": "Administrativa",
+        "cargo": "Auxiliar en gestion documental",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$Nzx3vHs02JsaQZjg8Tcjr9$Ls9xhfEE0gw5+mrOgRZ6QMNogFr2Qv3UaDzt3qpBXDs=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Diego Higuera",
+        "email": "diego@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Auxiliar rues",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$sJt9K8MBj8ILQAWborKymk$pVV4vGLeR3eAeXEGPn06pTqsHSB6TfGwVWOg/is1uE8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Carolina Rua",
+        "email": "carolina@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Auxiliar rues",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$3uNPsC5LopOnmU0Hm4HYsn$RFfz2oarPKw3I3lyAq8Ky8S9UooQfubDSYBPdl58dLI=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Camila Ortega",
+        "email": "camila@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Asistente de comunicaciones",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$f8oegzGiHuPHkGiapAm60c$ymbegzbzQh4zp7FsSqVdSEaNgRYlpAqEeGP8j1pGpz4=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Daniel Vargas",
+        "email": "daniel@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Auxiliar de comunicaciones",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$GXhW15jIWbG8V5c9Y5sMjT$a7QV6tymBvViDB15vfQDuswJKYuWC3REUFIbkd/mAQA=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Diana C. Gomez",
+        "email": "diana@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Asistente en gestion empresarial",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$v8Nxg4httKepKVyYn37qPt$wNB91lRKbkF/WNqAn3QXlk0ofNCO/at3i9QMVm6o6Gw=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Freddy Monsalve",
+        "email": "freddy@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Auxiliar en gestion empresarial",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$twCNVwSCIolNQsu25zjoJc$5HWzQVgoETArhlto5O5JvTCBqYvl2hQFC0T7MSHlAwg=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Beatriz Sanabria",
+        "email": "beatriz@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Tesorera",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$HBI1SGvYLFMuxJlcaN5Bt5$Ecir4kPpDRCLhcKFVwZdVsdo0vWWGWh+if9+mR8roxw=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Freddy Camargo",
+        "email": "freddyc@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Auxiliar contable",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$KPGMlPSN4yCwfwSPfytdvp$nOYApJJqM4xF16webpOfbaHRJpJTQNZxZlJ63xSl318=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Hector Garcia",
+        "email": "hector@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Asistente en competitividad",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$HZOLk84uITBdy1Bsxrxzhh$KB6Wm3UoXTY14gDsnX5lfgeOfjoNphWUKMBXp04a1P8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Brayan Ceron",
+        "email": "brayan@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Supernumerario en competividad",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 1,
+    "fields": {
+        "nombre": "Resma de papel",
+        "marca": "Norma",
+        "observacion": "No hay",
+        "tipo": "No establecido",
+        "precio": 2000,
+        "cantidad": 32,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 1,
+    "fields": {
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T13:58:21.229Z",
+        "fecha_estado": "2025-07-16T13:58:21.229Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 1,
+    "fields": {
+        "pedido": 1,
+        "articulo": 1,
+        "cantidad": 1,
+        "tipo": "No establecido",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "backup.backup",
+    "pk": 1,
+    "fields": {
+        "nombre": "Fgfg",
+        "archivo": "backups/backup_db_20250716_090506.json",
+        "tamano": "0.01 MB",
+        "modelos_incluidos": "libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)",
+        "fecha_creacion": "2025-07-16T14:05:06.477Z",
+        "creado_por": [
+            "jonnathansz73@gmail.com"
+        ]
+    }
+}
+]

@@ -82,9 +82,20 @@
                     </td>
                 </tr>
                 <!-- Bloque oculto para detalles del artículo -->
+                <style>
+                    .detalle-header {
+                        border-bottom: 2px solid #ccc;
+                        /* línea inferior */
+                        padding-bottom: 5px;
+                        margin-bottom: 15px;
+                        text-align: center;
+                        color: blue;
+                    }
+                </style>
                 <tr style="display: none;">
                     <td colspan="6">
                         <div id="detalles-{{ articulo.id }}">
+                            <h4 class="detalle-header">Detalles</h4>
                             <p><strong>ID:</strong> {{ articulo.id }}</p>
                             <p><strong>Nombre:</strong> {{ articulo.nombre }}</p>
                             <p><strong>Marca:</strong> {{ articulo.marca }}</p>

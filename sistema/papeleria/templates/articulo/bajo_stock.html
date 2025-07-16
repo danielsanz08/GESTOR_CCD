@@ -1,10 +1,14 @@
 {% extends 'navbar.html' %}
-{% load static%}
-{% block titulo %}Stock bajo {% endblock %}
+{% load static %}
+{% block titulo %}Listar articulos{% endblock %}
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/stock_bajo.css' %}?v={% now 'U' %}">
-<section>
+<link rel="stylesheet" href="{% static 'css/listar_articulo.css' %}?v={% now 'U' %}">
 
+<div class="fondo">
+    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+</div>
+
+<section id="section">
     <h2>Articulos con stock bajo</h2>
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
@@ -60,11 +64,9 @@
                     <th class="id">ID</th>
                     <th class="nombre">Nombre</th>
                     <th class="marca">Marca</th>
-                    <th class="cantidad">cantidad</th>
-                    <th class="precio">Precio</th>
-                    <th class="registrado_por">Registrado por</th>
-                    <th class="fecha">Fecha de registro</th>
-                    <th class="observacion">Observacion</th>
+                    <th class="cantidad">Cantidad</th>
+                    <th class="tipo" style="width: 15vh;">Tipo</th>
+                    <th class="acciones"></th>
                 </tr>
             </thead>
             <tbody>
@@ -72,22 +74,43 @@
                 <tr>
                     <td>{{ articulo.id }}</td>
                     <td>{{ articulo.nombre }}</td>
-                    <td>{{ articulo.marca }}</td>
-                    <td>{{ articulo.cantidad }}</td>
-                    <td>${{ articulo.precio }}</td>
-                    <td>{{ articulo.registrado_por }}</td>
-                    <td>{{ articulo.fecha_registro }}</td>
-                    <td>{{ articulo.observacion }}</td>
-
+                    <td class="td_marca">{{ articulo.marca }}</td>
+                    <td class="td_cantidad" style="width: 15vh;">{{ articulo.cantidad }}</td>
+                    <td class="td_tipo">{{ articulo.tipo }}</td>
+                    <td class="td_acciones">
+                       
+                        <button type="button" id="detalles" onclick="mostrarDetalles('{{ articulo.id }}')">
+                            <i data-feather="eye" class="icono"></i>
+                        </button>
+                    </td>
+                </tr>
+                <!-- Bloque oculto para detalles del artículo -->
+                <tr style="display: none;">
+                    <td colspan="6">
+                        <div id="detalles-{{ articulo.id }}">
+                            <h5 class="detalle-header">Detalles</h5>
+                            <p><strong>ID:</strong> {{ articulo.id }}</p>
+                            <p><strong>Nombre:</strong> {{ articulo.nombre }}</p>
+                            <p><strong>Marca:</strong> {{ articulo.marca }}</p>
+                            <p><strong>Precio:</strong> {{ articulo.precio_formateado }}</p>
+                            <p><strong>Cantidad:</strong> {{ articulo.cantidad }}</p>
+                            <p><strong>Tipo:</strong> {{ articulo.tipo }}</p>
+                            <p><strong>Proveedor:</strong> {{ articulo.proveedor }}</p>
+                            <p><strong>Observación:</strong> {{ articulo.observacion }}</p>
+                            <p><strong>Registrado por:</strong> {{articulo.registrado_por }}</p>
+                            <p><strong>Fecha de creación:</strong> {{ articulo.fecha_registro }}</p>
+                        </div>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8">No se encontraron resultados</td>
+                    <td colspan="6">No se encontraron resultados</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
     <div class="paginacion" id="pag">
         {% if articulos.has_previous %}
         <a href="?page={{ articulos.previous_page_number }}{{ query_params }}">Anterior</a>
@@ -106,6 +129,128 @@
     </div>
 
 
+    <!-- Modal para eliminar -->
+    <div id="modoEliminar" class="modal" style="display: none;">
+        <div class="modal-contenido">
+            <h4>¿Estás seguro de eliminar este artículo?</h4>
+            <form id="formEliminar" method="POST" action="{% url 'papeleria:eliminar_articulo' 0 %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-delete">Eliminar</button>
+                <button class="back" type="button" onclick="cerrarModalEliminar()">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
+    <!-- Modal para detalles -->
+    <div id="modal-detalles">
+        <span class="cerrar" onclick="cerrarModalDetalles()">&times;</span>
+        <div id="modal-detalles-content"></div>
+    </div>
+    <div id="modal-detalles-backdrop"></div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+
+    function mostrarDetalles(id) {
+        var contenido = document.getElementById("detalles-" + id).innerHTML;
+        document.getElementById("modal-detalles-content").innerHTML = contenido;
+        document.getElementById("modal-detalles").style.display = "block";
+        document.getElementById("modal-detalles-backdrop").style.display = "block";
+    }
+
+    function cerrarModalDetalles() {
+        document.getElementById("modal-detalles").style.display = "none";
+        document.getElementById("modal-detalles-backdrop").style.display = "none";
+    }
+
+    function mostrarModalEliminar(id) {
+        var form = document.getElementById("formEliminar");
+        form.action = form.action.replace('/0', '/' + id);
+        document.getElementById("modoEliminar").style.display = "block";
+    }
+
+    function cerrarModalEliminar() {
+        document.getElementById("modoEliminar").style.display = "none";
+    }
+
+    document.querySelector('.print').addEventListener('click', function () {
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
+
+        const fondo = `
+            <div class="fondo">
+                <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+            </div>
+        `;
+
+        const estiloImpresion = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    position: relative;
+                }
+                h1 {
+                    margin-bottom: 20px;
+                    position: relative;
+                    z-index: 2;
+                }
+                table {
+                    margin: auto;
+                    width: 90%;
+                    border-collapse: collapse;
+                    position: relative;
+                    z-index: 2;
+                }
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: center;
+                }
+                thead {
+                    background-color: rgba(61, 43, 226, 0.411);
+                }
+                .fondo {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                    opacity: 0.1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .fondo img {
+                    max-width: 80%;
+                    max-height: 80%;
+                    object-fit: contain;
+                }
+                th:nth-child(n+6),
+                td:nth-child(n+6) {
+                    display: none !important;
+                }
+            </style>
+        `;
+
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de artículos</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);
+        ventanaImpresion.document.write(titulo);
+        ventanaImpresion.document.write(tabla);
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+    });
+</script>
 {% endblock %}

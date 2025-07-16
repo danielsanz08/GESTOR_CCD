@@ -483,7 +483,7 @@ td {
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
   position: relative;
-  top: 290px;
+  top: 40px;
 }
 
 .paginacion a:hover {
@@ -507,7 +507,6 @@ td {
   cursor: not-allowed;
   pointer-events: none;
 }
-
 /* Mobile devices (max-width: 767px) */
 @media (max-width: 767px) {
 

@@ -525,7 +525,6 @@ def cambiar_estado_pedido(request, pedido_id):
 
             usuario = pedido.registrado_por
             if usuario and usuario.email:
-                # Generamos el HTML directamente en el view
                 articulos_lista = "\n".join(
                     f"<li class='articulo-item'>{articulo.cantidad} {articulo.articulo.nombre}</li>"
                     for articulo in pedido.articulos.all()
@@ -555,7 +554,6 @@ def cambiar_estado_pedido(request, pedido_id):
             overflow: hidden;
         }}
         .header {{
-            
             color: white;
             padding: 20px;
             text-align: center;
@@ -577,7 +575,6 @@ def cambiar_estado_pedido(request, pedido_id):
             text-align: center;
         }}
         .status.confirmado {{
-            
             color: #155724;
         }}
         .status.cancelado {{
@@ -614,7 +611,6 @@ def cambiar_estado_pedido(request, pedido_id):
             border-top: 1px solid #e9ecef;
             background-color: #f8f9fa;
         }}
-       
     </style>
 </head>
 <body>
@@ -639,11 +635,7 @@ def cambiar_estado_pedido(request, pedido_id):
             </ul>
             </div>
             
-            
-            
             <p>Para más información, puedes acceder al sistema de gestión de pedidos.</p>
-            
-            
         </div>
         
         <div class="footer">
@@ -655,7 +647,6 @@ def cambiar_estado_pedido(request, pedido_id):
 </html>
                 """
 
-                # Versión de texto plano para clientes de email que no soportan HTML
                 text_content = f"""
 Actualización de Estado de Pedido
 
@@ -675,16 +666,22 @@ Para más información, puedes acceder al sistema de gestión de pedidos.
 © {datetime.now().year} Gestor CCD - Todos los derechos reservados
                 """
 
-                send_mail(
-                    subject=f'[Pedido #{pedido.id}] Estado actualizado a {pedido.estado.upper()}',
-                    message=text_content,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[usuario.email],
-                    fail_silently=False,
-                    html_message=html_content
-                )
+                try:
+                    send_mail(
+                        subject=f'[Pedido #{pedido.id}] Estado actualizado a {pedido.estado.upper()}',
+                        message=text_content,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[usuario.email],
+                        fail_silently=False,
+                        html_message=html_content
+                    )
+                    messages.success(request, 'Estado del pedido actualizado y notificación enviada.')
+                except TimeoutError:
+                    messages.error(request, 'Estado actualizado, pero hubo un error al enviar el correo electrónico.')
 
-            messages.success(request, 'Estado del pedido actualizado y notificación enviada.')
+            else:
+                messages.success(request, 'Estado del pedido actualizado.')
+
             return redirect('papeleria:pedidos_pendientes')
 
     messages.error(request, 'No se pudo actualizar el estado del pedido.')
@@ -1153,7 +1150,7 @@ def wrap_text(text, max_len=20):
         parts[i] += '-'  # Agrega guion al final de todas menos la última
     return '\n'.join(parts)
 #EXCLUSIVAMENTE PARA PEDIDOS 
-def wrap_text_p(text, max_len=26
+def wrap_text_p(text, max_len=24
                 ):
     parts = [text[i:i+max_len] for i in range(0, len(text), max_len)]
     for i in range(len(parts) - 1):
@@ -1183,7 +1180,7 @@ def get_articulos_filtrados(request):
 
     if query:
         articulos = articulos.filter(
-           Q(nombre__icontains=query) |
+            Q(nombre__icontains=query) |
             Q(marca__icontains=query) |
             Q(observacion__icontains=query) |
             Q(tipo__icontains=query) |
@@ -1312,21 +1309,13 @@ def reporte_articulo_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="Listado de articulos CCD.pdf"'
     return response
 def reporte_articulo_excel(request):
-    
-    articulos = Articulo.objects.all()
-
-    # Aplicar filtros
     articulos = get_articulos_filtrados(request)
-    # Si necesitas aplicar filtros adicionales específicos para el Excel
-    marca = request.GET.get('marca', '').strip()
-    if marca:
-        articulos = articulos.filter(marca__icontains=marca)
+
     # Crear Excel
     wb = Workbook()
     ws = wb.active
     ws.title = "Listado de Artículos CCD"
 
-    # Borde común
     border = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -1334,7 +1323,6 @@ def reporte_articulo_excel(request):
         bottom=Side(style='thin')
     )
 
-    # Tamaño columnas
     ws.column_dimensions['A'].width = 10
     ws.column_dimensions['B'].width = 40
     ws.column_dimensions['C'].width = 20
@@ -1346,26 +1334,22 @@ def reporte_articulo_excel(request):
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Título
     ws.merge_cells('A1:G1')
     ws['A1'] = "GESTOR CCD"
     ws['A1'].font = Font(size=24, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Subtítulo
     ws.merge_cells('A2:G2')
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
     ws['A2'] = f"Listado de Artículos {fecha_actual}"
     ws['A2'].font = Font(size=18)
     ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Borde A1:G2
     for row in [1, 2]:
         for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
             ws[f"{col}{row}"].border = border
             ws[f"{col}{row}"].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Encabezados
     headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
     ws.append(headers)
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
@@ -1377,7 +1361,6 @@ def reporte_articulo_excel(request):
         cell.alignment = Alignment(horizontal='center', vertical='center')
         cell.border = border
 
-    # Datos
     for articulo in articulos:
         ws.append([
             wrap_text(str(articulo.id)),
@@ -1386,23 +1369,21 @@ def reporte_articulo_excel(request):
             wrap_text(articulo.tipo),
             wrap_text("{:,}".format(articulo.precio)),
             wrap_text(str(articulo.cantidad)),
-            wrap_text(articulo.observacion),
+            str((articulo.observacion)),
         ])
 
-    # Estilo de celdas de datos (todo centrado)
     for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
         for cell in row:
             cell.border = border
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    # Exportar
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     response['Content-Disposition'] = 'attachment; filename="Listado de articulos CCD.xlsx"'
     wb.save(response)
     return response
-    
+
 
 #PDF Y XSLS DE PEDIDOS
 def get_pedidos_filtrados(request):
@@ -1786,7 +1767,7 @@ def reporte_pedidos_pendientes_pdf(request):
         # Filas de pedidos
         for pedido in pedidos:
             articulos_raw = ", ".join([
-                f"{pa.cantidad} {pa.articulo.nombre}({pa.tipo})"
+                f"{pa.cantidad} {pa.articulo.nombre} {pa.tipo}"
                 for pa in pedido.articulos.all()
             ]) or 'Sin artículos'
             articulos_text = wrap_text_p(articulos_raw)
@@ -1825,7 +1806,7 @@ def reporte_pedidos_pendientes_pdf(request):
 
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Pedidos pendientes CCD.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes CCD.pdf"'
     return response
 
 
@@ -1891,7 +1872,7 @@ def reporte_pedidos_pendientes_excel(request):
     else:
         for pedido in pedidos:
             articulos_raw = ", ".join([
-                f"{pa.articulo.nombre} x {pa.cantidad} ({pa.tipo})"
+                f"{pa.cantidad} {pa.articulo.nombre} {pa.tipo}"
                 for pa in pedido.articulos.all()
             ])
             areas_raw = ", ".join(set(str(pa.area) for pa in pedido.articulos.all()))
@@ -1923,7 +1904,7 @@ def reporte_pedidos_pendientes_excel(request):
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = 'attachment; filename="Reporte_pedidos_pendientes.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Reporte pedidos pendientes papeleria.xlsx"'
     wb.save(response)
     return response
 #PDF Y XSLS DE BAJO STOCK

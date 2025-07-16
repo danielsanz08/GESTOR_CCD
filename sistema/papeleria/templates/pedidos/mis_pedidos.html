@@ -162,7 +162,7 @@
                                 {% with areas=pedido.articulos.all|dictsort:"area" %}
                                 {% for articulo in areas %}
                                 {% ifchanged articulo.area %}
-                                {{ articulo.area }}{% if not forloop.last %}, {% endif %}
+                                {{ articulo.area }}{% if not forloop.last %} {% endif %}
                                 {% endifchanged %}
                                 {% empty %}
                                 No hay áreas

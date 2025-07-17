@@ -618,6 +618,9 @@ td {
     top: 10vh;
     left: 47vh;
   }
+    .td_editar{
+    width: 33vh;
+  }
 }
 /* Tablet devices (768px to 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {

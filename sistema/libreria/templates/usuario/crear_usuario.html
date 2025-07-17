@@ -8,70 +8,71 @@ Crear usuario papelería
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% if user.is_authenticated %}
 <div class="formulario">
-        <h2 class="titulo">Crear Usuario Papeleria</h2>
-        <form id="userForm" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_username" class="form-label">Nombre de usuario:</label>
-                <input type="text" id="id_username" name="username" class="form-control" required autocomplete="off"
-                    placeholder="Ingrese su usuario" maxlength="40">
-                <div id="error_username" class="error-message"></div>
+    <h2 class="titulo">Crear Usuario Papeleria</h2>
+    <form id="userForm" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_username" class="form-label">Nombre de usuario:</label>
+            <input type="text" id="id_username" name="username" class="form-control" required autocomplete="off"
+                placeholder="Ingrese su usuario" maxlength="40">
+            <div id="error_username" class="error-message"></div>
+        </div>
+
+        <div class="form-group" id="rol">
+            <label for="id_role" class="form-label">Rol:</label>
+            <select id="id_role" name="role" class="form-select" required>
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="Administrador">Administrador</option>
+                <option value="Empleado">Empleado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="id_cargo" class="form-label">Cargo:</label>
+            <input type="text" id="id_cargo" name="cargo" class="form-control" required autocomplete="off"
+                placeholder="Ingrese su cargo" maxlength="50">
+            <div id="error_cargo" class="error-message"></div>
+        </div>
+
+        <div class="form-group" id="area">
+            <label for="id_area" class="form-label">Área:</label>
+            <select id="id_area" name="area" class="form-select" required>
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="Administrativa">Administrativa</option>
+                <option value="Registros públicos">Registros públicos</option>
+                <option value="Gestión empresarial">Gestión empresarial</option>
+                <option value="Competitividad">Competitividad</option>
+                <option value="Presidencia">Presidencia</option>
+                <option value="Financiera">Financiera</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="id_email" class="form-label">Correo:</label>
+            <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
+                placeholder="Ingrese su correo" maxlength="70">
+            <div id="error_email" class="error-message"></div>
+        </div>
+
+        <div class="form-group" id="password-group">
+            <label for="id_password" class="form-label">Contraseña:</label>
+            <input type="password" id="id_password" name="password" class="form-control" required
+                autocomplete="new-password" placeholder="Ingrese su contraseña">
+            <div id="error_password" class="error-message"></div>
+            <div id="verification-indicator" class="verification-indicator">
+                Verificando contraseña...
             </div>
+            <div id="password-feedback" class="password-feedback" aria-live="polite"></div>
+        </div>
 
-            <div class="form-group" id="rol">
-                <label for="id_role" class="form-label">Rol:</label>
-                <select id="id_role" name="role" class="form-select" required>
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Empleado">Empleado</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="id_cargo" class="form-label">Cargo:</label>
-                <input type="text" id="id_cargo" name="cargo" class="form-control" required autocomplete="off"
-                    placeholder="Ingrese su cargo" maxlength="50">
-                <div id="error_cargo" class="error-message"></div>
-            </div>
-
-            <div class="form-group" id="area">
-                <label for="id_area" class="form-label">Área:</label>
-                <select id="id_area" name="area" class="form-select" required>
-                    <option value="" disabled selected>Seleccione una opción</option>
-                    <option value="Administrativa">Administrativa</option>
-                    <option value="Registros públicos">Registros públicos</option>
-                    <option value="Gestión empresarial">Gestión empresarial</option>
-                    <option value="Competitividad">Competitividad</option>
-                    <option value="Presidencia">Presidencia</option>
-                    <option value="Financiera">Financiera</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="id_email" class="form-label">Correo:</label>
-                <input type="email" id="id_email" name="email" class="form-control" required autocomplete="off"
-                    placeholder="Ingrese su correo" maxlength="70">
-                <div id="error_email" class="error-message"></div>
-            </div>
-
-            <div class="form-group" id="password-group">
-                <label for="id_password" class="form-label">Contraseña:</label>
-                <input type="password" id="id_password" name="password" class="form-control" required
-                    autocomplete="new-password" placeholder="Ingrese su contraseña">
-                <div id="error_password" class="error-message"></div>
-                <div id="verification-indicator" class="verification-indicator">
-                    Verificando contraseña...
-                </div>
-                <div id="password-feedback" class="password-feedback" aria-live="polite"></div>
-            </div>
-
-            <button type="submit" id="btn" class="btn">Registrar usuario</button>
-        </form>
-    </div>
-
+        <button type="submit" id="btn" class="btn">Registrar usuario</button>
+    </form>
+</div>
+{% endif %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Elementos del DOM
         const form = document.getElementById('userForm');
         const username = document.getElementById('id_username');
@@ -81,20 +82,20 @@ Crear usuario papelería
         const btnSubmit = document.getElementById('btn');
         const passwordFeedback = document.getElementById('password-feedback');
         const verificationIndicator = document.getElementById('verification-indicator');
-        
+
         // Elementos de error
         const errorUsername = document.getElementById('error_username');
         const errorCargo = document.getElementById('error_cargo');
         const errorEmail = document.getElementById('error_email');
         const errorPassword = document.getElementById('error_password');
-        
+
         // Expresiones regulares
         const repeatedCharRegex = /(.)\1{2,}/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         // Validación general del formulario
         function validateForm() {
-            const isValid = 
+            const isValid =
                 errorUsername.textContent === '' &&
                 errorCargo.textContent === '' &&
                 errorEmail.textContent === '' &&
@@ -104,7 +105,7 @@ Crear usuario papelería
                 email.value.trim() !== '' &&
                 password.value.trim() !== '' &&
                 checkPasswordStrength(password.value).strength >= 3;
-            
+
             btnSubmit.disabled = !isValid;
             return isValid;
         }
@@ -113,31 +114,31 @@ Crear usuario papelería
         function checkPasswordStrength(password) {
             let strength = 0;
             const feedback = [];
-            
+
             if (password.length < 8) {
                 feedback.push("Mínimo 8 caracteres");
                 return { strength: 0, feedback };
             } else if (password.length >= 12) {
                 strength += 1;
             }
-            
+
             if (/[a-z]/.test(password)) strength += 1;
             else feedback.push("Incluye minúsculas");
-            
+
             if (/[A-Z]/.test(password)) strength += 1;
             else feedback.push("Incluye mayúsculas");
-            
+
             if (/[0-9]/.test(password)) strength += 1;
             else feedback.push("Incluye números");
-            
+
             if (/[^A-Za-z0-9]/.test(password)) strength += 1;
             else feedback.push("Incluye caracteres especiales");
-            
+
             if (repeatedCharRegex.test(password)) {
                 strength = Math.max(0, strength - 2);
                 feedback.push("Evita 3 o más caracteres iguales seguidos");
             }
-            
+
             return { strength, feedback };
         }
 
@@ -171,13 +172,13 @@ Crear usuario papelería
         // Verificar si la contraseña ya existe
         async function verifyPasswordExists(password) {
             const { strength, feedback } = checkPasswordStrength(password);
-            
+
             if (password.length === 0) {
                 clearPasswordMessages();
                 validateForm();
                 return;
             }
-            
+
             if (strength < 3) {
                 clearPasswordMessages();
                 passwordFeedback.textContent = feedback.join(', ');
@@ -190,18 +191,18 @@ Crear usuario papelería
                 const res = await fetch(`/verificar_password/?password=${encodeURIComponent(password)}`);
                 if (!res.ok) throw new Error('Error en la verificación');
                 const data = await res.json();
-                
+
                 hideVerificationIndicator();
-                
+
                 if (data.password_existe) {
                     errorPassword.textContent = data.mensaje || 'Esta contraseña ya está en uso';
                 } else {
                     passwordFeedback.textContent = 'Contraseña segura';
                     passwordFeedback.className = 'password-feedback password-ok';
                 }
-                
+
                 validateForm();
-                
+
             } catch (error) {
                 hideVerificationIndicator();
                 console.error('Error al verificar contraseña:', error);
@@ -216,29 +217,29 @@ Crear usuario papelería
             verifyPasswordExists(passwordValue);
         }, 3000);  // 3 segundos
 
-        password.addEventListener('input', function() {
+        password.addEventListener('input', function () {
             debouncedVerifyPassword(password.value);
         });
 
         // Validación del nombre de usuario
-        username.addEventListener('input', function() {
+        username.addEventListener('input', function () {
             let value = username.value.replace(/[0-9]/g, '');
-            
+
             value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
             username.value = value;
-            
+
             if (value.trim().length < 3) {
                 errorUsername.textContent = 'Mínimo 3 caracteres';
                 validateForm();
                 return;
             }
-            
+
             if (repeatedCharRegex.test(value)) {
                 errorUsername.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
                 validateForm();
                 return;
             }
-            
+
             fetch(`/validar_datos/?username=${encodeURIComponent(value)}`)
                 .then(res => res.json())
                 .then(data => {
@@ -251,24 +252,24 @@ Crear usuario papelería
         });
 
         // Validación del cargo
-        cargo.addEventListener('input', function() {
+        cargo.addEventListener('input', function () {
             let value = cargo.value.replace(/[0-9]/g, '');
-            
+
             value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
             cargo.value = value;
-            
+
             if (value.trim().length < 3) {
                 errorCargo.textContent = 'Mínimo 3 caracteres';
                 validateForm();
                 return;
             }
-            
+
             if (repeatedCharRegex.test(value)) {
                 errorCargo.textContent = 'No se permiten 3 o más caracteres iguales seguidos';
                 validateForm();
                 return;
             }
-            
+
             fetch(`/validar_datos/?cargo=${encodeURIComponent(value)}`)
                 .then(res => res.json())
                 .then(data => {
@@ -281,15 +282,15 @@ Crear usuario papelería
         });
 
         // Validación del email
-        email.addEventListener('input', function() {
+        email.addEventListener('input', function () {
             const value = email.value;
-            
+
             if (!emailRegex.test(value)) {
                 errorEmail.textContent = 'Correo inválido';
                 validateForm();
                 return;
             }
-            
+
             fetch(`/validar_datos/?email=${encodeURIComponent(value)}`)
                 .then(res => res.json())
                 .then(data => {
@@ -302,7 +303,7 @@ Crear usuario papelería
         });
 
         // Validar formulario antes de enviar
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             if (!validateForm()) {
                 e.preventDefault();
                 alert('Por favor, complete correctamente todos los campos.');

@@ -139,3 +139,76 @@ section {
 .modal-name:hover {
     color: #ffffff;
 }
+/* Móviles (hasta 767px) */
+@media (max-width: 767px) {
+    body,
+    html {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 1rem;
+        overflow: auto;
+        height: auto;
+    }
+
+    section {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        max-width: 100%;
+        position: relative;
+        top: 10vh;
+        left: -1vh;
+        height: 100vh;
+        overflow-y: scroll;
+    }
+
+    .card {
+        width: 60vw;
+        margin: 0 auto;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 1rem;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-card {
+        width: 90vw;
+        height: auto;
+        padding: 10px;
+    }
+}
+/* Tablets (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    section {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1.5rem;
+    }
+
+    .card {
+        width: 40vw;
+        font-size: larger;
+    }
+
+    .modal-content {
+        width: 70%;
+        padding: 1.5rem;
+    }
+
+    .modal-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .modal-card {
+        width: 85%;
+        height: auto;
+        padding: 10px;
+    }
+}

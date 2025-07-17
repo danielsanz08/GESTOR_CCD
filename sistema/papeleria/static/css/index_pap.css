@@ -193,55 +193,30 @@ html, body {
     font-size: 1rem;
     font-weight: 500;
 }
-
-/* Responsive design */
-@media (max-width: 1024px) {
-    .main-cards {
-        grid-template-columns: repeat(2, 1fr);
-        
-        height: 65vh;
-        overflow: hidden;
-        overflow-y: scroll;
-        position: absolute;
-        top: 20vh;
-        width: 50vh;
-    }
-
-    .main-cards_empleado {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-    }
-
-    .main-cards_admin {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* Móviles (hasta 767px) */
 @media (max-width: 767px) {
-    .main-container {
-        margin-top: 5vh;
-        padding: 1rem;
-    }
-
     .main-cards,
     .main-cards_empleado,
     .main-cards_admin {
         grid-template-columns: 1fr;
-        margin-top: 5vh;
+        gap: 1.5rem;
+        position: relative;
+        top: -5vh;
+        height: 75vh;
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+    #estadisticas{
+        display: none;
     }
 
-    .main-card {
-        max-width: 100%;
-        min-height: 100px;
-        padding: 1.25rem;
-    }
-
-    .main-card-icon {
-        width: 42px;
-        height: 42px;
-    }
-
-    .main-card-title {
-        font-size: 1.1rem;
+}
+/* Tablets (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .main-cards,
+    .main-cards_empleado,
+    .main-cards_admin {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
     }
 }

@@ -560,8 +560,8 @@ def cambiar_estado_pedido(request, pedido_id):
             text-align: center;
         }}
         .logo {{
-            max-width: 180px;
-            height: auto;
+            max-width: 380px;
+            height: 200px;
             margin-bottom: 15px;
         }}
         .content {{

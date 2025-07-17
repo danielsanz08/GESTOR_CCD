@@ -572,7 +572,7 @@ td {
   }
 
   #detalles {
-    top: 8px;
+    bottom: 20px !important;
     position: relative;
     height: 30px;
   }

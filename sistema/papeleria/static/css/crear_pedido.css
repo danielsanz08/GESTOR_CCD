@@ -142,7 +142,7 @@ select:focus {
     color: rgb(0, 0, 0);
     border: 1px solid #000000;
     padding: 6px 10px; /* Padding más pequeño */
-    border-radius: 8px; /* Border radius más pequeño */
+    border-radius: 10px; /* Border radius más pequeño */
     cursor: pointer;
     font-size: 11px; /* Fuente más pequeña */
     font-weight: 700;
@@ -229,7 +229,7 @@ select:focus {
         max-width: 100%;
         margin: 0;
         border-radius: 12px;
-        margin-right: 105px;
+        margin-right: 45px;
         max-width: 300px;
     }
     

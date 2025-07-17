@@ -10,7 +10,7 @@ from django.db import transaction, connections
 from django.core import management
 from django.contrib.auth import get_user_model
 from django import db
-
+from pandas import Timedelta
 from .models import Backup
 from .utils import crear_backup, restaurar_backup
 from datetime import datetime
@@ -44,7 +44,6 @@ def lista_backups(request):
         {'name': 'Inicio', 'url': reverse('papeleria:index_pap')},
         {'name': 'Backup', 'url': reverse('backup:index_backup')},
         {'name': 'Lista de backups', 'url': reverse('backup:lista_backups')},
-
     ]
     
     query = request.GET.get('q', '').strip()
@@ -53,17 +52,11 @@ def lista_backups(request):
     
     backups = Backup.objects.all().order_by('-fecha_creacion')
     
-    # Enhanced search
+    # Buscar solo por nombre
     if query:
-        backups = backups.filter(
-            Q(nombre__icontains=query) |
-            Q(fecha_creacion__icontains=query) |
-            Q(creado_por__username__icontains=query) |
-            Q(tamano__icontains=query) |
-            Q(id__icontains=query)
-        )
+        backups = backups.filter(Q(nombre__icontains=query))
 
-    # Improved date filtering
+    # Filtrar por rango de fechas
     try:
         if fecha_inicio_str:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
@@ -75,12 +68,12 @@ def lista_backups(request):
     except ValueError:
         backups = Backup.objects.none()
 
-    # Pagination
+    # Paginación
     paginator = Paginator(backups, 4)
     page_number = request.GET.get('page')
     backups_page = paginator.get_page(page_number)
 
-    # Build query parameters for pagination
+    # Parámetros para mantener filtros en la paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
@@ -97,7 +90,6 @@ def lista_backups(request):
         'current_fecha_inicio': fecha_inicio_str,
         'current_fecha_fin': fecha_fin_str,
     })
-
 @login_required(login_url='/acceso_denegado/')
 def crear_nuevo_backup(request):
     breadcrumbs = [

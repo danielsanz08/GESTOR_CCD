@@ -1,97 +1,19 @@
 {% extends 'navbar.html' %}
 {% load static %}
 
-{% block titulo %}Pedidos Pendientes de cafeteria{% endblock %}
+{% block titulo %}Pedidos Pendientes{% endblock %}
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/listar_pedido_pendiente.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    /* Modal Styles */
-    #modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    #modal-backdrop {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-    }
-
-    #modal .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-    }
-
-    #modal .modal-title {
-        margin: 0;
-        font-size: 1.2em;
-    }
-
-    #modal .close-modal {
-        background: none;
-        border: none;
-        font-size: 1.5em;
-        cursor: pointer;
-        color: #777;
-        padding: 0;
-        margin: 0;
-    }
-
-    #modal .close-modal:hover {
-        color: #333;
-    }
-
-    #modal .modal-body {
-        padding: 10px 0;
-    }
-
-    #modal .modal-footer {
-        margin-top: 15px;
-        text-align: right;
-    }
-
-    #modal button {
-        margin-top: 15px;
-        padding: 8px 12px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #modal button:hover {
-        background-color: #0056b3;
-    }
+    /* Modal */
+    
 </style>
-
-{% if request.user.role == 'Administrador' %}
 <section>
     <h1>Pedidos Pendientes de cafeteria y aseo</h1>
+
     <div class="Bototnes">
         <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
         <a
@@ -106,248 +28,155 @@
             </button>
         </a>
     </div>
+
     <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
-        <div>
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
-                value="{{ request.GET.q }}">
-            <button type="submit" class="btn-search" title="Buscar texto">
-                <i class="fas fa-search text-white"></i>
-            </button>
+        <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
+        <button type="submit" class="btn-search" title="Buscar texto"><i class="fas fa-search"></i></button>
 
-            <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
-                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-
-                <label for="fecha_fin">Hasta:</label>
-                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
-
-                <button type="submit" class="search-date" title="Buscar por rango de fecha">
-                    <i class="fas fa-search text-white"></i>
-                </button>
-            </div>
-
-            <a href="{% url 'cafeteria:pedidos_pendientes' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda">
-                    <i class="fas fa-trash text-white" title="Eliminar"></i>
-                </button>
-            </a>
+        <div id="filtro-fechas">
+            <label for="fecha_inicio">Desde:</label>
+            <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+            <label for="fecha_fin">Hasta:</label>
+            <input type="date" name="fecha_fin" class="fecha_fin" value="{{ request.GET.fecha_fin }}">
+            <button type="submit" class="search-date" title="Buscar por fecha"><i class="fas fa-search"></i></button>
         </div>
-    </form>
 
-    <table>
+        <a href="{% url 'cafeteria:pedidos_pendientes' %}">
+            <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash"></i></button>
+        </a>
+    </form>
+    <div class="tabla-scroll">
+         <table>
         <thead>
             <tr>
                 <th class="id">ID</th>
                 <th class="nombre">Usuario</th>
-                <th class="pedido">Pedido</th>
+                <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
-                <th class="accion">Acciones</th>
+                <th class="pedido">Pedido</th>
+                <th class="acciones">Acciones</th>
             </tr>
         </thead>
-        <tbody id="tabla-pedidos">
+        <tbody>
             {% for pedido in pedidos %}
             <tr id="pedido-{{ pedido.id }}">
-                <td>{{ pedido.id }}</td>
-                <td>{{ pedido.registrado_por }}</td>
-                <td>
+                <td class="td_id">{{ pedido.id }}</td>
+                <td class="td-registrado">{{ pedido.registrado_por }}</td>
+                <td class="fecha-td">{{ pedido.fecha_formateada }}</td>
+                <td class="estado-td">{{ pedido.estado }}</td>
+                <td class="edit-td">
                     <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
-                        <i class="fas fa-eye"></i> Ver detalles
+                        <i data-feather="eye" class="icono"></i>
                     </button>
-                    
+
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
                         <div class="modal-header">
-                            <h3 class="modal-title">Detalles del Pedido #{{ pedido.id }}</h3>
+                            <h3 class="modal-title">Detalles del Pedido</h3>
                             <button class="close-modal" onclick="cerrarModal()">&times;</button>
                         </div>
                         <div class="modal-body">
                             <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
                             <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                            <p><strong>Estado:</strong> {{ pedido.estado }}</p>
-                            <p><strong>Productos:</strong></p>
-                            <ul>
-                                {% for producto_pedido in pedido.productos.all %}
-                                <li>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</li>
+                            <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                            <p><strong>Área:</strong>
+                                {% for producto in pedido.productos.all %}
+                                {{ producto.area }}{% if not forloop.last %}{% endif %}
                                 {% empty %}
-                                <li>No hay productos asociados</li>
+                                No hay pedidos de cafeteria
+                                {% endfor %}
+                            </p>
+                            <p>
+                                <strong>
+                                    {% if pedido.estado == 'Confirmado' %}
+                                    Fecha confirmación:
+                                    {% elif pedido.estado == 'Cancelado' %}
+                                    Fecha cancelación:
+                                    {% else %}
+                                    El pedido aún no ha sido confirmado ni cancelado.
+                                    {% endif %}
+                                </strong>
+                                {% if pedido.fecha_estado %}
+                                {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
+                                {% else %}
+                                No hay fecha de confirmación disponible.
+                                {% endif %}
+                            </p>
+                            
+                            <p><strong>Artículos:</strong></p>
+                            <ul>
+                                {% for producto in pedido.productos.all %}
+                                <li>{{ producto.cantidad }} {{ producto.producto.nombre }}  </li>
                                 {% endfor %}
                             </ul>
                         </div>
-                        <div class="modal-footer">
-                            <button onclick="cerrarModal()">Cerrar</button>
-                        </div>
+                        
                     </div>
                 </td>
-                <td>{{ pedido.estado }}</td>
-                <td class="botones">
-                    <!-- Botón confirmar -->
-                    <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
-                        action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="estado" value="Confirmado">
-                        <button type="submit" class="btn-confirmar">
-                            <i data-feather="check-square" class="icono"></i> Confirmar
-                        </button>
-                    </form>
 
-                    <!-- Botón cancelar -->
-                    <form class="form-cambiar-estado" data-id="{{ pedido.id }}" method="POST"
-                        action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="estado" value="Cancelado">
-                        <button type="submit" class="btn-cancelar">
-                            <i data-feather="x-square" class="icono"></i> Cancelar
+                <td style="position: relative;" class="confirm-td">
+                    {% if request.user.role == 'Administrador' %}
+                    <button class="btn-accion" onclick="mostrarMenuContextual(this)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    {% else %}
+                    <div class="tooltip-container">
+                        <button class="btn-accion" onclick="mostrarMenuContextual(this)" style="cursor: not-allowed; background-color: red;">
+                            <i class="fas fa-ban"></i>
                         </button>
-                    </form>
+                        <span class="tooltip-text">Solo válido para administradores</span>
+                    </div>
+                    {% endif %}
+                    <div class="context-menu">
+                        <form class="form-cambiar-estado" method="POST"
+                            action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="estado" value="Confirmado">
+                            <button type="submit" class="aprobar">
+                                <i class="fas fa-check" id="aprobar"></i> Aprobar
+                            </button>
+                        </form>
+
+                        <form class="form-cambiar-estado" method="POST"
+                            action="{% url 'cafeteria:cambiar_estado_pedido' pedido.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="estado" value="Cancelado">
+                            <button type="submit" class="rechazar">
+                                <i class="fas fa-times"></i> Rechazar
+                            </button>
+                        </form>
+                    </div>
                 </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No hay pedidos pendientes</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
+    </div>
     <div class="paginacion" id="pag">
     {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}">Anterior</a>
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
-        <span class="disabled">Anterior</span>
+        <span class="page-link disabled">Anterior</span>
     {% endif %}
 
+    <!-- Número de página actual -->
+    <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+
     {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}">Siguiente</a>
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
     {% else %}
-        <span class="disabled">Siguiente</span>
+        <span class="page-link disabled">Siguiente</span>
     {% endif %}
 </div>
 
-</section>
-{% endif %}
-
-{% if request.user.role == 'Empleado' %}
-<section>
-    <h1>Pedidos Pendientes de cafeteria y aseo</h1>
-    <form method="GET" action="{% url 'cafeteria:pedidos_pendientes' %}">
-        <div>
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
-                value="{{ request.GET.q }}">
-            <button type="submit" class="btn-search" title="Buscar texto">
-                <i class="fas fa-search text-white"></i>
-            </button>
-
-            <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
-                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-
-                <label for="fecha_fin">Hasta:</label>
-                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
-
-                <button type="submit" class="search-date" title="Buscar por rango de fecha">
-                    <i class="fas fa-search text-white"></i>
-                </button>
-            </div>
-
-            <a href="{% url 'cafeteria:pedidos_pendientes' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda">
-                    <i class="fas fa-trash text-white" title="Eliminar"></i>
-                </button>
-            </a>
-        </div>
-    </form>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="id">ID</th>
-                <th class="nombre">Usuario</th>
-                <th class="pedido">Pedido</th>
-                <th class="estado">Estado</th>
-                <th class="accion">Fecha</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-pedidos">
-            {% for pedido in pedidos %}
-            <tr id="pedido-{{ pedido.id }}">
-                <td>{{ pedido.id }}</td>
-                <td>{{ pedido.registrado_por }}</td>
-                <td>
-                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
-                        <i class="fas fa-eye"></i> Ver detalles
-                    </button>
-                    
-                    <!-- Contenido oculto para el modal -->
-                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Detalles del Pedido #{{ pedido.id }}</h3>
-                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <p><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
-                            <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
-                            <p><strong>Estado:</strong> {{ pedido.estado }}</p>
-                            <p><strong>Productos:</strong></p>
-                            <ul>
-                                {% for producto_pedido in pedido.productos.all %}
-                                <li>{{ producto_pedido.producto.nombre }} ({{ producto_pedido.cantidad }})</li>
-                                {% empty %}
-                                <li>No hay productos asociados</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button onclick="cerrarModal()">Cerrar</button>
-                        </div>
-                    </div>
-                </td>
-                <td>{{ pedido.estado }}</td>
-                <td>{{ pedido.fecha_pedido }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No hay pedidos pendientes</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="pagination" id="pag">
-    {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link" aria-label="Previous">
-            <span aria-hidden="true">&laquo; Anterior</span>
-        </a>
-    {% else %}
-        <span class="page-link disabled" aria-label="Previous">
-            <span aria-hidden="true">&laquo; Anterior</span>
-        </span>
-    {% endif %}
-    
-    <!-- Mostrar número de página actual -->
-    <span class="current-page active">
-        Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}
-    </span>
-    
-    {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link" aria-label="Next">
-            <span aria-hidden="true">Siguiente &raquo;</span>
-        </a>
-    {% else %}
-        <span class="page-link disabled" aria-label="Next">
-            <span aria-hidden="true">Siguiente &raquo;</span>
-        </span>
-    {% endif %}
-</div>
 
 </section>
-{% endif %}
 
 <!-- Contenedor del Modal -->
 <div id="modal-backdrop" onclick="cerrarModal()"></div>
 <div id="modal">
     <div id="modal-content"></div>
 </div>
-
 <script>
     function mostrarDetalles(id) {
         var contenido = document.getElementById("detalles-" + id).innerHTML;
@@ -361,8 +190,99 @@
         document.getElementById("modal-backdrop").style.display = "none";
     }
 
+    function mostrarMenuContextual(btn) {
+        document.querySelectorAll('.context-menu').forEach(menu => {
+            if (menu !== btn.nextElementSibling) {
+                menu.style.display = 'none';
+            }
+        });
+
+        const menu = btn.nextElementSibling;
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.context-menu').forEach(menu => {
+            if (!menu.contains(e.target) && !e.target.closest('.btn-accion')) {
+                menu.style.display = 'none';
+            }
+        });
+    });
+    
     document.querySelector('.print').addEventListener('click', function () {
-        window.print();
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
+
+        const fondo = `
+        <div class="fondo">
+            <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+        </div>
+    `;
+
+        const estiloImpresion = `
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                position: relative;
+            }
+            h1 {
+                margin-bottom: 20px;
+                position: relative;
+                z-index: 2;
+            }
+            table {
+                margin: auto;
+                width: 90%;
+                border-collapse: collapse;
+                position: relative;
+                z-index: 2;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            thead {
+                background-color: rgba(61, 43, 226, 0.411);
+            }
+            .fondo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                opacity: 0.1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .fondo img {
+                max-width: 80%;
+                max-height: 80%;
+                object-fit: contain;
+            }
+           th:nth-child(n+5),
+                td:nth-child(n+5) {
+                    display: none !important;
+                }
+        </style>
+    `;
+
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);
+        ventanaImpresion.document.write(titulo);
+        ventanaImpresion.document.write(tabla);
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
     });
 </script>
 {% endblock %}

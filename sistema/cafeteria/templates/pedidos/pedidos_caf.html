@@ -36,7 +36,7 @@
     <form method="post" id="pedidoForm">
         {% csrf_token %}
         <!-- Campo área -->
-        <div class="mb-3">
+        <div class="mb-3" style="display: none;">
             <label class="form-label">Área:</label>
             <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
         </div>

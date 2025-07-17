@@ -418,6 +418,7 @@ def cambiar_contraseña_id(request, user_id):
         {'name': 'Cambiar Contraseña por ID', 'url': reverse('libreria:cambiar_contraseña_id', args=[user_id])},
     ]
 
+    # Obtiene el usuario objetivo a partir del ID
     target_user = get_object_or_404(User, id=user_id)
 
     if request.method == 'POST':
@@ -427,15 +428,17 @@ def cambiar_contraseña_id(request, user_id):
             target_user.set_password(new_password)
             target_user.save()
             messages.success(request, f'Contraseña cambiada exitosamente para {target_user.username} (ID: {target_user.id})')
-            return redirect('libreria:lista_usuarios', user_id=user_id)
+            
+            # ✅ Redirección corregida: no se pasa user_id ya que la URL no lo espera
+            return redirect('libreria:lista_usuarios')
         else:
             messages.error(request, 'Formulario inválido. Revisa los datos ingresados.')
     else:
         form = CustomPasswordChangeForm(user=target_user)
 
     all_users = User.objects.all().values(
-    'id', 'username', 'email', 'role', 'area', 'cargo', 'is_active'
-)
+        'id', 'username', 'email', 'role', 'area', 'cargo', 'is_active'
+    )
 
     context = {
         'form': form,

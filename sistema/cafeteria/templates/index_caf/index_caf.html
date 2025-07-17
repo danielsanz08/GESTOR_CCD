@@ -20,19 +20,16 @@
               <i data-feather="package" class="main-card-icon"></i>
               <h2 class="main-card-title">Productos</h2>
           </div>
-
           <!-- Card Pedidos -->
           <div class="main-card" onclick="openModal('pedidos-modal')">
               <i data-feather="shopping-cart" class="main-card-icon"></i>
               <h2 class="main-card-title">Pedidos</h2>
           </div>
-
           <!-- Card Estadísticas -->
           <div class="main-card" onclick="openModal('estadisticas-modal')">
               <i data-feather="bar-chart" class="main-card-icon"></i>
               <h2 class="main-card-title">Estadísticas</h2>
           </div>
-
           <!-- Card Manual -->
           <div class="main-card" onclick="openModal('manual-modal')">
               <i data-feather="book-open" class="main-card-icon"></i>
@@ -41,7 +38,29 @@
       </div>
   </div>
 
-  <!-- Modal Usuarios -->
+  {% elif request.user.role == 'Empleado' %}
+  <div class="main-container">
+      <div class="main-cards_empleado">
+          <!-- Card Usuarios -->
+          <div class="main-card" onclick="openModal('usuarios-modal')">
+              <i data-feather="users" class="main-card-icon"></i>
+              <h2 class="main-card-title">Usuarios</h2>
+          </div>
+          <!-- Card Pedidos -->
+          <div class="main-card" onclick="openModal('pedidos-modal')">
+              <i data-feather="shopping-cart" class="main-card-icon"></i>
+              <h2 class="main-card-title">Pedidos</h2>
+          </div>
+          <!-- Card Manual -->
+          <div class="main-card" onclick="openModal('manual-modal')">
+              <i data-feather="book-open" class="main-card-icon"></i>
+              <h2 class="main-card-title">Manual</h2>
+          </div>
+      </div>
+  </div>
+  {% endif %}
+
+  <!-- Modal Usuarios (disponible para ambos roles) -->
   <div class="modal-overlay" id="usuarios-modal">
       <div class="modal-container">
           <div class="modal-header">
@@ -63,7 +82,7 @@
       </div>
   </div>
 
-  <!-- Modal Artículos -->
+  <!-- Modal Artículos (disponible para ambos roles, si se necesita) -->
   <div class="modal-overlay" id="articulos-modal">
       <div class="modal-container">
           <div class="modal-header">
@@ -137,49 +156,7 @@
       </div>
   </div>
 
-  <!-- Modal Backup -->
-  <div class="modal-overlay" id="backup-modal">
-      <div class="modal-container">
-          <div class="modal-header">
-              <h2 class="modal-title">Copia de Seguridad</h2>
-              <button class="close-modal" onclick="closeModal('backup-modal')">&times;</button>
-          </div>
-          <div class="modal-content">
-              <div class="modal-options">
-                  <a href="{% url 'backup:index_backup' %}" class="modal-option">
-                      <i data-feather="database" class="modal-option-icon"></i>
-                      <span class="modal-option-text">Gestión de Backup</span>
-                  </a>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  {% elif request.user.role == 'Empleado' %}
-  <div class="main-container">
-      <div class="main-cards_empleado">
-          <!-- Card Usuarios -->
-          <div class="main-card" onclick="openModal('usuarios-modal')">
-              <i data-feather="users" class="main-card-icon"></i>
-              <h2 class="main-card-title">Usuarios</h2>
-          </div>
-
-          <!-- Card Pedidos -->
-          <div class="main-card" onclick="openModal('pedidos-modal')">
-              <i data-feather="shopping-cart" class="main-card-icon"></i>
-              <h2 class="main-card-title">Pedidos</h2>
-          </div>
-
-          <!-- Card Manual -->
-          <div class="main-card" onclick="openModal('manual-modal')">
-              <i data-feather="book-open" class="main-card-icon"></i>
-              <h2 class="main-card-title">Manual</h2>
-          </div>
-      </div>
-  </div>
-  {% endif %}
-
-  <!-- Modal Manual (single instance for all users) -->
+  <!-- Modal Manual (para todos los roles) -->
   <div class="modal-overlay" id="manual-modal">
       <div class="modal-container">
           <div class="modal-header">
@@ -197,6 +174,7 @@
       </div>
   </div>
 
+  <!-- Alerta de bajo stock solo para administrador -->
   {% if request.user.role == 'Administrador' and request.user.acceso_pap and es_papeleria and mostrar_alerta and bajo_stock %}
   <div id="stock-alert" class="alert-overlay">
       <div class="alert-box">

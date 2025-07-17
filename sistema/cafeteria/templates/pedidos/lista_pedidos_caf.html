@@ -1,14 +1,14 @@
 {% extends 'navbar.html' %}
 {% load static %}
 
-{% block titulo %}Pedidos confirmados y cancelados{% endblock %}
+{% block titulo %}Pedidos Confirmados y cancelados{% endblock %}
 
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/listar_pedido.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/listar_pedido_pendiente.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    /* Modal Styles */
+    /* Modal */
     #modal {
         display: none;
         position: fixed;
@@ -63,7 +63,6 @@
 
     #modal .close-modal:hover {
         color: #ff0000;
-        background: none;
     }
 
     #modal .modal-body {
@@ -74,127 +73,58 @@
         margin-top: 15px;
         text-align: right;
     }
-
-   
-
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-
-        h1,
-        table,
-        table * {
-            visibility: visible;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-            border: 1px solid black;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 6px;
-            text-align: center;
-        }
-
-        #btn-print,
-        .Bototnes,
-        form,
-        .paginacion,
-        .fondo,
-        .modal {
-            display: none !important;
-        }
-
-        /* Ocultar estos elementos al imprimir */
-        #btn-print,
-        .Bototnes,
-        form,
-        .paginacion,
-        .fondo,
-        .modal,
-        button,
-        #modal,
-        #modal-backdrop,
-        #fecha {
-            display: none !important;
-        }
-    }
 </style>
-
-<section class="pedido">
+<section>
     <h1>Listado de Pedidos de cafeteria y aseo</h1>
     <div class="Bototnes">
-        <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
+        <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
         <a
             href="{% url 'cafeteria:reporte_pedidos_caf_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
         </a>
 
         <a
-            href="{% url 'cafeteria:reporte_pedidos_caf_xsls' %}?estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
+            href="{% url 'cafeteria:reporte_pedidos_caf_xsls' %}?q={{ request.GET.q }}&estado={{ request.GET.estado }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}&registrado_por={{ request.GET.registrado_por }}">
             <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
         </a>
     </div>
-    <form method="GET" action="{% url 'papeleria:listado_pedidos' %}">
-        <div>
-            <!-- Input de búsqueda general -->
-            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
-                value="{{ request.GET.q }}">
-            <button type="submit" class="btn-search" title="Buscar texto">
-                <i class="fas fa-search text-white"></i>
-            </button>
+    <form method="GET" action="{% url 'cafeteria:lista_pedidos_caf' %}">
+        <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
+        <button type="submit" class="btn-search" title="Buscar texto"><i class="fas fa-search"></i></button>
 
-            <!-- Inputs de fecha (inicialmente ocultos) -->
-            <div id="filtro-fechas">
-                <label for="fecha_inicio">Desde:</label>
-                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
-
-                <label for="fecha_fin">Hasta:</label>
-                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
-
-                <button type="submit" class="search-date" title="Buscar por rango de fecha">
-                    <i class="fas fa-search text-white"></i>
-                </button>
-            </div>
-            <!-- Botón para limpiar filtros -->
-            <a href="{% url 'papeleria:listado_pedidos' %}">
-                <button type="button" class="clean" title="Limpiar búsqueda">
-                    <i class="fas fa-trash text-white" title="Eliminar"></i>
-                </button>
-            </a>
+        <div id="filtro-fechas">
+            <label for="fecha_inicio">Desde:</label>
+            <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+            <label for="fecha_fin">Hasta:</label>
+            <input type="date" name="fecha_fin" class="fecha_fin" value="{{ request.GET.fecha_fin }}">
+            <button type="submit" class="search-date" title="Buscar por fecha"><i class="fas fa-search"></i></button>
         </div>
+
+        <a href="{% url 'cafeteria:lista_pedidos_caf' %}">
+            <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash"></i></button>
+        </a>
     </form>
+
     <table>
         <thead>
             <tr>
                 <th class="id">ID</th>
-                <th class="usuario">Registrado por</th>
+                <th class="nombre">Usuario</th>
                 <th class="fecha">Fecha</th>
                 <th class="estado">Estado</th>
-                <th class="detalle">Detalles</th>
+                <th class="pedido">Pedido</th>
             </tr>
         </thead>
         <tbody>
             {% for pedido in pedidos %}
-            <tr>
+            <tr id="pedido-{{ pedido.id }}">
                 <td>{{ pedido.id }}</td>
                 <td>{{ pedido.registrado_por }}</td>
-                <td class="fecha_td">{{ pedido.fecha_formateada }}</p></td>
-                <td>{{ pedido.get_estado_display }}</td>
+                <td>{{ pedido.fecha_formateada }}</td>
+                <td>{{ pedido.estado }}</td>
                 <td>
-                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')"> 
-                        <i class="fas fa-eye"></i>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
+                        <i data-feather="eye" class="icono"></i>
                     </button>
 
                     <!-- Contenido oculto para el modal -->
@@ -207,81 +137,54 @@
                             <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
                             <p class="fecha_pedido"><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
                             <p class="estado_d"><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
-                            <p><strong>Artículos:</strong></p>
-                            <ul>
+                            <p><strong>Área:</strong>
                                 {% for producto in pedido.productos.all %}
-                                <li>{{ producto.producto.nombre }} × {{ producto.cantidad }}</li>
-                                {% endfor %}
-                            </ul>
-                            <p><strong>Áreas:</strong>
-                                {% for producto in pedido.productos.all %}
-                                {{ producto.area }}{% if not forloop.last %}, {% endif %}
+                                {{ producto.area }}{% if not forloop.last %}{% endif %}
                                 {% empty %}
                                 No hay pedidos de cafeteria
                                 {% endfor %}
                             </p>
+                            <p><strong>Artículos:</strong></p>
+                            <ul>
+                                {% for producto in pedido.productos.all %}
+                                <li>{{ producto.cantidad }} {{ producto.producto.nombre }}  </li>
+                                {% endfor %}
+                            </ul>
+                            
                         </div>
-                        
+
                     </div>
                 </td>
-
-                {% if user.perfil.rol == 'Administrador' and pedido.estado == 'pendiente' %}
-                <td>
-                    <form method="POST" action="{% url 'cambiar_estado_pedido' pedido.id %}">
-                        {% csrf_token %}
-                        <button type="submit" name="estado" value="confirmado" class="btn-accion">Confirmar</button>
-                        <button type="submit" name="estado" value="cancelado"
-                            class="btn-accion cancelar">Cancelar</button>
-                    </form>
-                    {% else %}
-
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No hay pedidos registrados.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-   <div class="pagination" id="pag">
+
+<div class="pagination" id="pag">
     {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">
-            &laquo; Anterior
-        </a>
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
-        <span class="page-link disabled">&laquo; Anterior</span>
+        <span class="page-link disabled">Anterior</span>
     {% endif %}
 
-    {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-            <span class="current-page active">{{ num }}</span>
-        {% elif num > pedidos.number|add:-3 and num < pedidos.number|add:3 %}
-            <a href="?page={{ num }}{{ query_params }}" class="page-link">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
+    <!-- Mostrar página actual de total -->
+    <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
 
     {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">
-            Siguiente &raquo;
-        </a>
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
     {% else %}
-        <span class="page-link disabled">Siguiente &raquo;</span>
+        <span class="page-link disabled">Siguiente</span>
     {% endif %}
 </div>
 
 
 </section>
 
-<!-- Modal -->
+<!-- Contenedor del Modal -->
+<div id="modal-backdrop" onclick="cerrarModal()"></div>
 <div id="modal">
     <div id="modal-content"></div>
 </div>
-
-<!-- Fondo oscuro detrás del modal -->
-<div id="modal-backdrop" onclick="cerrarModal()"></div>
-
 <script>
     function mostrarDetalles(id) {
         var contenido = document.getElementById("detalles-" + id).innerHTML;
@@ -350,17 +253,15 @@
                 max-height: 80%;
                 object-fit: contain;
             }
-            .td_acciones, .editar {
-                display: none;
-            }
-            #detalles, .fecha_pedido, .registrado, .estado_d{
-                display: none;
+            th:nth-child(n+5),
+            td:nth-child(n+5) {
+                display: none !important;
             }
         </style>
         `;
 
         const ventanaImpresion = window.open('', '', 'height=700,width=900');
-        ventanaImpresion.document.write('<html><head><title>Listado de productos</title>');
+        ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
         ventanaImpresion.document.write(estiloImpresion);
         ventanaImpresion.document.write('</head><body>');
         ventanaImpresion.document.write(fondo);

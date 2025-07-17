@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Sum
 from django.utils.timezone import localtime
-
+from django.utils.html import escape
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
@@ -268,74 +268,208 @@ def mis_pedidos_cde(request):
         'current_fecha_fin': fecha_fin_str,
     })
 
-@csrf_exempt
+@csrf_exempt  # Solo si no puedes usar {% csrf_token %} en el formulario
 @require_POST
 def cambiar_estado_pedido_cde(request, pedido_id):
     pedido = get_object_or_404(PedidoCde, id=pedido_id)
+    nuevo_estado = request.POST.get('estado')
 
-    if request.method == 'POST':
-        nuevo_estado = request.POST.get('estado')
+    if not nuevo_estado:
+        messages.error(request, 'No se especificó un nuevo estado.')
+        return redirect('cde:pedidos_pendientes_cde')
 
-        if nuevo_estado:
-            if nuevo_estado == 'Confirmado':
-                try:
-                    with transaction.atomic():
-                        productos_pedido = pedido.productos.select_related('producto').all()
-                        productos_sin_stock = []
+    if nuevo_estado == 'Confirmado':
+        try:
+            with transaction.atomic():
+                productos_pedido = pedido.productos.select_related('producto').all()
+                productos_sin_stock = []
 
-                        # Verificar stock
-                        for item in productos_pedido:
-                            producto = item.producto
-                            if producto.cantidad < item.cantidad:
-                                productos_sin_stock.append(
-                                    f"{producto.nombre} (Solicitados: {item.cantidad}, Disponibles: {producto.cantidad})"
-                                )
+                for item in productos_pedido:
+                    producto = item.producto
+                    if producto.cantidad < item.cantidad:
+                        productos_sin_stock.append(
+                            f"{producto.nombre} (Solicitados: {item.cantidad}, Disponibles: {producto.cantidad})"
+                        )
 
-                        if productos_sin_stock:
-                            pedido.estado = 'Cancelado'
-                            pedido.fecha_estado = timezone.now()
-                            pedido.save()
-                            messages.error(request, f"Pedido cancelado. Stock insuficiente: {', '.join(productos_sin_stock)}")
-                            return redirect('cde:pedidos_pendientes_cde')
-
-                        # Descontar del stock
-                        for item in productos_pedido:
-                            producto = item.producto
-                            producto.cantidad -= item.cantidad
-                            producto.save()
-
-                        pedido.estado = 'Confirmado'
-                        pedido.fecha_estado = timezone.now()
-                        pedido.save()
-                        messages.success(request, f'Pedido #{pedido.id} confirmado correctamente.')
-
-                except Exception as e:
-                    messages.error(request, f'Ocurrió un error al confirmar el pedido: {str(e)}')
+                if productos_sin_stock:
+                    pedido.estado = 'Cancelado'
+                    pedido.fecha_estado = timezone.now()
+                    pedido.save()
+                    messages.error(
+                        request,
+                        f"Pedido cancelado. Stock insuficiente: {', '.join(productos_sin_stock)}"
+                    )
                     return redirect('cde:pedidos_pendientes_cde')
 
-            else:
-                # Otros estados, como Cancelado
-                pedido.estado = nuevo_estado
+                for item in productos_pedido:
+                    producto = item.producto
+                    producto.cantidad -= item.cantidad
+                    producto.save()
+
+                pedido.estado = 'Confirmado'
                 pedido.fecha_estado = timezone.now()
                 pedido.save()
-                messages.success(request, f'Estado del pedido #{pedido.id} actualizado a "{nuevo_estado}".')
+                messages.success(request, f'Pedido #{pedido.id} confirmado correctamente.')
 
-            # Enviar notificación por email si el usuario tiene correo
-            if pedido.registrado_por and pedido.registrado_por.email:
-                try:
-                    send_mail(
-                        subject=f'Actualización del estado de tu pedido #{pedido.id}',
-                        message=f'Tu pedido #{pedido.id} ha sido actualizado a "{pedido.estado}".',
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[pedido.registrado_por.email],
-                        fail_silently=False,
-                    )
-                except Exception as e:
-                    print(f"Error enviando correo: {str(e)}")
-
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error al confirmar el pedido: {str(e)}')
             return redirect('cde:pedidos_pendientes_cde')
 
-    messages.error(request, 'No se pudo actualizar el estado del pedido.')
+    else:
+        pedido.estado = nuevo_estado
+        pedido.fecha_estado = timezone.now()
+        pedido.save()
+        messages.success(request, f'Estado del pedido #{pedido.id} actualizado a "{nuevo_estado}".')
+
+    if pedido.registrado_por and pedido.registrado_por.email:
+        productos_lista = "\n".join(
+            f"<li class='articulo-item'>{escape(item.cantidad)} {escape(item.producto.nombre)}</li>"
+            for item in pedido.productos.all()
+        )
+
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>Estado de Pedido Actualizado</title>
+            <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }}
+        .email-container {{
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }}
+        .header {{
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }}
+        .logo {{
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 15px;
+        }}
+        .content {{
+            padding: 25px;
+        }}
+        .status {{
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }}
+        .status.Confirmado {{
+            color: #155724;
+        }}
+        .status.Cancelado {{
+            background-color: #f8d7da;
+            color: #721c24;
+        }}
+        .status.Pendiente {{
+            color: #856404;
+        }}
+        .info-box {{
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }}
+        .info-label {{
+            font-weight: bold;
+            color: #495057;
+            display: inline-block;
+            min-width: 150px;
+        }}
+        .articulos-list {{
+            margin: 15px 0;
+            padding-left: 20px;
+        }}
+        .articulo-item {{
+            margin-bottom: 8px;
+        }}
+        .footer {{
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+        }}
+    </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD" class="logo">
+                    <h2>Actualización de Estado de Pedido</h2>
+                </div>
+                
+                <div class="content">
+                    <p>Hola <strong>{escape(pedido.registrado_por.username)}</strong>,</p>
+                    <p>Te informamos que el estado de tu pedido en el módulo de centro de eventos ha sido actualizado:</p>
+                    
+                    <div class="info-box">
+                        <p><span class="info-label">Número de Pedido:</span> #{pedido.id}</p>
+                        <p><span class="info-label">Fecha de Actualización:</span> {pedido.fecha_estado.strftime('%d/%m/%Y %H:%M')}</p>
+                        <p><span class="info-label">Nuevo Estado:</span> <span class="status {pedido.estado}">{pedido.estado.upper()}</span></p>
+
+                        <h3>Detalle del Pedido:</h3>
+                        <ul class="articulos-list">
+                            {productos_lista}
+                        </ul>
+                    </div>
+                    
+                    <p>Para más información, puedes acceder al sistema de gestión de pedidos.</p>
+                </div>
+                
+                <div class="footer">
+                    <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+                    <p>© {timezone.now().year} Gestor Cafetería - Todos los derechos reservados</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        text_content = f"""
+        Actualización de Estado de Pedido
+
+        Hola {pedido.registrado_por.username},
+
+        Tu pedido #{pedido.id} ha sido actualizado a {pedido.estado.upper()}.
+
+        Fecha de actualización: {pedido.fecha_estado.strftime('%d/%m/%Y %H:%M')}
+
+        Detalle del Pedido:
+        {"".join([f"- {item.cantidad} x {item.producto.nombre}\n" for item in pedido.productos.all()])}
+
+        Gracias por usar nuestro sistema.
+        © {timezone.now().year} Gestor Cafetería
+        """
+
+        try:
+            send_mail(
+                subject=f'Pedido #{pedido.id} - Estado actualizado a {pedido.estado.upper()}',
+                message=text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[pedido.registrado_por.email],
+                html_message=html_content
+            )
+        except Exception as e:
+            print(f"Error enviando email: {str(e)}")
+
     return redirect('cde:pedidos_pendientes_cde')
 
 def pedidos_pendientes_cde(request):

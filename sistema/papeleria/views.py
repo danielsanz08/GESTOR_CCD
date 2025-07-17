@@ -622,7 +622,7 @@ def cambiar_estado_pedido(request, pedido_id):
         
         <div class="content">
             <p>Hola <strong>{usuario.username}</strong>,</p>
-            <p>Te informamos que el estado de tu pedido ha sido actualizado:</p>
+            <p>Te informamos que el estado de tu pedido en el módulo de papeleria ha sido actualizado:</p>
             
             <div class="info-box">
                 <p><span class="info-label">Número de Pedido:</span> #{pedido.id}</p>

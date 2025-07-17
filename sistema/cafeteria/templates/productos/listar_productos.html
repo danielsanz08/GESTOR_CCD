@@ -107,12 +107,14 @@
         </table>
     </div>
 
-    <div class="paginacion" id="pag">
+   <div class="paginacion" id="pag">
     {% if productos.has_previous %}
         <a href="?page={{ productos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
         <span class="page-link disabled" aria-disabled="true">Anterior</span>
     {% endif %}
+
+    <span class="page-link active">{{ productos.number }}</span>
 
     {% if productos.has_next %}
         <a href="?page={{ productos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
@@ -120,6 +122,7 @@
         <span class="page-link disabled" aria-disabled="true">Siguiente</span>
     {% endif %}
 </div>
+
 
 
     <!-- Modal para eliminar -->

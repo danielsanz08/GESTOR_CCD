@@ -59,8 +59,8 @@
       </div>
   </div>
   {% endif %}
-
-  <!-- Modal Usuarios (disponible para ambos roles) -->
+   {% if request.user.role == 'Administrador' %}
+   <!-- Modal Usuarios (disponible para ambos roles) -->
   <div class="modal-overlay" id="usuarios-modal">
       <div class="modal-container">
           <div class="modal-header">
@@ -173,13 +173,81 @@
           </div>
       </div>
   </div>
+    {% elif request.user.role == 'Empleado' %}
+    <!-- Modal Usuarios (disponible para ambos roles) -->
+  <div class="modal-overlay" id="usuarios-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Gestión de Usuarios</h2>
+              <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'cafeteria:ver_usuario_caf' user.id %}" class="modal-option">
+                      <i data-feather="user" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Ver perfil</span>
+                  </a>
+                  <a href="{% url 'cafeteria:cambiar_contraseña_caf' %}" class="modal-option">
+                      <i data-feather="lock" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Cambiar contraseña</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+ 
+
+  <!-- Modal Pedidos -->
+  <div class="modal-overlay" id="pedidos-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Gestión de Pedidos</h2>
+              <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'cafeteria:crear_pedido_caf' %}" class="modal-option">
+                      <i data-feather="shopping-cart" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Nuevo pedido</span>
+                  </a>
+                 
+                  <a href="{% url 'cafeteria:mis_pedidos' %}" class="modal-option">
+                      <i data-feather="clipboard" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Mis pedidos</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  
+  <!-- Modal Manual (para todos los roles) -->
+  <div class="modal-overlay" id="manual-modal">
+      <div class="modal-container">
+          <div class="modal-header">
+              <h2 class="modal-title">Manual de Usuario</h2>
+              <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
+          </div>
+          <div class="modal-content">
+              <div class="modal-options">
+                  <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
+                      <i data-feather="book-open" class="modal-option-icon"></i>
+                      <span class="modal-option-text">Abrir manual</span>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+      {% endif %}
+  
 
   <!-- Alerta de bajo stock solo para administrador -->
-  {% if request.user.role == 'Administrador' and request.user.acceso_pap and es_papeleria and mostrar_alerta and bajo_stock %}
+ {% if request.user.is_authenticated and request.user.role == 'Administrador' and request.user.acceso_caf and mostrar_alerta %}
   <div id="stock-alert" class="alert-overlay">
       <div class="alert-box">
           <button class="close-btn" onclick="cerrarAlerta()">&times;</button>
-          <p>¡Atención! Hay artículos con stock menor a 10 unidades.</p>
+          <p>¡Atención! Hay productos con stock menor a 10 unidades.</p>
       </div>
   </div>
   {% endif %}

@@ -1,12 +1,12 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% block titulo %}Editar artículos{% endblock %}
+{% block titulo %}Editar productos{% endblock %}
 {% block contenido %}
-<link rel="stylesheet" href="{% static 'css/editar_producto.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/editar_articulo.css' %}?v={% now 'U' %}">
 
 <div class="formulario">
     <h2>Editar producto</h2>
-    <form method="POST" class="form_producto" id="form_producto" action="{% url 'cafeteria:editar_producto' producto.id %}">
+    <form method="POST" class="form_producto" id="form_articulo" action="{% url 'cafeteria:editar_producto' producto.id %}">
         {% csrf_token %}
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre del producto</label>
@@ -49,7 +49,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const formProducto = document.getElementById("form_producto");
+        const formProducto = document.getElementById("form_articulo");
         const precioInput = document.getElementById("id_precio");
 
         const fields = [
@@ -72,7 +72,6 @@
             return valor.replace(/[^\d.]/g, "");
         }
 
-        // Formatear al escribir
         precioInput.addEventListener("input", function () {
             let valor = limpiarValor(precioInput.value);
             const partes = valor.split(".");
@@ -85,7 +84,6 @@
             precioInput.value = formatearConComas(valor);
         });
 
-        // Formatear si ya hay valor
         if (precioInput.value) {
             precioInput.value = formatearConComas(precioInput.value);
         }
@@ -97,18 +95,14 @@
                 const input = document.getElementById(field.id);
                 const errorDiv = document.querySelector(field.errorClass);
                 let valor = input.value.trim();
-
-                // Limpiar mensaje previo
                 errorDiv.textContent = "";
 
-                // Validar vacío
                 if (valor === "") {
                     errorDiv.textContent = `El campo ${field.name} es obligatorio.`;
                     isValid = false;
                     return;
                 }
 
-                // Validar numérico en precio
                 if (field.isPrecio) {
                     valor = limpiarValor(valor);
                     if (isNaN(valor) || parseFloat(valor) <= 0) {
@@ -116,7 +110,7 @@
                         isValid = false;
                         return;
                     }
-                    input.value = valor;  // limpiar antes de enviar
+                    input.value = valor;
                 }
             });
 
@@ -126,5 +120,4 @@
         });
     });
 </script>
-
 {% endblock %}

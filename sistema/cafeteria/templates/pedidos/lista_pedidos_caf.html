@@ -8,23 +8,30 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    /* Modal */
-    #modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
+     #modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    scrollbar-width: none; /* Para Firefox */
+    -ms-overflow-style: none; /* Para IE y Edge */
+}
+
+#modal::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Opera */
+}
 
     #modal-backdrop {
         display: none;
@@ -150,6 +157,17 @@
                                 <li>{{ producto.cantidad }} {{ producto.producto.nombre }}  </li>
                                 {% endfor %}
                             </ul>
+                            <p><strong>Lugar:</strong></p>
+<ul>
+    {% if pedido.lugares_unicos|length == 1 %}
+        <li>{{ pedido.lugares_unicos.0 }}</li>
+    {% else %}
+        {% for lugar in pedido.lugares_unicos %}
+            <li>{{ lugar }}</li>
+        {% endfor %}
+    {% endif %}
+</ul>
+
                             
                         </div>
 
@@ -160,22 +178,22 @@
         </tbody>
     </table>
 
-<div class="pagination" id="pag">
+<div class="paginacion" id="pag">
     {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
     {% else %}
-        <span class="page-link disabled">Anterior</span>
+        <span class="page-link disabled" aria-disabled="true">Anterior</span>
     {% endif %}
 
-    <!-- Mostrar página actual de total -->
-    <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+    <span class="page-link active">{{ pedidos.number }}</span>
 
     {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
     {% else %}
-        <span class="page-link disabled">Siguiente</span>
+        <span class="page-link disabled" aria-disabled="true">Siguiente</span>
     {% endif %}
 </div>
+
 
 
 </section>

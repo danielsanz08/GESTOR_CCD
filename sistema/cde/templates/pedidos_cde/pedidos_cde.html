@@ -6,100 +6,84 @@
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
 
-<style>
-    .btn-eliminar-articulo {
-        margin-left: 10px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+<div id="container">
+    <section>
+        <h1>Realizar Pedido</h1>
 
-    .btn-eliminar-articulo:hover {
-        background-color: #c82333;
-    }
-    .producto-deshabilitado {
-        color: #999;
-        text-decoration: line-through;
-    }
-    
-    .rojo {
-        color: red;
-    }
-</style>
+        <form method="post" id="pedidoForm">
+            {% csrf_token %}
 
-<section>
-    <h1>Realizar Pedido</h1>
-    <form method="post" id="pedidoForm">
-        {% csrf_token %}
-        <!-- Campo área oculto -->
-        <div class="mb-3" style="display: none;">
-            <label class="form-label">Área:</label>
-            <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
-        </div>
-        <div id="productos-container">
-            <div class="producto-form default-form" style="display: flex; margin-bottom: 10px; align-items: center;">
-                <select name="producto" required class="select-producto">
-                    <option value="">-- Seleccionar producto --</option>
-                    {% for producto in productos %}
-                        {% if producto.cantidad > 0 %}
-                            <option value="{{ producto.id }}" data-cantidad="{{ producto.cantidad }}"
-                                {% if producto.cantidad < 10 %} class="rojo" {% endif %}>
-                                {{ producto.nombre }} ({{ producto.cantidad }})
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
-                <label for="evento">Evento:</label>
-                <input type="text" name="evento" required placeholder="Evento">
+            <div class="mb-3" style="display: none;">
+                <label class="form-label">Área:</label>
+                <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
             </div>
-            <!-- Buttons moved here, outside of producto-form -->
-            <div id="buttons-container">
-                <button type="button" onclick="agregarProducto()" class="btn">Añadir otro Producto</button>
-                <button type="submit" class="btn">Realizar Pedido</button>
+
+            <div id="articulos-container">
+                <div class="articulo-form default-form">
+                    <label for="producto">Producto</label>
+                    <select name="producto" required class="select-articulo">
+                        <option value="">-- Seleccionar Producto --</option>
+                        {% for producto in productos %}
+                            {% if producto.cantidad > 0 %}
+                                <option value="{{ producto.id }}" data-cantidad="{{ producto.cantidad }}"
+                                    {% if producto.cantidad < 10 %} class="rojo" {% endif %}>
+                                    {{ producto.nombre }} ({{ producto.cantidad }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
+                    <label for="evento">Evento:</label>
+                    <input type="text" name="evento" required placeholder="Evento" class="input-evento" maxlength="20">
+                </div>
             </div>
-        </div>
-    </form>
-</section>
+
+            <!-- Contenedor para los botones principales -->
+            <div class="botones-principales">
+                <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro producto</button>
+                <button type="submit" id="realizar">Realizar Pedido</button>
+            </div>
+        </form>
+    </section>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    let productosSeleccionados = [];
+    let articulosSeleccionadosEnPedido = [];
 
-    // Actualiza las opciones disponibles en todos los selects
     function actualizarOpcionesDisponibles() {
-        const selectsProductos = document.querySelectorAll('.select-producto');
+        const selectsArticulos = document.querySelectorAll('.select-articulo');
 
-        selectsProductos.forEach(select => {
+        selectsArticulos.forEach(select => {
             const currentSelected = select.value;
 
             Array.from(select.options).forEach(option => {
                 if (option.value) {
-                    if (!productosSeleccionados.includes(option.value) || option.value === currentSelected) {
+                    if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
                         option.disabled = false;
-                        option.classList.remove('producto-deshabilitado');
+                        option.classList.remove('articulo-deshabilitado');
                     } else {
                         option.disabled = true;
-                        option.classList.add('producto-deshabilitado');
+                        option.classList.add('articulo-deshabilitado');
                     }
                 }
             });
         });
     }
 
-    // Valida que la cantidad no supere el stock disponible
     function actualizarValidacionCantidad(form) {
-        const selectProducto = form.querySelector('.select-producto');
+        const selectArticulo = form.querySelector('.select-articulo');
         const inputCantidad = form.querySelector('.input-cantidad');
 
-        inputCantidad.addEventListener('input', function() {
-            if (selectProducto.value) {
-                const cantidadDisponible = parseInt(selectProducto.selectedOptions[0].getAttribute('data-cantidad')) || 0;
-                const valorIngresado = parseInt(this.value) || 0;
+        // Remover listeners previos para evitar duplicados
+        const newInputCantidad = inputCantidad.cloneNode(true);
+        inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+
+        newInputCantidad.addEventListener('input', function () {
+            if (selectArticulo.value) {
+                const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+                const valorIngresado = parseInt(this.value);
 
                 if (valorIngresado > cantidadDisponible) {
                     this.value = cantidadDisponible;
@@ -109,100 +93,148 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // También validar al cambiar el producto
-        selectProducto.addEventListener('change', function() {
-            if (this.value && inputCantidad.value) {
+        selectArticulo.addEventListener('change', function() {
+            if (this.value && newInputCantidad.value) {
                 const cantidadDisponible = parseInt(this.selectedOptions[0].getAttribute('data-cantidad')) || 0;
-                const valorIngresado = parseInt(inputCantidad.value) || 0;
+                const valorIngresado = parseInt(newInputCantidad.value) || 0;
 
                 if (valorIngresado > cantidadDisponible) {
-                    inputCantidad.value = cantidadDisponible;
+                    newInputCantidad.value = cantidadDisponible;
                     alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
                 }
             }
         });
     }
 
-    // Inicializa un formulario de producto
     function inicializarFormulario(form, incluirEliminar = false) {
-        const selectProducto = form.querySelector('.select-producto');
+        const selectArticulo = form.querySelector('.select-articulo');
 
-        // Manejar cambio de producto
-        selectProducto.addEventListener('change', function() {
-            const prevValue = form.getAttribute('data-selected-producto');
+        selectArticulo.addEventListener('change', function () {
+            const prevValue = form.getAttribute('data-selected-articulo');
             if (prevValue) {
-                productosSeleccionados = productosSeleccionados.filter(id => id !== prevValue);
+                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
             }
 
             if (this.value) {
-                productosSeleccionados.push(this.value);
-                form.setAttribute('data-selected-producto', this.value);
+                articulosSeleccionadosEnPedido.push(this.value);
+                form.setAttribute('data-selected-articulo', this.value);
             } else {
-                form.removeAttribute('data-selected-producto');
+                form.removeAttribute('data-selected-articulo');
             }
 
             actualizarOpcionesDisponibles();
         });
 
-        // Agregar botón de eliminar si es necesario
         if (incluirEliminar) {
             const eliminarBtn = document.createElement('button');
             eliminarBtn.type = 'button';
             eliminarBtn.textContent = 'Eliminar';
-            eliminarBtn.classList.add('btn', 'btn-eliminar-producto');
-            eliminarBtn.title = "Eliminar";
-            eliminarBtn.onclick = function() {
-                eliminarProducto(form);
+            eliminarBtn.classList.add('btn-eliminar-articulo');
+            eliminarBtn.title = "Eliminar artículo";
+            eliminarBtn.onclick = function () {
+                eliminarArticulo(form);
             };
             form.appendChild(eliminarBtn);
         }
 
-        // Configurar validación de cantidad
         actualizarValidacionCantidad(form);
     }
 
-    // Agregar nuevo formulario de producto
-    window.agregarProducto = function() {
-        const container = document.getElementById('productos-container');
-        const buttonsContainer = document.getElementById('buttons-container');
-        const nuevoFormulario = defaultForm.cloneNode(true);
-        nuevoFormulario.classList.remove('default-form');
-        nuevoFormulario.style.display = 'flex';
-
-        // Limpiar valores
-        nuevoFormulario.querySelector('.select-producto').selectedIndex = 0;
-        nuevoFormulario.querySelector('.input-cantidad').value = 1;
-        nuevoFormulario.querySelector('input[name="evento"]').value = '';
-        nuevoFormulario.removeAttribute('data-selected-producto');
-
-        // Inicializar el nuevo formulario
-        inicializarFormulario(nuevoFormulario, true);
-        
-        // Insertar antes del contenedor de botones
-        container.insertBefore(nuevoFormulario, buttonsContainer);
-        
-        // Actualizar opciones disponibles
-        actualizarOpcionesDisponibles();
-    };
-
-    // Eliminar un formulario de producto
-    window.eliminarProducto = function(form) {
-        if (!form.classList.contains('default-form')) {
-            const productoId = form.getAttribute('data-selected-producto');
-            if (productoId) {
-                productosSeleccionados = productosSeleccionados.filter(id => id !== productoId);
-            }
-            form.remove();
-            actualizarOpcionesDisponibles();
-        }
-    };
-
-    // Inicializar el primer formulario
-    const defaultForm = document.querySelector('.producto-form.default-form');
+    const defaultForm = document.querySelector('.articulo-form.default-form');
     if (defaultForm) {
         inicializarFormulario(defaultForm);
-        actualizarOpcionesDisponibles();
     }
+
+    window.agregarArticulo = function () {
+        const container = document.getElementById('articulos-container');
+        const nuevoFormulario = defaultForm.cloneNode(true);
+        
+        // Limpiar clases y preparar el nuevo formulario
+        nuevoFormulario.classList.remove('default-form');
+        nuevoFormulario.classList.add('nuevo');
+        nuevoFormulario.style.display = 'flex';
+
+        // Resetear valores
+        const selects = nuevoFormulario.querySelectorAll('select');
+        selects.forEach(select => select.selectedIndex = 0);
+        nuevoFormulario.querySelector('.input-cantidad').value = 1;
+        nuevoFormulario.querySelector('input[name="evento"]').value = '';
+        nuevoFormulario.removeAttribute('data-selected-articulo');
+
+        // Inicializar el nuevo formulario con botón eliminar
+        inicializarFormulario(nuevoFormulario, true);
+        container.appendChild(nuevoFormulario);
+
+        // Actualizar opciones disponibles
+        actualizarOpcionesDisponibles();
+
+        // Remover clase de animación después de la animación
+        setTimeout(() => {
+            nuevoFormulario.classList.remove('nuevo');
+        }, 400);
+    };
+
+    window.eliminarArticulo = function (form) {
+        if (!form.classList.contains('default-form')) {
+            const articuloId = form.getAttribute('data-selected-articulo');
+            if (articuloId) {
+                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+            }
+            
+            // Animación de salida
+            form.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                form.remove();
+                actualizarOpcionesDisponibles();
+            }, 300);
+        }
+    };
 });
+
+// Animación de salida
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+    
+    .input-evento {
+        border: 2px solid transparent;
+        border-radius: 10px;
+        height: 27px;
+        padding: 0 12px;
+        font-size: 13px;
+        flex: 2;
+        min-width: 120px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .input-evento:focus {
+        outline: none;
+        border-color: #00a67e;
+        box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+    }
+    
+    .articulo-deshabilitado {
+        color: #6c757d !important;
+        text-decoration: line-through;
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+`;
+document.head.appendChild(style);
 </script>
 
 {% endblock %}

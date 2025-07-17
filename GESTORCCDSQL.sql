@@ -113,7 +113,7 @@ CREATE TABLE `backup_backup` (
   PRIMARY KEY (`id`),
   KEY `backup_backup_creado_por_id_217c3075_fk_libreria_customuser_id` (`creado_por_id`),
   CONSTRAINT `backup_backup_creado_por_id_217c3075_fk_libreria_customuser_id` FOREIGN KEY (`creado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `backup_backup` (
 
 LOCK TABLES `backup_backup` WRITE;
 /*!40000 ALTER TABLE `backup_backup` DISABLE KEYS */;
-INSERT INTO `backup_backup` VALUES (1,'Fgfg','backups/backup_db_20250716_090506.json','2025-07-16 14:05:06.477000','0.01 MB','libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)',1);
+INSERT INTO `backup_backup` VALUES (1,'Fgfg','backups/backup_db_20250716_090506.json','2025-07-16 14:05:06.477000','0.01 MB','libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)',1),(2,'Ccd1 Backup','backups/backup_db_20250717_112801.json','2025-07-17 16:28:02.385224','0.03 MB','libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)',1),(3,'export_20250717_112816','backups/backup_db_20250717_112816.json','2025-07-17 16:28:16.321411','0.03 MB','Todos (exportación completa con relaciones)',1);
 /*!40000 ALTER TABLE `backup_backup` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +142,7 @@ CREATE TABLE `cafeteria_pedido` (
   PRIMARY KEY (`id`),
   KEY `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `cafeteria_pedido_registrado_por_id_e4db4d2b_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +151,7 @@ CREATE TABLE `cafeteria_pedido` (
 
 LOCK TABLES `cafeteria_pedido` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedido` DISABLE KEYS */;
+INSERT INTO `cafeteria_pedido` VALUES (1,'2025-07-17 12:59:08.155658','Confirmado',2,'2025-07-17 12:59:08.155301'),(2,'2025-07-17 13:00:55.467400','Confirmado',2,'2025-07-17 13:00:55.467225'),(3,'2025-07-17 13:01:43.983519','Confirmado',2,'2025-07-17 13:01:43.983385'),(4,'2025-07-17 13:02:20.447335','Confirmado',2,'2025-07-17 13:02:20.447117'),(5,'2025-07-17 13:02:52.576823','Confirmado',2,'2025-07-17 13:02:52.576524'),(6,'2025-07-17 13:05:37.180827','Pendiente',3,NULL),(7,'2025-07-17 13:06:17.328775','Pendiente',3,NULL),(8,'2025-07-17 13:07:09.715500','Pendiente',3,NULL),(9,'2025-07-17 13:07:46.674194','Pendiente',3,NULL),(10,'2025-07-17 13:08:17.966013','Pendiente',3,NULL),(11,'2025-07-17 13:23:45.776372','Cancelado',3,'2025-07-17 13:42:50.105444'),(12,'2025-07-17 13:25:53.323972','Confirmado',3,'2025-07-17 13:42:25.183140');
 /*!40000 ALTER TABLE `cafeteria_pedido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +175,7 @@ CREATE TABLE `cafeteria_pedidoproducto` (
   CONSTRAINT `cafeteria_pedidoprod_pedido_id_cf5da2ef_fk_cafeteria` FOREIGN KEY (`pedido_id`) REFERENCES `cafeteria_pedido` (`id`),
   CONSTRAINT `cafeteria_pedidoprod_producto_id_53398573_fk_cafeteria` FOREIGN KEY (`producto_id`) REFERENCES `cafeteria_productos` (`id`),
   CONSTRAINT `cafeteria_pedidoproducto_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,6 +184,7 @@ CREATE TABLE `cafeteria_pedidoproducto` (
 
 LOCK TABLES `cafeteria_pedidoproducto` WRITE;
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` DISABLE KEYS */;
+INSERT INTO `cafeteria_pedidoproducto` VALUES (3,1,'Administrativa',2,'cde',2),(4,1,'Administrativa',3,'cde',2),(5,1,'Administrativa',4,'cde',2),(6,1,'Administrativa',3,'cde',3),(7,16,'Administrativa',5,'cafeteria',4),(8,1,'Administrativa',5,'sdsd',5),(11,1,'Administrativa',2,'cde',7),(13,1,'Administrativa',2,'cde',8),(14,1,'Administrativa',3,'cde',8),(15,1,'Administrativa',4,'cde',8),(16,1,'Administrativa',5,'cde',9),(17,1,'Administrativa',5,'cde',10),(19,1,'Administrativa',5,'feliz maria',11),(21,1,'Administrativa',2,'cde',12);
 /*!40000 ALTER TABLE `cafeteria_pedidoproducto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -209,7 +211,7 @@ CREATE TABLE `cafeteria_productos` (
   CONSTRAINT `cafeteria_productos_registrado_por_id_26864eb8_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`),
   CONSTRAINT `cafeteria_productos_chk_1` CHECK ((`precio` >= 0)),
   CONSTRAINT `cafeteria_productos_chk_2` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,6 +220,7 @@ CREATE TABLE `cafeteria_productos` (
 
 LOCK TABLES `cafeteria_productos` WRITE;
 /*!40000 ALTER TABLE `cafeteria_productos` DISABLE KEYS */;
+INSERT INTO `cafeteria_productos` VALUES (2,'Palitos Mezcladores','Bond Ltda',5000,22,'Javeriana','2025-07-17','Unidad',2,'Paquete'),(3,'Toallas','Toallas Ltda',50000,34,'Javeriana','2025-07-17','Unidad',2,'Unidad'),(4,'Papel Higienico','Papel Scott',5500,1,'Scott','2025-07-17','Unidad',2,'Paquete Por Doce'),(5,'Café','Tostao',5000,0,'Tostao','2025-07-17','Kilogramos',2,'Paquete');
 /*!40000 ALTER TABLE `cafeteria_productos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,7 +240,7 @@ CREATE TABLE `cde_pedidocde` (
   PRIMARY KEY (`id`),
   KEY `cde_pedidocde_registrado_por_id_dba5a62f_fk_libreria_` (`registrado_por_id`),
   CONSTRAINT `cde_pedidocde_registrado_por_id_dba5a62f_fk_libreria_` FOREIGN KEY (`registrado_por_id`) REFERENCES `libreria_customuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,6 +249,7 @@ CREATE TABLE `cde_pedidocde` (
 
 LOCK TABLES `cde_pedidocde` WRITE;
 /*!40000 ALTER TABLE `cde_pedidocde` DISABLE KEYS */;
+INSERT INTO `cde_pedidocde` VALUES (1,'2025-07-17 14:44:49.542931','Confirmado',2,'2025-07-17 14:44:49.542681'),(2,'2025-07-17 14:45:49.522621','Pendiente',3,NULL),(3,'2025-07-17 14:46:29.511712','Pendiente',3,NULL),(4,'2025-07-17 14:47:22.602505','Pendiente',3,NULL),(5,'2025-07-17 14:48:48.706301','Cancelado',3,'2025-07-17 15:16:45.942460'),(6,'2025-07-17 14:49:22.671515','Confirmado',3,'2025-07-17 15:15:14.790567'),(7,'2025-07-17 15:16:02.016904','Confirmado',2,'2025-07-17 15:16:02.016740');
 /*!40000 ALTER TABLE `cde_pedidocde` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,7 +273,7 @@ CREATE TABLE `cde_pedidoproductocde` (
   CONSTRAINT `cde_pedidoproductocd_producto_id_650e0030_fk_cafeteria` FOREIGN KEY (`producto_id`) REFERENCES `cafeteria_productos` (`id`),
   CONSTRAINT `cde_pedidoproductocde_pedido_id_edac6f17_fk_cde_pedidocde_id` FOREIGN KEY (`pedido_id`) REFERENCES `cde_pedidocde` (`id`),
   CONSTRAINT `cde_pedidoproductocde_chk_1` CHECK ((`cantidad` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -278,6 +282,7 @@ CREATE TABLE `cde_pedidoproductocde` (
 
 LOCK TABLES `cde_pedidoproductocde` WRITE;
 /*!40000 ALTER TABLE `cde_pedidoproductocde` DISABLE KEYS */;
+INSERT INTO `cde_pedidoproductocde` VALUES (1,49,'Administrativa','noticamara',1,5),(4,1,'Administrativa','ccd',3,2),(5,1,'Administrativa','exposicion',4,3),(7,1,'Administrativa','ccd',4,2),(9,1,'Administrativa','dfdfgdfg',5,4),(10,1,'Administrativa','fdgfdg',5,2),(11,1,'Administrativa','fgfdg',5,3),(12,1,'Administrativa','cvbvb',6,2),(13,1,'Administrativa','vbvb',6,4),(15,1,'Administrativa','cde',7,2);
 /*!40000 ALTER TABLE `cde_pedidoproductocde` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +394,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('dz3zx644fkqt1xz33yyq7u27rlm4c172','.eJxVjMEOgyAQBf-FszFsCwgem_Q7yAKrElETwFPTf69tPbTXN2_mwSzudbJ7oWxjYD0D1vxuDv1M6xuk6DLliO05lfa-YEy38_BnTVimQ5HKycCFJgJlpBlA6YsZ_OAcgeCBOoHOC92B5op7LzUdgIwDQJD-qo7oJ5e2caRg48r6mndqGCbKFW2pm5_tspWaMeAXPl94O0ck:1uc5V1:EXqjkntBopPoHPwAHcTWtooS0i2sgUrXcYhXC8ck0Bc','2025-07-16 17:10:55.942106');
+INSERT INTO `django_session` VALUES ('dz3zx644fkqt1xz33yyq7u27rlm4c172','.eJxVjMEOgyAQBf-FszFsCwgem_Q7yAKrElETwFPTf69tPbTXN2_mwSzudbJ7oWxjYD0D1vxuDv1M6xuk6DLliO05lfa-YEy38_BnTVimQ5HKycCFJgJlpBlA6YsZ_OAcgeCBOoHOC92B5op7LzUdgIwDQJD-qo7oJ5e2caRg48r6mndqGCbKFW2pm5_tspWaMeAXPl94O0ck:1uc5V1:EXqjkntBopPoHPwAHcTWtooS0i2sgUrXcYhXC8ck0Bc','2025-07-16 17:10:55.942106'),('epjw52nk9s7xhq3pbaf17y78agewxf5s','.eJxVjMEOgyAQBf-FszFsCwgem_Q7yAKrElETwFPTf69tPbTXN2_mwSzudbJ7oWxjYD0D1vxuDv1M6xuk6DLliO05lfa-YEy38_BnTVimQ5HKycCFJgJlpBlA6YsZ_OAcgeCBOoHOC92B5op7LzUdgIwDQJD-qo7oJ5e2caRg48r6mndqGCbKFW2pm5_tspWaMeAXPl94O0ck:1uc93H:TgVSSrsWk7h_am2zg1V7rdbVkeq22504dPeQUAj-oCw','2025-07-16 20:58:31.315795'),('jj82h7a9yfix5544445zzcxvmwvisfpd','.eJxVjMEOgyAQBf-FszFsCwgem_Q7yAKrElETwFPTf69tPbTXN2_mwSzudbJ7oWxjYD0D1vxuDv1M6xuk6DLliO05lfa-YEy38_BnTVimQ5HKycCFJgJlpBlA6YsZ_OAcgeCBOoHOC92B5op7LzUdgIwDQJD-qo7oJ5e2caRg48r6mndqGCbKFW2pm5_tspWaMeAXPl94O0ck:1ucRT1:131LePIdrupoeaXSFTFHtSmSByC6CaxB4j5vRIy8BEs','2025-07-17 16:38:19.793138'),('qis3crdmt1a3yothlo48ilwcnace848p','.eJxtjMsOwiAQRf-FdWNAgUKXJn4HGYahJX0lQFfGf7eaLtS4Pefce2cOtjq4rVB2KbCOCdZ8Mg840vISU_KZcoLTgcrpNkOarkfwtRqgDPtEaa8Cl4ZIaKtsFNqcbcToPQnJA7USPErTCsM1R1SGdkHWCwFC4UXvp--7ae17Ci4trKt5o4bBRLmCK3XF0c1rqRkC_JUI8Sd4PAF0OFPN:1ucQfH:eGiEYznu9S4o5EI_1rCdbnMK8bOq7mINQZX0uRLcCks','2025-07-17 15:46:55.989828');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -427,7 +432,7 @@ CREATE TABLE `libreria_customuser` (
 
 LOCK TABLES `libreria_customuser` WRITE;
 /*!40000 ALTER TABLE `libreria_customuser` DISABLE KEYS */;
-INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$1000000$ftXenUpxymjELJ27tApvUH$sgZGBv/twhYBCAgbBnNyTAcHday/NGWMJpOAdG4i9s0=','2025-07-16 16:39:32.566644',0,'Daniel Sanchez','jonnathansz73@gmail.com','Administrador','Aprendiz sena',1,0,'Administrativa','2025-07-16',1,1,1),(2,'pbkdf2_sha256$1000000$v8yZB3DvMHKkWJRbBIbh5B$3Rq0lXL5nmxNy8du5aPYi8cA6aO3W7dFKeRgot0issI=','2025-07-16 15:44:25.720000',0,'Viviana Rodriguez','viviana@gmail.com','Administrador','Asistente en gestion documental',1,0,'Administrativa','2025-07-16',1,1,1),(3,'pbkdf2_sha256$1000000$XaxFTHY78rar0iX5NzJ1Y3$xX0SDEkSgeFJw7oKjDhw2PZBREobdnlA7PflKqBkW14=',NULL,0,'Carlos Andres Orozco','carlos@gmail.com','Empleado','Auxiliar en gestion documental',1,0,'Administrativa','2025-07-16',0,0,1),(4,'pbkdf2_sha256$1000000$Nzx3vHs02JsaQZjg8Tcjr9$Ls9xhfEE0gw5+mrOgRZ6QMNogFr2Qv3UaDzt3qpBXDs=',NULL,0,'Diego Higuera','diego@gmail.com','Empleado','Auxiliar rues',1,0,'Registros públicos','2025-07-16',0,0,1),(5,'pbkdf2_sha256$1000000$sJt9K8MBj8ILQAWborKymk$pVV4vGLeR3eAeXEGPn06pTqsHSB6TfGwVWOg/is1uE8=',NULL,0,'Carolina Rua','carolina@gmail.com','Empleado','Auxiliar rues',1,0,'Registros públicos','2025-07-16',0,0,0),(6,'pbkdf2_sha256$1000000$3uNPsC5LopOnmU0Hm4HYsn$RFfz2oarPKw3I3lyAq8Ky8S9UooQfubDSYBPdl58dLI=','2025-07-16 16:26:17.294824',0,'Camila Ortega','camila@gmail.com','Empleado','Asistente de comunicaciones',1,0,'Presidencia','2025-07-16',0,0,1),(7,'pbkdf2_sha256$1000000$f8oegzGiHuPHkGiapAm60c$ymbegzbzQh4zp7FsSqVdSEaNgRYlpAqEeGP8j1pGpz4=',NULL,0,'Daniel Vargas','daniel@gmail.com','Empleado','Auxiliar de comunicaciones',1,0,'Presidencia','2025-07-16',0,0,0),(8,'pbkdf2_sha256$1000000$GXhW15jIWbG8V5c9Y5sMjT$a7QV6tymBvViDB15vfQDuswJKYuWC3REUFIbkd/mAQA=',NULL,0,'Diana C. Gomez','diana@gmail.com','Empleado','Asistente en gestion empresarial',1,0,'Gestión empresarial','2025-07-16',0,0,0),(9,'pbkdf2_sha256$1000000$v8Nxg4httKepKVyYn37qPt$wNB91lRKbkF/WNqAn3QXlk0ofNCO/at3i9QMVm6o6Gw=','2025-07-16 16:31:13.007055',0,'Freddy Monsalve','freddy@gmail.com','Empleado','Auxiliar en gestion empresarial',1,0,'Gestión empresarial','2025-07-16',0,0,1),(10,'pbkdf2_sha256$1000000$twCNVwSCIolNQsu25zjoJc$5HWzQVgoETArhlto5O5JvTCBqYvl2hQFC0T7MSHlAwg=',NULL,0,'Beatriz Sanabria','beatriz@gmail.com','Empleado','Tesorera',0,0,'Financiera','2025-07-16',0,0,1),(11,'pbkdf2_sha256$1000000$HBI1SGvYLFMuxJlcaN5Bt5$Ecir4kPpDRCLhcKFVwZdVsdo0vWWGWh+if9+mR8roxw=','2025-07-16 16:32:47.578333',0,'Freddy Camargo','freddyc@gmail.com','Empleado','Auxiliar contable',1,0,'Financiera','2025-07-16',0,0,1),(12,'pbkdf2_sha256$1000000$KPGMlPSN4yCwfwSPfytdvp$nOYApJJqM4xF16webpOfbaHRJpJTQNZxZlJ63xSl318=','2025-07-16 16:34:19.915423',0,'Hector Garcia','hector@gmail.com','Empleado','Asistente en competitividad',1,0,'Competitividad','2025-07-16',0,0,1),(13,'pbkdf2_sha256$1000000$HZOLk84uITBdy1Bsxrxzhh$KB6Wm3UoXTY14gDsnX5lfgeOfjoNphWUKMBXp04a1P8=',NULL,0,'Brayan Ceron','brayan@gmail.com','Empleado','Supernumerario en competividad',1,0,'Competitividad','2025-07-16',0,0,0);
+INSERT INTO `libreria_customuser` VALUES (1,'pbkdf2_sha256$1000000$ftXenUpxymjELJ27tApvUH$sgZGBv/twhYBCAgbBnNyTAcHday/NGWMJpOAdG4i9s0=','2025-07-17 16:19:59.452789',0,'Daniel Sanchez','jonnathansz73@gmail.com','Administrador','Aprendiz sena',1,0,'Administrativa','2025-07-16',1,1,1),(2,'pbkdf2_sha256$1000000$v8yZB3DvMHKkWJRbBIbh5B$3Rq0lXL5nmxNy8du5aPYi8cA6aO3W7dFKeRgot0issI=','2025-07-17 15:01:56.956376',0,'Viviana Rodriguez','viviana@gmail.com','Administrador','Asistente en gestion documental',1,0,'Administrativa','2025-07-16',1,1,1),(3,'pbkdf2_sha256$1000000$A9JNXj2slazLciMjzUkvaw$EMKgUv3GvK729H20FS8URlsIOP3MAIn5Gc7mSQFqYSA=','2025-07-17 15:32:56.163238',0,'Carlos Andres Orozco','carlos@gmail.com','Empleado','Auxiliar en gestion documental',1,0,'Administrativa','2025-07-16',1,1,1),(4,'pbkdf2_sha256$1000000$Nzx3vHs02JsaQZjg8Tcjr9$Ls9xhfEE0gw5+mrOgRZ6QMNogFr2Qv3UaDzt3qpBXDs=',NULL,0,'Diego Higuera','diego@gmail.com','Empleado','Auxiliar rues',1,0,'Registros públicos','2025-07-16',1,1,1),(5,'pbkdf2_sha256$1000000$sJt9K8MBj8ILQAWborKymk$pVV4vGLeR3eAeXEGPn06pTqsHSB6TfGwVWOg/is1uE8=',NULL,0,'Carolina Rua','carolina@gmail.com','Empleado','Auxiliar rues',1,0,'Registros públicos','2025-07-16',0,0,0),(6,'pbkdf2_sha256$1000000$3uNPsC5LopOnmU0Hm4HYsn$RFfz2oarPKw3I3lyAq8Ky8S9UooQfubDSYBPdl58dLI=','2025-07-16 16:26:17.294824',0,'Camila Ortega','camila@gmail.com','Empleado','Asistente de comunicaciones',1,0,'Presidencia','2025-07-16',0,0,1),(7,'pbkdf2_sha256$1000000$f8oegzGiHuPHkGiapAm60c$ymbegzbzQh4zp7FsSqVdSEaNgRYlpAqEeGP8j1pGpz4=',NULL,0,'Daniel Vargas','daniel@gmail.com','Empleado','Auxiliar de comunicaciones',1,0,'Presidencia','2025-07-16',0,0,0),(8,'pbkdf2_sha256$1000000$GXhW15jIWbG8V5c9Y5sMjT$a7QV6tymBvViDB15vfQDuswJKYuWC3REUFIbkd/mAQA=',NULL,0,'Diana C. Gomez','diana@gmail.com','Empleado','Asistente en gestion empresarial',1,0,'Gestión empresarial','2025-07-16',0,0,0),(9,'pbkdf2_sha256$1000000$v8Nxg4httKepKVyYn37qPt$wNB91lRKbkF/WNqAn3QXlk0ofNCO/at3i9QMVm6o6Gw=','2025-07-16 16:31:13.007055',0,'Freddy Monsalve','freddy@gmail.com','Empleado','Auxiliar en gestion empresarial',1,0,'Gestión empresarial','2025-07-16',0,0,1),(10,'pbkdf2_sha256$1000000$twCNVwSCIolNQsu25zjoJc$5HWzQVgoETArhlto5O5JvTCBqYvl2hQFC0T7MSHlAwg=',NULL,0,'Beatriz Sanabria','beatriz@gmail.com','Empleado','Tesorera',0,0,'Financiera','2025-07-16',0,0,1),(11,'pbkdf2_sha256$1000000$HBI1SGvYLFMuxJlcaN5Bt5$Ecir4kPpDRCLhcKFVwZdVsdo0vWWGWh+if9+mR8roxw=','2025-07-16 16:32:47.578333',0,'Freddy Camargo','freddyc@gmail.com','Empleado','Auxiliar contable',1,0,'Financiera','2025-07-16',0,0,1),(12,'pbkdf2_sha256$1000000$KPGMlPSN4yCwfwSPfytdvp$nOYApJJqM4xF16webpOfbaHRJpJTQNZxZlJ63xSl318=','2025-07-16 16:34:19.915423',0,'Hector Garcia','hector@gmail.com','Empleado','Asistente en competitividad',1,0,'Competitividad','2025-07-16',0,0,1),(13,'pbkdf2_sha256$1000000$HZOLk84uITBdy1Bsxrxzhh$KB6Wm3UoXTY14gDsnX5lfgeOfjoNphWUKMBXp04a1P8=',NULL,0,'Brayan Ceron','brayan@gmail.com','Empleado','Supernumerario en competividad',1,0,'Competitividad','2025-07-16',0,0,0);
 /*!40000 ALTER TABLE `libreria_customuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -594,4 +599,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-16 14:08:19
+-- Dump completed on 2025-07-17 11:29:14

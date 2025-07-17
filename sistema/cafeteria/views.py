@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q, Sum, Count
+from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
@@ -21,7 +22,7 @@ from reportlab.platypus import Spacer
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-
+from libreria.forms import CustomPasswordChangeForm
 from reportlab.lib.styles import ParagraphStyle
 # Forms
 from cafeteria.forms import LoginForm, ProductoForm, ProductosEditForm, PedidoProductoForm
@@ -93,8 +94,10 @@ def index_caf(request):
     context = {
         'es_cafeteria': es_cafeteria,
     }
-
-    return render(request, 'index_caf/index_caf.html', context)
+    breadcrumbs = [
+        {'name': 'Inicio cafeteria', 'url': '/index_caf'},
+    ]
+    return render(request, 'index_caf/index_caf.html', {'breadcrumbs': breadcrumbs, **context})
 
 # Create your views here.
 def ver_usuario_caf(request, id):
@@ -227,14 +230,27 @@ def eliminar_producto(request, id):
 
 def editar_producto(request, producto_id):
     producto = get_object_or_404(Productos, id=producto_id)
-    if request.method== 'POST':
+    
+    breadcrumbs = [
+        {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
+        {'name': 'Listado de cafetería y aseo', 'url': reverse('cafeteria:listar_productos')},
+        {'name': 'Editar producto', 'url': reverse('cafeteria:editar_producto', args=[producto_id])},  # ✅ Aquí se corrige
+    ]
+
+    if request.method == 'POST':
         form = ProductosEditForm(request.POST, instance=producto)
         if form.is_valid():
             form.save()
+            messages.success(request, "✅ Producto actualizado correctamente.")
             return redirect('cafeteria:listar_productos')
     else:
-            form = ProductosEditForm(instance=producto)
-    return render(request, 'productos/editar_producto.html', {'form': form, 'producto': producto})
+        form = ProductosEditForm(instance=producto)
+
+    return render(request, 'productos/editar_producto.html', {
+        'form': form,
+        'producto': producto,
+        'breadcrumbs': breadcrumbs,
+    })
 @login_required(login_url='/acceso_denegado/')
 
 def logout_caf(request):
@@ -265,7 +281,8 @@ def obtener_productos(request):
             Q(precio__icontains=query) |
             Q(proveedor__icontains=query) |
             Q(cantidad__icontains=query) |
-            Q(registrado_por__username__icontains=query)
+            Q(registrado_por__username__icontains=query) |
+            Q(id__icontains=query)
         )
 
     if fecha_inicio and fecha_fin:
@@ -728,20 +745,21 @@ def mis_pedidos(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Get orders for authenticated user
+    # Obtener pedidos del usuario autenticado ordenados por fecha descendente
     pedidos = Pedido.objects.filter(registrado_por=request.user).order_by('-fecha_pedido')
 
-    # Text search
+    # Filtro de búsqueda
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(productos__area__icontains=query) |
             Q(id__icontains=query) |
+            Q(productos__area__icontains=query) |
+            Q(productos__lugar__icontains=query) |  # ✅ Campo añadido
             Q(productos__producto__nombre__icontains=query)
         ).distinct()
 
-    # Date filtering with error handling
+    # Filtro por fecha de inicio con manejo de errores
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
@@ -749,19 +767,26 @@ def mis_pedidos(request):
         except ValueError:
             pedidos = Pedido.objects.none()
 
+    # Filtro por fecha de fin con manejo de errores
     if fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
-            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt instead of lte
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
             pedidos = Pedido.objects.none()
 
-    # Pagination
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
-    # Build query parameters for pagination
+    # Agregar lugares únicos a cada pedido
+    for pedido in pedidos_page:
+        lugares = pedido.productos.values_list('lugar', flat=True)
+        lugares_unicos = list(set(lugares))
+        pedido.lugares_unicos = lugares_unicos
+
+    # Construir parámetros de consulta para paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
@@ -995,42 +1020,48 @@ def pedidos_pendientes(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Get pending orders ordered by date (newest first)
+    # Obtener pedidos pendientes ordenados por fecha descendente
     pedidos = Pedido.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
 
-    # Text search with more comprehensive filters
+    # Filtro de búsqueda de texto
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
-            Q(productos__producto__nombre__icontains=query) |
+            Q(id__icontains=query) |
             Q(productos__area__icontains=query) |
-            Q(productos__lugar__icontains=query) |
-            Q(id__icontains=query) |  # Search by order ID
-            Q(comentarios__icontains=query)  # Search in order comments
+            Q(productos__lugar__icontains=query) |  # ✅ Campo añadido
+            Q(productos__producto__nombre__icontains=query)
         ).distinct()
 
-    # Date filtering with proper range inclusion
+    # Filtro por fecha de inicio
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pass  # Silently ignore invalid dates
-            
+            pass
+
+    # Filtro por fecha de fin
     if fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
-            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt for proper date inclusion
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pass  # Silently ignore invalid dates
+            pass
 
-    # Pagination with 4 items per page
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
-    # Build query parameters for pagination links
+    # Agregar lugares únicos a cada pedido
+    for pedido in pedidos_page:
+        lugares = pedido.productos.values_list('lugar', flat=True)
+        lugares_unicos = list(set(lugares))
+        pedido.lugares_unicos = lugares_unicos
+
+    # Construir parámetros para mantener filtros en paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
@@ -1047,7 +1078,6 @@ def pedidos_pendientes(request):
         'current_fecha_inicio': fecha_inicio_str,
         'current_fecha_fin': fecha_fin_str,
     })
-
 def listado_pedidos_caf(request):
     breadcrumbs = [
         {'name': 'Inicio', 'url': reverse('cafeteria:index_caf')},
@@ -1058,41 +1088,48 @@ def listado_pedidos_caf(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Get all orders ordered by date (newest first)
+    # Obtener todos los pedidos ordenados por fecha descendente
     pedidos = Pedido.objects.all().order_by('-fecha_pedido')
 
-    # Enhanced text search
+    # Filtro de búsqueda de texto
     if query:
         pedidos = pedidos.filter(
             Q(registrado_por__username__icontains=query) |
             Q(estado__icontains=query) |
+            Q(id__icontains=query) |
             Q(productos__area__icontains=query) |
-            Q(id__icontains=query) |  # Search by order ID
-            Q(productos__producto__nombre__icontains=query) |  # Search by product name
-            Q(comentarios__icontains=query)  # Search in comments
+            Q(productos__lugar__icontains=query) |  # ✅ Campo añadido
+            Q(productos__producto__nombre__icontains=query)
         ).distinct()
 
-    # Improved date filtering
+    # Filtro por fecha de inicio
     if fecha_inicio_str:
         try:
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pass  # Silently ignore invalid dates
+            pass  # Ignora fechas inválidas
 
+    # Filtro por fecha de fin
     if fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
-            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)  # Using lt for proper date inclusion
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pass  # Silently ignore invalid dates
+            pass  # Ignora fechas inválidas
 
-    # Pagination
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
-    # Build query parameters for pagination
+    # Agregar lugares únicos a cada pedido
+    for pedido in pedidos_page:
+        lugares = pedido.productos.values_list('lugar', flat=True)
+        lugares_unicos = list(set(lugares))
+        pedido.lugares_unicos = lugares_unicos
+
+    # Parámetros de consulta para mantener filtros en la paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
@@ -1119,9 +1156,11 @@ def get_pedidos_filtrados_caf(request):
 
     if query:
         pedidos = pedidos.filter(
-            Q(id__icontains=query) |
-            Q(estado__icontains=query) |
             Q(registrado_por__username__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(id__icontains=query) |
+            Q(productos__area__icontains=query) |
+            Q(productos__lugar__icontains=query) |  # ✅ Campo añadido
             Q(productos__producto__nombre__icontains=query)
         ).distinct()
 
@@ -1794,3 +1833,273 @@ def reporte_pedidos_pendientes_excel_caf(request):
     wb.save(response)
     return response
 
+def cambiar_contraseña_caf(request):
+    breadcrumbs = [
+        {'name': 'Inicio cafeteria', 'url': '/index_pap'},
+        {'name': 'Cambiar Contraseña cafeteria', 'url': reverse('cafeteria:cambiar_contraseña_caf')},
+    ]
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('libreria:inicio')  # Redirige después de cambiar la contraseña
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'usuario_caf/cambiar_contraseña_caf.html', {'form': form, 'breadcrumbs': breadcrumbs})
+
+
+def obtener_producto_bajo_stock_caf(request):
+    query = request.GET.get('q')
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    productos = Productos.objects.filter(cantidad__lt=10)
+
+    if query:
+        productos = productos.filter(
+            Q(nombre__icontains=query) |
+            Q(marca__icontains=query) |
+            Q(presentacion__icontains=query) |
+            Q(unidad_medida__icontains=query) |
+            Q(precio__icontains=query) |
+            Q(proveedor__icontains=query) |
+            Q(cantidad__icontains=query) |
+            Q(registrado_por__username__icontains=query) |
+            Q(id__icontains=query)
+        )
+
+    if fecha_inicio and fecha_fin:
+        productos = productos.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
+
+    return productos
+
+def reporte_producto_bajo_stock_pdf(request):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
+                            leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
+
+    doc.title = "Listado de BAJO STOCK CCD"
+    doc.author = "CCD"
+    doc.subject = "Listado de bajo stock"
+    doc.creator = "Sistema de Gestión CCD"
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Título
+    titulo = Paragraph("REPORTE DE BAJO STOCK", styles["Title"])
+    elements.append(titulo)
+
+    # Encabezado empresa
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    encabezado_data = [
+        ["GESTOR CCD", "Lista de artículos", "Correo:", f"Fecha: {fecha_actual}"],
+        ["Cámara de comercio de Duitama", "Nit: 123456789", "contacto@gestorccd.com", "Teléfono: (123) 456-7890"],
+    ]
+    tabla_encabezado = Table(encabezado_data, colWidths=[180, 180, 180, 180])
+    estilo_encabezado = TableStyle([
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+    tabla_encabezado.setStyle(estilo_encabezado)
+    elements.append(tabla_encabezado)
+
+    # Tabla usuario
+    usuario = request.user
+    data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
+    data_usuario.append([
+        usuario.username,
+        usuario.email,
+        getattr(usuario, 'role', 'No definido'),
+        getattr(usuario, 'cargo', 'No definido'),
+    ])
+    table_usuario = Table(data_usuario, colWidths=[180, 180, 180, 180])
+    style_usuario = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table_usuario.setStyle(style_usuario)
+    elements.append(table_usuario)
+
+    # Obtener artículos filtrados
+    productos_filtrados = obtener_producto_bajo_stock_caf(request)
+
+    if not productos_filtrados.exists():
+        centered_style = ParagraphStyle(
+            name="CenteredNormal",
+            parent=styles["Normal"],
+            alignment=TA_CENTER
+        )
+        no_results = Paragraph("No se encontraron artículos con bajo stock.", centered_style)
+        elements.append(Spacer(1, 20))
+        elements.append(no_results)
+    else:
+        # Tabla artículos
+        data_productos = [["ID", "Nombre", "Marca", "Precio", "Cantidad", "Unidad de medida", "Proveedor", "Presentación"]]
+        
+        for producto in productos_filtrados:
+            data_productos.append([
+                wrap_text(str(producto.id)),
+                wrap_text(producto.nombre),
+                wrap_text(producto.marca),
+                wrap_text("{:,}".format(producto.precio)),
+                wrap_text(str(producto.cantidad)),
+                wrap_text(str(producto.unidad_medida)),
+                wrap_text(producto.proveedor),
+                wrap_text(producto.presentacion),
+            ])
+
+        tabla_articulos = Table(data_productos, colWidths=[20, 140, 100, 110, 80, 70, 100])
+        style_articulos = TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ])
+        tabla_articulos.setStyle(style_articulos)
+        elements.append(tabla_articulos)
+
+    # Marca de agua
+    doc.build(elements, onFirstPage=draw_table_on_canvas, onLaterPages=draw_table_on_canvas)
+
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Listado bajo stock CCD.pdf"'
+    return response
+
+
+def reporte_producto_bajo_stock_excel(request):
+    # Parámetros de búsqueda
+    q = request.GET.get('q', '').strip()
+    fecha_inicio = request.GET.get('fecha_inicio', '').strip()
+    fecha_fin = request.GET.get('fecha_fin', '').strip()
+    marca = request.GET.get('marca', '').strip()
+
+    # Queryset base
+    productos = obtener_producto_bajo_stock_caf(request)
+
+    # Aplicar filtros
+    if q:
+        productos = productos.filter(nombre__icontains=q)
+    if fecha_inicio:
+        try:
+            productos = productos.filter(fecha_registro__gte=datetime.strptime(fecha_inicio, '%Y-%m-%d'))
+        except ValueError:
+            pass
+    if fecha_fin:
+        try:
+            productos = productos.filter(fecha_registro__lte=datetime.strptime(fecha_fin, '%Y-%m-%d'))
+        except ValueError:
+            pass
+    if marca:
+        productos = productos.filter(marca__icontains=marca)
+
+    # Crear Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Bajo stock de cafeteria CCD"
+
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 20
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 20
+    ws.column_dimensions['E'].width = 20
+    ws.column_dimensions['F'].width = 22
+    ws.column_dimensions['G'].width = 23
+    ws.column_dimensions['H'].width = 23
+
+    ws.row_dimensions[1].height = 60
+    ws.row_dimensions[2].height = 30
+
+    # Título
+    ws.merge_cells('A1:H1')
+    ws['A1'] = "GESTOR CCD"
+    ws['A1'].font = Font(size=24, bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Subtítulo
+    ws.merge_cells('A2:H2')
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    ws['A2'] = f"Listado de cafeteria {fecha_actual}"
+    ws['A2'].font = Font(size=18)
+    ws['A2'].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Bordes A1:H2
+    for row in [1, 2]:
+        for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']:
+            ws[f"{col}{row}"].border = border
+            ws[f"{col}{row}"].alignment = Alignment(horizontal='center', vertical='center')
+
+    # Encabezados
+    headers = ["ID", "Nombre", "Marca", "Precio", "Cantidad", "Unidad de medida", "Proveedor", "Presentación"]
+    ws.append(headers)
+    header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
+
+    for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']:
+        cell = ws[f"{col}3"]
+        cell.fill = header_fill
+        cell.font = Font(color="FFFFFF", bold=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+
+    ws.auto_filter.ref = "A3:H3"
+
+    # Agregar datos
+    if not productos.exists():
+        ws.merge_cells('A4:H4')
+        cell = ws['A4']
+        cell.value = "No se encontraron productos con los filtros aplicados."
+        cell.font = Font(italic=True)
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+    else:
+        for producto in productos:
+            ws.append([
+                str(producto.id),
+                producto.nombre,
+                producto.marca,
+                "${:,}".format(producto.precio),
+                str(producto.cantidad),
+                str(producto.unidad_medida),
+                producto.proveedor,
+                producto.presentacion,
+            ])
+        for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=8):
+            for cell in row:
+                cell.border = border
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+
+    # Exportar
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="Listado de bajo stock.xlsx"'
+    wb.save(response)
+    return response

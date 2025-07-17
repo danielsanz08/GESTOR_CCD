@@ -220,7 +220,7 @@ def editar_usuario(request, user_id):
 
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
-        {'name': 'Ver usuario', 'url': ver_usuario_url},
+        {'name': 'Listado de usuarios', 'url': '/lista_usuarios'},
         {'name': 'Editar usuario', 'url': editar_usuario_url},
     ]
 
@@ -415,6 +415,7 @@ def cambiar_contraseña_id(request, user_id):
     
     breadcrumbs = [
         {'name': 'Inicio', 'url': '/index_pap'},
+        {'name': 'Listado de usuarios', 'url': '/lista_usuarios'},
         {'name': 'Cambiar Contraseña por ID', 'url': reverse('libreria:cambiar_contraseña_id', args=[user_id])},
     ]
 

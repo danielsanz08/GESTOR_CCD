@@ -71,14 +71,14 @@ form {
 }
 
 #articulos-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #00a67e, #007c5d);
+    background: linear-gradient(180deg, #005ba6, #00327c);
     border-radius: 10px;
     border: 2px solid rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
 }
 
 #articulos-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #007c5d, #005a45);
+    background: linear-gradient(180deg, #003a7c, #00245a);
     transform: scale(1.1);
 }
 .articulo-form {
@@ -117,7 +117,7 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus {
     outline: none;
-    border-color: #00a67e;
+    border-color: #0035a6;
     box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
 }

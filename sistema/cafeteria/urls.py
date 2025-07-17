@@ -35,9 +35,13 @@ urlpatterns = [
     path('grafica_bajoStock_caf/', views.grafica_bajo_Stock_caf, name='grafica_bajoStock_caf'),
     path('reporte_pedidos_pendientes_pdf_caf/', views.reporte_pedidos_pendientes_pdf_caf, name='reporte_pedidos_pendientes_pdf_caf'),
     path('reporte_pedidos_pendientes_excel_caf/', views.reporte_pedidos_pendientes_excel_caf, name='reporte_pedidos_pendientes_excel_caf'),
+    path('cambiar_contraseña_caf/', views.cambiar_contraseña_caf, name='cambiar_contraseña_caf'),
+    path('reporte_producto_bajo_stock_pdf/', views.reporte_producto_bajo_stock_pdf, name='reporte_producto_bajo_stock_pdf'),
+    path('reporte_producto_bajo_stock_excel/', views.reporte_producto_bajo_stock_excel, name='reporte_producto_bajo_stock_excel'),
 ]
 
 handler404 = 'cafeteria.views.error_404_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    

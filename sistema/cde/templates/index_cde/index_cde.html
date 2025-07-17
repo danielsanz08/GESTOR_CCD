@@ -52,12 +52,6 @@
             <h2 class="main-card-title">Pedidos</h2>
         </div>
 
-        <!-- Card Estadísticas -->
-        <div class="main-card" onclick="openModal('estadisticas-modal')">
-            <i data-feather="bar-chart" class="main-card-icon"></i>
-            <h2 class="main-card-title">Estadísticas</h2>
-        </div>
-
         <!-- Card Manual -->
         <div class="main-card" onclick="openModal('manual-modal')">
             <i data-feather="book-open" class="main-card-icon"></i>
@@ -82,7 +76,7 @@
                     <i data-feather="user" class="modal-option-icon"></i>
                     <span class="modal-option-text">Ver perfil</span>
                 </a>
-                <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
+                <a href="{% url 'cde:cambiar_contraseña_cde' %}" class="modal-option">
                     <i data-feather="lock" class="modal-option-icon"></i>
                     <span class="modal-option-text">Cambiar contraseña</span>
                 </a>

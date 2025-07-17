@@ -79,7 +79,10 @@ table {
 #fecha,
 #Tamaño,
 #modelos,
-#acciones {
+#acciones,
+#descargar,
+#restaurar,
+#borrar{
     left: 20vh;
     background-color: rgba(43, 116, 226, 0.616);
     border-radius: 10px;
@@ -224,7 +227,7 @@ background-color: #005cb3;
   cursor: pointer;
 }
 .por_fecha {
-  background-color: #0056b3;
+  background-color: #06b300;
   color: white;
   border: none;
   width: 10vh;
@@ -241,7 +244,7 @@ background-color: #005cb3;
 
   position: absolute;
   left: 95vh;
-  top: 11vh;
+  top: 12vh;
 }
 
 .fecha_inicio,
@@ -268,18 +271,7 @@ background-color: #005cb3;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.search-date {
-  background-color: #b30000;
-  color: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: none;
-  position: absolute;
-  left: 58vh;
-  top: -1vh;
-  width: 50px;
-  text-align: center;
-}
+
 
 .search-date:hover {
   background-color: #044080;
@@ -293,8 +285,8 @@ background-color: #005cb3;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
-  right: 20vh;
-  top: 12.5vh;
+  right: -24vh;
+  top: 0vh;
   width: 10vh;
   text-align: center;
   margin-right: 1vh;
@@ -318,7 +310,7 @@ background-color: #005cb3;
   border: none;
   position: absolute;
   left: 72vh;
-  top: 12vh;
+  top: 12.5vh;
   width: 10vh;
   height: 25px;
   text-align: center;

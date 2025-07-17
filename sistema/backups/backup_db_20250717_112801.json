@@ -1,0 +1,1085 @@
+[
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$ftXenUpxymjELJ27tApvUH$sgZGBv/twhYBCAgbBnNyTAcHday/NGWMJpOAdG4i9s0=",
+        "last_login": "2025-07-17T16:19:59.452Z",
+        "is_superuser": false,
+        "username": "Daniel Sanchez",
+        "email": "jonnathansz73@gmail.com",
+        "role": "Administrador",
+        "area": "Administrativa",
+        "cargo": "Aprendiz sena",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$v8yZB3DvMHKkWJRbBIbh5B$3Rq0lXL5nmxNy8du5aPYi8cA6aO3W7dFKeRgot0issI=",
+        "last_login": "2025-07-17T15:01:56.956Z",
+        "is_superuser": false,
+        "username": "Viviana Rodriguez",
+        "email": "viviana@gmail.com",
+        "role": "Administrador",
+        "area": "Administrativa",
+        "cargo": "Asistente en gestion documental",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$A9JNXj2slazLciMjzUkvaw$EMKgUv3GvK729H20FS8URlsIOP3MAIn5Gc7mSQFqYSA=",
+        "last_login": "2025-07-17T15:32:56.163Z",
+        "is_superuser": false,
+        "username": "Carlos Andres Orozco",
+        "email": "carlos@gmail.com",
+        "role": "Empleado",
+        "area": "Administrativa",
+        "cargo": "Auxiliar en gestion documental",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$Nzx3vHs02JsaQZjg8Tcjr9$Ls9xhfEE0gw5+mrOgRZ6QMNogFr2Qv3UaDzt3qpBXDs=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Diego Higuera",
+        "email": "diego@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Auxiliar rues",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": true,
+        "acceso_cde": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$sJt9K8MBj8ILQAWborKymk$pVV4vGLeR3eAeXEGPn06pTqsHSB6TfGwVWOg/is1uE8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Carolina Rua",
+        "email": "carolina@gmail.com",
+        "role": "Empleado",
+        "area": "Registros públicos",
+        "cargo": "Auxiliar rues",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$3uNPsC5LopOnmU0Hm4HYsn$RFfz2oarPKw3I3lyAq8Ky8S9UooQfubDSYBPdl58dLI=",
+        "last_login": "2025-07-16T16:26:17.294Z",
+        "is_superuser": false,
+        "username": "Camila Ortega",
+        "email": "camila@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Asistente de comunicaciones",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$f8oegzGiHuPHkGiapAm60c$ymbegzbzQh4zp7FsSqVdSEaNgRYlpAqEeGP8j1pGpz4=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Daniel Vargas",
+        "email": "daniel@gmail.com",
+        "role": "Empleado",
+        "area": "Presidencia",
+        "cargo": "Auxiliar de comunicaciones",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$GXhW15jIWbG8V5c9Y5sMjT$a7QV6tymBvViDB15vfQDuswJKYuWC3REUFIbkd/mAQA=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Diana C. Gomez",
+        "email": "diana@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Asistente en gestion empresarial",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$v8Nxg4httKepKVyYn37qPt$wNB91lRKbkF/WNqAn3QXlk0ofNCO/at3i9QMVm6o6Gw=",
+        "last_login": "2025-07-16T16:31:13.007Z",
+        "is_superuser": false,
+        "username": "Freddy Monsalve",
+        "email": "freddy@gmail.com",
+        "role": "Empleado",
+        "area": "Gestión empresarial",
+        "cargo": "Auxiliar en gestion empresarial",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$twCNVwSCIolNQsu25zjoJc$5HWzQVgoETArhlto5O5JvTCBqYvl2hQFC0T7MSHlAwg=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Beatriz Sanabria",
+        "email": "beatriz@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Tesorera",
+        "fecha_registro": "2025-07-16",
+        "is_active": false,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$HBI1SGvYLFMuxJlcaN5Bt5$Ecir4kPpDRCLhcKFVwZdVsdo0vWWGWh+if9+mR8roxw=",
+        "last_login": "2025-07-16T16:32:47.578Z",
+        "is_superuser": false,
+        "username": "Freddy Camargo",
+        "email": "freddyc@gmail.com",
+        "role": "Empleado",
+        "area": "Financiera",
+        "cargo": "Auxiliar contable",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$KPGMlPSN4yCwfwSPfytdvp$nOYApJJqM4xF16webpOfbaHRJpJTQNZxZlJ63xSl318=",
+        "last_login": "2025-07-16T16:34:19.915Z",
+        "is_superuser": false,
+        "username": "Hector Garcia",
+        "email": "hector@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Asistente en competitividad",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": true,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "libreria.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$HZOLk84uITBdy1Bsxrxzhh$KB6Wm3UoXTY14gDsnX5lfgeOfjoNphWUKMBXp04a1P8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "Brayan Ceron",
+        "email": "brayan@gmail.com",
+        "role": "Empleado",
+        "area": "Competitividad",
+        "cargo": "Supernumerario en competividad",
+        "fecha_registro": "2025-07-16",
+        "is_active": true,
+        "is_staff": false,
+        "acceso_pap": false,
+        "acceso_caf": false,
+        "acceso_cde": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 3,
+    "fields": {
+        "nombre": "Resma de papel membreteada",
+        "marca": "Norma",
+        "observacion": "N/a",
+        "tipo": "Carta",
+        "precio": 5630,
+        "cantidad": 35,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 4,
+    "fields": {
+        "nombre": "Sobres de manila",
+        "marca": "Bic",
+        "observacion": "No hay",
+        "tipo": "Oficio",
+        "precio": 16666,
+        "cantidad": 16,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 5,
+    "fields": {
+        "nombre": "Sobres de manila",
+        "marca": "No tiene",
+        "observacion": "No hay",
+        "tipo": "Carta",
+        "precio": 5555,
+        "cantidad": 5,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 6,
+    "fields": {
+        "nombre": "Lapiz",
+        "marca": "Bic",
+        "observacion": "Ninguna",
+        "tipo": "Rojo",
+        "precio": 2000,
+        "cantidad": 44,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.articulo",
+    "pk": 7,
+    "fields": {
+        "nombre": "Tijeras",
+        "marca": "Norma",
+        "observacion": "No hay",
+        "tipo": "Punta roma",
+        "precio": 3000,
+        "cantidad": 22,
+        "proveedor": "Roma ltda.",
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_registro": "2025-07-16"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 1,
+    "fields": {
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T13:58:21.229Z",
+        "fecha_estado": "2025-07-16T13:58:21.229Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 2,
+    "fields": {
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T15:38:03.366Z",
+        "fecha_estado": "2025-07-16T15:38:03.366Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 3,
+    "fields": {
+        "registrado_por": [
+            "camila@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:26:30.716Z",
+        "fecha_estado": null,
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 4,
+    "fields": {
+        "registrado_por": [
+            "freddy@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:28:11.431Z",
+        "fecha_estado": null,
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 5,
+    "fields": {
+        "registrado_por": [
+            "freddy@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:31:39.149Z",
+        "fecha_estado": null,
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 6,
+    "fields": {
+        "registrado_por": [
+            "freddyc@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:32:54.462Z",
+        "fecha_estado": null,
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 7,
+    "fields": {
+        "registrado_por": [
+            "hector@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:34:29.713Z",
+        "fecha_estado": null,
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedido",
+    "pk": 8,
+    "fields": {
+        "registrado_por": [
+            "jonnathansz73@gmail.com"
+        ],
+        "fecha_pedido": "2025-07-16T16:53:54.720Z",
+        "fecha_estado": "2025-07-16T16:53:54.720Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 1,
+    "fields": {
+        "pedido": 3,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Carta",
+        "area": "Presidencia"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 3,
+    "fields": {
+        "pedido": 4,
+        "articulo": 4,
+        "cantidad": 10,
+        "tipo": "Oficio",
+        "area": "Gestión empresarial"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 4,
+    "fields": {
+        "pedido": 4,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Carta",
+        "area": "Gestión empresarial"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 7,
+    "fields": {
+        "pedido": 5,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Carta",
+        "area": "Gestión empresarial"
+    }
+},
+{
+    "model": "papeleria.pedidoarticulo",
+    "pk": 10,
+    "fields": {
+        "pedido": 8,
+        "articulo": 3,
+        "cantidad": 1,
+        "tipo": "Carta",
+        "area": "Administrativa"
+    }
+},
+{
+    "model": "cafeteria.productos",
+    "pk": 2,
+    "fields": {
+        "nombre": "Palitos Mezcladores",
+        "marca": "Bond Ltda",
+        "precio": 5000,
+        "cantidad": 22,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_registro": "2025-07-17",
+        "unidad_medida": "Unidad",
+        "presentacion": "Paquete"
+    }
+},
+{
+    "model": "cafeteria.productos",
+    "pk": 3,
+    "fields": {
+        "nombre": "Toallas",
+        "marca": "Toallas Ltda",
+        "precio": 50000,
+        "cantidad": 34,
+        "proveedor": "Javeriana",
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_registro": "2025-07-17",
+        "unidad_medida": "Unidad",
+        "presentacion": "Unidad"
+    }
+},
+{
+    "model": "cafeteria.productos",
+    "pk": 4,
+    "fields": {
+        "nombre": "Papel Higienico",
+        "marca": "Papel Scott",
+        "precio": 5500,
+        "cantidad": 1,
+        "proveedor": "Scott",
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_registro": "2025-07-17",
+        "unidad_medida": "Unidad",
+        "presentacion": "Paquete Por Doce"
+    }
+},
+{
+    "model": "cafeteria.productos",
+    "pk": 5,
+    "fields": {
+        "nombre": "Café",
+        "marca": "Tostao",
+        "precio": 5000,
+        "cantidad": 0,
+        "proveedor": "Tostao",
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_registro": "2025-07-17",
+        "unidad_medida": "Kilogramos",
+        "presentacion": "Paquete"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 1,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T12:59:08.155Z",
+        "fecha_pedido": "2025-07-17T12:59:08.155Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 2,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:00:55.467Z",
+        "fecha_pedido": "2025-07-17T13:00:55.467Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 3,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:01:43.983Z",
+        "fecha_pedido": "2025-07-17T13:01:43.983Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 4,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:02:20.447Z",
+        "fecha_pedido": "2025-07-17T13:02:20.447Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 5,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:02:52.576Z",
+        "fecha_pedido": "2025-07-17T13:02:52.576Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 6,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T13:05:37.180Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 7,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T13:06:17.328Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 8,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T13:07:09.715Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 9,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T13:07:46.674Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 10,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T13:08:17.966Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 11,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:42:50.105Z",
+        "fecha_pedido": "2025-07-17T13:23:45.776Z",
+        "estado": "Cancelado"
+    }
+},
+{
+    "model": "cafeteria.pedido",
+    "pk": 12,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T13:42:25.183Z",
+        "fecha_pedido": "2025-07-17T13:25:53.323Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 3,
+    "fields": {
+        "pedido": 2,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 4,
+    "fields": {
+        "pedido": 2,
+        "producto": 3,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 5,
+    "fields": {
+        "pedido": 2,
+        "producto": 4,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 6,
+    "fields": {
+        "pedido": 3,
+        "producto": 3,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 7,
+    "fields": {
+        "pedido": 4,
+        "producto": 5,
+        "cantidad": 16,
+        "area": "Administrativa",
+        "lugar": "cafeteria"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 8,
+    "fields": {
+        "pedido": 5,
+        "producto": 5,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "sdsd"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 11,
+    "fields": {
+        "pedido": 7,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 13,
+    "fields": {
+        "pedido": 8,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 14,
+    "fields": {
+        "pedido": 8,
+        "producto": 3,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 15,
+    "fields": {
+        "pedido": 8,
+        "producto": 4,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 16,
+    "fields": {
+        "pedido": 9,
+        "producto": 5,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 17,
+    "fields": {
+        "pedido": 10,
+        "producto": 5,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 19,
+    "fields": {
+        "pedido": 11,
+        "producto": 5,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "feliz maria"
+    }
+},
+{
+    "model": "cafeteria.pedidoproducto",
+    "pk": 21,
+    "fields": {
+        "pedido": 12,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "lugar": "cde"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 1,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T14:44:49.542Z",
+        "fecha_pedido": "2025-07-17T14:44:49.542Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 2,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T14:45:49.522Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 3,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T14:46:29.511Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 4,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": null,
+        "fecha_pedido": "2025-07-17T14:47:22.602Z",
+        "estado": "Pendiente"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 5,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T15:16:45.942Z",
+        "fecha_pedido": "2025-07-17T14:48:48.706Z",
+        "estado": "Cancelado"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 6,
+    "fields": {
+        "registrado_por": [
+            "carlos@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T15:15:14.790Z",
+        "fecha_pedido": "2025-07-17T14:49:22.671Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cde.pedidocde",
+    "pk": 7,
+    "fields": {
+        "registrado_por": [
+            "viviana@gmail.com"
+        ],
+        "fecha_estado": "2025-07-17T15:16:02.016Z",
+        "fecha_pedido": "2025-07-17T15:16:02.016Z",
+        "estado": "Confirmado"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 1,
+    "fields": {
+        "pedido": 1,
+        "producto": 5,
+        "cantidad": 49,
+        "area": "Administrativa",
+        "evento": "noticamara"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 4,
+    "fields": {
+        "pedido": 3,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "ccd"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 5,
+    "fields": {
+        "pedido": 4,
+        "producto": 3,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "exposicion"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 7,
+    "fields": {
+        "pedido": 4,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "ccd"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 9,
+    "fields": {
+        "pedido": 5,
+        "producto": 4,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "dfdfgdfg"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 10,
+    "fields": {
+        "pedido": 5,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "fdgfdg"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 11,
+    "fields": {
+        "pedido": 5,
+        "producto": 3,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "fgfdg"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 12,
+    "fields": {
+        "pedido": 6,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "cvbvb"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 13,
+    "fields": {
+        "pedido": 6,
+        "producto": 4,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "vbvb"
+    }
+},
+{
+    "model": "cde.pedidoproductocde",
+    "pk": 15,
+    "fields": {
+        "pedido": 7,
+        "producto": 2,
+        "cantidad": 1,
+        "area": "Administrativa",
+        "evento": "cde"
+    }
+},
+{
+    "model": "backup.backup",
+    "pk": 1,
+    "fields": {
+        "nombre": "Fgfg",
+        "archivo": "backups/backup_db_20250716_090506.json",
+        "tamano": "0.01 MB",
+        "modelos_incluidos": "libreria.CustomUser, papeleria.Articulo, papeleria.Pedido, papeleria.PedidoArticulo, cafeteria.Productos, cafeteria.Pedido, cafeteria.PedidoProducto, cde.PedidoCde, cde.PedidoProductoCde (con relaciones)",
+        "fecha_creacion": "2025-07-16T14:05:06.477Z",
+        "creado_por": [
+            "jonnathansz73@gmail.com"
+        ]
+    }
+}
+]

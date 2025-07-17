@@ -6,7 +6,7 @@
 
     <h1 class="mb-4"><i class="fas fa-database"></i> Copias de Seguridad</h1>
     <div>
-        <form method="GET" action="{% url 'libreria:lista_usuarios' %}">
+        <form method="GET" action="{% url 'backup:lista_backups' %}">
             <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
                 value="{{ request.GET.q }}">
             <button type="submit" class="btn-search"><i class="fas fa-search text-white"></i></button>
@@ -20,6 +20,11 @@
                 <button type="submit" class="search-date" title="Buscar por rango de fecha">
                     <i class="fas fa-search text-white"></i>
                 </button>
+                 <a href="{% url 'backup:lista_backups' %}">
+                <button type="button" class="clean" title="Limpiar búsqueda">
+                    <i class="fas fa-trash text-white"></i>
+                </button>
+            </a>
             </div>
         </form>
 

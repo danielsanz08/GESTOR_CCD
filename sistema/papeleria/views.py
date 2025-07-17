@@ -456,7 +456,8 @@ def mis_pedidos(request):
             Q(articulos__articulo__nombre__icontains=query) |
             Q(articulos__cantidad__icontains=query) |
             Q(articulos__tipo__icontains=query) |
-            Q(articulos__area__icontains=query)
+            Q(articulos__area__icontains=query) |
+            Q(id__icontains=query)
         ).distinct()
 
     # Manejo de fechas con timedelta
@@ -1400,7 +1401,8 @@ def get_pedidos_filtrados(request):
             Q(articulos__articulo__nombre__icontains=query) |
             Q(articulos__cantidad__icontains=query) |
             Q(articulos__tipo__icontains=query) |
-            Q(articulos__area__icontains=query)
+            Q(articulos__area__icontains=query) |
+            Q(id__icontains=query)
         ).distinct()
 
     if fecha_inicio and fecha_fin:
@@ -1667,7 +1669,8 @@ def get_pedidos_filtrados_pendientes(request):
             Q(articulos__articulo__nombre__icontains=query) |
             Q(articulos__cantidad__icontains=query) |
             Q(articulos__tipo__icontains=query) |
-            Q(articulos__area__icontains=query)
+            Q(articulos__area__icontains=query) |
+            Q(id__icontains=query)
         ).distinct()
 
     if fecha_inicio and fecha_fin:
@@ -1917,9 +1920,15 @@ def obtener_articulos_bajo_stock(request):
 
     if query:
         articulos = articulos.filter(
+            Q(id__icontains=query) |
             Q(nombre__icontains=query) |
             Q(marca__icontains=query) |
-            Q(tipo__icontains=query)
+            Q(observacion__icontains=query) |
+            Q(tipo__icontains=query) |
+            Q(precio__icontains=query) |
+            Q(proveedor__icontains=query) |
+            Q(cantidad__icontains=query) |
+            Q(registrado_por__username__icontains=query)
         )
 
     if fecha_inicio and fecha_fin:

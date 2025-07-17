@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Sum
 from django.utils.timezone import localtime
+from libreria.forms import CustomPasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.utils.html import escape
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -225,11 +227,13 @@ def mis_pedidos_cde(request):
         pedidos = pedidos.filter(
             Q(id__icontains=query) |
             Q(estado__icontains=query) |
+            Q(fecha_pedido__icontains=query) |
+            Q(fecha_estado__icontains=query) |
             Q(registrado_por__username__icontains=query) |
             Q(productos__producto__nombre__icontains=query) |
+            Q(productos__cantidad__icontains=query) |
             Q(productos__area__icontains=query) |
-            Q(productos__evento__icontains=query) |
-            Q(productos__cantidad__icontains=query)
+            Q(productos__evento__icontains=query)
         ).distinct()
 
     if fecha_inicio_str:
@@ -249,6 +253,11 @@ def mis_pedidos_cde(request):
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
+     # Agregar eventos únicos a cada pedido
+    for pedido in pedidos_page:
+        eventos = pedido.productos.values_list('evento', flat=True)
+        eventos_unicos = list(set(eventos))
+        pedido.eventos_unicos = eventos_unicos
 
     # Crear un string con los parámetros de búsqueda para la paginación
     query_params = ''
@@ -482,18 +491,20 @@ def pedidos_pendientes_cde(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
-    # Filtrar solo pedidos pendientes
+    # Filtrar pedidos pendientes
     pedidos = PedidoCde.objects.filter(estado='Pendiente').order_by('-fecha_pedido')
 
     if query:
         pedidos = pedidos.filter(
             Q(id__icontains=query) |
             Q(estado__icontains=query) |
+            Q(fecha_pedido__icontains=query) |
+            Q(fecha_estado__icontains=query) |
             Q(registrado_por__username__icontains=query) |
             Q(productos__producto__nombre__icontains=query) |
+            Q(productos__cantidad__icontains=query) |
             Q(productos__area__icontains=query) |
-            Q(productos__evento__icontains=query) |
-            Q(productos__cantidad__icontains=query)
+            Q(productos__evento__icontains=query)
         ).distinct()
 
     if fecha_inicio_str:
@@ -501,27 +512,32 @@ def pedidos_pendientes_cde(request):
             fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
             pedidos = pedidos.filter(fecha_pedido__gte=fecha_inicio)
         except ValueError:
-            pass  # No hacer nada si la fecha es inválida
+            pass
 
     if fecha_fin_str:
         try:
             fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
             pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
-            pass  # No hacer nada si la fecha es inválida
+            pass
 
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
-    # Crear string con parámetros de búsqueda para la paginación
+    # Agregar eventos únicos por pedido
+    for pedido in pedidos_page:
+        eventos = pedido.productos.values_list('evento', flat=True)
+        pedido.eventos_unicos = list(set(eventos))
+
+    # Parámetros para mantener filtros en la paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
     if fecha_inicio_str:
         query_params += f'&fecha_inicio={fecha_inicio_str}'
     if fecha_fin_str:
-        # Mostrar la fecha original en los parámetros (sin el timedelta)
         query_params += f'&fecha_fin={fecha_fin_str}'
 
     return render(request, 'pedidos_cde/confirmar_pedido_cde.html', {
@@ -530,7 +546,7 @@ def pedidos_pendientes_cde(request):
         'query_params': query_params,
         'current_query': query,
         'current_fecha_inicio': fecha_inicio_str,
-        'current_fecha_fin': fecha_fin_str[:-10] if fecha_fin_str else None,  # Remover el timedelta para mostrar
+        'current_fecha_fin': fecha_fin_str,
     })
 
 
@@ -544,6 +560,7 @@ def listado_pedidos_cde(request):
     fecha_inicio_str = request.GET.get('fecha_inicio')
     fecha_fin_str = request.GET.get('fecha_fin')
 
+    # Filtrar pedidos confirmados o cancelados
     pedidos = PedidoCde.objects.filter(estado__in=['Confirmado', 'Cancelado']).order_by('-fecha_pedido')
 
     if query:
@@ -568,16 +585,22 @@ def listado_pedidos_cde(request):
 
     if fecha_fin_str:
         try:
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
-            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin + timedelta(days=1))
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date() + timedelta(days=1)
+            pedidos = pedidos.filter(fecha_pedido__lt=fecha_fin)
         except ValueError:
             pedidos = PedidoCde.objects.none()
 
+    # Paginación
     paginator = Paginator(pedidos, 4)
     page_number = request.GET.get('page')
     pedidos_page = paginator.get_page(page_number)
 
-    # Crear string con parámetros de búsqueda para la paginación
+    # Agregar eventos únicos por pedido
+    for pedido in pedidos_page:
+        eventos = pedido.productos.values_list('evento', flat=True)
+        pedido.eventos_unicos = list(set(eventos))
+
+    # Parámetros para mantener filtros en la paginación
     query_params = ''
     if query:
         query_params += f'&q={query}'
@@ -1313,3 +1336,17 @@ def grafica_estado_pedido_cde(request):
         'fecha_inicio': fecha_inicio_str,
         'fecha_fin': fecha_fin_str
     })
+def cambiar_contraseña_cde(request):
+    breadcrumbs = [
+        {'name': 'Inicio cafeteria', 'url': '/index_cde'},
+        {'name': 'Cambiar Contraseña cde', 'url': reverse('cde:cambiar_contraseña_cde')},
+    ]
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('libreria:inicio')  # Redirige después de cambiar la contraseña
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'usuario_cde/cambiar_contraseña_cde.html', {'form': form, 'breadcrumbs': breadcrumbs})

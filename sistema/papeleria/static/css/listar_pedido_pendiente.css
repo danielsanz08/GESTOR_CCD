@@ -474,6 +474,7 @@ td {
     overflow: hidden;
     overflow-x: scroll;
     left: 2px;
+    top: 20vh;
   }
   .modal-contenido{
     left: 16px;

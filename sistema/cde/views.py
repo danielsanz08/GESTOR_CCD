@@ -11,6 +11,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
 from django.db.models import Q
+from django.utils.timezone import make_aware
+
 from django.db import transaction
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -82,10 +84,23 @@ def crear_pedido_cde(request):
         try:
             estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
 
+            # Obtener la fecha personalizada si el checkbox fue activado
+            usar_fecha_personalizada = request.POST.get('usar_fecha_personalizada') == 'on'
+            fecha_pedido = timezone.now()  # valor por defecto
+
+            if usar_fecha_personalizada:
+                fecha_raw = request.POST.get('fecha_personalizada')
+                if fecha_raw:
+                    try:
+                        fecha_pedido = make_aware(datetime.strptime(fecha_raw, '%Y-%m-%dT%H:%M'))
+                    except ValueError:
+                        messages.error(request, "La fecha personalizada no tiene un formato válido.")
+                        return redirect('cde:crear_pedido_cde')
+
             pedido_cde = PedidoCde.objects.create(
                 registrado_por=request.user,
                 estado=estado,
-                fecha_estado=timezone.now() if estado == 'Confirmado' else None
+                fecha_pedido=fecha_pedido,
             )
 
             productos_ids = request.POST.getlist('producto')

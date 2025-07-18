@@ -5,6 +5,7 @@ from django.contrib.sessions.models import Session
 from django.contrib import messages
 from django.urls import reverse
 import os
+from django.utils.timezone import localtime, make_aware
 from django.core.paginator import Paginator
 from django.utils.timezone import localtime
 from datetime import datetime, timedelta
@@ -340,10 +341,23 @@ def crear_pedido(request):
     if request.method == 'POST':
         estado = 'Confirmado' if request.user.role == 'Administrador' else 'Pendiente'
 
+        # ✅ OBTENER FECHA PERSONALIZADA SI SE ACTIVA EL CHECKBOX
+        fecha_personalizada_str = request.POST.get('fecha_personalizada')
+        if fecha_personalizada_str:
+            try:
+                fecha_personalizada = datetime.strptime(fecha_personalizada_str, '%Y-%m-%dT%H:%M')
+                if timezone.is_naive(fecha_personalizada):
+                    fecha_personalizada = make_aware(fecha_personalizada)
+            except ValueError:
+                fecha_personalizada = timezone.now()
+        else:
+            fecha_personalizada = timezone.now()
+
         pedido = Pedido.objects.create(
             registrado_por=request.user,
             estado=estado,
-            fecha_estado=timezone.now() if estado == 'Confirmado' else None
+            fecha_estado=timezone.now() if estado == 'Confirmado' else None,
+            fecha_pedido=fecha_personalizada  # ✅ APLICAMOS FECHA PERSONALIZADA O AUTOMÁTICA
         )
 
         articulos_ids = request.POST.getlist('articulo')

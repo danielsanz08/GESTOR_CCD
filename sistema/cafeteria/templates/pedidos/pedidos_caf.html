@@ -39,7 +39,16 @@
                 </div>
             </div>
 
-            <!-- Contenedor para los botones principales -->
+            <div class="fecha-personalizada-container" style="margin-top: 20px;">
+                <input type="checkbox" id="activar_fecha" onchange="toggleFechaPersonalizada()" />
+                <label for="activar_fecha">Usar fecha personalizada</label>
+
+                <div id="campo_fecha_personalizada" style="margin-top: 10px; display: none;">
+                    <label for="fecha_personalizada">Fecha del pedido:</label>
+                    <input type="datetime-local" name="fecha_personalizada" id="fecha_personalizada" class="form-control" />
+                </div>
+            </div>
+
             <div class="botones-principales">
                 <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro producto</button>
                 <button type="submit" id="realizar">Realizar Pedido</button>
@@ -54,10 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarOpcionesDisponibles() {
         const selectsArticulos = document.querySelectorAll('.select-articulo');
-
         selectsArticulos.forEach(select => {
             const currentSelected = select.value;
-
             Array.from(select.options).forEach(option => {
                 if (option.value) {
                     if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
@@ -75,15 +82,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function actualizarValidacionCantidad(form) {
         const selectArticulo = form.querySelector('.select-articulo');
         const inputCantidad = form.querySelector('.input-cantidad');
-
-        // Remover listeners previos para evitar duplicados
         const newInputCantidad = inputCantidad.cloneNode(true);
         inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
 
         newInputCantidad.addEventListener('input', function () {
             const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
             const valorIngresado = parseInt(this.value);
-
             if (valorIngresado > cantidadDisponible) {
                 this.value = "";
                 alert("No puedes pedir más cantidad de la disponible");
@@ -93,20 +97,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function inicializarFormulario(form, incluirEliminar = false) {
         const selectArticulo = form.querySelector('.select-articulo');
-
         selectArticulo.addEventListener('change', function () {
             const prevValue = form.getAttribute('data-selected-articulo');
             if (prevValue) {
                 articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
             }
-
             if (this.value) {
                 articulosSeleccionadosEnPedido.push(this.value);
                 form.setAttribute('data-selected-articulo', this.value);
             } else {
                 form.removeAttribute('data-selected-articulo');
             }
-
             actualizarOpcionesDisponibles();
         });
 
@@ -133,27 +134,17 @@ document.addEventListener('DOMContentLoaded', function () {
     window.agregarArticulo = function () {
         const container = document.getElementById('articulos-container');
         const nuevoFormulario = defaultForm.cloneNode(true);
-        
-        // Limpiar clases y preparar el nuevo formulario
         nuevoFormulario.classList.remove('default-form');
         nuevoFormulario.classList.add('nuevo');
         nuevoFormulario.style.display = 'flex';
-
-        // Resetear valores
         const selects = nuevoFormulario.querySelectorAll('select');
         selects.forEach(select => select.selectedIndex = 0);
         nuevoFormulario.querySelector('.input-cantidad').value = 1;
         nuevoFormulario.querySelector('input[name="lugar"]').value = '';
         nuevoFormulario.removeAttribute('data-selected-articulo');
-
-        // Inicializar el nuevo formulario con botón eliminar
         inicializarFormulario(nuevoFormulario, true);
         container.appendChild(nuevoFormulario);
-
-        // Actualizar opciones disponibles
         actualizarOpcionesDisponibles();
-
-        // Remover clase de animación después de la animación
         setTimeout(() => {
             nuevoFormulario.classList.remove('nuevo');
         }, 400);
@@ -165,8 +156,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (articuloId) {
                 articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
             }
-            
-            // Animación de salida
             form.style.animation = 'fadeOut 0.3s ease-out';
             setTimeout(() => {
                 form.remove();
@@ -176,43 +165,53 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 });
 
-// Animación de salida
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .input-lugar {
-        border: 2px solid transparent;
-        border-radius: 10px;
-        height: 27px;
-        padding: 0 12px;
-        font-size: 13px;
-        flex: 2;
-        min-width: 120px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
-        color: #333;
-        font-weight: 500;
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
     }
-    
-    .input-lugar:focus {
-        outline: none;
-        border-color: #00a67e;
-        box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
-        transform: translateY(-1px);
-    }
+}
+.input-lugar {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    height: 27px;
+    padding: 0 12px;
+    font-size: 13px;
+    flex: 2;
+    min-width: 120px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: #333;
+    font-weight: 500;
+}
+.input-lugar:focus {
+    outline: none;
+    border-color: #00a67e;
+    box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
 `;
 document.head.appendChild(style);
+
+function toggleFechaPersonalizada() {
+    const checkbox = document.getElementById('activar_fecha');
+    const campoFecha = document.getElementById('campo_fecha_personalizada');
+    if (checkbox.checked) {
+        campoFecha.style.display = 'block';
+        document.getElementById('fecha_personalizada').required = true;
+    } else {
+        campoFecha.style.display = 'none';
+        document.getElementById('fecha_personalizada').required = false;
+        document.getElementById('fecha_personalizada').value = '';
+    }
+}
 </script>
 
 {% endblock %}

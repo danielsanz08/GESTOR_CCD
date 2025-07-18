@@ -38,6 +38,22 @@
                     <input type="text" name="evento" required placeholder="Evento" class="input-evento" maxlength="20">
                 </div>
             </div>
+            <div class="form-check">
+                <input type="checkbox" name="usar_fecha_personalizada" id="activar_fecha">
+                <label for="activar_fecha">Usar fecha y hora personalizada</label>
+            </div>
+
+            <div class="mb-3">
+                <label for="fecha_personalizada">Fecha y hora personalizada:</label>
+                <input type="datetime-local" name="fecha_personalizada" id="fecha_personalizada" disabled>
+            </div>
+
+            <script>
+                document.getElementById('activar_fecha').addEventListener('change', function () {
+                    const input = document.getElementById('fecha_personalizada');
+                    input.disabled = !this.checked;
+                });
+            </script>
 
             <!-- Contenedor para los botones principales -->
             <div class="botones-principales">
@@ -49,151 +65,142 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    let articulosSeleccionadosEnPedido = [];
+    document.addEventListener('DOMContentLoaded', function () {
+        let articulosSeleccionadosEnPedido = [];
 
-    function actualizarOpcionesDisponibles() {
-        const selectsArticulos = document.querySelectorAll('.select-articulo');
+        function actualizarOpcionesDisponibles() {
+            const selectsArticulos = document.querySelectorAll('.select-articulo');
 
-        selectsArticulos.forEach(select => {
-            const currentSelected = select.value;
+            selectsArticulos.forEach(select => {
+                const currentSelected = select.value;
 
-            Array.from(select.options).forEach(option => {
-                if (option.value) {
-                    if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
-                        option.disabled = false;
-                        option.classList.remove('articulo-deshabilitado');
-                    } else {
-                        option.disabled = true;
-                        option.classList.add('articulo-deshabilitado');
+                Array.from(select.options).forEach(option => {
+                    if (option.value) {
+                        if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
+                            option.disabled = false;
+                            option.classList.remove('articulo-deshabilitado');
+                        } else {
+                            option.disabled = true;
+                            option.classList.add('articulo-deshabilitado');
+                        }
+                    }
+                });
+            });
+        }
+
+        function actualizarValidacionCantidad(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const inputCantidad = form.querySelector('.input-cantidad');
+
+            const newInputCantidad = inputCantidad.cloneNode(true);
+            inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+
+            newInputCantidad.addEventListener('input', function () {
+                if (selectArticulo.value) {
+                    const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+                    const valorIngresado = parseInt(this.value);
+
+                    if (valorIngresado > cantidadDisponible) {
+                        this.value = cantidadDisponible;
+                        alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
                     }
                 }
             });
-        });
-    }
 
-    function actualizarValidacionCantidad(form) {
-        const selectArticulo = form.querySelector('.select-articulo');
-        const inputCantidad = form.querySelector('.input-cantidad');
+            selectArticulo.addEventListener('change', function () {
+                if (this.value && newInputCantidad.value) {
+                    const cantidadDisponible = parseInt(this.selectedOptions[0].getAttribute('data-cantidad')) || 0;
+                    const valorIngresado = parseInt(newInputCantidad.value) || 0;
 
-        // Remover listeners previos para evitar duplicados
-        const newInputCantidad = inputCantidad.cloneNode(true);
-        inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
-
-        newInputCantidad.addEventListener('input', function () {
-            if (selectArticulo.value) {
-                const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
-                const valorIngresado = parseInt(this.value);
-
-                if (valorIngresado > cantidadDisponible) {
-                    this.value = cantidadDisponible;
-                    alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                    if (valorIngresado > cantidadDisponible) {
+                        newInputCantidad.value = cantidadDisponible;
+                        alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        // También validar al cambiar el producto
-        selectArticulo.addEventListener('change', function() {
-            if (this.value && newInputCantidad.value) {
-                const cantidadDisponible = parseInt(this.selectedOptions[0].getAttribute('data-cantidad')) || 0;
-                const valorIngresado = parseInt(newInputCantidad.value) || 0;
+        function inicializarFormulario(form, incluirEliminar = false) {
+            const selectArticulo = form.querySelector('.select-articulo');
 
-                if (valorIngresado > cantidadDisponible) {
-                    newInputCantidad.value = cantidadDisponible;
-                    alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+            selectArticulo.addEventListener('change', function () {
+                const prevValue = form.getAttribute('data-selected-articulo');
+                if (prevValue) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
                 }
-            }
-        });
-    }
 
-    function inicializarFormulario(form, incluirEliminar = false) {
-        const selectArticulo = form.querySelector('.select-articulo');
+                if (this.value) {
+                    articulosSeleccionadosEnPedido.push(this.value);
+                    form.setAttribute('data-selected-articulo', this.value);
+                } else {
+                    form.removeAttribute('data-selected-articulo');
+                }
 
-        selectArticulo.addEventListener('change', function () {
-            const prevValue = form.getAttribute('data-selected-articulo');
-            if (prevValue) {
-                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
+                actualizarOpcionesDisponibles();
+            });
+
+            if (incluirEliminar) {
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.type = 'button';
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.classList.add('btn-eliminar-articulo');
+                eliminarBtn.title = "Eliminar artículo";
+                eliminarBtn.onclick = function () {
+                    eliminarArticulo(form);
+                };
+                form.appendChild(eliminarBtn);
             }
 
-            if (this.value) {
-                articulosSeleccionadosEnPedido.push(this.value);
-                form.setAttribute('data-selected-articulo', this.value);
-            } else {
-                form.removeAttribute('data-selected-articulo');
-            }
+            actualizarValidacionCantidad(form);
+        }
+
+        const defaultForm = document.querySelector('.articulo-form.default-form');
+        if (defaultForm) {
+            inicializarFormulario(defaultForm);
+        }
+
+        window.agregarArticulo = function () {
+            const container = document.getElementById('articulos-container');
+            const nuevoFormulario = defaultForm.cloneNode(true);
+
+            nuevoFormulario.classList.remove('default-form');
+            nuevoFormulario.classList.add('nuevo');
+            nuevoFormulario.style.display = 'flex';
+
+            const selects = nuevoFormulario.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0);
+            nuevoFormulario.querySelector('.input-cantidad').value = 1;
+            nuevoFormulario.querySelector('input[name="evento"]').value = '';
+            nuevoFormulario.removeAttribute('data-selected-articulo');
+
+            inicializarFormulario(nuevoFormulario, true);
+            container.appendChild(nuevoFormulario);
 
             actualizarOpcionesDisponibles();
-        });
 
-        if (incluirEliminar) {
-            const eliminarBtn = document.createElement('button');
-            eliminarBtn.type = 'button';
-            eliminarBtn.textContent = 'Eliminar';
-            eliminarBtn.classList.add('btn-eliminar-articulo');
-            eliminarBtn.title = "Eliminar artículo";
-            eliminarBtn.onclick = function () {
-                eliminarArticulo(form);
-            };
-            form.appendChild(eliminarBtn);
-        }
-
-        actualizarValidacionCantidad(form);
-    }
-
-    const defaultForm = document.querySelector('.articulo-form.default-form');
-    if (defaultForm) {
-        inicializarFormulario(defaultForm);
-    }
-
-    window.agregarArticulo = function () {
-        const container = document.getElementById('articulos-container');
-        const nuevoFormulario = defaultForm.cloneNode(true);
-        
-        // Limpiar clases y preparar el nuevo formulario
-        nuevoFormulario.classList.remove('default-form');
-        nuevoFormulario.classList.add('nuevo');
-        nuevoFormulario.style.display = 'flex';
-
-        // Resetear valores
-        const selects = nuevoFormulario.querySelectorAll('select');
-        selects.forEach(select => select.selectedIndex = 0);
-        nuevoFormulario.querySelector('.input-cantidad').value = 1;
-        nuevoFormulario.querySelector('input[name="evento"]').value = '';
-        nuevoFormulario.removeAttribute('data-selected-articulo');
-
-        // Inicializar el nuevo formulario con botón eliminar
-        inicializarFormulario(nuevoFormulario, true);
-        container.appendChild(nuevoFormulario);
-
-        // Actualizar opciones disponibles
-        actualizarOpcionesDisponibles();
-
-        // Remover clase de animación después de la animación
-        setTimeout(() => {
-            nuevoFormulario.classList.remove('nuevo');
-        }, 400);
-    };
-
-    window.eliminarArticulo = function (form) {
-        if (!form.classList.contains('default-form')) {
-            const articuloId = form.getAttribute('data-selected-articulo');
-            if (articuloId) {
-                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
-            }
-            
-            // Animación de salida
-            form.style.animation = 'fadeOut 0.3s ease-out';
             setTimeout(() => {
-                form.remove();
-                actualizarOpcionesDisponibles();
-            }, 300);
-        }
-    };
-});
+                nuevoFormulario.classList.remove('nuevo');
+            }, 400);
+        };
 
-// Animación de salida
-const style = document.createElement('style');
-style.textContent = `
+        window.eliminarArticulo = function (form) {
+            if (!form.classList.contains('default-form')) {
+                const articuloId = form.getAttribute('data-selected-articulo');
+                if (articuloId) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+                }
+
+                form.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    form.remove();
+                    actualizarOpcionesDisponibles();
+                }, 300);
+            }
+        };
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
     @keyframes fadeOut {
         from {
             opacity: 1;
@@ -204,7 +211,7 @@ style.textContent = `
             transform: translateY(-20px);
         }
     }
-    
+
     .input-evento {
         border: 2px solid transparent;
         border-radius: 10px;
@@ -219,22 +226,22 @@ style.textContent = `
         color: #333;
         font-weight: 500;
     }
-    
+
     .input-evento:focus {
         outline: none;
         border-color: #00a67e;
         box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
         transform: translateY(-1px);
     }
-    
+
     .articulo-deshabilitado {
         color: #6c757d !important;
         text-decoration: line-through;
         opacity: 0.6;
         cursor: not-allowed;
     }
-`;
-document.head.appendChild(style);
+    `;
+    document.head.appendChild(style);
 </script>
 
 {% endblock %}

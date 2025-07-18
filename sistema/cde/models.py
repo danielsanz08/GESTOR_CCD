@@ -1,6 +1,7 @@
 from django.db import models
 from cafeteria.models import Productos
 from django.conf import settings
+from django.utils import timezone
 
 class PedidoCde(models.Model):
     ESTADOS = [
@@ -17,8 +18,8 @@ class PedidoCde(models.Model):
         related_name='cde_pedidos',
         default=1 
     )
-    fecha_estado = models.DateTimeField(null=True, blank=True) 
-    fecha_pedido = models.DateTimeField(auto_now_add=True)
+    fecha_pedido = models.DateTimeField(default=timezone.now)
+    
     estado = models.CharField(
         max_length=20,
         choices=ESTADOS,

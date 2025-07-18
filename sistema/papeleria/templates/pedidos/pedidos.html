@@ -26,7 +26,7 @@
                         {% for articulo in articulos %}
                             {% if articulo.cantidad > 0 %}
                                 <option value="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}"
-                                    {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
+                                    {% if articulo.cantidad < 10 %}class="rojo"{% endif %}>
                                     {{ articulo.nombre }} ({{ articulo.cantidad }})
                                 </option>
                             {% endif %}
@@ -37,10 +37,9 @@
                         <option value="">-- Seleccionar Tipo --</option>
                         {% for articulo in articulos %}
                             {% if articulo.cantidad > 0 %}
-                                <option value="{{ articulo.tipo }}"
-                                        data-articulo="{{ articulo.id }}"
-                                        data-cantidad="{{ articulo.cantidad }}"
-                                        {% if articulo.cantidad < 10 %} class="rojo" {% endif %}>
+                                <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}"
+                                    data-cantidad="{{ articulo.cantidad }}"
+                                    {% if articulo.cantidad < 10 %}class="rojo"{% endif %}>
                                     {{ articulo.tipo }}
                                 </option>
                             {% endif %}
@@ -51,7 +50,13 @@
                 </div>
             </div>
 
-            <!-- Contenedor para los botones principales -->
+            <!-- NUEVO: Fecha personalizada -->
+            <div class="mb-3">
+                <input type="checkbox" id="usar_fecha_personalizada" name="usar_fecha_personalizada">
+                <label for="usar_fecha_personalizada">Usar fecha personalizada</label>
+                <input type="datetime-local" id="fecha_personalizada" name="fecha_personalizada" disabled class="form-control">
+            </div>
+
             <div class="botones-principales">
                 <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro artículo</button>
                 <button type="submit" id="realizar">Realizar Pedido</button>
@@ -60,188 +65,182 @@
     </section>
 </div>
 
-<!-- Estilos adicionales específicos -->
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    let articulosSeleccionadosEnPedido = [];
+    document.addEventListener('DOMContentLoaded', function () {
+        let articulosSeleccionadosEnPedido = [];
 
-    function actualizarOpcionesDisponibles() {
-        const selectsArticulos = document.querySelectorAll('.select-articulo');
+        function actualizarOpcionesDisponibles() {
+            const selectsArticulos = document.querySelectorAll('.select-articulo');
 
-        selectsArticulos.forEach(select => {
-            const currentSelected = select.value;
+            selectsArticulos.forEach(select => {
+                const currentSelected = select.value;
 
-            Array.from(select.options).forEach(option => {
-                if (option.value) {
-                    if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
-                        option.disabled = false;
-                        option.classList.remove('articulo-deshabilitado');
-                    } else {
-                        option.disabled = true;
-                        option.classList.add('articulo-deshabilitado');
+                Array.from(select.options).forEach(option => {
+                    if (option.value) {
+                        if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
+                            option.disabled = false;
+                            option.classList.remove('articulo-deshabilitado');
+                        } else {
+                            option.disabled = true;
+                            option.classList.add('articulo-deshabilitado');
+                        }
                     }
+                });
+            });
+        }
+
+        function actualizarTipos(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const selectTipo = form.querySelector('.select-tipo');
+            const articuloSeleccionado = selectArticulo.value;
+
+            Array.from(selectTipo.options).forEach(option => {
+                const idRelacionado = option.getAttribute('data-articulo');
+                const cantidad = parseInt(option.getAttribute('data-cantidad')) || 0;
+
+                if (option.value === "") {
+                    option.disabled = false;
+                    option.hidden = false;
+                    option.classList.remove('no-allowed');
+                } else if (idRelacionado === articuloSeleccionado) {
+                    option.disabled = false;
+                    option.hidden = false;
+                    option.classList.remove('no-allowed');
+                    if (cantidad < 10) {
+                        option.classList.add('rojo');
+                    } else {
+                        option.classList.remove('rojo');
+                    }
+                } else {
+                    option.disabled = true;
+                    option.hidden = true;
+                    option.classList.add('no-allowed');
                 }
             });
-        });
-    }
 
-    function actualizarTipos(form) {
-        const selectArticulo = form.querySelector('.select-articulo');
-        const selectTipo = form.querySelector('.select-tipo');
-        const articuloSeleccionado = selectArticulo.value;
-
-        Array.from(selectTipo.options).forEach(option => {
-            const idRelacionado = option.getAttribute('data-articulo');
-            const cantidad = parseInt(option.getAttribute('data-cantidad')) || 0;
-
-            if (option.value === "") {
-                option.disabled = false;
-                option.hidden = false;
-                option.classList.remove('no-allowed');
-            } else if (idRelacionado === articuloSeleccionado) {
-                option.disabled = false;
-                option.hidden = false;
-                option.classList.remove('no-allowed');
-                if (cantidad < 10) {
-                    option.classList.add('rojo');
-                } else {
-                    option.classList.remove('rojo');
-                }
-            } else {
-                option.disabled = true;
-                option.hidden = true;
-                option.classList.add('no-allowed');
+            if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex]?.getAttribute('data-articulo') !== articuloSeleccionado) {
+                selectTipo.value = "";
             }
-        });
 
-        if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex]?.getAttribute('data-articulo') !== articuloSeleccionado) {
-            selectTipo.value = "";
+            actualizarValidacionCantidad(form);
         }
 
-        actualizarValidacionCantidad(form);
-    }
+        function actualizarValidacionCantidad(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const inputCantidad = form.querySelector('.input-cantidad');
 
-    function actualizarValidacionCantidad(form) {
-        const selectArticulo = form.querySelector('.select-articulo');
-        const inputCantidad = form.querySelector('.input-cantidad');
+            const newInputCantidad = inputCantidad.cloneNode(true);
+            inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
 
-        // Remover listeners previos para evitar duplicados
-        const newInputCantidad = inputCantidad.cloneNode(true);
-        inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+            newInputCantidad.addEventListener('input', function () {
+                const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+                const valorIngresado = parseInt(this.value);
 
-        newInputCantidad.addEventListener('input', function () {
-            const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
-            const valorIngresado = parseInt(this.value);
+                if (valorIngresado > cantidadDisponible) {
+                    this.value = "";
+                    alert("No puedes pedir más cantidad de la disponible");
+                }
+            });
+        }
 
-            if (valorIngresado > cantidadDisponible) {
-                this.value = "";
-                alert("No puedes pedir más cantidad de la disponible");
+        function inicializarFormulario(form, incluirEliminar = false) {
+            const selectArticulo = form.querySelector('.select-articulo');
+
+            selectArticulo.addEventListener('change', function () {
+                const prevValue = form.getAttribute('data-selected-articulo');
+                if (prevValue) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
+                }
+
+                if (this.value) {
+                    articulosSeleccionadosEnPedido.push(this.value);
+                    form.setAttribute('data-selected-articulo', this.value);
+                } else {
+                    form.removeAttribute('data-selected-articulo');
+                }
+
+                actualizarOpcionesDisponibles();
+                actualizarTipos(form);
+            });
+
+            if (incluirEliminar) {
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.type = 'button';
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.classList.add('btn-eliminar-articulo');
+                eliminarBtn.title = "Eliminar artículo";
+                eliminarBtn.onclick = function () {
+                    eliminarArticulo(form);
+                };
+                form.appendChild(eliminarBtn);
             }
-        });
-    }
 
-    function inicializarFormulario(form, incluirEliminar = false) {
-        const selectArticulo = form.querySelector('.select-articulo');
+            actualizarTipos(form);
+            actualizarValidacionCantidad(form);
+        }
 
-        selectArticulo.addEventListener('change', function () {
-            const prevValue = form.getAttribute('data-selected-articulo');
-            if (prevValue) {
-                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
-            }
+        const defaultForm = document.querySelector('.articulo-form.default-form');
+        if (defaultForm) {
+            inicializarFormulario(defaultForm);
+        }
 
-            if (this.value) {
-                articulosSeleccionadosEnPedido.push(this.value);
-                form.setAttribute('data-selected-articulo', this.value);
-            } else {
-                form.removeAttribute('data-selected-articulo');
-            }
+        window.agregarArticulo = function () {
+            const container = document.getElementById('articulos-container');
+            const nuevoFormulario = defaultForm.cloneNode(true);
+
+            nuevoFormulario.classList.remove('default-form');
+            nuevoFormulario.classList.add('nuevo');
+            nuevoFormulario.style.display = 'flex';
+
+            const selects = nuevoFormulario.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0);
+            nuevoFormulario.querySelector('.input-cantidad').value = 1;
+            nuevoFormulario.removeAttribute('data-selected-articulo');
+
+            inicializarFormulario(nuevoFormulario, true);
+            container.appendChild(nuevoFormulario);
 
             actualizarOpcionesDisponibles();
-            actualizarTipos(form);
+
+            setTimeout(() => {
+                nuevoFormulario.classList.remove('nuevo');
+            }, 400);
+        };
+
+        window.eliminarArticulo = function (form) {
+            if (!form.classList.contains('default-form')) {
+                const articuloId = form.getAttribute('data-selected-articulo');
+                if (articuloId) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+                }
+
+                form.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    form.remove();
+                    actualizarOpcionesDisponibles();
+                }, 300);
+            }
+        };
+
+        document.getElementById('usar_fecha_personalizada').addEventListener('change', function () {
+            const inputFecha = document.getElementById('fecha_personalizada');
+            inputFecha.disabled = !this.checked;
         });
 
-        if (incluirEliminar) {
-            const eliminarBtn = document.createElement('button');
-            eliminarBtn.type = 'button';
-            eliminarBtn.textContent = 'Eliminar';
-            eliminarBtn.classList.add('btn-eliminar-articulo');
-            eliminarBtn.title = "Eliminar artículo";
-            eliminarBtn.onclick = function () {
-                eliminarArticulo(form);
-            };
-            form.appendChild(eliminarBtn);
-        }
-
-        actualizarTipos(form);
-        actualizarValidacionCantidad(form);
-    }
-
-    const defaultForm = document.querySelector('.articulo-form.default-form');
-    if (defaultForm) {
-        inicializarFormulario(defaultForm);
-    }
-
-    window.agregarArticulo = function () {
-        const container = document.getElementById('articulos-container');
-        const nuevoFormulario = defaultForm.cloneNode(true);
-        
-        // Limpiar clases y preparar el nuevo formulario
-        nuevoFormulario.classList.remove('default-form');
-        nuevoFormulario.classList.add('nuevo');
-        nuevoFormulario.style.display = 'flex';
-
-        // Resetear valores
-        const selects = nuevoFormulario.querySelectorAll('select');
-        selects.forEach(select => select.selectedIndex = 0);
-        nuevoFormulario.querySelector('.input-cantidad').value = 1;
-        nuevoFormulario.removeAttribute('data-selected-articulo');
-
-        // Inicializar el nuevo formulario con botón eliminar
-        inicializarFormulario(nuevoFormulario, true);
-        container.appendChild(nuevoFormulario);
-
-        // Actualizar opciones disponibles
-        actualizarOpcionesDisponibles();
-
-        // Remover clase de animación después de la animación
-        setTimeout(() => {
-            nuevoFormulario.classList.remove('nuevo');
-        }, 400);
-    };
-
-    window.eliminarArticulo = function (form) {
-        if (!form.classList.contains('default-form')) {
-            const articuloId = form.getAttribute('data-selected-articulo');
-            if (articuloId) {
-                articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
             }
-            
-            // Animación de salida
-            form.style.animation = 'fadeOut 0.3s ease-out';
-            setTimeout(() => {
-                form.remove();
-                actualizarOpcionesDisponibles();
-            }, 300);
-        }
-    };
-});
-
-// Animación de salida
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-    }
-`;
-document.head.appendChild(style);
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }`;
+        document.head.appendChild(style);
+    });
 </script>
 
 {% endblock %}

@@ -11,7 +11,7 @@
         {% csrf_token %}
         <div>
             <label for="id_nombre">Nombre del producto</label>
-            <input type="text" name="nombre" id="id_nombre" required autocomplete="off" placeholder="Digite el nombre del producto">
+            <input type="text" name="nombre" id="id_nombre" required autocomplete="off" placeholder="Digite el nombre del producto" maxlength="30">
             <div class="error-msg error-nombre"></div>
         </div>
 
@@ -31,7 +31,7 @@
 
         <div>
             <label for="id_marca">Marca del producto</label>
-            <input type="text" name="marca" id="id_marca" required autocomplete="off" placeholder="Digite la marca del producto">
+            <input type="text" name="marca" id="id_marca" required autocomplete="off" placeholder="Digite la marca del producto" maxlength="30">
             <div class="error-msg error-marca"></div>
         </div>
 
@@ -43,167 +43,185 @@
 
         <div>
             <label for="id_cantidad">Cantidad</label>
-            <input type="number" id="id_cantidad" min="0" step="1" name="cantidad" placeholder="Digite la cantidad">
+            <input type="text" id="id_cantidad" name="cantidad" placeholder="Digite la cantidad">
             <div class="error-msg error-cantidad"></div>
         </div>
 
         <div>
             <label for="id_proveedor">Proveedor</label>
-            <input type="text" id="id_proveedor" name="proveedor" placeholder="Digite el proveedor">
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Digite el proveedor" maxlength="40">
             <div class="error-msg error-proveedor"></div>
         </div>
 
         <div>
             <label for="id_presentacion">Presentación</label>
-            <input type="text" name="presentacion" id="id_presentacion" placeholder="Digite la presentación">
+            <input type="text" name="presentacion" id="id_presentacion" placeholder="Digite la presentación" maxlength="40">
             <div class="error-msg error-presentacion"></div>
-        </div>
+        </div> 
 
         <button type="submit" id="submit_btn">Registrar</button>
     </form>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const campos = {
-            nombre: document.getElementById("id_nombre"),
-            tipo: document.getElementById("unidad_medida"),
-            marca: document.getElementById("id_marca"),
-            precio: document.getElementById("id_precio"),
-            cantidad: document.getElementById("id_cantidad"),
-            proveedor: document.getElementById("id_proveedor"),
-            presentacion: document.getElementById("id_presentacion")
-        };
+document.addEventListener("DOMContentLoaded", function () {
+    const campos = {
+        nombre: document.getElementById("id_nombre"),
+        tipo: document.getElementById("unidad_medida"),
+        marca: document.getElementById("id_marca"),
+        precio: document.getElementById("id_precio"),
+        cantidad: document.getElementById("id_cantidad"),
+        proveedor: document.getElementById("id_proveedor"),
+        presentacion: document.getElementById("id_presentacion")
+    };
 
-        const errores = {
-            nombre: document.querySelector(".error-nombre"),
-            tipo: document.querySelector(".error-tipo"),
-            marca: document.querySelector(".error-marca"),
-            precio: document.querySelector(".error-precio"),
-            cantidad: document.querySelector(".error-cantidad"),
-            proveedor: document.querySelector(".error-proveedor"),
-            presentacion: document.querySelector(".error-presentacion")
-        };
+    const errores = {
+        nombre: document.querySelector(".error-nombre"),
+        tipo: document.querySelector(".error-tipo"),
+        marca: document.querySelector(".error-marca"),
+        precio: document.querySelector(".error-precio"),
+        cantidad: document.querySelector(".error-cantidad"),
+        proveedor: document.querySelector(".error-proveedor"),
+        presentacion: document.querySelector(".error-presentacion")
+    };
 
-        function tieneTresOMasRepetidos(valor) {
-            // Detecta 3 o más caracteres idénticos consecutivos
-            return /(.)\1{2,}/.test(valor);
-        }
+    function tieneTresOMasRepetidos(valor) {
+        return /(.)\1{2,}/.test(valor);
+    }
 
-        function validarTexto(valor) {
-            if (valor.trim().length > 0 && valor.length < 3) return "Mínimo 3 caracteres";
-            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?\"'()\/\-]*$/.test(valor)) return "Solo caracteres válidos";
-            if (tieneTresOMasRepetidos(valor)) return "Máximo 2 caracteres repetidos (ej: 'ff' sí, 'fff' no)";
-            return "";
-        }
+    function validarTexto(valor) {
+        if (valor.trim().length > 0 && valor.length < 3) return "Mínimo 3 caracteres";
+        if (!/^[a-zA-ZñÑÁÉÍÓÚáéíóú\s.,;:¡!¿?\"'()\/\-]*$/.test(valor)) return "Solo caracteres válidos";
+        if (tieneTresOMasRepetidos(valor)) return "Máximo 2 caracteres repetidos";
+        return "";
+    }
 
-        function validarCantidad(valor) {
-            if (!/^\d+$/.test(valor) || parseInt(valor) < 0) return "Número entero positivo";
-            return "";
-        }
+    function validarCantidad(valor) {
+        valor = valor.replace(/\./g, "");
+        if (!/^\d+$/.test(valor) || parseInt(valor) < 0) return "Número entero positivo";
+        if (valor.length > 10) return "Máximo 10 dígitos";
+        return "";
+    }
 
-        function validarPrecio(valor) {
-            valor = valor.replace(/,/g, "");
-            if (!/^\d+(\.\d{0,2})?$/.test(valor) || parseFloat(valor) < 0) return "Formato inválido";
-            return "";
-        }
+    function validarPrecio(valor) {
+        valor = valor.replace(/,/g, "");
+        if (!/^\d+(\.\d{0,2})?$/.test(valor) || parseFloat(valor) < 0) return "Formato inválido";
+        const soloNumeros = valor.replace(/\./g, "");
+        if (soloNumeros.length > 15) return "Máximo 15 dígitos";
+        return "";
+    }
 
-        function validarPresentacion(valor) {
-            if (valor.length > 30) return "Máximo 30 caracteres";
-            return validarTexto(valor);
-        }
+    function validarPresentacion(valor) {
+        if (valor.length > 30) return "Máximo 30 caracteres";
+        return validarTexto(valor);
+    }
 
-        function mostrarError(campo, mensaje) {
-            errores[campo].textContent = mensaje;
-        }
+    function mostrarError(campo, mensaje) {
+        errores[campo].textContent = mensaje;
+    }
 
-        function formatearPrecio(valor) {
-            return valor.replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
+    function formatearPrecio(valor) {
+        return valor.replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
-        function capitalizar(valor) {
-            return valor.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-        }
+    function formatearCantidad(valor) {
+        return valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
-        // Configuración de eventos
-        campos.nombre.addEventListener("input", function() {
-            this.value = capitalizar(this.value.replace(/[0-9]/g, ""));
-            mostrarError("nombre", validarTexto(this.value));
-        });
+    ["nombre", "marca", "proveedor", "presentacion"].forEach(campo => {
+        campos[campo].addEventListener("input", function () {
+            this.value = this.value
+                .replace(/[0-9]/g, "")
+                .replace(/\s+/g, ' ')
+                .trimStart()
+                .replace(/([^\s]+)/g, palabra => {
+                    const primera = palabra.charAt(0);
+                    const resto = palabra.slice(1).toLowerCase();
+                    return primera === "ñ" || primera === "Ñ"
+                        ? primera + resto
+                        : primera.toUpperCase() + resto;
+                });
 
-        campos.marca.addEventListener("input", function() {
-            this.value = capitalizar(this.value.replace(/[0-9]/g, ""));
-            mostrarError("marca", validarTexto(this.value));
-        });
-
-        campos.proveedor.addEventListener("input", function() {
-            this.value = capitalizar(this.value.replace(/[0-9]/g, ""));
-            mostrarError("proveedor", validarTexto(this.value));
-        });
-
-        campos.presentacion.addEventListener("input", function() {
-            this.value = capitalizar(this.value.replace(/[0-9]/g, ""));
-            mostrarError("presentacion", validarPresentacion(this.value));
-        });
-
-        campos.precio.addEventListener("input", function() {
-            let valor = this.value.replace(/[^\d.]/g, "");
-            if ((valor.match(/\./g) || []).length > 1) {
-                valor = valor.substring(0, valor.lastIndexOf("."));
-            }
-            this.value = formatearPrecio(valor);
-            mostrarError("precio", validarPrecio(valor));
-        });
-
-        campos.cantidad.addEventListener("input", function() {
-            mostrarError("cantidad", validarCantidad(this.value));
-        });
-
-        campos.tipo.addEventListener("change", function() {
-            mostrarError("tipo", this.value ? "" : "Seleccione una opción");
-        });
-
-        document.getElementById("form_articulo").addEventListener("submit", function(e) {
-            let esValido = true;
-            
-            // Validar todos los campos
-            if (validarTexto(campos.nombre.value)) {
-                mostrarError("nombre", validarTexto(campos.nombre.value));
-                esValido = false;
-            }
-            
-            if (!campos.tipo.value) {
-                mostrarError("tipo", "Seleccione una unidad");
-                esValido = false;
-            }
-            
-            if (validarTexto(campos.marca.value)) {
-                mostrarError("marca", validarTexto(campos.marca.value));
-                esValido = false;
-            }
-            
-            if (validarPrecio(campos.precio.value.replace(/,/g, ""))) {
-                mostrarError("precio", validarPrecio(campos.precio.value.replace(/,/g, "")));
-                esValido = false;
-            }
-            
-            if (validarCantidad(campos.cantidad.value)) {
-                mostrarError("cantidad", validarCantidad(campos.cantidad.value));
-                esValido = false;
-            }
-            
-            if (validarTexto(campos.proveedor.value)) {
-                mostrarError("proveedor", validarTexto(campos.proveedor.value));
-                esValido = false;
-            }
-            
-            if (validarPresentacion(campos.presentacion.value)) {
-                mostrarError("presentacion", validarPresentacion(campos.presentacion.value));
-                esValido = false;
-            }
-            
-            if (!esValido) e.preventDefault();
+            const validador = campo === "presentacion" ? validarPresentacion : validarTexto;
+            mostrarError(campo, validador(this.value));
         });
     });
+
+    campos.precio.addEventListener("input", function () {
+        let valor = this.value.replace(/[^\d.]/g, "");
+        if ((valor.match(/\./g) || []).length > 1) {
+            valor = valor.substring(0, valor.lastIndexOf("."));
+        }
+
+        let soloNumeros = valor.replace(/\./g, "");
+        if (soloNumeros.length > 15) {
+            soloNumeros = soloNumeros.substring(0, 15);
+            valor = soloNumeros;
+        }
+
+        this.value = formatearPrecio(valor);
+        mostrarError("precio", validarPrecio(valor));
+    });
+
+    campos.cantidad.addEventListener("input", function () {
+        let valor = this.value.replace(/\D/g, "").slice(0, 10);
+        mostrarError("cantidad", validarCantidad(valor));
+
+        if (valor) {
+            this.value = formatearCantidad(valor);
+        } else {
+            this.value = "";
+        }
+    });
+
+    campos.tipo.addEventListener("change", function () {
+        mostrarError("tipo", this.value ? "" : "Seleccione una opción");
+    });
+
+    document.getElementById("form_articulo").addEventListener("submit", function (e) {
+        let esValido = true;
+
+        if (validarTexto(campos.nombre.value)) {
+            mostrarError("nombre", validarTexto(campos.nombre.value));
+            esValido = false;
+        }
+
+        if (!campos.tipo.value) {
+            mostrarError("tipo", "Seleccione una unidad");
+            esValido = false;
+        }
+
+        if (validarTexto(campos.marca.value)) {
+            mostrarError("marca", validarTexto(campos.marca.value));
+            esValido = false;
+        }
+
+        if (validarPrecio(campos.precio.value.replace(/,/g, ""))) {
+            mostrarError("precio", validarPrecio(campos.precio.value.replace(/,/g, "")));
+            esValido = false;
+        }
+
+        if (validarCantidad(campos.cantidad.value.replace(/\./g, ""))) {
+            mostrarError("cantidad", validarCantidad(campos.cantidad.value.replace(/\./g, "")));
+            esValido = false;
+        }
+
+        if (validarTexto(campos.proveedor.value)) {
+            mostrarError("proveedor", validarTexto(campos.proveedor.value));
+            esValido = false;
+        }
+
+        if (validarPresentacion(campos.presentacion.value)) {
+            mostrarError("presentacion", validarPresentacion(campos.presentacion.value));
+            esValido = false;
+        }
+
+        // Limpiar puntos y comas antes de enviar al servidor
+        campos.precio.value = campos.precio.value.replace(/,/g, "");
+        campos.cantidad.value = campos.cantidad.value.replace(/\./g, "");
+
+        if (!esValido) e.preventDefault();
+    });
+});
 </script>
 {% endblock %}

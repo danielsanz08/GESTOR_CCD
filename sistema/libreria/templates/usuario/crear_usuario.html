@@ -73,7 +73,6 @@ Crear usuario papelería
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Elementos del DOM
         const form = document.getElementById('userForm');
         const username = document.getElementById('id_username');
         const cargo = document.getElementById('id_cargo');
@@ -83,17 +82,14 @@ Crear usuario papelería
         const passwordFeedback = document.getElementById('password-feedback');
         const verificationIndicator = document.getElementById('verification-indicator');
 
-        // Elementos de error
         const errorUsername = document.getElementById('error_username');
         const errorCargo = document.getElementById('error_cargo');
         const errorEmail = document.getElementById('error_email');
         const errorPassword = document.getElementById('error_password');
 
-        // Expresiones regulares
         const repeatedCharRegex = /(.)\1{2,}/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Validación general del formulario
         function validateForm() {
             const isValid =
                 errorUsername.textContent === '' &&
@@ -110,7 +106,6 @@ Crear usuario papelería
             return isValid;
         }
 
-        // Verificar fortaleza de la contraseña
         function checkPasswordStrength(password) {
             let strength = 0;
             const feedback = [];
@@ -142,25 +137,21 @@ Crear usuario papelería
             return { strength, feedback };
         }
 
-        // Limpiar todos los mensajes de contraseña
         function clearPasswordMessages() {
             errorPassword.textContent = '';
             passwordFeedback.textContent = '';
             verificationIndicator.classList.remove('show');
         }
 
-        // Mostrar indicador de verificación
         function showVerificationIndicator() {
             clearPasswordMessages();
             verificationIndicator.classList.add('show');
         }
 
-        // Ocultar indicador de verificación
         function hideVerificationIndicator() {
             verificationIndicator.classList.remove('show');
         }
 
-        // Función de debounce para retrasar la verificación
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -169,7 +160,6 @@ Crear usuario papelería
             };
         }
 
-        // Verificar si la contraseña ya existe
         async function verifyPasswordExists(password) {
             const { strength, feedback } = checkPasswordStrength(password);
 
@@ -211,21 +201,18 @@ Crear usuario papelería
             }
         }
 
-        // ✅ CORREGIDO: Se muestra el indicador solo después del debounce
         const debouncedVerifyPassword = debounce((passwordValue) => {
             showVerificationIndicator();
             verifyPasswordExists(passwordValue);
-        }, 3000);  // 3 segundos
+        }, 3000);
 
         password.addEventListener('input', function () {
             debouncedVerifyPassword(password.value);
         });
 
-        // Validación del nombre de usuario
         username.addEventListener('input', function () {
             let value = username.value.replace(/[0-9]/g, '');
-
-            value = value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+            value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();  // ✅ Solo primera letra en mayúscula
             username.value = value;
 
             if (value.trim().length < 3) {
@@ -251,10 +238,8 @@ Crear usuario papelería
                 });
         });
 
-        // Validación del cargo
         cargo.addEventListener('input', function () {
             let value = cargo.value.replace(/[0-9]/g, '');
-
             value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
             cargo.value = value;
 
@@ -281,7 +266,6 @@ Crear usuario papelería
                 });
         });
 
-        // Validación del email
         email.addEventListener('input', function () {
             const value = email.value;
 
@@ -302,7 +286,6 @@ Crear usuario papelería
                 });
         });
 
-        // Validar formulario antes de enviar
         form.addEventListener('submit', function (e) {
             if (!validateForm()) {
                 e.preventDefault();

@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import MaxValueValidator
-
+from django.utils import timezone
 class Articulo(models.Model):
     nombre = models.CharField(max_length=40, blank=False, null=False)
     marca = models.CharField(max_length=30, blank=False, null=False)
@@ -49,7 +49,7 @@ class Pedido(models.Model):
         ('Cancelado', 'Cancelado'),
     ]
     registrado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    fecha_pedido = models.DateTimeField(auto_now_add=True)
+    fecha_pedido = models.DateTimeField(default=timezone.now)
     fecha_estado = models.DateTimeField(null=True, blank=True) 
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
 

@@ -34,15 +34,20 @@ class ProductoForm(forms.ModelForm):
         fields = ['nombre', 'marca', 'presentacion', 'precio', 'cantidad', 'unidad_medida', 'proveedor']
 
     def clean_precio(self):
-        # Limpiar las comas solo si 'precio' es una cadena
-        precio = self.cleaned_data['precio']
-        if isinstance(precio, str):  # Asegurarse de que es una cadena
-            precio = precio.replace(',', '')  # Eliminar las comas
-            try:
-                return int(precio)  # Asegurarse de que sea un número entero
-            except ValueError:
-                raise forms.ValidationError('El precio debe ser un número válido.')
+        precio = self.cleaned_data.get('precio')
+        if precio is None:
+            raise forms.ValidationError('Este campo es obligatorio.')
+
+        try:
+            precio = int(str(precio).replace(',', ''))
+        except ValueError:
+            raise forms.ValidationError('El precio debe ser un número válido.')
+
+        if precio < 0:
+            raise forms.ValidationError('El precio no puede ser negativo.')
+
         return precio
+
 
 class ProductosEditForm(forms.ModelForm):    
     class Meta:

@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import localtime
 from django.contrib import messages
+from django.utils.timezone import make_aware
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
@@ -624,6 +625,18 @@ def crear_pedido_caf(request):
 
             area_usuario = getattr(request.user, 'area', 'No establecido')
 
+            # ✅ Obtener fecha personalizada si está activada
+            fecha_personalizada_str = request.POST.get('fecha_personalizada')
+            if fecha_personalizada_str:
+                try:
+                    fecha_personalizada = datetime.strptime(fecha_personalizada_str, '%Y-%m-%dT%H:%M')
+                    if timezone.is_naive(fecha_personalizada):
+                        fecha_personalizada = make_aware(fecha_personalizada)
+                except ValueError:
+                    fecha_personalizada = timezone.now()
+            else:
+                fecha_personalizada = timezone.now()
+
             # Validar stock antes de crear el pedido
             for producto_id, cantidad in zip(productos_ids, cantidades):
                 if not producto_id or not cantidad:
@@ -643,7 +656,8 @@ def crear_pedido_caf(request):
             pedido = Pedido.objects.create(
                 registrado_por=request.user,
                 estado=estado,
-                fecha_estado=timezone.now() if estado == 'Confirmado' else None
+                fecha_estado=timezone.now() if estado == 'Confirmado' else None,
+                fecha_pedido=fecha_personalizada  # ✅ Se aplica fecha personalizada o automática
             )
 
             for producto_id, cantidad, lugar in zip(productos_ids, cantidades, lugares):

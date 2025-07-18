@@ -20,8 +20,7 @@ section {
   padding: 10px 20px 20px 20px;
   width: 190vh;
   height: 60vh;
-  border-radius: 20px;
-
+  border-radius: 10px;
 
 }
 
@@ -59,7 +58,7 @@ td {
   background-color: rgb(12, 233, 23);
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
   height: 5vh;
   padding: 5px;
@@ -74,7 +73,7 @@ td {
   background-color: rgb(233, 12, 12);
   border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
   height: 5vh;
   padding: 5px;
@@ -93,14 +92,13 @@ td {
 .buscador {
   background-color: #ffffff;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   height: 3.5vh;
   width: 50vh;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: absolute;
   left: 20vh;
 }
-
 
 #filtro-fechas {
 
@@ -136,7 +134,7 @@ td {
 .search-date {
   background-color: #0056b3;
   color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -155,7 +153,7 @@ td {
 .btn-search {
   background-color: #0056b3;
   color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -180,7 +178,7 @@ td {
 .clean {
   background-color: #b30000;
   color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
   position: absolute;
@@ -215,7 +213,7 @@ td {
   border: none;
   width: 10vh;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   margin-right: 1vh;
   position: absolute;
   top: 5vh;
@@ -232,7 +230,7 @@ td {
   border: none;
   width: 10vh;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   position: absolute;
   top: 5vh;
   right: 30vh;
@@ -249,7 +247,7 @@ td {
   border: none;
   width: 10vh;
   height: 25px;
-  border-radius: 20px;
+  border-radius: 10px;
   position: absolute;
   top: 5vh;
   right: 18vh;
@@ -371,7 +369,7 @@ td {
   width: 10vh;
   height: 25px;
   background-color: yellow;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
 }
@@ -386,7 +384,7 @@ td {
   width: 10vh;
   height: 25px;
   background-color: rgb(12, 179, 67);
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: none;
 }

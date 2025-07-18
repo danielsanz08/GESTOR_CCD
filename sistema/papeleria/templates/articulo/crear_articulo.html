@@ -104,6 +104,20 @@
             return "";
         }
 
+        function validarTextoSinNumeros(valor) {
+            if (valor.trim().length > 0 && valor.length < 3) {
+                return "Debe tener al menos 3 caracteres.";
+            }
+            // Expresión regular que NO permite números
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
+                return "No se permiten números en este campo.";
+            }
+            if (/(.)\1{2,}/.test(valor)) {
+                return "No repita un mismo carácter más de 2 veces.";
+            }
+            return "";
+        }
+
         function validarCantidad(valor) {
             const soloNumeros = valor.replace(/\./g, "");
             return (!/^\d{1,10}$/.test(soloNumeros)) ? "Debe ser un número de hasta 10 dígitos." : "";
@@ -131,11 +145,28 @@
             });
         }
 
-        aplicarEventosCampoTexto("nombre", validarTexto);
-        aplicarEventosCampoTexto("tipo", validarTexto);
-        aplicarEventosCampoTexto("marca", validarTexto);
-        aplicarEventosCampoTexto("proveedor", validarTexto);
-        aplicarEventosCampoTexto("observacion", validarTexto);
+        function aplicarEventosCampoTextoSinNumeros(nombreCampo) {
+            const input = campos[nombreCampo];
+            const errorDiv = errores[nombreCampo];
+
+            input.addEventListener("input", function () {
+                // Eliminar números del valor
+                const valorSinNumeros = input.value.replace(/[0-9]/g, "");
+                const pos = input.selectionStart;
+                input.value = capitalizarPrimeraLetra(valorSinNumeros);
+                input.setSelectionRange(pos, pos);
+
+                const msg = validarTextoSinNumeros(input.value);
+                errorDiv.textContent = input.value.trim() ? msg : "";
+            });
+        }
+
+        // Aplicar validaciones sin números para nombre, marca, tipo, observación y proveedor
+        aplicarEventosCampoTextoSinNumeros("nombre");
+        aplicarEventosCampoTextoSinNumeros("tipo");
+        aplicarEventosCampoTextoSinNumeros("marca");
+        aplicarEventosCampoTextoSinNumeros("proveedor");
+        aplicarEventosCampoTextoSinNumeros("observacion");
 
         campos.precio.addEventListener("input", function () {
             let valor = campos.precio.value.replace(/[^0-9.]/g, "");

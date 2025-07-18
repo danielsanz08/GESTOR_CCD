@@ -3,7 +3,8 @@ html {
     justify-content: center;
     align-items: center;
 }
-.pagination {
+
+.paginacion {
   display: flex;
   justify-content: center;
   margin: 1.5rem 0;
@@ -11,8 +12,8 @@ html {
   font-family: Arial, sans-serif;
 }
 
-.pagination a,
-.pagination span {
+.paginacion a,
+.paginacion span {
   display: inline-block;
   padding: 0.4rem 0.8rem;
   border-radius: 5px;
@@ -22,16 +23,16 @@ html {
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
   position: relative;
-  top: 270px;
+  top: 290px;
 }
 
-.pagination a:hover {
+.paginacion a:hover {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
 }
 
-.pagination .current {
+.paginacion .current {
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
@@ -39,14 +40,13 @@ html {
   font-weight: bold;
 }
 
-.pagination .disabled {
+.paginacion .disabled {
   color: #999;
   background-color: #f2f2f2;
   border: 1px solid #ccc;
   cursor: not-allowed;
   pointer-events: none;
 }
-
 html,
 body {
     background-color: #1c96bb1c;

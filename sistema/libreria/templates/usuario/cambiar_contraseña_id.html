@@ -47,7 +47,7 @@
     let isConfirmationValid = false;
 
     function validatePassword(password) {
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
         return regex.test(password);
     }
 
@@ -115,7 +115,7 @@
         updateSubmitButton();
 
         if (!validatePassword(password)) {
-            showError(errorNew1, "Debe tener mayúscula, minúscula, número, símbolo y mínimo 6 caracteres.");
+            showError(errorNew1, "Debe tener mayúscula, minúscula, número, símbolo y mínimo 8 caracteres.");
         } else {
             verificarPassword(password);
         }

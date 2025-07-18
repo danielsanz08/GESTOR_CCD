@@ -11,7 +11,7 @@
 <section id="section">
     <h2>Articulos con stock bajo</h2>
     <div class="Bototnes">
-        <button class="print" title="Imprimir la tabla de articulos"><i class="bi bi-printer" id="icono"></i></button>
+        
         <a
             href="{% url 'papeleria:reporte_articulo_bajo_stock_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
             <button class="pdf" title="Exportar a PDF">

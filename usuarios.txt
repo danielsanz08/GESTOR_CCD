@@ -1,7 +1,7 @@
-ADMIN:
-danielmolanoestudiogmail.com
-Dd200345?
 EMPLEADO
+danielmolanoestudio@gmail.com
+Dd200345?
+ADMIN
 jonnathansz73@gmail.com
 Vv200345?
 
@@ -15,7 +15,7 @@ carolina@gmail.com
 Cr200345?
 
 camila@gmail.com
-Co200345?
+CC200345?
 
 daniel@gmail.com
 Dv200345?

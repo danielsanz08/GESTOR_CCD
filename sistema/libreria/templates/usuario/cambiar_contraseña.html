@@ -68,7 +68,7 @@
     let passwordCheckTimeout;
 
     function validatePassword(password) {
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
         return regex.test(password);
     }
 
@@ -249,7 +249,7 @@
         hideVerificationIndicator();
         
         if (!validatePassword(password)) {
-            showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 6 caracteres.");
+            showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 8 caracteres.");
             isOldPasswordValid = false;
             new1Group.style.display = "none";
             new2Group.style.display = "none";

@@ -8,7 +8,7 @@ Crear usuario papelería
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'css/crear_usuario.css' %}?v={% now 'U' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{% if user.is_authenticated %}
+
 <div class="formulario">
     <h2 class="titulo">Crear Usuario Papeleria</h2>
     <form id="userForm" method="POST">
@@ -70,7 +70,7 @@ Crear usuario papelería
         <button type="submit" id="btn" class="btn">Registrar usuario</button>
     </form>
 </div>
-{% endif %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Elementos del DOM

@@ -229,7 +229,7 @@ def editar_usuario(request, user_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario actualizado correctamente.")
-            return redirect('libreria:inicio')
+            return redirect('libreria:lista_usuarios')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -270,7 +270,8 @@ def lista_usuarios(request):
             Q(email__icontains=q) |
             Q(role__icontains=q) |
             Q(area__icontains=q) |
-            Q(cargo__icontains=q)
+            Q(cargo__icontains=q)|
+            Q(email__icontains=q)
         )
 
     # Filtrado por fecha
@@ -683,7 +684,9 @@ def obtener_usuarios(request):
             Q(email__icontains=query) |
             Q(role__icontains=query) |
             Q(area__icontains=query) |
-            Q(cargo__icontains=query)
+            Q(cargo__icontains=query)|
+            Q(email__icontains=query)
+
         )
 
     if fecha_inicio and fecha_fin:

@@ -26,11 +26,11 @@ from django.core.mail import EmailMultiAlternatives
 from libreria.forms import CustomPasswordChangeForm
 from reportlab.lib.styles import ParagraphStyle
 # Forms
-from cafeteria.forms import LoginForm, ProductoForm, ProductosEditForm, PedidoProductoForm
+from cafeteria.forms import LoginForm, ProductoForm, ProductosEditForm, PedidoProductoForm ,  DevolucionFormCaf
 
 # Models
 from libreria.models import CustomUser
-from .models import Productos, PedidoProducto, Pedido
+from .models import Productos, PedidoProducto, Pedido , DevolucionCaf
 
 # Standard libraries
 from datetime import datetime
@@ -2117,3 +2117,47 @@ def reporte_producto_bajo_stock_excel(request):
     response['Content-Disposition'] = 'attachment; filename="Listado de bajo stock.xlsx"'
     wb.save(response)
     return response
+
+
+@login_required
+def crear_devolucion_caf(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        form = DevolucionFormCaf(request.POST, pedido_id=pedido_id)
+        if form.is_valid():
+            devolucion = form.save(commit=False)
+            pedido_producto = devolucion.pedido_producto
+            producto = pedido_producto.producto
+            cantidad_devuelta = devolucion.cantidad_devuelta
+
+            # Total ya devuelto
+            total_devuelto = DevolucionCaf.objects.filter(
+                pedido_producto__pedido=pedido,
+                pedido_producto__producto=producto
+            ).aggregate(total=Sum('cantidad_devuelta'))['total'] or 0
+
+            if total_devuelto >= pedido_producto.cantidad:
+                messages.error(request, "Ya has devuelto este producto en su totalidad.")
+            elif total_devuelto + cantidad_devuelta > pedido_producto.cantidad:
+                restante = pedido_producto.cantidad - total_devuelto
+                messages.error(request, f"Solo puedes devolver hasta {restante} unidades.")
+            else:
+                devolucion.devuelto_por = request.user
+                devolucion.save()
+
+                # ✅ AUMENTAR STOCK EN INVENTARIO
+                producto.cantidad += cantidad_devuelta
+                producto.save()
+
+                messages.success(request, "La devolución fue registrada exitosamente.")
+                return redirect('cafeteria:mis_pedidos')
+        else:
+            messages.error(request, "Verifica que los campos sean válidos.")
+    else:
+        form = DevolucionFormCaf(pedido_id=pedido_id)
+
+    return render(request, 'pedidos/devolver_producto.html', {
+        'form': form,
+        'pedido': pedido
+    })

@@ -25,6 +25,7 @@ urlpatterns = [
      path("grafica_estado_pedido_cde/", views.grafica_estado_pedido_cde, name="grafica_estado_pedido_cde"),
      path("grafica_pedidos_cde/", views.grafica_pedidos_cde, name="grafica_pedidos_cde"),
      path("cambiar_contraseña_cde/", views.cambiar_contraseña_cde, name="cambiar_contraseña_cde"),
+      path('devolucion/crear/<int:pedido_id>/', views.crear_devolucion_cde, name='crear_devolucion_cde'),
 ]
 
 handler404 = 'cde.views.error_404_view'

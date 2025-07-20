@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from libreria.models import CustomUser
-from .models import Productos, PedidoProducto, Pedido
-
+from .models import Productos, PedidoProducto, Pedido ,DevolucionCaf                      
+from django.db.models import Sum
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
@@ -79,3 +79,37 @@ class PedidoProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Aquí no es necesario configurar dinámicamente el campo 'tipo' ya que no lo estamos usando
+
+class DevolucionFormCaf(forms.ModelForm):
+    class Meta:
+        model = DevolucionCaf
+        fields = ['pedido_producto', 'cantidad_devuelta', 'motivo']
+        widgets = {
+            'motivo': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        pedido_id = kwargs.pop('pedido_id', None)
+        super().__init__(*args, **kwargs)
+
+        if pedido_id:
+            self.fields['pedido_producto'].queryset = PedidoProducto.objects.filter(pedido__id=pedido_id)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        pedido_producto = cleaned_data.get('pedido_producto')
+        cantidad_devuelta = cleaned_data.get('cantidad_devuelta')
+
+        if pedido_producto and cantidad_devuelta is not None:
+            total_devuelto = pedido_producto.devoluciones.aggregate(
+                total=Sum('cantidad_devuelta')
+            )['total'] or 0
+
+            disponible = pedido_producto.cantidad - total_devuelto
+
+            if cantidad_devuelta > disponible:
+                raise forms.ValidationError(
+                    f"La cantidad excede lo disponible para devolución ({disponible} unidades)."
+                )
+
+        return cleaned_data

@@ -135,6 +135,7 @@
                     <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
                         <i data-feather="eye" class="icono"></i>
                     </button>
+                    <a href="{% url 'cafeteria:crear_devolucion_caf' pedido.id %}" class="btn btn-warning">Devolver</a>
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">

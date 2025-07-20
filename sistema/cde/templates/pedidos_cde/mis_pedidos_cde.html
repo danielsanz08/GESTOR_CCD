@@ -127,6 +127,8 @@
                     <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
                         <i data-feather="eye" class="icono"></i>
                     </button>
+                    <a href="{% url 'cde:crear_devolucion_cde' pedido.id %}" class="btn btn-warning">Devolver</a>
+
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
@@ -180,6 +182,26 @@
                                 <li>{{ producto.cantidad }} {{ producto.producto.nombre }}</li>
                                 {% endfor %}
                             </ul>
+                            <p><strong>Devoluciones:</strong></p>
+{% for articulo in pedido.articulos.all %}
+    {% with devoluciones=articulo.devoluciones.all|dictsort:"fecha_devolucion" %}
+        {% if devoluciones %}
+            <ul>
+                {% for devolucion in devoluciones %}
+                    <li>
+                        {{ devolucion.cantidad_devuelta }} {{ articulo.producto.nombre }}
+                        - <strong>Motivo:</strong> {{ devolucion.motivo }}
+                        - <strong>Fecha:</strong> {{ devolucion.fecha_devolucion|date:"d/m/Y H:i" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay devoluciones para {{ articulo.producto.nombre }}</p>
+        {% endif %}
+    {% endwith %}
+{% endfor %}
+
+                            
                         </div>
 
                     </div>

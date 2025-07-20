@@ -38,8 +38,8 @@ from datetime import datetime
 from cafeteria.models import Productos
 from django.conf import settings
 from django.core.mail import send_mail
-from cde.models import PedidoCde, PedidoProductoCde
-from cde.forms import PedidoProductoCdeForm, LoginForm
+from cde.models import PedidoCde, PedidoProductoCde, DevolucionCde
+from cde.forms import PedidoProductoCdeForm, LoginForm, DevolucionFormCde
 from django.db.models import Q
 from django.core.paginator import Paginator
 from cafeteria.models import Productos
@@ -1365,3 +1365,42 @@ def cambiar_contraseña_cde(request):
     else:
         form = CustomPasswordChangeForm(user=request.user)
     return render(request, 'usuario_cde/cambiar_contraseña_cde.html', {'form': form, 'breadcrumbs': breadcrumbs})
+
+@login_required
+def crear_devolucion_cde(request, pedido_id):
+    pedido = get_object_or_404(PedidoCde, id=pedido_id)
+
+    if request.method == 'POST':
+        form = DevolucionFormCde(request.POST, pedido_id=pedido_id)
+        if form.is_valid():
+            devolucion = form.save(commit=False)
+            pedido_producto = devolucion.pedido_producto
+            producto = pedido_producto.producto
+            cantidad_devuelta = devolucion.cantidad_devuelta
+
+            total_devuelto = DevolucionCde.objects.filter(
+                pedido_producto__pedido=pedido,
+                pedido_producto__producto=producto
+            ).aggregate(total=Sum('cantidad_devuelta'))['total'] or 0
+
+            if total_devuelto >= pedido_producto.cantidad:
+                messages.error(request, "Ya has devuelto este producto completamente.")
+            elif total_devuelto + cantidad_devuelta > pedido_producto.cantidad:
+                restante = pedido_producto.cantidad - total_devuelto
+                messages.error(request, f"Solo puedes devolver hasta {restante} unidades.")
+            else:
+                devolucion.devuelto_por = request.user
+                devolucion.save()
+                producto.cantidad += cantidad_devuelta
+                producto.save()
+                messages.success(request, "La devolución fue registrada exitosamente.")
+                return redirect('cde:mis_pedidos_cde')
+        else:
+            messages.error(request, "Verifica que los datos ingresados sean correctos.")
+    else:
+        form = DevolucionFormCde(pedido_id=pedido_id)
+
+    return render(request, 'pedidos_cde/devolver_producto_cde.html', {
+        'form': form,
+        'pedido': pedido
+    })

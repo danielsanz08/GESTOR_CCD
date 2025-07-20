@@ -73,8 +73,6 @@
         margin-top: 15px;
         text-align: right;
     }
-
-    
 </style>
 <section>
     <h1>Mis pedidos papeleria</h1>
@@ -129,6 +127,8 @@
                     <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
                         <i data-feather="eye" class="icono"></i>
                     </button>
+                    <a href="{% url 'papeleria:crear_devolucion' pedido.id %}" class="btn btn-warning">Devolver</a>
+
 
                     <!-- Contenido oculto para el modal -->
                     <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
@@ -175,8 +175,29 @@
                                 <li>{{ articulo.cantidad }} {{ articulo.articulo.nombre }} </li>
                                 {% endfor %}
                             </ul>
+                            <p><strong>Devoluciones:</strong></p>
+                            {% for articulo in pedido.articulos.all %}
+                            {% with devoluciones=articulo.articulo.devolucion_set.all|dictsort:"fecha" %}
+                            {% if devoluciones %}
+                            <ul>
+                                {% for devolucion in devoluciones %}
+                                {% if devolucion.pedido.id == pedido.id %}
+                                <li>
+                                    {{ devolucion.cantidad_devuelta }} {{ devolucion.articulo.nombre }}
+                                    - <strong>Razón:</strong> {{ devolucion.razon }}
+                                    - <strong>Fecha:</strong> {{ devolucion.fecha|date:"d/m/Y H:i" }}
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <p>No hay devoluciones para {{ articulo.articulo.nombre }}</p>
+                            {% endif %}
+                            {% endwith %}
+                            {% endfor %}
+
                         </div>
-                        
+
                     </div>
                 </td>
             </tr>
@@ -185,21 +206,21 @@
     </table>
 
     <div class="paginacion" id="pag">
-    {% if pedidos.has_previous %}
+        {% if pedidos.has_previous %}
         <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}">Anterior</a>
-    {% else %}
+        {% else %}
         <span class="disabled">Anterior</span>
-    {% endif %}
+        {% endif %}
 
-    <!-- Número de página actual -->
-    <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+        <!-- Número de página actual -->
+        <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
 
-    {% if pedidos.has_next %}
+        {% if pedidos.has_next %}
         <a href="?page={{ pedidos.next_page_number }}{{ query_params }}">Siguiente</a>
-    {% else %}
+        {% else %}
         <span class="disabled">Siguiente</span>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 
 
 </section>

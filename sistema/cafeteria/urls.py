@@ -38,6 +38,7 @@ urlpatterns = [
     path('cambiar_contraseña_caf/', views.cambiar_contraseña_caf, name='cambiar_contraseña_caf'),
     path('reporte_producto_bajo_stock_pdf/', views.reporte_producto_bajo_stock_pdf, name='reporte_producto_bajo_stock_pdf'),
     path('reporte_producto_bajo_stock_excel/', views.reporte_producto_bajo_stock_excel, name='reporte_producto_bajo_stock_excel'),
+    path('devolucion/crear/<int:pedido_id>/', views.crear_devolucion_caf, name='crear_devolucion_caf'),
 ]
 
 handler404 = 'cafeteria.views.error_404_view'

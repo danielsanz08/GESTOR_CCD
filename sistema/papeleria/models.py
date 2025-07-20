@@ -71,3 +71,16 @@ class PedidoArticulo(models.Model):
 
     def __str__(self):
         return f"{self.articulo.nombre} x {self.cantidad} - {self.tipo}"
+    
+class Devolucion(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE)
+    cantidad_devuelta = models.PositiveIntegerField()
+    razon = models.TextField()
+    fecha = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        # Al guardar la devolución, aumentamos la cantidad del artículo en inventario
+        self.articulo.cantidad += self.cantidad_devuelta
+        self.articulo.save()
+        super().save(*args, **kwargs)

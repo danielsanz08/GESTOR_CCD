@@ -20,8 +20,8 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
-from papeleria.models import Articulo, PedidoArticulo, Pedido
-from papeleria.forms import LoginForm, ArticuloForm, ArticuloEditForm, PedidoArticuloForm
+from papeleria.models import Articulo, PedidoArticulo, Pedido, Devolucion
+from papeleria.forms import LoginForm, ArticuloForm, ArticuloEditForm, PedidoArticuloForm,DevolucionForm
 from libreria.models import CustomUser
 from io import BytesIO
 import openpyxl
@@ -2158,3 +2158,44 @@ def reporte_articulo_bajo_stock_excel(request):
     response['Content-Disposition'] = 'attachment; filename="Listado_articulos_bajo_stock.xlsx"'
     wb.save(response)
     return response
+
+@login_required
+def crear_devolucion(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        form = DevolucionForm(request.POST, pedido_id=pedido_id)
+        if form.is_valid():
+            devolucion = form.save(commit=False)
+            articulo = devolucion.articulo
+            cantidad_devuelta = devolucion.cantidad_devuelta
+
+            try:
+                pedido_articulo = PedidoArticulo.objects.get(pedido=pedido, articulo=articulo)
+            except PedidoArticulo.DoesNotExist:
+                messages.error(request, "El artículo no pertenece a este pedido.")
+                return render(request, 'pedidos/devolver_articulo.html', {'form': form, 'pedido': pedido})
+
+            # Cantidad ya devuelta
+            total_devuelto = Devolucion.objects.filter(
+                pedido=pedido, articulo=articulo
+            ).aggregate(total=Sum('cantidad_devuelta'))['total'] or 0
+
+            if total_devuelto >= pedido_articulo.cantidad:
+                messages.error(request, "Ya has devuelto este artículo en su totalidad.")
+            elif total_devuelto + cantidad_devuelta > pedido_articulo.cantidad:
+                restante = pedido_articulo.cantidad - total_devuelto
+                messages.error(request, f"Solo puedes devolver hasta {restante} unidades.")
+            else:
+                devolucion.save()
+                messages.success(request, "La devolución fue registrada exitosamente.")
+                return redirect('papeleria:mis_pedidos')
+        else:
+            messages.error(request, "Verifica que los campos sean válidos.")
+    else:
+        form = DevolucionForm(pedido_id=pedido_id)
+
+    return render(request, 'pedidos/devolver_articulo.html', {
+        'form': form,
+        'pedido': pedido
+    })

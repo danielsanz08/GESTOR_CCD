@@ -111,3 +111,24 @@ class PedidoProducto(models.Model):
 
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"
+    
+class DevolucionCaf(models.Model):
+    pedido_producto = models.ForeignKey(
+        'PedidoProducto',
+        on_delete=models.CASCADE,
+        related_name='devoluciones'
+    )
+    cantidad_devuelta = models.PositiveIntegerField(blank=False, null=False)
+    motivo = models.TextField(blank=False, null=False)
+    devuelto_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='devoluciones_realizadas'
+    )
+    fecha_devolucion = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Devolución de {self.cantidad_devuelta} x {self.pedido_producto.producto.nombre}"
+
+    def fecha_formateada(self):
+        return self.fecha_devolucion.strftime('%d-%m-%Y %H:%M')

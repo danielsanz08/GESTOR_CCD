@@ -1,0 +1,109 @@
+/* General body and HTML styling */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f6f9;
+    /* Light gray background for better contrast */
+    font-family: 'Arial', sans-serif;
+}
+
+section {
+    background: linear-gradient(110deg, #c7def893, #ffffffa8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    padding: 5vh 5vh 5vh 5vh;
+
+    border-radius: 15px;
+    height: 40vh;
+}
+
+.form-group {
+    display: block;
+}
+
+.form-group label {
+    display: block;
+    width: 100%;
+    /* Opcional: para que el input ocupe todo el ancho disponible */
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.form-group input {
+    display: block;
+    width: 100%;
+    border-radius: 20px;
+    height: 4vh;
+}
+
+.error-limite,
+.error-repetido {
+    color: red;
+    font-size: 0.9em;
+    margin-left: 8px;
+    font-weight: bold;
+    display: none;
+}
+
+
+.botones {
+    background-color: aqua;
+    width: 30vh;
+}
+
+#crear {
+    margin-right: 15px;
+    background-color: red;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 77vh;
+    top: 65vh;
+    cursor: pointer;
+}
+
+#crear:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+
+.cancelar {
+    margin-right: 15px;
+    background-color: red;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 6vh;
+    width: 25vh;
+    border-radius: 20px;
+    position: absolute;
+    left: 112vh;
+    top: 65vh;
+    cursor: pointer;
+}
+
+.cancelar:hover {
+    background-color: rgb(187, 33, 33);
+    color: rgb(255, 253, 253);
+}
+
+.modelos {
+
+    margin-top: 5vh;
+}

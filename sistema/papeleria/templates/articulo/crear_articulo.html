@@ -1,0 +1,211 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Crear artículo{% endblock %}
+
+{% block contenido %}
+<style>
+
+</style>
+
+<link rel="stylesheet" href="{% static 'css/crear_articulo.css' %}?v={% now 'U' %}">
+
+<div class="fondo">
+    <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+</div>
+
+<div class="formulario">
+    <h2>Crear artículo</h2>
+    <form method="POST" id="form_articulo">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_nombre" class="form-label">Nombre del artículo</label>
+            <input type="text" name="nombre" id="id_nombre" class="form-control" required autocomplete="off" placeholder="Maximo 40 caracteres" maxlength="40">
+            <div class="error-msg error-nombre"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_tipo" class="form-label">Digite el tipo de artículo</label>
+            <input type="text" name="tipo" id="id_tipo" placeholder="Maximo 30 caracteres" value="No establecido" maxlength="30">
+            <div class="error-msg error-tipo"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_marca" class="form-label">Marca del artículo</label>
+            <input type="text" name="marca" id="id_marca" class="form-control" required autocomplete="off" placeholder="Maximo 30 caracteres" maxlength="30">
+            <div class="error-msg error-marca"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_precio" class="form-label">Digite el precio</label>
+            <input type="text" name="precio" id="id_precio" placeholder="Digite el precio del artículo" minlength="3">
+            <div class="error-msg error-precio"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_cantidad" class="form-label">Digite la cantidad</label>
+            <input type="text" id="id_cantidad" name="cantidad" placeholder="Máximo 10 dígitos" maxlength="13">
+            <div class="error-msg error-cantidad"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_proveedor" class="form-label">Digite el proveedor</label>
+            <input type="text" id="id_proveedor" name="proveedor" placeholder="Maximo 40 caracteres" maxlength="40">
+            <div class="error-msg error-proveedor"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_observacion" class="form-label">Observación del artículo:</label>
+            <input type="text" name="observacion" id="id_observacion" class="form-control" placeholder="Maximo 50 caracteres" maxlength="50">
+            <div class="error-msg error-observacion"></div>
+        </div>
+
+        <button type="submit" class="btn" id="submit_btn">Registrar artículo</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const campos = {
+            nombre: document.getElementById("id_nombre"),
+            tipo: document.getElementById("id_tipo"),
+            marca: document.getElementById("id_marca"),
+            precio: document.getElementById("id_precio"),
+            cantidad: document.getElementById("id_cantidad"),
+            proveedor: document.getElementById("id_proveedor"),
+            observacion: document.getElementById("id_observacion"),
+        };
+
+        const errores = {
+            nombre: document.querySelector(".error-nombre"),
+            tipo: document.querySelector(".error-tipo"),
+            marca: document.querySelector(".error-marca"),
+            precio: document.querySelector(".error-precio"),
+            cantidad: document.querySelector(".error-cantidad"),
+            proveedor: document.querySelector(".error-proveedor"),
+            observacion: document.querySelector(".error-observacion"),
+        };
+
+        function capitalizarPrimeraLetra(texto) {
+            if (!texto) return texto;
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }
+
+        function validarTexto(valor) {
+            if (valor.trim().length > 0 && valor.length < 3) {
+                return "Debe tener al menos 3 caracteres.";
+            }
+            // Expresión regular mejorada para aceptar más caracteres especiales
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
+                return "Contiene caracteres inválidos.";
+            }
+            if (/(.)\1{2,}/.test(valor)) {
+                return "No repita un mismo carácter más de 2 veces.";
+            }
+            return "";
+        }
+
+        function validarTextoSinNumeros(valor) {
+            if (valor.trim().length > 0 && valor.length < 3) {
+                return "Debe tener al menos 3 caracteres.";
+            }
+            // Expresión regular que NO permite números
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s.,;:¡!¿?\"'()\/\-–—°²³µ¼½¾×÷+=_@#%&*\[\]{}|\\<>°²³µ¼½¾g\/m²]*$/.test(valor)) {
+                return "No se permiten números en este campo.";
+            }
+            if (/(.)\1{2,}/.test(valor)) {
+                return "No repita un mismo carácter más de 2 veces.";
+            }
+            return "";
+        }
+
+        function validarCantidad(valor) {
+            const soloNumeros = valor.replace(/\./g, "");
+            return (!/^\d{1,10}$/.test(soloNumeros)) ? "Debe ser un número de hasta 10 dígitos." : "";
+        }
+
+        function validarPrecio(valor) {
+            const limpio = valor.replace(/[.,]/g, "");
+            if (!/^\d{1,14}(\.\d{0,2})?$/.test(valor.replace(/,/g, ""))) {
+                return "Máximo 14 dígitos antes del punto y 2 decimales.";
+            }
+            return "";
+        }
+
+        function aplicarEventosCampoTexto(nombreCampo, validarFn) {
+            const input = campos[nombreCampo];
+            const errorDiv = errores[nombreCampo];
+
+            input.addEventListener("input", function () {
+                const pos = input.selectionStart;
+                input.value = capitalizarPrimeraLetra(input.value);
+                input.setSelectionRange(pos, pos);
+
+                const msg = validarFn(input.value);
+                errorDiv.textContent = input.value.trim() ? msg : "";
+            });
+        }
+
+        function aplicarEventosCampoTextoSinNumeros(nombreCampo) {
+            const input = campos[nombreCampo];
+            const errorDiv = errores[nombreCampo];
+
+            input.addEventListener("input", function () {
+                // Eliminar números del valor
+                const valorSinNumeros = input.value.replace(/[0-9]/g, "");
+                const pos = input.selectionStart;
+                input.value = capitalizarPrimeraLetra(valorSinNumeros);
+                input.setSelectionRange(pos, pos);
+
+                const msg = validarTextoSinNumeros(input.value);
+                errorDiv.textContent = input.value.trim() ? msg : "";
+            });
+        }
+
+        // Aplicar validaciones sin números para nombre, marca, tipo, observación y proveedor
+        aplicarEventosCampoTextoSinNumeros("nombre");
+        aplicarEventosCampoTextoSinNumeros("tipo");
+        aplicarEventosCampoTextoSinNumeros("marca");
+        aplicarEventosCampoTextoSinNumeros("proveedor");
+        aplicarEventosCampoTextoSinNumeros("observacion");
+
+        campos.precio.addEventListener("input", function () {
+            let valor = campos.precio.value.replace(/[^0-9.]/g, "");
+            const partes = valor.split(".");
+            const entero = partes[0].slice(0, 14);
+            const decimal = partes[1] ? partes[1].slice(0, 2) : "";
+
+            const enteroFormateado = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            campos.precio.value = decimal ? `${enteroFormateado}.${decimal}` : enteroFormateado;
+
+            errores.precio.textContent = validarPrecio(entero + (decimal ? "." + decimal : ""));
+        });
+
+        campos.cantidad.addEventListener("input", function () {
+            let valor = campos.cantidad.value.replace(/\D/g, "");
+            valor = valor.slice(0, 10);
+
+            let formateado = "";
+            let contador = 0;
+            for (let i = valor.length - 1; i >= 0; i--) {
+                formateado = valor[i] + formateado;
+                contador++;
+                if (contador === 3 && i !== 0) {
+                    formateado = "." + formateado;
+                    contador = 0;
+                }
+            }
+            campos.cantidad.value = formateado;
+            errores.cantidad.textContent = validarCantidad(formateado);
+        });
+
+        document.getElementById("form_articulo").addEventListener("submit", function () {
+            campos.precio.value = campos.precio.value.replace(/,/g, "");
+            campos.cantidad.value = campos.cantidad.value.replace(/\./g, "");
+            ["nombre", "tipo", "marca", "proveedor", "observacion"].forEach(campo => {
+                campos[campo].value = capitalizarPrimeraLetra(campos[campo].value);
+            });
+        });
+    });
+</script>
+
+{% endblock %}

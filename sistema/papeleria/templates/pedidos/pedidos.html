@@ -1,0 +1,258 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Realizar Pedido{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
+
+<div id="container">
+    <section>
+        <h1>Realizar Pedido</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3" style="display: none;">
+                <label class="form-label">Área:</label>
+                <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
+            </div>
+
+            <div id="articulos-container">
+                <div class="articulo-form default-form">
+                    <label for="articulo">Articulo</label>
+                    <select name="articulo" required class="select-articulo">
+                        <option value="">-- Seleccionar Artículo --</option>
+                        {% for articulo in articulos %}
+                            {% if articulo.cantidad > 0 %}
+                                <option value="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}" {% if articulo.cantidad < 10 %}class="rojo"{% endif %}>
+                                    {{ articulo.nombre }} ({{ articulo.cantidad }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="tipo">Tipo:</label>
+                    <select name="tipo_articulo" required class="select-tipo">
+                        <option value="">-- Seleccionar Tipo --</option>
+                        {% for articulo in articulos %}
+                            {% if articulo.cantidad > 0 %}
+                                <option value="{{ articulo.tipo }}" data-articulo="{{ articulo.id }}" data-cantidad="{{ articulo.cantidad }}" {% if articulo.cantidad < 10 %}class="rojo"{% endif %}>
+                                    {{ articulo.tipo }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
+                </div>
+            </div>
+
+            {% if request.user.role == 'Administrador' %}
+<div class="mb-3">
+    <input type="checkbox" id="usar_fecha_personalizada" name="usar_fecha_personalizada">
+    <label for="usar_fecha_personalizada">Usar fecha personalizada</label>
+    <div id="contenedor_fecha"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('usar_fecha_personalizada');
+        const contenedorFecha = document.getElementById('contenedor_fecha');
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                const input = document.createElement('input');
+                input.type = 'datetime-local';
+                input.id = 'fecha_personalizada';
+                input.name = 'fecha_personalizada';
+                input.className = 'form-control mt-2';
+                contenedorFecha.appendChild(input);
+            } else {
+                contenedorFecha.innerHTML = '';
+            }
+        });
+    });
+</script>
+
+            {% endif %}
+
+            <div class="botones-principales">
+                <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro artículo</button>
+                <button type="submit" id="realizar">Realizar Pedido</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let articulosSeleccionadosEnPedido = [];
+
+        function actualizarOpcionesDisponibles() {
+            const selectsArticulos = document.querySelectorAll('.select-articulo');
+            selectsArticulos.forEach(select => {
+                const currentSelected = select.value;
+                Array.from(select.options).forEach(option => {
+                    if (option.value) {
+                        if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
+                            option.disabled = false;
+                            option.classList.remove('articulo-deshabilitado');
+                        } else {
+                            option.disabled = true;
+                            option.classList.add('articulo-deshabilitado');
+                        }
+                    }
+                });
+            });
+        }
+
+        function actualizarTipos(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const selectTipo = form.querySelector('.select-tipo');
+            const articuloSeleccionado = selectArticulo.value;
+
+            Array.from(selectTipo.options).forEach(option => {
+                const idRelacionado = option.getAttribute('data-articulo');
+                const cantidad = parseInt(option.getAttribute('data-cantidad')) || 0;
+
+                if (option.value === "") {
+                    option.disabled = false;
+                    option.hidden = false;
+                    option.classList.remove('no-allowed');
+                } else if (idRelacionado === articuloSeleccionado) {
+                    option.disabled = false;
+                    option.hidden = false;
+                    option.classList.remove('no-allowed');
+                    if (cantidad < 10) {
+                        option.classList.add('rojo');
+                    } else {
+                        option.classList.remove('rojo');
+                    }
+                } else {
+                    option.disabled = true;
+                    option.hidden = true;
+                    option.classList.add('no-allowed');
+                }
+            });
+
+            if (selectTipo.value && selectTipo.options[selectTipo.selectedIndex]?.getAttribute('data-articulo') !== articuloSeleccionado) {
+                selectTipo.value = "";
+            }
+
+            actualizarValidacionCantidad(form);
+        }
+
+        function actualizarValidacionCantidad(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const inputCantidad = form.querySelector('.input-cantidad');
+
+            const newInputCantidad = inputCantidad.cloneNode(true);
+            inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+
+            newInputCantidad.addEventListener('input', function () {
+                const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+                const valorIngresado = parseInt(this.value);
+
+                if (valorIngresado > cantidadDisponible) {
+                    this.value = "";
+                    alert("No puedes pedir más cantidad de la disponible");
+                }
+            });
+        }
+
+        function inicializarFormulario(form, incluirEliminar = false) {
+            const selectArticulo = form.querySelector('.select-articulo');
+
+            selectArticulo.addEventListener('change', function () {
+                const prevValue = form.getAttribute('data-selected-articulo');
+                if (prevValue) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
+                }
+
+                if (this.value) {
+                    articulosSeleccionadosEnPedido.push(this.value);
+                    form.setAttribute('data-selected-articulo', this.value);
+                } else {
+                    form.removeAttribute('data-selected-articulo');
+                }
+
+                actualizarOpcionesDisponibles();
+                actualizarTipos(form);
+            });
+
+            if (incluirEliminar) {
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.type = 'button';
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.classList.add('btn-eliminar-articulo');
+                eliminarBtn.title = "Eliminar artículo";
+                eliminarBtn.onclick = function () {
+                    eliminarArticulo(form);
+                };
+                form.appendChild(eliminarBtn);
+            }
+
+            actualizarTipos(form);
+            actualizarValidacionCantidad(form);
+        }
+
+        const defaultForm = document.querySelector('.articulo-form.default-form');
+        if (defaultForm) {
+            inicializarFormulario(defaultForm);
+        }
+
+        window.agregarArticulo = function () {
+            const container = document.getElementById('articulos-container');
+            const nuevoFormulario = defaultForm.cloneNode(true);
+
+            nuevoFormulario.classList.remove('default-form');
+            nuevoFormulario.classList.add('nuevo');
+            nuevoFormulario.style.display = 'flex';
+
+            const selects = nuevoFormulario.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0);
+            nuevoFormulario.querySelector('.input-cantidad').value = 1;
+            nuevoFormulario.removeAttribute('data-selected-articulo');
+
+            inicializarFormulario(nuevoFormulario, true);
+            container.appendChild(nuevoFormulario);
+
+            actualizarOpcionesDisponibles();
+
+            setTimeout(() => {
+                nuevoFormulario.classList.remove('nuevo');
+            }, 400);
+        };
+
+        window.eliminarArticulo = function (form) {
+            if (!form.classList.contains('default-form')) {
+                const articuloId = form.getAttribute('data-selected-articulo');
+                if (articuloId) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+                }
+
+                form.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    form.remove();
+                    actualizarOpcionesDisponibles();
+                }, 300);
+            }
+        };
+
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }`;
+        document.head.appendChild(style);
+    });
+</script>
+
+{% endblock %}

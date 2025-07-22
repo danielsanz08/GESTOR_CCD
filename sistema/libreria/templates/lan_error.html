@@ -1,0 +1,61 @@
+{% extends 'navbar.html' %}
+
+{% block contenido %}
+<style>
+  html {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    }
+  }
+
+  .alerta-error {
+    background: linear-gradient(135deg, #ff4d4d, #b30000);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 30px;
+    border-radius: 15px;
+    width: 50vh;
+    max-width: 90%;
+    text-align: center;
+    margin: 20vh auto;
+    animation: pulse 2s infinite;
+    border: 2px solid #ff1a1a;
+  }
+
+  .alerta-error h1 {
+    font-size: 2.2em;
+    margin-bottom: 20px;
+  }
+
+  .btn-inicio {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #fff;
+    color: #b30000;
+    font-weight: bold;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-inicio:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+  }
+</style>
+
+<div class="alerta-error">
+  <h1>Error</h1>
+  <a href="{% url 'libreria:inicio' %}" class="btn-inicio">Ir al inicio</a>
+</div>
+{% endblock %}

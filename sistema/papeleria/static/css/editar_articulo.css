@@ -1,0 +1,99 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+}
+
+html,
+body {
+    background-color: #86cfe61c;
+}
+.formulario {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    position: fixed;
+    top: 21vh;
+    left: 32vh;
+    padding: 20px 20px 20px 20px;
+    border-radius: 10px;
+    height: 387px;
+    width: 930px;
+}
+h2 {
+    text-align: center;
+    font-size: max(1.5rem, 20px);
+    margin: 1rem 0;
+}
+#form_articulo {
+    background-color: rgba(255, 255, 255, 0);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 20px 20px 20px 20px;
+    height: 300px;
+    margin-top: -1vh;
+    width: 860px;
+}
+input,
+.form-select {
+    position: relative;
+    top: -1vh;
+    left: 2vh;
+    border: none;
+    border-radius: 10px;
+    height: 4vh;
+    width: 35vh;
+    margin: 10px 30px 30px 30px;
+    border: 1px solid black;
+}
+label {
+    display: block;
+    margin: 10px 30px 0px 50px;
+}
+button[type="submit"] {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 2px solid black;
+    height: 38px;
+    width: 230px;
+    border-radius: 10px;
+    position: relative;
+    left: 5vh;
+    top: 4vh;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: rgb(33, 74, 187);
+    color: black;
+}
+
+button[type="submit"]:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+.error-nombre,
+.error-tipo,
+.error-marca,
+.error-precio,
+.error-cantidad,
+.error-proveedor,
+.error-observacion {
+    color: #ff0101;
+    font-weight: bold;
+    position: relative;
+    display: block;
+    top: -27px;
+    left: 40px;
+    right: 30px;
+    font-size: 0.8em;
+}

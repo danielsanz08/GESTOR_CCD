@@ -1,0 +1,121 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/lista_backup.css' %}?v={% now 'U' %}">
+<section>
+
+    <h1 class="mb-4"><i class="fas fa-database"></i> Copias de Seguridad</h1>
+    <div>
+        <form method="GET" action="{% url 'backup:lista_backups' %}">
+            <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador"
+                value="{{ request.GET.q }}">
+            <button type="submit" class="btn-search"><i class="fas fa-search text-white"></i></button>
+            <div id="filtro-fechas">
+                <label for="fecha_inicio">Desde:</label>
+                <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+
+                <label for="fecha_fin">Hasta:</label>
+                <input type="date" class="fecha_fin" name="fecha_fin" value="{{ request.GET.fecha_fin }}">
+
+                <button type="submit" class="search-date" title="Buscar por rango de fecha">
+                    <i class="fas fa-search text-white"></i>
+                </button>
+                <a href="{% url 'backup:lista_backups' %}">
+                    <button type="button" class="clean" title="Limpiar búsqueda">
+                        <i class="fas fa-trash text-white"></i>
+                    </button>
+                </a>
+            </div>
+        </form>
+
+        <!-- Botones principales -->
+        <div class="Botones">
+            <a href="{% url 'backup:crear_backup' %}">
+                <button class="crear" title="Crear copia de seguridad"><i class="fas fa-plus-circle me-2"></i></button>
+            </a>
+            <a href="{% url 'backup:exportar_backup' %}">
+                <button class="exportar" title="Exportar backup"><i class="fas fa-file-export me-2"></i></button>
+            </a>
+            <a href="{% url 'backup:importar' %}">
+                <button class="importar" title="Importar base de datos"><i class="fas fa-file-import me-2"></i></button>
+            </a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th id="nombre">Nombre</th>
+                    <th id="fecha">Fecha</th>
+                    <th id="Tamaño">Tamaño</th>
+                    <th id="modelos">Modulos</th>
+                    <th id="descargar">Descargar</th>
+                    <th id="restaurar">Restaurar</th>
+                    <th id="borrar">Borrar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for backup in backups %}
+                <tr>
+                    <td>{{ backup.nombre }}</td>
+                    <td>{{ backup.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>{{ backup.tamano }}</td>
+                    <td>
+                        Papeleria, Cafeteria y Centro de eventos
+                    </td>
+                    <td class="text-end" id="td_descargar">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'backup:descargar_backup' backup.id %}" class="descargar" title="Descargar">
+                                <i class="fas fa-download"></i>
+                            </a>
+
+
+                        </div>
+                    </td>
+                    <td id="td_restaurar">
+                        <a href="{% url 'backup:restaurar_backup' backup.id %}" class="restaurar" title="Restaurar"
+                            onclick="return confirm('¿Restaurar esta copia? Se sobrescribirán los datos actuales.')">
+                            <i class="fas fa-undo"></i>
+                        </a>
+                    </td>
+                    <td id="td_eliminar">
+                        <a href="{% url 'backup:eliminar_backup' backup.id %}" class="eliminar" title="Eliminar"
+                            onclick="return confirm('¿Eliminar permanentemente esta copia?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        <br>
+                        No hay copias de seguridad disponibles
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="paginacion" id="pag">
+            {% if backups.has_previous %}
+            <a href="?page={{ backups.previous_page_number }}{{ query_params }}">Anterior</a>
+            {% else %}
+            <span class="disabled">Anterior</span>
+            {% endif %}
+
+            <!-- Número de página actual -->
+            <span class="current-page">Página {{ backups.number }} de {{ backups.paginator.num_pages }}</span>
+
+            {% if backups.has_next %}
+            <a href="?page={{ backups.next_page_number }}{{ query_params }}">Siguiente</a>
+            {% else %}
+            <span class="disabled">Siguiente</span>
+            {% endif %}
+        </div>
+
+
+
+        <style>
+
+        </style>
+
+</section>
+{% endblock %}

@@ -1,0 +1,437 @@
+html,
+body {
+    background-color: #86cfe61c;
+}
+
+.card-confirm {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    text-align: center;
+    position: relative;
+    top: 20vh;
+    width: 470px;
+    left: 70vh;
+    border-radius: 10px;
+    height: 440px;
+
+}
+.card-confirmid{
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    text-align: center;
+    position: relative;
+    top: 20vh;
+    width: 470px;
+    left: 70vh;
+    border-radius: 10px;
+    height: 340px;
+}
+/* Ajustes para labels - más cerca de los inputs */
+.form-label0 {
+    position: relative;
+    display: block;
+    top: 5px;
+    left: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-input0 {
+    background-color: rgb(253, 253, 253);
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 400px;
+    margin: 0 20px 5px 20px;
+    text-align: center;
+    left: 8px;
+    position: relative;
+}
+
+.form-label1 {
+    position: relative;
+    display: block;
+    top: 5px;
+    left: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-control1 {
+    background-color: rgb(255, 255, 255);
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 400px;
+    margin: 0 20px 5px 20px;
+    text-align: center;
+    left: 8px;
+    position: relative;
+}
+
+.form-label2 {
+    position: relative;
+    display: block;
+    top: 5px;
+    left: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-control2 {
+    background-color: rgb(253, 253, 253);
+    height: 30px;
+
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 400px;
+    margin: 0 20px 5px 20px;
+    text-align: center;
+    left: 8px;
+    position: relative;
+}
+
+.verification-indicator {
+    display: none;
+    color: #015aff;
+    font-size: 0.9rem;
+    position: relative;
+    top: 2px;
+    left: 44px;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.verification-indicator.show {
+    display: flex;
+}
+
+/* Ajustes para mensajes de error - aparecen debajo sin afectar otros elementos */
+.error-old,
+.error-new1,
+.error-new2 {
+    font-size: 0.9rem;
+    position: relative;
+    left: 12px;
+    margin-bottom: 10px;
+    min-height: 15px;
+    max-width: 350px;
+    margin-left: 50px;
+    word-wrap: break-word;
+    text-align: center;
+    font-weight: bold;
+}
+
+.error-old {
+    color: rgb(255, 30, 0);
+    font-weight: bold;
+}
+
+@keyframes shake-slow {
+    0% {
+        transform: translateX(-3px);
+    }
+
+    25% {
+        transform: translateX(3px);
+    }
+
+    50% {
+        transform: translateX(-2px);
+    }
+
+    75% {
+        transform: translateX(2px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.btn {
+    background-color: rgb(255, 255, 255);
+    bottom: 15px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 1px solid black;
+    left: 160px;
+    position: absolute;
+    width: 140px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+.btn:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.error-card {
+    position: relative;
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 85, 85, 0.85), rgba(180, 0, 0, 0.85));
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    border: 2px solid #ff4d4d;
+    animation: shake-slow 2.5s infinite ease-in-out;
+    font-weight: bold;
+}
+
+.expirado {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    gap: 10px;
+}
+
+.error-old,
+.error-new1,
+.error-new2 {
+    color: red;
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0;
+    min-height: 0.8rem;
+    line-height: 1.1;
+}
+
+.error-old.success-match,
+.error-new1.success-match,
+.error-new2.success-match {
+    color: green;
+    font-weight: bold;
+}
+
+.error-old.loading,
+.error-new1.loading,
+.error-new2.loading {
+    color: blue;
+    font-weight: bold;
+}
+
+.verification-indicator {
+    color: blue;
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0;
+    display: none;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.verification-indicator.show {
+    display: flex;
+}
+
+.spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* TABLETS - Media Query para dispositivos entre 768px y 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .card-confirm {
+        width: 90%;
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 20vh;
+        height: auto;
+        min-height: 460px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .card-confirmid{
+         width: 90%;
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 20vh;
+        height: auto;
+        min-height: 390px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .form-input0,
+    .form-control1,
+    .form-control2 {
+        width: 85%;
+        max-width: 400px;
+        margin: 0 auto 10px auto;
+        left: 0;
+        display: block;
+        font-size: larger;
+    }
+
+    .form-label0,
+    .form-label1,
+    .form-label2 {
+        left: 5%;
+        text-align: center;
+        font-size: larger;
+    }
+
+    .error-old,
+    .error-new1,
+    .error-new2 {
+        left: 0;
+        margin-left: 0;
+        max-width: 85%;
+        margin: 5px auto 10px auto;
+        font-size: larger;
+    }
+
+    .verification-indicator {
+        left: 5%;
+        justify-content: flex-start;
+        font-size: larger;
+    }
+
+    .btn {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 45px;
+        font-size: larger;
+    }
+
+    .error-card {
+        width: 90%;
+        max-width: 600px;
+        margin: 20px auto;
+        font-size: large;
+    }
+}
+
+/* MÓVILES - Media Query para dispositivos hasta 767px */
+@media (max-width: 767px) {
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .card-confirm {
+        width: 95%;
+        max-width: 400px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 22vh;
+        height: auto;
+        min-height: 500px;
+        padding: 15px;
+        box-sizing: border-box;
+        border-radius: 15px;
+    }
+    .card-confirmid{
+        width: 95%;
+        max-width: 400px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 22vh;
+        height: auto;
+        min-height: 400px;
+        padding: 15px;
+        box-sizing: border-box;
+        border-radius: 15px;
+    }
+
+    .form-input0,
+    .form-control1,
+    .form-control2 {
+        width: 90%;
+        max-width: none;
+        margin: 0 auto 8px auto;
+        left: 0;
+        display: block;
+        height: 35px;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+
+    .form-label0,
+    .form-label1,
+    .form-label2 {
+        left: 5%;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .error-old,
+    .error-new1,
+    .error-new2 {
+        left: 0;
+        margin-left: 0;
+        max-width: 90%;
+        margin: 5px auto 8px auto;
+        font-size: 0.8rem;
+    }
+
+    .verification-indicator {
+        left: 5%;
+        justify-content: flex-start;
+        font-size: 0.8rem;
+    }
+
+    .btn {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 200px;
+        height: 45px;
+        font-size: 1rem;
+        bottom: 40px;
+    }
+
+    .error-card {
+        width: 95%;
+        max-width: 400px;
+        margin: 10px auto;
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .expirado {
+        font-size: 1.1em;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .spinner {
+        width: 10px;
+        height: 10px;
+    }
+}

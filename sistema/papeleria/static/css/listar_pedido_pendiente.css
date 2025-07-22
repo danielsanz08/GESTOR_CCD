@@ -1,0 +1,583 @@
+html {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+html,
+body {
+  background-color: #1c96bb1c;
+}
+
+section {
+  background: linear-gradient(110deg, #c7def893, #ffffffe8);
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+  border: 2px solid rgba(2, 47, 90, 0.63);
+  position: relative;
+  top: 23vh;
+  left: 9vh;
+  text-align: center;
+  padding: 10px 20px 20px 20px;
+  width: 190vh;
+  height: 60vh;
+  border-radius: 10px;
+
+}
+
+table {
+  width: 180vh;
+  border-spacing: 10px;
+  position: absolute;
+  top: 20vh;
+  left: 8vh;
+
+}
+
+.id,
+.nombre,
+.pedido,
+.estado,
+.accion,
+.fecha,
+.acciones {
+  left: 20vh;
+  background-color: rgba(43, 116, 226, 0.616);
+  border-radius: 10px;
+}
+
+td {
+  background-color: rgba(255, 255, 255, 0.384);
+  margin: 20vh 0 20vh 0;
+  border-radius: 10px;
+  height: 5vh;
+  align-items: center;
+
+}
+
+.btn-confirmar {
+  background-color: rgb(12, 233, 23);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  height: 5vh;
+  padding: 5px;
+}
+
+.btn-confirmar:hover {
+  background-color: rgb(6, 148, 13);
+  color: black;
+}
+
+.btn-cancelar {
+  background-color: rgb(233, 12, 12);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  height: 5vh;
+  padding: 5px;
+}
+
+.btn-cancelar:hover {
+  background-color: rgb(148, 6, 6);
+  color: black;
+}
+
+.icono {
+  height: 3vh;
+
+}
+
+.buscador {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  height: 3.5vh;
+  width: 50vh;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 20vh;
+}
+
+#filtro-fechas {
+
+  position: absolute;
+  left: 95vh;
+  top: 12vh;
+}
+
+.fecha_inicio,
+.fecha_fin {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100px;
+  height: 7px;
+}
+
+.fecha_inicio:hover,
+.fecha_fin:hover {
+  border-color: #1e90ff;
+}
+
+.fecha_inicio:focus,
+.fecha_fin:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.search-date {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  left: 58vh;
+  top: 0vh;
+  width: 10vh;
+  text-align: center;
+  height: 25px;
+}
+
+.search-date:hover {
+  background-color: #044080;
+  cursor: pointer;
+}
+
+.btn-search {
+  background-color: #0056b3;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  left: 72vh;
+  top: 12vh;
+  width: 10vh;
+  height: 25px;
+  text-align: center;
+
+  /* Centrado con Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-search:hover {
+  background-color: #044080;
+  cursor: pointer;
+  color: black;
+}
+
+.clean {
+  background-color: #b30000;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  position: absolute;
+  right: 20vh;
+  top: 12vh;
+  width: 10vh;
+  text-align: center;
+  margin-right: 1vh;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clean:hover {
+  background-color: #8a0101;
+  cursor: pointer;
+  color: black;
+}
+
+.Botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 60vh;
+  top: 40vh;
+}
+
+.print {
+  background-color: yellow;
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 10px;
+  margin-right: 1vh;
+  position: absolute;
+  top: 5vh;
+  right: 40vh;
+  cursor: pointer;
+}
+
+.print:hover {
+  background-color: rgb(190, 190, 3);
+}
+
+.pdf {
+  background-color: rgb(255, 0, 0);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 10px;
+  position: absolute;
+  top: 5vh;
+  right: 30vh;
+  font-weight: bold;
+}
+
+.pdf:hover {
+  background-color: rgb(187, 3, 3);
+  cursor: pointer;
+}
+
+.excel {
+  background-color: rgb(0, 255, 13);
+  border: none;
+  width: 10vh;
+  height: 25px;
+  border-radius: 10px;
+  position: absolute;
+  top: 5vh;
+  right: 18vh;
+  font-weight: bold;
+}
+
+.excel:hover {
+  background-color: rgb(4, 187, 13);
+  cursor: pointer;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  font-family: Arial, sans-serif;
+}
+
+.paginacion a,
+.paginacion span {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  position: relative;
+  top: 290px;
+}
+
+.paginacion a:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.paginacion .current {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  cursor: default;
+  font-weight: bold;
+}
+
+.paginacion .disabled {
+  color: #999;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.context-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  min-width: 180px;
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 4px 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.context-menu button:hover {
+  background-color: #f8f9fa;
+}
+
+.context-menu button i {
+  margin-right: 8px;
+  width: 20px;
+  text-align: center;
+}
+
+.context-menu .aprobar {
+  color: #28a745;
+}
+
+.context-menu .aprobar:hover {
+  color: #28a745;
+  background-color: #81eb99;
+}
+
+.context-menu .rechazar {
+  color: #dc3545;
+}
+
+.context-menu .rechazar:hover {
+  color: #dc3545;
+  background-color: #eb8181;
+}
+
+.context-menu .cerrar {
+  color: #6c757d;
+}
+
+.context-menu .cerrar:hover {
+  color: #6c757d;
+  background-color: #b1bfcc;
+}
+
+#detalles {
+  width: 10vh;
+  height: 25px;
+  background-color: yellow;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+#detalles:hover {
+  background-color: rgb(190, 190, 3);
+  cursor: pointer;
+  color: white;
+}
+
+.btn-accion {
+  width: 10vh;
+  height: 25px;
+  background-color: rgb(12, 179, 67);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+.btn-accion:hover {
+  background-color: rgb(5, 117, 42);
+  cursor: pointer;
+  color: white;
+}
+
+ #modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    scrollbar-width: none; /* Para Firefox */
+    -ms-overflow-style: none; /* Para IE y Edge */
+}
+
+#modal::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Opera */
+}
+
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #ff0000;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
+    }
+/* Mobile devices (767px and below) */
+@media (max-width: 767px) {
+  section {
+    max-width: 370px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+    top: 20vh;
+  }
+  .modal-contenido{
+    left: 16px;
+    width: 310px;
+  }
+  .pdf,
+  .excel,
+  .print,
+  .crear,
+  .desde,
+  .hasta,
+  #filtro-fechas {
+    display: none;
+  }
+  table {
+    width: 100vh;
+    left: 5vh;
+    font-weight: bold;
+  }
+
+  .clean {
+    left: 75vh;
+    top: 16vh;
+  }
+
+  .buscador {
+    top: 15vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 16vh;
+    left: 62vh;
+  }
+  .paginacion {
+    position: relative;
+    top: 9vh;
+  }
+  .edit-td,
+  .confirm-td,
+  .estado-td,
+  .fecha-td{
+    width: 15vh;
+  }
+  .td-registrado{
+    width: 20vh;
+  }
+  .td_id{
+    width: 8vh;
+  }
+}
+/* Tablet devices (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  section {
+    max-width: 780px;
+    overflow: hidden;
+    overflow-x: scroll;
+    left: 2px;
+  }
+  .buscador {
+    top: 10vh;
+    left: 10vh;
+  }
+
+  .btn-search {
+    top: 10vh;
+    left: 62vh;
+    height: 40px;
+  }
+  .clean{
+    left: 73vh;
+    top: 10vh;
+    height:40px ;
+  }
+   #filtro-fechas {
+    display: none;
+  }
+ .pdf,
+ .print,
+ .crear,
+ .excel{
+  top: 6vh;
+ }
+ table{
+  font-weight: bold;
+  font-size: larger;
+  width: 90vh;
+ }
+ .td-registrado{
+    width: 20vh;
+  }
+  .paginacion {
+    position: relative;
+    top: 17vh;
+    font-weight: bold;
+    font-size: larger;
+  }
+  #detalles{
+    overflow: hidden;
+    padding-bottom: 30px;
+    }
+    .modal-body,
+    #aprobar{
+      font-size: larger;
+    }
+}

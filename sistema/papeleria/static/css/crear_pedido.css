@@ -1,0 +1,490 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html,
+body {
+    background-color: #1c96bb1c;
+}
+section {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    border-radius: 10px;
+    padding: 18px;
+    width: 120%;
+    max-width: 710px;
+    margin-top: 60px;
+    height: 320px; 
+    animation: fadeInUp 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+section h1 {
+    text-align: center;
+    margin: 0 0 12px 0; /* Margin más pequeño */
+    color: #000000;
+    font-size: 1.5rem; /* Fuente más pequeña */
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* No se comprime */
+}
+form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    min-height: 0; /* Importante para que funcione el flex */
+}
+#articulos-container {
+    flex: 1; /* Toma todo el espacio disponible */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    margin-bottom: 10px; /* Margin más pequeño */
+    min-height: 0; /* Permite que se encoja */
+    
+    /* Scroll personalizado para Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #0035a6 #ffffff;
+}
+#articulos-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#articulos-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+#articulos-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #005ba6, #00327c);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+#articulos-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #003a7c, #00245a);
+    transform: scale(1.1);
+}
+.articulo-form {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Gap más pequeño */
+    margin-bottom: 8px; /* Margin más pequeño */
+    padding: 10px; /* Padding más pequeño */
+    background: rgba(0, 0, 0, 0);
+    border-radius: 10px; /* Border radius más pequeño */
+    border: none;
+    flex-wrap: nowrap;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0; /* No se comprime */
+}
+input[type="text"],
+input[type="number"],
+select,
+.form-control {
+    border: 2px solid transparent;
+    border-radius: 10px; /* Border radius más pequeño */
+    height: 27px; /* Altura más pequeña */
+    padding: 0 12px; /* Padding más pequeño */
+    font-size: 13px; /* Fuente más pequeña */
+    flex: 1;
+    min-width: 100px; /* Min width más pequeño */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra más pequeña */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    color: #333;
+    font-weight: 500;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: #0035a6;
+    box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+.select-articulo {
+    flex: 3;
+    min-width: 160px; /* Min width más pequeño */
+    
+}
+.select-tipo {
+    flex: 2;
+    min-width: 120px; /* Min width más pequeño */
+}
+.input-cantidad {
+    flex: 1;
+    min-width: 70px; /* Min width más pequeño */
+    max-width: 90px; /* Max width más pequeño */
+    text-align: center;
+    font-weight: 600;
+}
+.btn-eliminar-articulo {
+     background-color:  white;
+    color: rgb(0, 0, 0);
+    border: 1px solid #000000;
+    padding: 6px 10px; /* Padding más pequeño */
+    border-radius: 10px; /* Border radius más pequeño */
+    cursor: pointer;
+    font-size: 11px; /* Fuente más pequeña */
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    min-width: 60px; /* Min width más pequeño */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px; /* Gap más pequeño */
+}
+.btn-eliminar-articulo:hover{
+    background-color: #b30000;
+    color: white;
+}
+.botones-principales {
+    display: flex;
+    gap: 12px; /* Gap más pequeño */
+    justify-content: center;
+    padding-top: 10px; /* Padding más pequeño */
+    border-top: 2px solid rgba(2, 47, 90, 0.1);
+    position: relative;
+    flex-shrink: 0; /* No se comprime nunca */
+    background: inherit; /* Mantiene el fondo de la sección */
+}
+.botones-principales button {
+    padding: 8px 18px; /* Padding más pequeño */
+    border-radius: 15px; /* Border radius más pequeño */
+    border: 1px solid #000000;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    color: #000000;
+    font-weight:   bold;
+    cursor: pointer;
+    font-size: 12px; /* Fuente más pequeña */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 110px; /* Min width más pequeño */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.botones-principales button:hover {
+    background: linear-gradient(135deg, #2e5984, #1e3a54);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 89, 132, 0.3);
+    border-color: #1e3a54;
+}
+.rojo {
+    color: #dc3545 !important;
+    font-weight: 700 !important;
+}
+
+.articulo-deshabilitado {
+    color: #6c757d !important;
+    text-decoration: line-through;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.no-allowed {
+    display: none !important;
+
+}
+/*MOVILES*/
+@media (max-width: 767px) {
+    body {
+        padding-top: 10px;
+        background-color: #1c96bb1c;
+    }
+    
+    #container {
+        padding: 10px;
+    }
+    
+    section {
+        padding: 12px;
+        height: 310px; 
+        max-width: 100%;
+        margin: 0;
+        border-radius: 12px;
+        margin-right: 45px;
+        max-width: 300px;
+    }
+    
+    section h1 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    #articulos-container {
+        margin-bottom: 8px;
+        padding-right: 4px;
+    }
+    
+    .articulo-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 8px;
+        margin-bottom: 6px;
+    }
+    
+    .articulo-form > div {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    /* Fila superior: Artículo y Tipo */
+    .articulo-form .select-articulo,
+    .articulo-form .select-tipo {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    /* Fila inferior: Cantidad y Eliminar */
+    .articulo-form .input-cantidad {
+        flex: 2;
+        min-width: 0;
+        max-width: none;
+    }
+    
+    .articulo-form .btn-eliminar-articulo {
+        flex: 1;
+        min-width: 0;
+        align-self: stretch;
+        margin: 0;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 28px;
+        font-size: 12px;
+        min-width: 0;
+        padding: 0 8px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 5px 8px;
+        font-size: 10px;
+        min-width: 0;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(255, 71, 87, 0.25);
+    }
+    
+    .btn-eliminar-articulo::before {
+        font-size: 9px;
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 3px 10px rgba(255, 71, 87, 0.35);
+    }
+    
+    .botones-principales {
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 8px;
+    }
+    
+    button {
+        padding: 8px 16px;
+        font-size: 11px;
+        min-width: 0;
+        width: 100%;
+        border-radius: 12px;
+    }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+    body {
+        background-color: #1c96bb1c;
+    }
+    
+    #container {
+        padding: 15px;
+    }
+    
+    section {
+        padding: 15px;
+        max-width: 650px;
+        height: 300px; /* Altura más pequeña para tablets */
+    }
+    
+    section h1 {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+    
+    #articulos-container {
+        margin-bottom: 10px;
+    }
+    
+    .articulo-form {
+        gap: 8px;
+        padding: 10px;
+        flex-wrap: nowrap;
+        margin-bottom: 8px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 30px;
+        font-size: 13px;
+        padding: 0 10px;
+    }
+    
+    .select-articulo {
+        flex: 2.5;
+        min-width: 140px;
+    }
+    
+    .select-tipo {
+        flex: 1.8;
+        min-width: 110px;
+    }
+    
+    .input-cantidad {
+        flex: 1;
+        min-width: 60px;
+        max-width: 80px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 5px 8px;
+        font-size: 11px;
+        min-width: 50px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.28);
+    }
+    
+    .btn-eliminar-articulo::before {
+        font-size: 10px;
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+    }
+    
+    .botones-principales {
+        gap: 10px;
+        padding-top: 10px;
+    }
+    
+    button {
+        padding: 8px 16px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+}
+
+/* ========================================
+   ESCRITORIO - Media Query para dispositivos de 1025px en adelante
+   ======================================== */
+@media (min-width: 1025px) {
+    body {
+        background-color: #1c96bb1c;
+    }
+    
+    section {
+        max-width: 750px;
+        height: 350px; /* Altura más pequeña para escritorio */
+        padding: 20px;
+        width: 750px;
+    }
+    
+    section h1 {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+    
+    #articulos-container {
+        margin-bottom: 12px;
+        padding-right: 8px;
+    }
+    
+    .articulo-form {
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select,
+    .form-control {
+        height: 32px;
+        font-size: 13px;
+        padding: 0 12px;
+    }
+    
+    .select-articulo {
+        flex: 3.5;
+        min-width: 160px;
+    }
+    
+    .select-tipo {
+        flex: 2.5;
+        min-width: 120px;
+    }
+    
+    .input-cantidad {
+        flex: 1;
+        min-width: 70px;
+        max-width: 90px;
+    }
+    
+    .btn-eliminar-articulo {
+        padding: 6px 10px;
+        font-size: 11px;
+        min-width: 60px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+    }
+    
+    .btn-eliminar-articulo::before {
+        font-size: 10px;
+    }
+    
+    .btn-eliminar-articulo:hover {
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 4px 15px rgba(255, 71, 87, 0.45);
+    }
+    
+    .botones-principales {
+        gap: 12px;
+        padding-top: 12px;
+    }
+    
+    button {
+        padding: 8px 18px;
+        font-size: 12px;
+        min-width: 110px;
+    }
+}

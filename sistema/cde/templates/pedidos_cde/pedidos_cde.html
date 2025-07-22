@@ -1,0 +1,252 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Realizar Pedido{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/crear_pedido.css' %}?v={% now 'U' %}">
+
+<div id="container">
+    <section>
+        <h1>Realizar Pedido</h1>
+
+        <form method="post" id="pedidoForm">
+            {% csrf_token %}
+
+            <div class="mb-3" style="display: none;">
+                <label class="form-label">Área:</label>
+                <input type="text" class="form-control" value="{{ request.user.area }}" readonly>
+            </div>
+
+            <div id="articulos-container">
+                <div class="articulo-form default-form">
+                    <label for="producto">Producto</label>
+                    <select name="producto" required class="select-articulo">
+                        <option value="">-- Seleccionar Producto --</option>
+                        {% for producto in productos %}
+                            {% if producto.cantidad > 0 %}
+                                <option value="{{ producto.id }}" data-cantidad="{{ producto.cantidad }}" {% if producto.cantidad < 10 %}class="rojo"{% endif %}>
+                                    {{ producto.nombre }} ({{ producto.cantidad }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" name="cantidad" class="input-cantidad" min="1" value="1" required placeholder="Cantidad">
+                    <label for="evento">Evento:</label>
+                    <input type="text" name="evento" required placeholder="Evento" class="input-evento" maxlength="20">
+                </div>
+            </div>
+            {% if request.user.role == 'Administrador' %}
+            <div class="fecha-personalizada-container" style="margin-top: 20px;">
+                <input type="checkbox" id="activar_fecha_cde" onchange="toggleFechaPersonalizadaCDE()" />
+                <label for="activar_fecha_cde">Usar fecha personalizada</label>
+
+                <div id="campo_fecha_personalizada_cde" style="margin-top: 10px; display: none;">
+                    <input type="datetime-local" name="fecha_personalizada" id="fecha_personalizada_cde" class="form-control" />
+                </div>
+            </div>
+
+            <script>
+                function toggleFechaPersonalizadaCDE() {
+                    const campoFecha = document.getElementById('campo_fecha_personalizada_cde');
+                    const checkbox = document.getElementById('activar_fecha_cde');
+
+                    if (checkbox.checked) {
+                        campoFecha.style.display = 'block';
+                    } else {
+                        campoFecha.style.display = 'none';
+                    }
+                }
+            </script>
+            {% endif %}
+            <!-- Contenedor para los botones principales -->
+            <div class="botones-principales">
+                <button type="button" onclick="agregarArticulo()" id="agregar">Añadir otro producto</button>
+                <button type="submit" id="realizar">Realizar Pedido</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let articulosSeleccionadosEnPedido = [];
+
+        function actualizarOpcionesDisponibles() {
+            const selectsArticulos = document.querySelectorAll('.select-articulo');
+
+            selectsArticulos.forEach(select => {
+                const currentSelected = select.value;
+
+                Array.from(select.options).forEach(option => {
+                    if (option.value) {
+                        if (!articulosSeleccionadosEnPedido.includes(option.value) || option.value === currentSelected) {
+                            option.disabled = false;
+                            option.classList.remove('articulo-deshabilitado');
+                        } else {
+                            option.disabled = true;
+                            option.classList.add('articulo-deshabilitado');
+                        }
+                    }
+                });
+            });
+        }
+
+        function actualizarValidacionCantidad(form) {
+            const selectArticulo = form.querySelector('.select-articulo');
+            const inputCantidad = form.querySelector('.input-cantidad');
+
+            const newInputCantidad = inputCantidad.cloneNode(true);
+            inputCantidad.parentNode.replaceChild(newInputCantidad, inputCantidad);
+
+            newInputCantidad.addEventListener('input', function () {
+                if (selectArticulo.value) {
+                    const cantidadDisponible = parseInt(selectArticulo.selectedOptions[0]?.getAttribute('data-cantidad')) || 0;
+                    const valorIngresado = parseInt(this.value);
+
+                    if (valorIngresado > cantidadDisponible) {
+                        this.value = cantidadDisponible;
+                        alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                    }
+                }
+            });
+
+            selectArticulo.addEventListener('change', function () {
+                if (this.value && newInputCantidad.value) {
+                    const cantidadDisponible = parseInt(this.selectedOptions[0].getAttribute('data-cantidad')) || 0;
+                    const valorIngresado = parseInt(newInputCantidad.value) || 0;
+
+                    if (valorIngresado > cantidadDisponible) {
+                        newInputCantidad.value = cantidadDisponible;
+                        alert("No puedes pedir más cantidad de la disponible (" + cantidadDisponible + " unidades)");
+                    }
+                }
+            });
+        }
+
+        function inicializarFormulario(form, incluirEliminar = false) {
+            const selectArticulo = form.querySelector('.select-articulo');
+
+            selectArticulo.addEventListener('change', function () {
+                const prevValue = form.getAttribute('data-selected-articulo');
+                if (prevValue) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== prevValue);
+                }
+
+                if (this.value) {
+                    articulosSeleccionadosEnPedido.push(this.value);
+                    form.setAttribute('data-selected-articulo', this.value);
+                } else {
+                    form.removeAttribute('data-selected-articulo');
+                }
+
+                actualizarOpcionesDisponibles();
+            });
+
+            if (incluirEliminar) {
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.type = 'button';
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.classList.add('btn-eliminar-articulo');
+                eliminarBtn.title = "Eliminar artículo";
+                eliminarBtn.onclick = function () {
+                    eliminarArticulo(form);
+                };
+                form.appendChild(eliminarBtn);
+            }
+
+            actualizarValidacionCantidad(form);
+        }
+
+        const defaultForm = document.querySelector('.articulo-form.default-form');
+        if (defaultForm) {
+            inicializarFormulario(defaultForm);
+        }
+
+        window.agregarArticulo = function () {
+            const container = document.getElementById('articulos-container');
+            const nuevoFormulario = defaultForm.cloneNode(true);
+
+            nuevoFormulario.classList.remove('default-form');
+            nuevoFormulario.classList.add('nuevo');
+            nuevoFormulario.style.display = 'flex';
+
+            const selects = nuevoFormulario.querySelectorAll('select');
+            selects.forEach(select => select.selectedIndex = 0);
+            nuevoFormulario.querySelector('.input-cantidad').value = 1;
+            nuevoFormulario.querySelector('input[name="evento"]').value = '';
+            nuevoFormulario.removeAttribute('data-selected-articulo');
+
+            inicializarFormulario(nuevoFormulario, true);
+            container.appendChild(nuevoFormulario);
+
+            actualizarOpcionesDisponibles();
+
+            setTimeout(() => {
+                nuevoFormulario.classList.remove('nuevo');
+            }, 400);
+        };
+
+        window.eliminarArticulo = function (form) {
+            if (!form.classList.contains('default-form')) {
+                const articuloId = form.getAttribute('data-selected-articulo');
+                if (articuloId) {
+                    articulosSeleccionadosEnPedido = articulosSeleccionadosEnPedido.filter(id => id !== articuloId);
+                }
+
+                form.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    form.remove();
+                    actualizarOpcionesDisponibles();
+                }, 300);
+            }
+        };
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+
+    .input-evento {
+        border: 2px solid transparent;
+        border-radius: 10px;
+        height: 27px;
+        padding: 0 12px;
+        font-size: 13px;
+        flex: 2;
+        min-width: 120px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .input-evento:focus {
+        outline: none;
+        border-color: #00a67e;
+        box-shadow: 0 0 0 3px rgba(0, 166, 126, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .articulo-deshabilitado {
+        color: #6c757d !important;
+        text-decoration: line-through;
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    `;
+    document.head.appendChild(style);
+</script>
+
+{% endblock %}

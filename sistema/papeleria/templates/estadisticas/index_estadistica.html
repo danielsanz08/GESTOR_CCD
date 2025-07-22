@@ -1,0 +1,111 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Estadísticas Gestor CCD{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index_estadistica.css' %}?v={% now 'U' %}">
+
+<section>
+    <a href="{% url 'papeleria:graficas_usuarios' %}">
+        <div class="card">
+            <i data-feather="user" class="icono"></i>
+            <p class="name">Activos e Inactivos</p>
+        </div>
+    </a>
+
+    <a href="{% url 'papeleria:graficas_articulos' %}">
+        <div class="card">
+            <i data-feather="layers" class="icono"></i>
+            <p class="name">Cantidad de Artículos</p>
+        </div>
+    </a>
+
+    <a href="{% url 'papeleria:grafica_bajoStock' %}">
+        <div class="card">
+            <i data-feather="alert-triangle" class="icono"></i>
+            <p class="name">Bajo Stock</p>
+        </div>
+    </a>
+
+    <a href="{% url 'papeleria:grafica_pedidos' %}">
+        <div class="card">
+            <i data-feather="file-text" class="icono"></i>
+            <p class="name">Estado de Pedidos</p>
+        </div>
+    </a>
+
+    <a href="#" id="pedidosAreasBtn">
+        <div class="card">
+            <i data-feather="briefcase" class="icono"></i>
+            <p class="name">Pedidos por Áreas</p>
+        </div>
+    </a>
+</section>
+
+<!-- Ventana Emergente -->
+<div id="modalPedidos" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Pedidos por Áreas</h2>
+        <div class="modal-grid">
+            <a href="{% url 'papeleria:pedidos_administrativa' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="clipboard" class="modal-icono"></i> Pedidos Administrativa</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_rues' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="book" class="modal-icono"></i> Pedidos RUES</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_presidencia' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="flag" class="modal-icono"></i> Pedidos Presidencia</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_financiera' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="dollar-sign" class="modal-icono"></i> Pedidos Financiera</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_gestion_empresarial' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="users" class="modal-icono"></i> Pedidos Gestión Empresarial</p>
+                </div>
+            </a>
+            <a href="{% url 'papeleria:pedidos_competitividad' %}">
+                <div class="modal-card">
+                    <p class="modal-name"><i data-feather="trending-up" class="modal-icono"></i> Pedidos Competitividad</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Obtener elementos
+    const modal = document.getElementById("modalPedidos");
+    const btn = document.getElementById("pedidosAreasBtn");
+    const span = document.getElementsByClassName("close")[0];
+
+    // Abrir modal al hacer clic en el botón
+    btn.onclick = function(event) {
+        event.preventDefault();
+        modal.style.display = "block";
+    }
+
+    // Cerrar modal al hacer clic en la X
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+{% endblock %}

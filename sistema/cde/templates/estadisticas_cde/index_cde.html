@@ -1,0 +1,237 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Inicio cde{% endblock %}
+{% block contenido %}
+{% if user.is_authenticated %}
+<link rel="stylesheet" href="{% static 'css/index_pap.css' %}?v={% now 'U' %}">
+
+<!-- Contenido para Administrador -->
+{% if request.user.role == 'Administrador' %}
+<div class="main-container">
+    <div class="main-cards">
+        <!-- Card Usuarios -->
+        <div class="main-card" onclick="openModal('usuarios-modal')">
+            <i data-feather="users" class="main-card-icon"></i>
+            <h2 class="main-card-title">Usuarios</h2>
+        </div>
+
+        <!-- Card Pedidos -->
+        <div class="main-card" onclick="openModal('pedidos-modal')">
+            <i data-feather="shopping-cart" class="main-card-icon"></i>
+            <h2 class="main-card-title">Pedidos</h2>
+        </div>
+
+        <!-- Card Estadísticas -->
+        <div class="main-card" onclick="openModal('estadisticas-modal')">
+            <i data-feather="bar-chart" class="main-card-icon"></i>
+            <h2 class="main-card-title">Estadísticas</h2>
+        </div>
+
+        <!-- Card Manual -->
+        <div class="main-card" onclick="openModal('manual-modal')">
+            <i data-feather="book-open" class="main-card-icon"></i>
+            <h2 class="main-card-title">Manual</h2>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Contenido para Empleado -->
+{% if request.user.role == 'Empleado' %}
+<div class="main-container">
+    <div class="main-cards_empleado">
+        <!-- Card Usuarios -->
+        <div class="main-card" onclick="openModal('usuarios-modal')">
+            <i data-feather="users" class="main-card-icon"></i>
+            <h2 class="main-card-title">Usuarios</h2>
+        </div>
+
+        <!-- Card Pedidos -->
+        <div class="main-card" onclick="openModal('pedidos-modal')">
+            <i data-feather="shopping-cart" class="main-card-icon"></i>
+            <h2 class="main-card-title">Pedidos</h2>
+        </div>
+
+        <!-- Card Estadísticas -->
+        <div class="main-card" onclick="openModal('estadisticas-modal')">
+            <i data-feather="bar-chart" class="main-card-icon"></i>
+            <h2 class="main-card-title">Estadísticas</h2>
+        </div>
+
+        <!-- Card Manual -->
+        <div class="main-card" onclick="openModal('manual-modal')">
+            <i data-feather="book-open" class="main-card-icon"></i>
+            <h2 class="main-card-title">Manual</h2>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Modales (compartidos por ambos roles) -->
+
+<!-- Modal Usuarios -->
+<div class="modal-overlay" id="usuarios-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">Gestión de Usuarios</h2>
+            <button class="close-modal" onclick="closeModal('usuarios-modal')">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="modal-options">
+                <a href="{% url 'cde:ver_usuario_cde' user.id %}" class="modal-option">
+                    <i data-feather="user" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Ver perfil</span>
+                </a>
+                <a href="{% url 'libreria:cambiar_contraseña' %}" class="modal-option">
+                    <i data-feather="lock" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Cambiar contraseña</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pedidos -->
+<div class="modal-overlay" id="pedidos-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">Gestión de Pedidos</h2>
+            <button class="close-modal" onclick="closeModal('pedidos-modal')">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="modal-options">
+                <a href="{% url 'cde:crear_pedido_cde' %}" class="modal-option">
+                    <i data-feather="shopping-cart" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Nuevo pedido</span>
+                </a>
+                
+                {% if request.user.role == 'Administrador' %}
+                <a href="{% url 'cde:lista_pedidos_cde' %}" class="modal-option">
+                    <i data-feather="list" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Pedidos confirmados y cancelados</span>
+                </a>
+                <a href="{% url 'cde:pedidos_pendientes_cde' %}" class="modal-option">
+                    <i data-feather="clock" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Pedidos pendientes</span>
+                </a>
+                {% endif %}
+                
+                <a href="{% url 'cde:mis_pedidos_cde' %}" class="modal-option">
+                    <i data-feather="clipboard" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Mis pedidos</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Estadísticas -->
+<div class="modal-overlay" id="estadisticas-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">Estadísticas</h2>
+            <button class="close-modal" onclick="closeModal('estadisticas-modal')">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="modal-options">
+                <a href="{% url 'cde:index_estadistica_cde' %}" class="modal-option">
+                    <i data-feather="bar-chart" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Ver estadísticas</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Manual -->
+<div class="modal-overlay" id="manual-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">Manual de Usuario</h2>
+            <button class="close-modal" onclick="closeModal('manual-modal')">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="modal-options">
+                <a href="{% url 'libreria:manual_usuario' %}" target="_blank" class="modal-option">
+                    <i data-feather="book-open" class="modal-option-icon"></i>
+                    <span class="modal-option-text">Abrir manual</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace();
+    });
+
+    function openModal(modalId) {
+        console.log("Abriendo modal:", modalId); // Para depuración
+        document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    document.querySelectorAll('.modal-overlay').forEach(function (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Asegúrate que los iconos de feather se muestren */
+    [data-feather] {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+    }
+</style>
+{% endif %}
+{% endblock %}

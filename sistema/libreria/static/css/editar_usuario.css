@@ -1,0 +1,115 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+    /* Gris de fondo si la imagen no carga */
+}
+
+html,
+body {
+    background-color: #86cfe61c;
+}
+
+.formulario {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    margin-top: 3%;
+    padding: 2rem;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 90vw;
+    max-width: 1200px;
+    min-width: 600px;
+    min-height: 430px;
+    max-height: 430px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+#userForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    box-sizing: border-box;
+    width: 95%;
+    
+    height: 290px;
+    left: 8vh;
+    position: relative;
+}
+h2 {
+    text-align: center;
+    font-size: max(1.5rem, 20px);
+    margin: 1rem 0;
+}
+input,
+.form-select {
+    min-height: 1rem;
+    max-height: 2rem;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-size: max(0.9rem, 14px);
+    margin: 0.5rem 0;
+}
+label {
+    font-size: max(1rem, 14px);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+#btn {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    width: 200px;
+    height: 40px;
+    position: fixed;
+    margin-top: 260px;
+    margin-left: 410px;
+}
+
+#btn:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+.error-msg {
+    color: red;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+@media (max-width: 767px) {
+    .formulario{
+         width: 95vw;
+        min-width: 90vw;
+        max-width: 95vw;
+        min-height: 60vh;
+        max-height: none;
+        margin-top: 10vh;
+        padding: 1rem 1rem 1rem 1rem;
+        
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+}

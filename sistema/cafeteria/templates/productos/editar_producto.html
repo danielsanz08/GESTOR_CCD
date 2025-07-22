@@ -1,0 +1,123 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Editar productos{% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/editar_articulo.css' %}?v={% now 'U' %}">
+
+<div class="formulario">
+    <h2>Editar producto</h2>
+    <form method="POST" class="form_producto" id="form_articulo" action="{% url 'cafeteria:editar_producto' producto.id %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del producto</label>
+            {{ form.nombre }}
+            <div class="error-msg error-nombre"></div>
+        </div>
+        <div class="mb-3">
+            <label for="unidad_medida">Unidad de medida</label><br>
+            {{ form.unidad_medida }}
+        </div>
+        <div class="mb-3">
+            <label for="marca" class="form-label">Marca del producto</label>
+            {{ form.marca }}
+            <div class="error-msg error-marca"></div>
+        </div>
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio del producto</label>
+            <input type="text" name="precio" id="id_precio"
+                value="{{ form.precio.value|default:'' }}" class="form-control">
+            <div class="error-msg error-precio"></div>
+        </div>
+        <div class="mb-3">
+            <label for="cantidad" class="form-label">Cantidad del producto</label>
+            {{ form.cantidad }}
+            <div class="error-msg error-cantidad"></div>
+        </div>
+        <div class="mb-3">
+            <label for="proveedor" class="form-label">Digite el proveedor</label>
+            {{ form.proveedor }}
+            <div class="error-msg error-proveedor"></div>
+        </div>
+        <div class="mb-3">
+            <label for="presentacion" class="form-label">Presentación del producto</label>
+            {{ form.presentacion }}
+            <div class="error-msg error-presentacion"></div>
+        </div>
+        <button type="submit" id="submitBtn">Editar artículo</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const formProducto = document.getElementById("form_articulo");
+        const precioInput = document.getElementById("id_precio");
+
+        const fields = [
+            { id: "id_nombre", errorClass: ".error-nombre", name: "nombre" },
+            { id: "id_marca", errorClass: ".error-marca", name: "marca" },
+            { id: "id_precio", errorClass: ".error-precio", name: "precio", isPrecio: true },
+            { id: "id_cantidad", errorClass: ".error-cantidad", name: "cantidad" },
+            { id: "id_proveedor", errorClass: ".error-proveedor", name: "proveedor" },
+            { id: "id_presentacion", errorClass: ".error-presentacion", name: "presentación" },
+        ];
+
+        function formatearConComas(valor) {
+            const partes = valor.split(".");
+            let entero = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let decimal = partes[1] ? "." + partes[1] : "";
+            return entero + decimal;
+        }
+
+        function limpiarValor(valor) {
+            return valor.replace(/[^\d.]/g, "");
+        }
+
+        precioInput.addEventListener("input", function () {
+            let valor = limpiarValor(precioInput.value);
+            const partes = valor.split(".");
+            if (partes.length > 2) {
+                valor = partes[0] + "." + partes.slice(1).join("");
+            }
+            if (partes[1]) {
+                partes[1] = partes[1].slice(0, 2);
+            }
+            precioInput.value = formatearConComas(valor);
+        });
+
+        if (precioInput.value) {
+            precioInput.value = formatearConComas(precioInput.value);
+        }
+
+        formProducto.addEventListener("submit", function (e) {
+            let isValid = true;
+
+            fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const errorDiv = document.querySelector(field.errorClass);
+                let valor = input.value.trim();
+                errorDiv.textContent = "";
+
+                if (valor === "") {
+                    errorDiv.textContent = `El campo ${field.name} es obligatorio.`;
+                    isValid = false;
+                    return;
+                }
+
+                if (field.isPrecio) {
+                    valor = limpiarValor(valor);
+                    if (isNaN(valor) || parseFloat(valor) <= 0) {
+                        errorDiv.textContent = "Ingrese un precio válido mayor a 0.";
+                        isValid = false;
+                        return;
+                    }
+                    input.value = valor;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

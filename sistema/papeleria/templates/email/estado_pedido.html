@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Estado de Pedido Actualizado</title>
+    <style>
+        /* Tus estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{logo_url}" alt="Logo CCD" class="logo">
+        <h2>Notificación de Estado de Pedido - Papelería</h2>
+    </div>
+    
+    <div class="content">
+        <p>Hola {usuario.username},</p>
+        <p>El estado de tu pedido en el sistema de Papelería ha sido actualizado:</p>
+        
+        <p><span class="info-label">ID del Pedido:</span> {pedido.id}</p>
+        <p><span class="info-label">Nuevo Estado:</span> 
+            <span class="estado-{pedido.estado.lower()}">{pedido.estado}</span>
+        </p>
+        <p><span class="info-label">Fecha de actualización:</span> {fecha_pedido}</p>
+        
+        <p><span class="info-label">Detalle de artículos:</span></p>
+        <ul>
+            {% for articulo in articulos %}
+                <li class="articulo-item">{articulo.cantidad} {articulo.articulo.nombre}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+        <p>© {datetime.now().year} Gestor CCD. Todos los derechos reservados.</p>
+    </div>
+</body>
+</html>

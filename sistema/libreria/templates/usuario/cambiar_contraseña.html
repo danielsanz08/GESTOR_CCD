@@ -1,0 +1,351 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Cambiar contraseña{% endblock %}
+{% block contenido %}
+
+
+<link rel="stylesheet" href="{% static 'css/cambiar_contraseña.css' %}?v={% now 'U' %}">
+
+<div class="card-confirm">
+    <br>
+    <h2>Restablecer contraseña</h2>
+    <form method="POST" id="change-password-form">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="old_password" class="form-label0">Actual contraseña</label>
+            <input type="password" name="old_password" id="old_password" class="form-input0" required
+                placeholder="Digite su actual contraseña">
+            <div class="error-old"></div>
+            <div id="verification-indicator" class="verification-indicator">
+                <div class="spinner"></div>
+                <span>Verificando contraseña...</span>
+            </div>
+        </div>
+
+        <div class="mb-3" id="new1-group" style="display: none;">
+            <label for="new_password1" class="form-label1">Nueva contraseña:</label>
+            <input type="password" name="new_password1" id="new_password1" class="form-control1" required
+                placeholder="Digita tu nueva contraseña">
+            <div class="error-new1"></div>
+            <div id="password-used-indicator" class="verification-indicator">
+                <div class="spinner"></div>
+                <span>Verificando disponibilidad...</span>
+            </div>
+        </div>
+
+        <div class="mb-3" id="new2-group" style="display: none;">
+            <label for="new_password2" class="form-label2">Confirmar nueva contraseña:</label>
+            <input type="password" name="new_password2" id="new_password2" class="form-control2" required
+                placeholder="Digita nuevamente tu nueva contraseña">
+            <div class="error-new2"></div>
+        </div>
+
+        <button type="submit" class="btn" id="submit-btn" disabled>
+            Restablecer
+        </button>
+    </form>
+</div>
+
+<script>
+    const oldPassword = document.getElementById("old_password");
+    const newPassword1 = document.getElementById("new_password1");
+    const newPassword2 = document.getElementById("new_password2");
+    const new1Group = document.getElementById("new1-group");
+    const new2Group = document.getElementById("new2-group");
+    const submitBtn = document.getElementById("submit-btn");
+    const verificationIndicator = document.getElementById("verification-indicator");
+    const passwordUsedIndicator = document.getElementById("password-used-indicator");
+
+    const errorOld = document.querySelector(".error-old");
+    const errorNew1 = document.querySelector(".error-new1");
+    const errorNew2 = document.querySelector(".error-new2");
+
+    let isOldPasswordValid = false;
+    let isNewPassword1Valid = false;
+    let isNewPassword2Valid = false;
+    let verificationTimeout;
+    let passwordCheckTimeout;
+
+    function validatePassword(password) {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        return regex.test(password);
+    }
+
+    function showError(element, message) {
+        element.textContent = message;
+        element.classList.remove("success-match", "loading");
+    }
+
+    function showSuccess(element, message) {
+        element.textContent = message;
+        element.classList.add("success-match");
+        element.classList.remove("loading");
+    }
+
+    function showLoading(element, message) {
+        element.textContent = message;
+        element.classList.add("loading");
+        element.classList.remove("success-match");
+    }
+
+    function clearError(element) {
+        element.textContent = "";
+        element.classList.remove("success-match", "loading");
+    }
+
+    function showVerificationIndicator() {
+        verificationIndicator.classList.add('show');
+        clearError(errorOld);
+    }
+
+    function hideVerificationIndicator() {
+        verificationIndicator.classList.remove('show');
+    }
+
+    function showPasswordUsedIndicator() {
+        passwordUsedIndicator.classList.add('show');
+        clearError(errorNew1);
+    }
+
+    function hidePasswordUsedIndicator() {
+        passwordUsedIndicator.classList.remove('show');
+    }
+
+    function updateSubmitButton() {
+        if (isOldPasswordValid && isNewPassword1Valid && isNewPassword2Valid) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
+
+    function verificarContraseñaActual(password) {
+        if (!password) {
+            isOldPasswordValid = false;
+            updateSubmitButton();
+            return;
+        }
+
+        showVerificationIndicator();
+        
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('{% url "libreria:verificar_contraseña_actual" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                contraseña_actual: password
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            hideVerificationIndicator();
+            
+            console.log('Respuesta del servidor:', data);
+            
+            if (data.valida) {
+                clearError(errorOld);
+                isOldPasswordValid = true;
+                new1Group.style.display = "block";
+            } else {
+                let mensaje = data.mensaje || "Contraseña actual incorrecta";
+                if (data.debug) {
+                    console.log('Debug info:', data.debug);
+                }
+                showError(errorOld, mensaje);
+                isOldPasswordValid = false;
+                new1Group.style.display = "none";
+                new2Group.style.display = "none";
+                isNewPassword1Valid = false;
+                isNewPassword2Valid = false;
+            }
+            updateSubmitButton();
+        })
+        .catch(error => {
+            hideVerificationIndicator();
+            
+            console.error('Error completo:', error);
+            showError(errorOld, "Error al verificar la contraseña - Revisa la consola");
+            isOldPasswordValid = false;
+            new1Group.style.display = "none";
+            new2Group.style.display = "none";
+            isNewPassword1Valid = false;
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+        });
+    }
+
+    function verificarPasswordUsada(password) {
+        if (!password) {
+            isNewPassword1Valid = false;
+            new2Group.style.display = "none";
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+            return;
+        }
+
+        showPasswordUsedIndicator();
+        
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('{% url "libreria:verificar_password" %}?password=' + encodeURIComponent(password), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            hidePasswordUsedIndicator();
+            
+            console.log('Respuesta de verificación de password:', data);
+            
+            if (data.password_existe) {
+                showError(errorNew1, "La contraseña digitada ya se ha usado. Intente con otra.");
+                isNewPassword1Valid = false;
+                new2Group.style.display = "none";
+                isNewPassword2Valid = false;
+            } else {
+                clearError(errorNew1);
+                isNewPassword1Valid = true;
+                new2Group.style.display = "block";
+            }
+            updateSubmitButton();
+        })
+        .catch(error => {
+            hidePasswordUsedIndicator();
+            
+            console.error('Error al verificar password:', error);
+            showError(errorNew1, "Error al verificar la contraseña");
+            isNewPassword1Valid = false;
+            new2Group.style.display = "none";
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+        });
+    }
+
+    oldPassword.addEventListener("input", () => {
+        const password = oldPassword.value;
+        
+        if (verificationTimeout) {
+            clearTimeout(verificationTimeout);
+        }
+        
+        hideVerificationIndicator();
+        
+        if (!validatePassword(password)) {
+            showError(errorOld, "La contraseña debe tener al menos una minúscula, una mayúscula, números, letras, un signo de puntuación y mínimo 8 caracteres.");
+            isOldPasswordValid = false;
+            new1Group.style.display = "none";
+            new2Group.style.display = "none";
+            isNewPassword1Valid = false;
+            isNewPassword2Valid = false;
+            updateSubmitButton();
+            return;
+        }
+
+        verificationTimeout = setTimeout(() => {
+            verificarContraseñaActual(password);
+        }, 800);
+    });
+
+    newPassword1.addEventListener("input", () => {
+        const password = newPassword1.value;
+        
+        if (passwordCheckTimeout) {
+            clearTimeout(passwordCheckTimeout);
+        }
+        
+        hidePasswordUsedIndicator();
+        
+        if (!validatePassword(password)) {
+            showError(errorNew1, "Debe cumplir con los mismos requisitos de seguridad.");
+            isNewPassword1Valid = false;
+            new2Group.style.display = "none";
+            isNewPassword2Valid = false;
+        } else if (password === oldPassword.value) {
+            showError(errorNew1, "La nueva contraseña no puede ser igual a la anterior.");
+            isNewPassword1Valid = false;
+            new2Group.style.display = "none";
+            isNewPassword2Valid = false;
+        } else {
+            passwordCheckTimeout = setTimeout(() => {
+                verificarPasswordUsada(password);
+            }, 800);
+        }
+        updateSubmitButton();
+    });
+
+    newPassword2.addEventListener("input", () => {
+        const password = newPassword2.value;
+        
+        if (!validatePassword(password)) {
+            showError(errorNew2, "Debe cumplir con los requisitos de seguridad.");
+            isNewPassword2Valid = false;
+        } else if (password !== newPassword1.value) {
+            showError(errorNew2, "Las contraseñas no coinciden.");
+            isNewPassword2Valid = false;
+        } else if (password === oldPassword.value) {
+            showError(errorNew2, "La nueva contraseña no puede ser igual a la anterior.");
+            isNewPassword2Valid = false;
+        } else {
+            showSuccess(errorNew2, "Las contraseñas coinciden.");
+            isNewPassword2Valid = true;
+        }
+        updateSubmitButton();
+    });
+
+    // Enviar el formulario con AJAX
+    document.getElementById("change-password-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        if (!isOldPasswordValid || !isNewPassword1Valid || !isNewPassword2Valid) {
+            return;
+        }
+        
+        const formData = new FormData(this);
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.text();
+            }
+        })
+        .then(html => {
+            if (html) {
+                document.body.innerHTML = html;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Ocurrió un error al cambiar la contraseña.");
+        });
+    });
+
+    updateSubmitButton();
+</script>
+{% endblock %}

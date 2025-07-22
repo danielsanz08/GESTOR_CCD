@@ -1,0 +1,51 @@
+{% extends "navbar.html" %}
+{% load static %}
+{% block titulo %}GESTOR CCD{% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v={% now 'U' %}">
+<div class="contenedor-principal">
+    <!-- Botón "Regístrate" en esquina superior derecha -->
+    <a href="{% url 'libreria:crear_usuario' %}" class="registrate">Registrate</a>
+
+    <!-- Div izquierdo (Logo) -->
+    <div class="div-izquierdo">
+        <img src="https://ccduitama.org.co/wp-content/uploads/2021/05/LOGOCCD-TRANSPARENCIA.png" alt="Logo CCD">
+    </div>
+
+    <!-- Div derecho (Secciones) -->
+    <div class="div-derecho">
+        <a href="{% url 'papeleria:login_papeleria' %}">
+            <div class="seccion" onclick="location.href='#';">
+                <h2>Papelería</h2>
+                <p>Gestión completa de articulos y servicios de papelería</p>
+            </div>
+        </a>
+        <a href="{% url 'cafeteria:login_cafeteria' %}">
+            <div class="seccion">
+                <h2>Cafetería</h2>
+                <p>Administración de productos y productos de cafetería y aseo</p>
+            </div>
+        </a>
+        <a href="{% url 'cde:login_cde' %}">
+            <div class="seccion">
+                <h2>Centro de Eventos</h2>
+                <p> Gestión de pedidos para centro de eventos</p>
+            </div>
+        </a>
+    </div>
+</div>
+<script>
+    // Efecto hover para móviles
+    document.querySelectorAll('.seccion').forEach(section => {
+        section.addEventListener('touchstart', function () {
+            this.classList.add('hover-effect');
+        });
+
+        section.addEventListener('touchend', function () {
+            setTimeout(() => {
+                this.classList.remove('hover-effect');
+            }, 150);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Crear backup{% endblock %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/crear_backup.css' %}?v={% now 'U' %}">
+<section>
+    <h1>Crear nueva copia de seguridad</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre descriptivo" required maxlength="15">
+            <div class="errores">
+                <span class="error-limite" id="error-limite" style="display: none;">Máximo 15 caracteres</span>
+                <span class="error-repetido" id="error-repetido" style="display: none;">No repitas caracteres consecutivos</span>
+            </div>
+        </div>
+        <p class="modelos">Se incluirán los datos de Papeleria, Cafeteria y Centro de eventos</p>
+
+        <div class="botones">
+            <button type="submit" class="btn btn-primary" id="crear">Crear copia</button>
+        </div>
+    </form>
+</section>
+
+<style>
+    .errores {
+        margin-top: 5px;
+    }
+
+    .errores span {
+        display: block;
+        color: red;
+        font-size: 0.9em;
+        margin-top: 2px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputNombre = document.getElementById('nombre');
+        const errorLimite = document.getElementById('error-limite');
+        const errorRepetido = document.getElementById('error-repetido');
+
+        inputNombre.addEventListener('input', function () {
+            let value = this.value;
+
+            // Mostrar u ocultar mensaje de límite
+            errorLimite.style.display = value.length > 15 ? 'block' : 'none';
+
+            // Mostrar u ocultar mensaje de caracteres repetidos
+            const repetidos = /(.)\1{2,}/;
+            errorRepetido.style.display = repetidos.test(value) ? 'block' : 'none';
+
+            // Capitalizar cada palabra
+            const capitalizado = value
+                .toLowerCase()
+                .replace(/\b\w/g, letra => letra.toUpperCase());
+
+            if (value !== capitalizado) {
+                this.value = capitalizado;
+            }
+        });
+    });
+</script>
+{% endblock %}

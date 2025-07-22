@@ -1,0 +1,43 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Ver perfil{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/ver_perfil.css' %}?v={% now 'U' %}">
+<div class="card">
+    <h2 class="info"><i class="fas fa-user"></i>Información</h2><br>
+    <div class="card-body">
+        <div class="labels-data-container">
+            <div class="labels">
+                <label for="username">Nombre de usuario: </label>
+                <label for="role">Rol: </label>
+                <label for="email">Correo:</label>
+                <label for="area">Area:</label>
+                <label for="cargo">Cargo:</label>
+            </div>
+            <div class="data">
+                <span>{{ user.username }}</span>
+                <span>{{ user.role }}</span>
+                <span>{{ user.email }}</span>
+                <span>{{ user.area }}</span>
+                <span>{{ user.cargo }}</span>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+        {% if request.user.role == 'Administrador' %}
+        <div class="botones">
+            
+            <a href="{% url 'papeleria:index_pap' %}"><button class="atras">Atrás</button></a>
+        </div>
+        {% endif %}
+        {% if request.user.role == 'Empleado' %}
+        <div class="botones">
+            
+            <a href="{% url 'papeleria:index_pap' %}"><button class="atras">Atrás</button></a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

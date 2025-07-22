@@ -1,0 +1,28 @@
+
+/*PASSWORD_RESET.HTML*/
+
+
+/*PASSWORD_RESET_COMPLETE*/
+.card{
+    background: rgba(19, 104, 161, 0.411);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 40px;
+    text-align: center;
+    width: 80vh;
+    padding: 20px;
+    height: 33vh;
+  }
+  a{
+    text-decoration: none;
+    color: white;
+    background-color: #0d6efd;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  a:hover{
+    background-color: #04376e;
+  }

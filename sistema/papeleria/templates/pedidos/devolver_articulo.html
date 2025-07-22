@@ -1,0 +1,33 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block contenido %}
+<h2>Registrar Devolución</h2>
+
+<form method="get">
+    <label for="pedido_id">Seleccionar Pedido:</label>
+    <select name="pedido_id" id="pedido_id" onchange="this.form.submit()">
+        <option value="">-- Selecciona un pedido --</option>
+        {% for pedido in pedidos %}
+            <option value="{{ pedido.id }}" {% if pedido.id|stringformat:"s" == request.GET.pedido_id %}selected{% endif %}>
+                Pedido #{{ pedido.id }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+{% if pedido %}
+    <h4>Detalles del Pedido #{{ pedido.id }}</h4>
+    <ul>
+        {% for pa in pedido.pedidoarticulo_set.all %}
+            <li>{{ pa.articulo.nombre }} - Cantidad: {{ pa.cantidad }}</li>
+        {% endfor %}
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Registrar devolución</button>
+    </form>
+{% endif %}
+{% endblock %}

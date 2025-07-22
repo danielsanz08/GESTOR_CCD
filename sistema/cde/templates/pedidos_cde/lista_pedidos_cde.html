@@ -1,0 +1,328 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block titulo %}Pedidos Confirmados y cancelados{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'css/listar_pedido_pendiente.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* Modal */
+    #modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    #modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    #modal .modal-title {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    #modal .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #modal .close-modal:hover {
+        color: #ff0000;
+    }
+
+    #modal .modal-body {
+        padding: 10px 0;
+    }
+
+    #modal .modal-footer {
+        margin-top: 15px;
+        text-align: right;
+    }
+</style>
+<section>
+    <h1>Pedidos Confirmados y cancelados CDE</h1>
+    <div class="Bototnes">
+        <button class="print" title="Imprimir la tabla de productos"><i class="bi bi-printer" id="icono"></i></button>
+        <a
+            href="{% url 'cde:reporte_pedidos_ccd_pdf' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+            <button class="pdf" title="Exportar a PDF"><i class="fas fa-file-pdf text-white"></i></button>
+        </a>
+
+        <a
+            href="{% url 'cde:reporte_pedidos_excel_cde' %}?q={{ request.GET.q }}&fecha_inicio={{ request.GET.fecha_inicio }}&fecha_fin={{ request.GET.fecha_fin }}">
+            <button class="excel" title="Exportar a Excel"><i class="fas fa-file-excel text-white"></i></button>
+        </a>
+
+
+    </div>
+    <form method="GET" action="{% url 'cde:lista_pedidos_cde' %}">
+        <input type="text" name="q" id="buscador" placeholder="Buscar ..." class="buscador" value="{{ request.GET.q }}">
+        <button type="submit" class="btn-search" title="Buscar texto"><i class="fas fa-search"></i></button>
+
+        <div id="filtro-fechas">
+            <label for="fecha_inicio">Desde:</label>
+            <input type="date" name="fecha_inicio" class="fecha_inicio" value="{{ request.GET.fecha_inicio }}">
+            <label for="fecha_fin">Hasta:</label>
+            <input type="date" name="fecha_fin" class="fecha_fin" value="{{ request.GET.fecha_fin }}">
+            <button type="submit" class="search-date" title="Buscar por fecha"><i class="fas fa-search"></i></button>
+        </div>
+
+        <a href="{% url 'cde:lista_pedidos_cde' %}">
+            <button type="button" class="clean" title="Limpiar búsqueda"><i class="fas fa-trash"></i></button>
+        </a>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="id">ID</th>
+                <th class="nombre">Usuario</th>
+                <th class="fecha">Fecha</th>
+                <th class="estado">Estado</th>
+                <th class="pedido">Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+            <tr id="pedido-{{ pedido.id }}">
+                <td>{{ pedido.id }}</td>
+                <td>{{ pedido.registrado_por }}</td>
+                <td>{{ pedido.fecha_formateada }}</td>
+                <td>{{ pedido.estado }}</td>
+                <td>
+                    <button id="detalles" type="button" onclick="mostrarDetalles('{{ pedido.id }}')">
+                        <i data-feather="eye" class="icono"></i>
+                    </button>
+                    <a href="{% url 'cde:crear_devolucion_cde' pedido.id %}" class="btn btn-warning">Devolver</a>
+
+                    <!-- Contenido oculto para el modal -->
+                    <div id="detalles-{{ pedido.id }}" class="detalles-ocultos" style="display:none;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Detalles del Pedido</h3>
+                            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="registrado"><strong>Registrado por:</strong> {{ pedido.registrado_por }}</p>
+                            <p class="fecha_pedido"><strong>Fecha del pedido:</strong>{{ pedido.fecha_formateada }}</p>
+                            <p class="estado_d"><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+
+                            {% with primer_producto=pedido.productos.first %}
+                            {% if primer_producto %}
+                            <p><strong>Área:</strong> {{ primer_producto.area }}</p>
+                            <p><strong>Evento:</strong> {{ primer_producto.evento }}</p>
+                            {% endif %}
+                            {% endwith %}
+
+                            <!-- Fecha del estado según el tipo -->
+                            <p>
+                                <strong>
+                                    {% if pedido.estado == 'Confirmado' %}
+                                    Fecha confirmación:
+                                    {% elif pedido.estado == 'Cancelado' %}
+                                    Fecha cancelación:
+                                    {% else %}
+                                    Fecha estado:
+                                    {% endif %}
+                                </strong>
+                                {% if pedido.fecha_estado %}
+                                {{ pedido.fecha_estado|date:"d/m/Y H:i" }}
+                                {% else %}
+                                Pendiente
+                                {% endif %}
+                            </p>
+                            <p><strong>Evento:</strong></p>
+                            <ul>
+                                {% if pedido.eventos_unicos|length == 1 %}
+                                <li>{{ pedido.eventos_unicos.0 }}</li>
+                                {% else %}
+                                {% for evento in pedido.eventos_unicos %}
+                                <li>{{ evento }}</li>
+                                {% endfor %}
+                                {% endif %}
+                            </ul>
+
+                            <p><strong>Productos:</strong></p>
+                            <ul>
+                                {% for producto in pedido.productos.all %}
+                                <li>{{ producto.cantidad }} {{ producto.producto.nombre }}</li>
+                                {% endfor %}
+                            </ul>
+                            <p><strong>Devoluciones:</strong></p>
+                            {% for articulo in pedido.productos.all %}
+                            {% with devoluciones=articulo.devoluciones.all|dictsort:"fecha_devolucion" %}
+                            {% if devoluciones %}
+                            <ul>
+                                {% for devolucion in devoluciones %}
+                                <li>
+                                    {{ devolucion.cantidad_devuelta }} {{ articulo.producto.nombre }}
+                                    - <strong>Motivo:</strong> {{ devolucion.motivo }}
+                                    - <strong>Fecha:</strong> {{ devolucion.fecha_devolucion|date:"d/m/Y H:i" }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <p>No hay devoluciones registradas</p>
+                            {% endif %}
+                            {% endwith %}
+                            {% endfor %}
+
+
+                        </div>
+
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="paginacion" id="pag">
+        {% if pedidos.has_previous %}
+        <a href="?page={{ pedidos.previous_page_number }}{{ query_params }}" class="page-link">Anterior</a>
+        {% else %}
+        <span class="page-link disabled">Anterior</span>
+        {% endif %}
+
+        <!-- Número de página actual -->
+        <span class="current-page">Página {{ pedidos.number }} de {{ pedidos.paginator.num_pages }}</span>
+
+        {% if pedidos.has_next %}
+        <a href="?page={{ pedidos.next_page_number }}{{ query_params }}" class="page-link">Siguiente</a>
+        {% else %}
+        <span class="page-link disabled">Siguiente</span>
+        {% endif %}
+    </div>
+
+
+</section>
+
+<!-- Contenedor del Modal -->
+<div id="modal-backdrop" onclick="cerrarModal()"></div>
+<div id="modal">
+    <div id="modal-content"></div>
+</div>
+<script>
+    function mostrarDetalles(id) {
+        var contenido = document.getElementById("detalles-" + id).innerHTML;
+        document.getElementById("modal-content").innerHTML = contenido;
+        document.getElementById("modal").style.display = "block";
+        document.getElementById("modal-backdrop").style.display = "block";
+    }
+
+    function cerrarModal() {
+        document.getElementById("modal").style.display = "none";
+        document.getElementById("modal-backdrop").style.display = "none";
+    }
+
+    document.querySelector('.print').addEventListener('click', function () {
+        const contenidoOriginal = document.body.innerHTML;
+        const titulo = document.querySelector('h1').outerHTML;
+        const tabla = document.querySelector('table').outerHTML;
+
+        const fondo = `
+        <div class="fondo">
+            <img src="{% static 'imagen/LOGO.png' %}" alt="Logo CCD">
+        </div>
+        `;
+
+        const estiloImpresion = `
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                position: relative;
+            }
+            h1 {
+                margin-bottom: 20px;
+                position: relative;
+                z-index: 2;
+            }
+            table {
+                margin: auto;
+                width: 90%;
+                border-collapse: collapse;
+                position: relative;
+                z-index: 2;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            thead {
+                background-color: rgba(61, 43, 226, 0.411);
+            }
+            .fondo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                opacity: 0.1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .fondo img {
+                max-width: 80%;
+                max-height: 80%;
+                object-fit: contain;
+            }
+            th:nth-child(n+5),
+            td:nth-child(n+5) {
+                display: none !important;
+            }
+        </style>
+        `;
+
+        const ventanaImpresion = window.open('', '', 'height=700,width=900');
+        ventanaImpresion.document.write('<html><head><title>Listado de articulos</title>');
+        ventanaImpresion.document.write(estiloImpresion);
+        ventanaImpresion.document.write('</head><body>');
+        ventanaImpresion.document.write(fondo);
+        ventanaImpresion.document.write(titulo);
+        ventanaImpresion.document.write(tabla);
+        ventanaImpresion.document.write('</body></html>');
+        ventanaImpresion.document.close();
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+    });
+</script>
+{% endblock %}

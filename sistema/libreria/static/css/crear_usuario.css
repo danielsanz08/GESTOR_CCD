@@ -1,0 +1,256 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+}
+
+html,
+body {
+    background-color: #86cfe61c;
+}
+
+.formulario {
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+    margin-top: 3%;
+    padding: 2rem;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 90vw;
+    max-width: 1200px;
+    min-width: 600px;
+    min-height: 430px;
+    max-height: 430px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#userForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    box-sizing: border-box;
+    width: 95%;
+    
+    height: 290px;
+    left: 8vh;
+    position: relative;
+}
+
+input,
+.form-select {
+    min-height: 1rem;
+    max-height: 2rem;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-size: max(0.9rem, 14px);
+    margin: 0.5rem 0;
+}
+
+label {
+    font-size: max(1rem, 14px);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+#btn {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    width: 200px;
+    height: 40px;
+    position: fixed;
+    margin-top: 250px;
+    margin-left: 410px;
+}
+
+#btn:hover {
+    background-color: rgb(33, 74, 187);
+    color: rgb(255, 255, 255);
+}
+
+h2 {
+    text-align: center;
+    font-size: max(1.5rem, 20px);
+    margin: 1rem 0;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.verification-indicator {
+    color: blue;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    display: none;
+}
+
+.verification-indicator.show {
+    display: block;
+}
+
+.password-feedback {
+    color: rgb(255, 0, 0);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+.password-feedback.password-ok {
+    color: green;
+    font-weight: bold;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 767px) {
+    .formulario {
+        width: 95vw;
+        min-width: 90vw;
+        max-width: 95vw;
+        min-height: 60vh;
+        max-height: none;
+        margin-top: 10vh;
+        padding: 1rem 1rem 1rem 1rem;
+        
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+
+    #userForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 1rem 1rem 1rem;
+        height: 85vw;
+        overflow: hidden;
+        overflow-y: scroll;
+        position: relative;
+        top: -50px;
+        left: 2vh;
+    }
+    .titulo{
+        position: relative;
+        top: -30px;
+    }
+    input,
+    .form-select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+      #btn {
+        position: relative; 
+        bottom: 1px; 
+        left: 10%;
+        width: 80%;
+        min-width: unset;
+        max-width: unset;
+        
+        margin: 0; 
+    }
+    .error-message,
+    .verification-indicator,
+    .password-feedback {
+        position: static;
+        text-align: center;
+        margin-top: 0.25rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+   .formulario {
+       width: 85vw;
+       min-width: 75vw;
+       max-width: 85vw;
+       min-height: 60vh;
+       max-height: 85vh;
+       margin: 2vh auto;
+       padding: 1.5rem;
+       box-sizing: border-box;
+       overflow-y: auto;
+       position: relative;
+   }
+
+   #userForm {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 1.5rem;
+       padding: 1.5rem;
+       width: 100%;
+       min-height: 50vh;
+       max-height: 75vh;
+       overflow-y: auto;
+       box-sizing: border-box;
+       left: -0vh;
+   }
+
+   input,
+   .form-select {
+       width: 100%;
+       max-width: 100%;
+       height: 6vh;
+       box-sizing: border-box;
+       font-size: 1rem;
+   }
+
+   label {
+       font-size: 1.1rem;
+   }
+
+   h2 {
+       font-size: 1.8rem;
+       margin: 0.5rem 0;
+   }
+
+   #btn {
+       position: static;
+       margin: 0.5rem auto;
+       width: 25vh;
+       height: 50px;
+       max-width: 250px;
+       grid-column: span 2;
+       font-size: 1.1rem;
+   }
+
+   .error-message,
+   .verification-indicator,
+   .password-feedback {
+       position: static;
+       text-align: center;
+       margin-top: 0.5rem;
+       font-size: 1rem;
+       grid-column: span 2;
+   }
+}

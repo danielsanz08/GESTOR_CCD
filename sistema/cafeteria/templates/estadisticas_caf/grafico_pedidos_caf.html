@@ -1,0 +1,235 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block titulo %}Estadísticas - CCD{% endblock %}
+{% block contenido %}
+<style>
+    #grafica {
+        width: 80%;
+        max-width: 800px;
+        position: absolute;
+        top: 20vh;
+        left: 40vh;
+        height: 55vh;
+        z-index: 1;
+    }
+
+    #cuadradoFondo {
+        width: 80%;
+        max-width: 800px;
+        background-color: rgb(255, 255, 255);
+        position: absolute;
+        top: 29vh;
+        left: 35vh;
+        height: 58vh;
+        z-index: 0;
+    }
+
+    /* Estilos para el modal de fechas */
+    .btn-fecha {
+        position: absolute;
+        background-color: transparent;
+        color: black;
+        margin-left: 135vh;
+        margin-top: 30vh;
+        padding: 10px 20px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        z-index: 2000;
+    }
+
+    .btn-fecha:hover {
+        transform: scale(1.05);
+        color: #007bff;
+    }
+
+    .modal-fechas {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        min-width: 320px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    .close-modal {
+        float: right;
+        cursor: pointer;
+        font-weight: bold;
+        color: red;
+        font-size: 22px;
+    }
+
+    .form-fechas {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .form-fechas label {
+        font-weight: bold;
+    }
+
+    .form-fechas input[type="date"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .form-fechas .mt-3 {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .form-fechas button,
+    .form-fechas a {
+        flex: 1;
+        color: black;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid black;
+        background-color: white;
+    }
+
+    #btn-filtrar:hover {
+        background-color: #044080;
+        color: white;
+        cursor: pointer;
+    }
+
+    #btn-clean:hover {
+        background-color: #8a0101;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<div class="estadisticas-container">
+    <button class="btn-fecha" onclick="mostrarModal()">Buscar por fecha</button>
+
+    <div id="modalFechas" class="modal-fechas">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            <form method="get" class="form-fechas">
+                <div>
+                    <label for="fecha_inicio">Fecha inicio:</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ fecha_inicio }}">
+                </div>
+                <div>
+                    <label for="fecha_fin">Fecha fin:</label>
+                    <input type="date" name="fecha_fin" id="fecha_fin" value="{{ fecha_fin }}">
+                </div>
+                <div class="mt-3">
+                    <button type="submit" id="btn-filtrar">Filtrar</button>
+                    <a href="{% url 'cafeteria:grafica_pedidos_caf' %}" id="btn-clean">Limpiar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="cuadradoFondo"></div>
+    <div id="grafica">
+        <h2 class="text-center">productos más pedidos</h2>
+        <canvas id="graficaProductos"></canvas>
+    </div>
+</div>
+
+{{ nombres|json_script:"labels-data" }}
+{{ cantidades|json_script:"cantidades-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Obtener datos desde los scripts ocultos
+    const nombres = JSON.parse(document.getElementById('labels-data').textContent);
+    const cantidades = JSON.parse(document.getElementById('cantidades-data').textContent);
+
+    // Crear la gráfica
+    const ctx = document.getElementById('graficaProductos').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Cantidad de pedidos',
+                data: cantidades,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                barThickness: 'flex',
+                maxBarThickness: 30,
+                categoryPercentage: 0.4,
+                barPercentage: 1.0
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cantidad'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    ticks: {
+                        callback: function(value, index) {
+                            // Acortar etiquetas largas para mejor visualización
+                            return nombres[index].length > 15 ? 
+                                   nombres[index].substring(0, 12) + '...' : 
+                                   nombres[index];
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Pedidos: ${context.parsed.y}`;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                }
+            }
+        }
+    });
+
+    // Funciones para el modal de fechas
+    function mostrarModal() {
+        document.getElementById('modalFechas').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalFechas').style.display = 'none';
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            cerrarModal();
+        }
+    });
+</script>
+{% endblock %}

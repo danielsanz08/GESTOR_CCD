@@ -482,7 +482,7 @@ body.resaltar-enlaces h2 {
     padding: 6px 8px;
     border-radius: 5px;
     position: absolute;
-    z-index: 1;
+    z-index: 2000;
     bottom: 125%;
     /* posición sobre el elemento */
     left: 50%;
@@ -491,6 +491,7 @@ body.resaltar-enlaces h2 {
     transition: opacity 0.3s;
     white-space: nowrap;
     font-size: 12px;
+
   }
 
   [data-tooltip]:hover::after {
@@ -1480,6 +1481,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     applyInitialSettings();
+});
+// En tu template base
+window.addEventListener('beforeunload', function(e) {
+    // Solo si es el cierre de ventana (no refresh)
+    fetch('/logout/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        keepalive: true
+    });
 });
 </script>
 

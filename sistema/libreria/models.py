@@ -43,11 +43,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('Presidencia', 'Presidencia'),
         ('Financiera', 'Financiera'),
     ]
-    username = models.CharField(max_length=50, unique=False, blank=False, null=False)
+    username = models.CharField(max_length=40,unique=False, blank=False, null=False)
     email = models.EmailField(unique=True, blank=False, null=False)
     role = models.CharField(max_length=13, choices=ROLES, default='Empleado', blank=False, null=False)
     area = models.CharField(max_length=30, choices=AREA, default='Administrativa', blank=False, null=False)
-    cargo = models.CharField(max_length=50, default='No establecido', blank=False, null=False)
+    cargo = models.CharField(max_length=100,default='No establecido', blank=False, null=False)
     fecha_registro = models.DateField(auto_now_add=True)  # no necesita blank/null; se gestiona automáticamente
     is_active = models.BooleanField(default=True)     # booleanos no aceptan null por defecto
     is_staff = models.BooleanField(default=False)

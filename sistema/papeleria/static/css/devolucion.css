@@ -1,0 +1,145 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    /* Elimina el scroll horizontal y vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #80808000;
+
+}
+
+html,
+body {
+    background-color: #1c96bb1c;
+}
+
+section {
+    width: 700px;
+    height: 400px;
+    padding: 30px 40px;
+    border-radius: 10px;
+    overflow-y: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+    position: relative;
+    top: 2vh;
+    background: linear-gradient(110deg, #c7def893, #ffffffe8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(2, 47, 90, 0.63);
+}
+
+section::-webkit-scrollbar {
+    display: none; }
+
+
+h4 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* === Lista de Artículos === */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+li {
+    background-color: #f1f5f9;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* === Formulario === */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form p {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+form p label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* === Inputs, Textareas, Select === */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    resize: vertical;
+    border-radius: 10px;
+    height: 47px; 
+}
+
+textarea {
+    min-height: 120px;
+    line-height: 1.4;
+    
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* === Botones === */
+.btn {
+    padding: 10px 16px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 2px 6px rgba(0, 91, 187, 0.4);
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    section {
+        padding: 20px;
+        margin: 0 10px;
+    }
+
+    h4 {
+        font-size: 1.3em;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

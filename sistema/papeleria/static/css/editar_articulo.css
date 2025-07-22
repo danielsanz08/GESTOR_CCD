@@ -26,6 +26,7 @@ body {
     border-radius: 10px;
     height: 387px;
     width: 930px;
+    overflow: hidden;
 }
 h2 {
     text-align: center;

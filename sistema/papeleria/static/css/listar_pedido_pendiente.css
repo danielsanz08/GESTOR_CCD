@@ -21,7 +21,7 @@ section {
   width: 190vh;
   height: 60vh;
   border-radius: 10px;
-
+  overflow: hidden;
 }
 
 table {

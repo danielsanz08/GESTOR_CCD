@@ -1350,13 +1350,13 @@ def reporte_articulo_excel(request):
     ws.row_dimensions[1].height = 60
     ws.row_dimensions[2].height = 30
 
-    # Título
+    # Título (siempre visible)
     ws.merge_cells('A1:G1')
     ws['A1'] = "GESTOR CCD"
     ws['A1'].font = Font(size=24, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Subtítulo con fecha
+    # Subtítulo con fecha (siempre visible)
     ws.merge_cells('A2:G2')
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
     ws['A2'] = f"Listado de Artículos {fecha_actual}"
@@ -1369,14 +1369,11 @@ def reporte_articulo_excel(request):
             ws[f"{col}{row}"].border = border
             ws[f"{col}{row}"].alignment = Alignment(horizontal='center', vertical='center')
 
-    # Encabezados
+    # Encabezados de tabla (siempre visible)
     headers = ["ID", "Nombre", "Marca", "Tipo", "Precio", "Cantidad", "Observación"]
     ws.append(headers)
-
-    # Agregar autofiltro desde A3 hasta G3
-    ws.auto_filter.ref = "A3:G3"
-
-    # Estilo encabezado
+    
+    # Estilo encabezado de tabla (siempre visible)
     header_fill = PatternFill(start_color="FF0056B3", end_color="FF0056B3", fill_type="solid")
     for col in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
         cell = ws[f"{col}3"]
@@ -1385,23 +1382,34 @@ def reporte_articulo_excel(request):
         cell.alignment = Alignment(horizontal='center', vertical='center')
         cell.border = border
 
-    # Datos
-    for articulo in articulos:
-        ws.append([
-            wrap_text(str(articulo.id)),
-            wrap_text(articulo.nombre),
-            wrap_text(articulo.marca),
-            wrap_text(articulo.tipo),
-            wrap_text("{:,}".format(articulo.precio)),
-            wrap_text(str(articulo.cantidad)),
-            str((articulo.observacion)),
-        ])
+    if not articulos.exists():
+        # Mensaje cuando no hay artículos (debajo de los encabezados)
+        ws.merge_cells('A4:G4')
+        ws['A4'] = "No se encontraron artículos."
+        ws['A4'].font = Font(size=14)
+        ws['A4'].alignment = Alignment(horizontal='center', vertical='center')
+        ws['A4'].border = border
+    else:
+        # Datos cuando sí hay artículos
+        for articulo in articulos:
+            ws.append([
+                wrap_text(str(articulo.id)),
+                wrap_text(articulo.nombre),
+                wrap_text(articulo.marca),
+                wrap_text(articulo.tipo),
+                wrap_text("{:,}".format(articulo.precio)),
+                wrap_text(str(articulo.cantidad)),
+                str((articulo.observacion)),
+            ])
 
-    # Estilo de celdas con datos
-    for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
-        for cell in row:
-            cell.border = border
-            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        # Estilo de celdas con datos
+        for row in ws.iter_rows(min_row=4, max_row=ws.max_row, min_col=1, max_col=7):
+            for cell in row:
+                cell.border = border
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+
+    # Agregar autofiltro (siempre visible)
+    ws.auto_filter.ref = "A3:G3"
 
     # Respuesta HTTP
     response = HttpResponse(

@@ -302,6 +302,7 @@ td {
   border-radius: 10px;
   max-height: 7vh;
   align-items: center;
+  text-overflow: ellipsis; 
 
 }
 
@@ -581,6 +582,7 @@ td {
     position: relative;
     height: 30px;
   }
+ 
 }
 
 /* Tablet devices (768px to 1024px) */

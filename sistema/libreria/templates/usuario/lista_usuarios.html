@@ -58,14 +58,17 @@
                 <th class="editar">Acciones</th>
             </tr>
         </thead>
+        <style>
+            
+        </style>
         <tbody>
             {% for usuario in usuarios %}
             <tr id="info-tr">
                 <td class="td_id">{{ usuario.id }}</td>
-                <td data-tooltip="{{ usuario.role }}" class="td_nombre">{{ usuario.username }}</td>
-                <td class="td_email">{{ usuario.email }}</td>
+                <td title="{{ usuario.role }}" class="td_nombre">{{ usuario.username }}</td>
+                <td title="{{ usuario.email }}" class="td_email">{{ usuario.email }}</td>
                 <td class="td_area">{{ usuario.area }}</td>
-                <td class="td_cargo">{{ usuario.cargo }}</td>
+                <td title="{{ usuario.cargo }}" class="td_cargo">{{ usuario.cargo }}</td>
                 <td class="td_fecha">{{ usuario.fecha_formateada }}</td>
                 <td class="td_btn_estado" id="td_btn_estado">
                     <form action="{% url 'libreria:cambiar_estado_usuario' usuario.id %}" method="POST" style="margin:0;">
@@ -88,7 +91,7 @@
                         </button>
                     </a>
                     <a href="{% url 'libreria:cambiar_contraseña_id' usuario.id %}">
-                            <button class="password-btn">
+                            <button class="password-btn" data-tooltip="Cambiar contraseña">
                                 <i class="fas fa-unlock-alt me-2"></i>
                             </button>
                         </a>
@@ -100,7 +103,7 @@
         </tbody>
     </table>
 </div>
-    <div class="paginacion" id="pag">
+    <div class="paginacion" id="pag" >
         {% if usuarios.has_previous %}
         <a
             href="?page={{ usuarios.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}">Anterior</a>

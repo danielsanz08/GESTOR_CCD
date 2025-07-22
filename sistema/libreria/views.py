@@ -700,6 +700,12 @@ def wrap_text(text, max_len=20):
         parts[i] += '-'  # Agrega guion al final de todas menos la última
     return '\n'.join(parts)
 
+def wrap_text_p(text, max_len=26
+                ):
+    parts = [text[i:i+max_len] for i in range(0, len(text), max_len)]
+    for i in range(len(parts) - 1):
+        parts[i] += '-'  # Agrega guion al final de todas menos la última
+    return '\n'.join(parts)
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import ParagraphStyle
 def reporte_usuario_pdf(request):
@@ -745,12 +751,12 @@ def reporte_usuario_pdf(request):
     data_usuario = [["Usuario", "Email", "Rol", "Cargo"]]
 
     if usuario.is_authenticated:
-        data_usuario.append([
-            usuario.username,
-            usuario.email,
-            getattr(usuario, 'role', 'No definido'),
-            getattr(usuario, 'cargo', 'No definido'),
-        ])
+         data_usuario.append([
+        wrap_text_p(usuario.username),
+        wrap_text_p(usuario.email),
+        wrap_text_p(getattr(usuario, 'role', 'No definido')),
+        wrap_text_p(getattr(usuario, 'cargo', 'No definido')),
+])
     else:
         data_usuario.append(["Invitado", "-", "-", "-"])
 
@@ -792,7 +798,7 @@ def reporte_usuario_pdf(request):
                 wrap_text("Activo" if u.is_active else "Inactivo")
             ])
 
-        tabla_articulos = Table(data_usuarios, colWidths=[30, 100, 100, 160, 160, 100, 70])
+        tabla_articulos = Table(data_usuarios, colWidths=[30, 110, 100, 160, 160, 100, 60])
         style_articulos = TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#5564eb")),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),

@@ -12,6 +12,7 @@ section{
     width: 190vh;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     border-radius: 20px;
+    overflow: hidden;
     
 }
 table{

@@ -4,7 +4,7 @@ html{
     align-items: center;
 }
 .formulario{
-    
+    overflow: hidden;
     top: 20vh;
     position: relative;
     width: 70vh;

@@ -15,6 +15,7 @@ html, body {
     margin: 0 auto;
     padding: 2rem 1rem;
     margin-top: 20vh;
+    overflow: hidden;
 }
 
 /* Título principal */
@@ -209,6 +210,9 @@ html, body {
     #estadisticas{
         display: none;
     }
+     #lista_usuario{
+    display: none;
+  }
 
 }
 /* Tablets (768px — 1024px) */
@@ -219,4 +223,7 @@ html, body {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
     }
+     #lista_usuario{
+    display: none;
+  }
 }
